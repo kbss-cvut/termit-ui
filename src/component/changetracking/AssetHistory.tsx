@@ -74,7 +74,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
 
   const rollback = (record: UpdateRecord) => {
     trackPromise(
-      dispatch(rollbackChange(asset, record)).then((successful) => {
+      dispatch(rollbackChange(record)).then((successful) => {
         if (!successful) {
           return Promise.resolve();
         }
