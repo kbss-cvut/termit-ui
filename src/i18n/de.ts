@@ -937,9 +937,11 @@ const de = {
     "type.user": "Benutzer",
     "type.usergroup": "Benutzergruppe",
     "type.userrole": "Benutzerrolle",
-    "datatype.string": "Zeichenfolge",
+    "datatype.string": "Textzeichenfolge",
+    "datatype.langString": "Mehrsprachige Zeichenfolge",
     "datatype.integer": "Ganzzahl",
     "datatype.resource": "Ressource (IRI/URI/URL)",
+
     "log-viewer.title": "Protokoll",
     "log-viewer.timestamp": "Zeitstempel",
     "log-viewer.error": "Fehler",

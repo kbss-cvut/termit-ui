@@ -972,7 +972,8 @@ const cs = {
     "type.user": "Uživatel",
     "type.usergroup": "Uživatelská skupina",
     "type.userrole": "Uživatelská role",
-    "datatype.string": "Textový řetězec",
+    "datatype.string": "Textový řetězec (bez jazyka)",
+    "datatype.langString": "Vícejazyčný textový řetězec",
     "datatype.integer": "Celé číslo",
     "datatype.resource": "Obecný zdroj (IRI/URI/URL)",
 

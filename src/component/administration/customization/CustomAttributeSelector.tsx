@@ -30,6 +30,10 @@ export const RANGE_OPTIONS: SelectorOption[] = [
     labelKey: "datatype.string",
   },
   {
+    value: VocabularyUtils.RDF_LANGSTRING,
+    labelKey: "datatype.langString",
+  },
+  {
     value: VocabularyUtils.RDFS_RESOURCE,
     labelKey: "datatype.resource",
   },

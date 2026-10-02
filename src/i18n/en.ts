@@ -966,7 +966,8 @@ const en = {
     "type.user": "User",
     "type.usergroup": "User group",
     "type.userrole": "User role",
-    "datatype.string": "String",
+    "datatype.string": "String (without language)",
+    "datatype.langString": "Multilingual string",
     "datatype.integer": "Integer",
     "datatype.resource": "Resource (IRI/URI/URL)",
 
