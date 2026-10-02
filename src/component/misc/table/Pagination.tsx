@@ -36,6 +36,55 @@ interface PaginationProps {
 
 export const PAGE_SIZES = [10, 20, 30, 50];
 
+const DOTS = "DOTS";
+
+function range(start: number, end: number): number[] {
+  const length = end - start + 1;
+  return Array.from({ length }, (_, idx) => idx + start);
+}
+
+/**
+ * Computes the list of page numbers (1-indexed) to display, collapsing
+ * pages that are far from the current one into ellipsis ("...") markers.
+ * At most siblingCount pages before and after the current page are shown
+ * (fewer when the current page is near a boundary - the window is not
+ * padded out to a fixed size), with the first and last page always visible.
+ *
+ * E.g. for pageCount = 10, currentPage = 5, siblingCount = 2, this produces
+ * 1, DOTS, 3, 4, 5, 6, 7, DOTS, 10.
+ */
+export function getPaginationRange(
+  pageCount: number,
+  currentPage: number,
+  siblingCount = 2
+): (number | typeof DOTS)[] {
+  const leftSibling = Math.max(currentPage - siblingCount, 1);
+  const rightSibling = Math.min(currentPage + siblingCount, pageCount);
+
+  const pages: (number | typeof DOTS)[] = [];
+
+  if (leftSibling > 1) {
+    pages.push(1);
+    // An ellipsis is only needed if there is a gap of more than one page
+    // between the first page and the start of the window (otherwise they
+    // are consecutive and no pages are actually being hidden).
+    if (leftSibling > 2) {
+      pages.push(DOTS);
+    }
+  }
+
+  pages.push(...range(leftSibling, rightSibling));
+
+  if (rightSibling < pageCount) {
+    if (rightSibling < pageCount - 1) {
+      pages.push(DOTS);
+    }
+    pages.push(pageCount);
+  }
+
+  return pages;
+}
+
 export const Pagination: React.FC<PaginationProps> = ({
   table,
   allowSizeChange = false,
@@ -63,16 +112,20 @@ export const Pagination: React.FC<PaginationProps> = ({
     table.setPageSize(Number(value));
   };
 
-  const items: React.ReactElement[] = [];
-  for (let i = 0; i < pageCount; i++) {
-    items.push(
-      <PaginationItem key={i} active={i === pageIndex}>
-        <PaginationLink onClick={() => table.setPageIndex(i)}>
-          {i + 1}
+  const paginationRange = getPaginationRange(pageCount, pageIndex + 1);
+  const items: React.ReactElement[] = paginationRange.map((page, idx) =>
+    page === DOTS ? (
+      <PaginationItem key={`dots-${idx}`} disabled={true}>
+        <PaginationLink tag="span">&hellip;</PaginationLink>
+      </PaginationItem>
+    ) : (
+      <PaginationItem key={page} active={page - 1 === pageIndex}>
+        <PaginationLink onClick={() => table.setPageIndex(page - 1)}>
+          {page}
         </PaginationLink>
       </PaginationItem>
-    );
-  }
+    )
+  );
 
   return (
     <>
