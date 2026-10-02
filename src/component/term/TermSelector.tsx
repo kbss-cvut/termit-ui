@@ -165,12 +165,14 @@ export const TermSelector: React.FC<{
     .map((asset) => vocabularies[asset.iri!])
     .filter(Boolean);
 
+  const showScopeToggle = vocabularyIri && !disableScopeToggle;
+
   return (
     <FormGroup id={id}>
       <div className="d-flex justify-content-between mb-2">
         {label}
         <div className="d-flex align-items-center">
-          {vocabularyIri && !disableScopeToggle && (
+          {showScopeToggle && (
             <>
               {limitToRelated && filteredVocabs.length > 0 && (
                 <VocabulariesInfoIcon
@@ -192,7 +194,7 @@ export const TermSelector: React.FC<{
             </>
           )}
           {!forceFlatList && (
-            <div className={vocabularyIri ? "ml-2" : ""}>
+            <div className={showScopeToggle ? "ml-2" : ""}>
               <TermListToggle
                 id={id + "-show-flat-list"}
                 onToggle={handleFlatListToggle}
