@@ -1417,47 +1417,25 @@ export function removeSnapshot(snapshotIri: IRI) {
   };
 }
 
-function getRollbackChangeEndpoint(
-  asset: Asset,
-  assetIri: IRI,
-  changeRecordIri: IRI
-) {
-  const types = Utils.sanitizeArray(asset.types);
-  let assetTypePathSegment: String | null = null;
-  if (types.includes(VocabularyUtils.TERM)) {
-    assetTypePathSegment = "terms";
-  } else if (types.includes(VocabularyUtils.VOCABULARY)) {
-    assetTypePathSegment = "vocabularies";
-  }
-
-  if (assetTypePathSegment != null) {
-    return `${Constants.API_PREFIX}/${assetTypePathSegment}/${assetIri.fragment}/history/${changeRecordIri.fragment}/rollback`;
-  }
-
-  throw new TypeError(
-    "Asset " + asset.iri + " does not support change rollback."
-  );
-}
-
 /**
  * Rolls back the specified change to a term or vocabulary.
  *
  * Publishes a message describing the outcome and resolves to `true` when the
  * rollback succeeds or `false` when the request fails.
  *
- * @param asset Term or vocabulary whose change should be rolled back
  * @param changeRecord Record identifying the change to roll back
  * @returns Promise of boolean. {@code true} when the rollback was successful,
  *          {@code false} otherwise.
  */
-export function rollbackChange(asset: Asset, changeRecord: ChangeRecord) {
+export function rollbackChange(changeRecord: ChangeRecord) {
   const action = { type: ActionType.ROLLBACK_CHANGE };
-  const assetIri = VocabularyUtils.create(asset.iri);
   const recordIri = VocabularyUtils.create(changeRecord.iri);
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    const endpoint = getRollbackChangeEndpoint(asset, assetIri, recordIri);
-    return Ajax.post(endpoint, param("namespace", assetIri.namespace))
+    return Ajax.post(
+      `${Constants.API_PREFIX}/history/${recordIri.fragment}/rollback`,
+      param("namespace", recordIri.namespace)
+    )
       .then(() => {
         dispatch(asyncActionSuccess(action));
         dispatch(
