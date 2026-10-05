@@ -261,6 +261,8 @@ const en = {
       'Are you sure you want to permanently remove custom attribute "{label}"?',
     "administration.customization.customAttributes.removal.removeUsages":
       "Remove all usages of the custom attribute.",
+    "administration.customization.customAttributes.removal.removeUsages.tooltip":
+      "If you decide not to remove the usages, the attribute value will remain in the data (available and editable in 'Other properties').",
     "administration.customization.customAttributes.removal.confirm":
       "To confirm the deletion of the custom attribute and all its uses, enter the attribute name",
     "asset.link.tooltip": "View detail of this asset",

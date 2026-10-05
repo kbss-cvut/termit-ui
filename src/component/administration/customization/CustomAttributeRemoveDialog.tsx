@@ -41,6 +41,7 @@ import { getInitialPageSize } from "../../../util/UISettingsUtil";
 import { publishMessage } from "../../../action/SyncActions";
 import Message from "../../../model/Message";
 import MessageType from "../../../model/MessageType";
+import HelpIcon from "../../misc/HelpIcon";
 
 export interface CustomAttributeRemoveDialogProps {
   /**
@@ -276,9 +277,19 @@ const CustomAttributeRemoveDialog: React.FC<
           <Table instance={tableInstance} />
           <CustomCheckBoxInput
             id={"remove-usages-checkbox"}
-            label={i18n(
-              "administration.customization.customAttributes.removal.removeUsages"
-            )}
+            label={
+              <>
+                {i18n(
+                  "administration.customization.customAttributes.removal.removeUsages"
+                )}
+                <HelpIcon
+                  id="remove-usages-help"
+                  text={i18n(
+                    "administration.customization.customAttributes.removal.removeUsages.tooltip"
+                  )}
+                />
+              </>
+            }
             checked={doRemoveUsages}
             onChange={(change) => setDoRemoveUsages(change.target.checked)}
           />

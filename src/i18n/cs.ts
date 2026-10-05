@@ -273,6 +273,8 @@ const cs = {
       'Opravdu chcete odstranit atribut "{label}"?',
     "administration.customization.customAttributes.removal.removeUsages":
       "Odebrat všechna použití vlastního atributu.",
+    "administration.customization.customAttributes.removal.removeUsages.tooltip":
+      "Pokud se rozhodnete použití zachovat, zůstanou v datech hodnoty atributu (dostupné a editovatelné v části 'Ostatní atributy').",
     "administration.customization.customAttributes.removal.confirm":
       "Pro potvrzení odstranění vlastního atributu a všech jeho použití zadejte název atributu",
     "asset.link.tooltip": "Zobrazit detail záznamu",

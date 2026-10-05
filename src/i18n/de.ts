@@ -271,6 +271,8 @@ const de = {
       'Sind Sie sicher, dass Sie das benutzerdefinierte Attribut "{label}" dauerhaft entfernen möchten?',
     "administration.customization.customAttributes.removal.removeUsages":
       "Alle Verwendungen des benutzerdefinierten Attributs entfernen.",
+    "administration.customization.customAttributes.removal.removeUsages.tooltip":
+      "Wenn Sie sich entscheiden, die Verwendungen nicht zu entfernen, bleibt der Attributwert in den Daten erhalten (verfügbar und editierbar unter „Weitere attribute“).",
     "administration.customization.customAttributes.removal.confirm":
       "Um das Löschen des benutzerdefinierten Attributs und all seiner Verwendungen zu bestätigen, geben Sie den Attributnamen ein",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
