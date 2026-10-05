@@ -34,6 +34,12 @@ import { publishMessage as publishMessageAction } from "../../action/SyncActions
 import { isVocabularyValid } from "./VocabularyValidationUtils";
 import { PropertyValueType } from "../../model/WithUnmappedProperties";
 import VocabulariesReferenceListEdit from "./VocabulariesReferenceListEdit";
+import {
+  selectMultilingualCustomAttributeIris,
+  selectVocabularyLanguages,
+} from "../../store/StateSelectors";
+import TermItState from "../../model/TermItState";
+import { CustomAttribute } from "../../model/RdfsResource";
 
 interface VocabularyEditProps extends HasI18n {
   vocabulary: Vocabulary;
@@ -43,6 +49,8 @@ interface VocabularyEditProps extends HasI18n {
   language: string;
   selectLanguage: (lang: string) => void;
   publishMessage: (message: Message) => void;
+
+  customAttributes: CustomAttribute[];
 }
 
 interface VocabularyEditState {
@@ -124,7 +132,11 @@ export class VocabularyEdit extends React.Component<
       label: this.state.label,
       comment: this.state.comment,
     });
-    Vocabulary.removeTranslation(data, lang);
+    Vocabulary.removeTranslation(
+      data,
+      lang,
+      selectMultilingualCustomAttributeIris(this.props)
+    );
     this.setState({ ...data });
   };
 
@@ -177,12 +189,13 @@ export class VocabularyEdit extends React.Component<
   public render() {
     const i18n = this.props.i18n;
     const language = this.props.language;
+    const languages = selectVocabularyLanguages(this.props, this.state);
     return (
       <>
         <EditLanguageSelector
           key="vocabulary-edit-language-selector"
           language={language}
-          existingLanguages={Vocabulary.getLanguages(this.state)}
+          existingLanguages={languages}
           requiredLanguage={this.state.primaryLanguage}
           onSelect={this.props.selectLanguage}
           onRemove={this.removeTranslation}
@@ -302,7 +315,7 @@ export class VocabularyEdit extends React.Component<
                     properties={this.state.unmappedProperties}
                     ignoredProperties={VocabularyEdit.mappedPropertiesToIgnore()}
                     onChange={this.onPropertiesChange}
-                    languages={Vocabulary.getLanguages(this.props.vocabulary)}
+                    languages={languages}
                     language={language}
                   />
                 </Col>
@@ -357,9 +370,12 @@ export class VocabularyEdit extends React.Component<
   }
 }
 
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-  return {
-    publishMessage: (message: Message) =>
-      dispatch(publishMessageAction(message)),
-  };
-})(injectIntl(withI18n(VocabularyEdit)));
+export default connect(
+  (state: TermItState) => ({ customAttributes: state.customAttributes }),
+  (dispatch: ThunkDispatch) => {
+    return {
+      publishMessage: (message: Message) =>
+        dispatch(publishMessageAction(message)),
+    };
+  }
+)(injectIntl(withI18n(VocabularyEdit)));

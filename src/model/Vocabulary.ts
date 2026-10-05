@@ -190,12 +190,25 @@ export default class Vocabulary
     );
   }
 
-  public static removeTranslation(data: VocabularyData, lang: string) {
-    removeTranslation(VOCABULARY_MULTILINGUAL_ATTRIBUTES, data, lang);
+  public static removeTranslation(
+    data: VocabularyData,
+    lang: string,
+    multilingualCustomAttributes?: string[]
+  ) {
+    const atts = Utils.sanitizeArray(multilingualCustomAttributes).concat(
+      VOCABULARY_MULTILINGUAL_ATTRIBUTES
+    );
+    removeTranslation(atts, data, lang);
   }
 
-  public static getLanguages(vocabulary?: VocabularyData | null): string[] {
-    return getLanguages(VOCABULARY_MULTILINGUAL_ATTRIBUTES, vocabulary);
+  public static getLanguages(
+    vocabulary?: VocabularyData | null,
+    multilingualCustomAttributes?: string[]
+  ): string[] {
+    const atts = Utils.sanitizeArray(multilingualCustomAttributes).concat(
+      VOCABULARY_MULTILINGUAL_ATTRIBUTES
+    );
+    return getLanguages(atts, vocabulary);
   }
 }
 
