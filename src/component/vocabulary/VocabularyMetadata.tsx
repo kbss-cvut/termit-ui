@@ -10,7 +10,7 @@ import Terms from "../term/Terms";
 import { Location } from "history";
 import { match as Match } from "react-router";
 import { useDispatch } from "react-redux";
-import { ThunkDispatch } from "../../util/Types";
+import { ThunkDispatch, useAppSelector } from "../../util/Types";
 import { selectVocabularyTerm } from "../../action/SyncActions";
 import Utils from "../../util/Utils";
 import DocumentSummary from "../resource/document/DocumentSummary";
@@ -22,6 +22,7 @@ import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
 import VocabulariesReferenceList from "./VocabulariesReferenceList";
+import { selectVocabularyLanguages } from "../../store/StateSelectors";
 
 interface VocabularyMetadataProps {
   vocabulary: Vocabulary;
@@ -59,6 +60,9 @@ export const VocabularyMetadata: React.FC<VocabularyMetadataProps> = ({
     tabsArray.indexOf(tabParam) !== -1 ? tabParam : tabsArray[0]
   );
   const vocabularyIri = React.useRef(vocabulary.iri);
+  const languages = useAppSelector((state) =>
+    selectVocabularyLanguages(state, vocabulary)
+  );
 
   React.useEffect(() => {
     dispatch(selectVocabularyTerm(null));
@@ -131,7 +135,7 @@ export const VocabularyMetadata: React.FC<VocabularyMetadataProps> = ({
       <LanguageSelector
         key="vocabulary-language-selector"
         language={language}
-        languages={Vocabulary.getLanguages(vocabulary)}
+        languages={languages}
         onSelect={selectLanguage}
         primaryLanguage={vocabulary.primaryLanguage}
       />
