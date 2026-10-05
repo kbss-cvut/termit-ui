@@ -1,6 +1,5 @@
 import * as React from "react";
-import { injectIntl } from "react-intl";
-import withI18n, { HasI18n } from "../hoc/withI18n";
+import { useI18n } from "../hook/useI18n";
 import Vocabulary from "../../model/Vocabulary";
 import { Card, CardBody, Col, Label, Row } from "reactstrap";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
@@ -10,7 +9,7 @@ import TermChangeFrequency from "./TermChangeFrequency";
 import Terms from "../term/Terms";
 import { Location } from "history";
 import { match as Match } from "react-router";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { selectVocabularyTerm } from "../../action/SyncActions";
 import Utils from "../../util/Utils";
@@ -24,18 +23,13 @@ import LanguageSelector from "../multilingual/LanguageSelector";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
 import VocabulariesReferenceList from "./VocabulariesReferenceList";
 
-interface VocabularyMetadataProps extends HasI18n {
+interface VocabularyMetadataProps {
   vocabulary: Vocabulary;
   onChange: () => void;
-  resetSelectedTerm: () => void;
   language: string;
   selectLanguage: (lang: string) => void;
   location: Location;
   match: Match<any>;
-}
-
-interface VocabularyMetadataState {
-  activeTab: string;
 }
 
 export const TABS = {
@@ -48,120 +42,42 @@ export const TABS = {
   acl: "vocabulary.acl",
 };
 
-export class VocabularyMetadata extends React.Component<
-  VocabularyMetadataProps,
-  VocabularyMetadataState
-> {
-  constructor(props: VocabularyMetadataProps) {
-    super(props);
-    const tabParam: string =
-      Utils.extractQueryParam(this.props.location.search, "activeTab") || "";
-    const tabsArray = Object.values(TABS);
-    this.state = {
-      activeTab:
-        tabsArray.indexOf(tabParam) !== -1
-          ? tabsArray[tabsArray.indexOf(tabParam)]
-          : tabsArray[0],
-    };
-  }
+export const VocabularyMetadata: React.FC<VocabularyMetadataProps> = ({
+  vocabulary,
+  onChange,
+  language,
+  selectLanguage,
+  location,
+  match,
+}) => {
+  const { i18n } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
+  const tabParam: string =
+    Utils.extractQueryParam(location.search, "activeTab") || "";
+  const tabsArray = Object.values(TABS);
+  const [activeTab, setActiveTab] = React.useState<string>(
+    tabsArray.indexOf(tabParam) !== -1 ? tabParam : tabsArray[0]
+  );
+  const vocabularyIri = React.useRef(vocabulary.iri);
 
-  public componentDidMount() {
-    this.props.resetSelectedTerm();
-  }
-
-  public componentDidUpdate(prevProps: Readonly<VocabularyMetadataProps>) {
-    if (this.props.vocabulary.iri !== prevProps.vocabulary.iri) {
-      this.setState({ activeTab: TABS.glossary });
+  React.useEffect(() => {
+    dispatch(selectVocabularyTerm(null));
+  }, [dispatch]);
+  React.useEffect(() => {
+    if (vocabulary.iri !== vocabularyIri.current) {
+      vocabularyIri.current = vocabulary.iri;
+      setActiveTab(TABS.glossary);
     }
-  }
+  }, [vocabulary.iri]);
 
-  private onTabSelect = (tabId: string) => {
-    this.setState({ activeTab: tabId });
-  };
-
-  public render() {
-    const { i18n, vocabulary, language, selectLanguage } = this.props;
-
-    return (
-      <>
-        <LanguageSelector
-          key="vocabulary-language-selector"
-          language={language}
-          languages={Vocabulary.getLanguages(vocabulary)}
-          onSelect={selectLanguage}
-          primaryLanguage={vocabulary.primaryLanguage}
-        />
-        <Card className="mb-3">
-          <CardBody className="card-body-basic-info">
-            <Row>
-              <Col xl={2} md={4}>
-                <Label className="attribute-label mb-3">
-                  {i18n("vocabulary.comment")}
-                </Label>
-              </Col>
-              <Col xl={10} md={8}>
-                <MarkdownView id="vocabulary-metadata-comment">
-                  {getLocalizedOrDefault(
-                    vocabulary.comment,
-                    "",
-                    this.props.language
-                  )}
-                </MarkdownView>
-              </Col>
-            </Row>
-            <VocabulariesReferenceList
-              vocabularies={vocabulary.importedVocabularies}
-              labelKey="vocabulary.detail.imports"
-              htmlId="vocabulary-imported-vocabularies"
-            />
-            <VocabulariesReferenceList
-              vocabularies={vocabulary.relatedVocabularies}
-              labelKey="vocabulary.detail.related"
-              htmlId="vocabulary-related-vocabularies"
-            />
-            <Row>
-              <Col xl={2} md={4}>
-                <Label className="attribute-label mb-3">
-                  {i18n("vocabulary.preferredNamespaceUri")}
-                </Label>
-              </Col>
-              <Col xl={10} md={8}>
-                {vocabulary.preferredNamespaceUri}
-              </Col>
-            </Row>
-            <Row>
-              <Col xl={2} md={4}>
-                <Label className="attribute-label mb-3">
-                  {i18n("vocabulary.preferredNamespacePrefix")}
-                </Label>
-              </Col>
-              <Col xl={10} md={8}>
-                {vocabulary.preferredNamespacePrefix}
-              </Col>
-            </Row>
-            <CustomAttributesValues asset={vocabulary} />
-          </CardBody>
-        </Card>
-        <Card>
-          <CardBody>
-            <Row>
-              <Col xs={12}>{this.renderTabs()}</Col>
-            </Row>
-          </CardBody>
-        </Card>
-      </>
-    );
-  }
-
-  private renderTabs() {
-    const vocabulary = this.props.vocabulary;
+  const renderTabs = () => {
     const tabs = {};
 
     tabs[TABS.glossary] = (
       <Terms
-        vocabulary={this.props.vocabulary}
-        match={this.props.match}
-        location={this.props.location}
+        vocabulary={vocabulary}
+        match={match}
+        location={location}
         showTermQualityBadge={true}
       />
     );
@@ -169,7 +85,7 @@ export class VocabularyMetadata extends React.Component<
     tabs[TABS.document] = (
       <DocumentSummary
         document={vocabulary.document}
-        onChange={this.props.onChange}
+        onChange={onChange}
         accessLevel={
           !vocabulary.isEditable() || !vocabulary.accessLevel
             ? AccessLevel.READ
@@ -197,8 +113,8 @@ export class VocabularyMetadata extends React.Component<
 
     return (
       <Tabs
-        activeTabLabelKey={this.state.activeTab}
-        changeTab={this.onTabSelect}
+        activeTabLabelKey={activeTab}
+        changeTab={setActiveTab}
         tabs={tabs}
         tabBadges={{
           "glossary.title": vocabulary.termCount
@@ -208,11 +124,73 @@ export class VocabularyMetadata extends React.Component<
         }}
       />
     );
-  }
-}
-
-export default connect(undefined, (dispatch: ThunkDispatch) => {
-  return {
-    resetSelectedTerm: () => dispatch(selectVocabularyTerm(null)),
   };
-})(injectIntl(withI18n(VocabularyMetadata)));
+
+  return (
+    <>
+      <LanguageSelector
+        key="vocabulary-language-selector"
+        language={language}
+        languages={Vocabulary.getLanguages(vocabulary)}
+        onSelect={selectLanguage}
+        primaryLanguage={vocabulary.primaryLanguage}
+      />
+      <Card className="mb-3">
+        <CardBody className="card-body-basic-info">
+          <Row>
+            <Col xl={2} md={4}>
+              <Label className="attribute-label mb-3">
+                {i18n("vocabulary.comment")}
+              </Label>
+            </Col>
+            <Col xl={10} md={8}>
+              <MarkdownView id="vocabulary-metadata-comment">
+                {getLocalizedOrDefault(vocabulary.comment, "", language)}
+              </MarkdownView>
+            </Col>
+          </Row>
+          <VocabulariesReferenceList
+            vocabularies={vocabulary.importedVocabularies}
+            labelKey="vocabulary.detail.imports"
+            htmlId="vocabulary-imported-vocabularies"
+          />
+          <VocabulariesReferenceList
+            vocabularies={vocabulary.relatedVocabularies}
+            labelKey="vocabulary.detail.related"
+            htmlId="vocabulary-related-vocabularies"
+          />
+          <Row>
+            <Col xl={2} md={4}>
+              <Label className="attribute-label mb-3">
+                {i18n("vocabulary.preferredNamespaceUri")}
+              </Label>
+            </Col>
+            <Col xl={10} md={8}>
+              {vocabulary.preferredNamespaceUri}
+            </Col>
+          </Row>
+          <Row>
+            <Col xl={2} md={4}>
+              <Label className="attribute-label mb-3">
+                {i18n("vocabulary.preferredNamespacePrefix")}
+              </Label>
+            </Col>
+            <Col xl={10} md={8}>
+              {vocabulary.preferredNamespacePrefix}
+            </Col>
+          </Row>
+          <CustomAttributesValues asset={vocabulary} />
+        </CardBody>
+      </Card>
+      <Card>
+        <CardBody>
+          <Row>
+            <Col xs={12}>{renderTabs()}</Col>
+          </Row>
+        </CardBody>
+      </Card>
+    </>
+  );
+};
+
+export default VocabularyMetadata;
