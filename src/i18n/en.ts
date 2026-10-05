@@ -283,7 +283,7 @@ const en = {
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
 
-    "asset.migrate.iri.label": "Migrate Identifier",
+    "asset.migrate.iri.label": "Change Identifier",
     "asset.migrate.iri.dangerZone.label": "Danger Zone",
     "asset.migrate.iri.dangerZone.description":
       "International identifiers should be unique and immutable. Changing them will break external links from resources and clients outside TermIt!",

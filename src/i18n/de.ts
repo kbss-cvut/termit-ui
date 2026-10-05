@@ -292,7 +292,7 @@ const de = {
     "asset.remove.dialog.text":
       'Sind Sie sicher, dass Sie {type} "{label}" entfernen möchten?',
 
-    "asset.migrate.iri.label": "Identifikator migrieren",
+    "asset.migrate.iri.label": "Ändern Identifikator",
     "asset.migrate.iri.dangerZone.label": "Gefahrenzone",
     "asset.migrate.iri.dangerZone.description":
       "Internationale Identifikatoren sollten eindeutig und unveränderlich sein. Ihre Änderung unterbricht externe Verknüpfungen von Ressourcen und Clients außerhalb von TermIt!",

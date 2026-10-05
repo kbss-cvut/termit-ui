@@ -294,7 +294,7 @@ const cs = {
     "asset.modify.dialog.title": 'Upravit {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
 
-    "asset.migrate.iri.label": "Migrovat identifikátor",
+    "asset.migrate.iri.label": "Změnit identifikátor",
     "asset.migrate.iri.dangerZone.label": "Nebezpečná zóna",
     "asset.migrate.iri.dangerZone.description":
       "Mezinárodní identifikátory by měly být unikátní a neměnné. Jejich změna naruší externí vazby zdrojů a klientů mimo TermIt!",
