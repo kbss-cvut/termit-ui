@@ -74,6 +74,7 @@ import {
 } from "../model/filter/VocabularyContentChangeFilterData";
 import ResourceSaveReason from "../component/annotator/ResourceSaveReason";
 import { TermRemovalOptions } from "../model/TermRemovalOptions";
+import { selectMultilingualCustomAttributeIris } from "../store/StateSelectors";
 import {
   IriMigrationPair,
   IriMigrationType,
@@ -1029,7 +1030,9 @@ export function updateVocabulary(vocabulary: Vocabulary) {
       Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment;
     return Ajax.put(
       reqUrl,
-      content(vocabulary.toJsonLd()).params({
+      content(
+        vocabulary.toJsonLd(selectMultilingualCustomAttributeIris(getState()))
+      ).params({
         namespace: vocabularyIri.namespace,
       })
     )

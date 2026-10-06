@@ -32,7 +32,7 @@ import { ThunkDispatch } from "../../util/Types";
 import { connect } from "react-redux";
 import { publishMessage as publishMessageAction } from "../../action/SyncActions";
 import { isVocabularyValid } from "./VocabularyValidationUtils";
-import { PropertyValueType } from "../../model/WithUnmappedProperties";
+import { PropertyValuesType } from "../../model/WithUnmappedProperties";
 import VocabulariesReferenceListEdit from "./VocabulariesReferenceListEdit";
 import {
   selectMultilingualCustomAttributeIris,
@@ -58,7 +58,7 @@ interface VocabularyEditState {
   comment: MultilingualString;
   importedVocabularies?: AssetData[];
   relatedVocabularies?: AssetData[];
-  unmappedProperties: Map<string, PropertyValueType[]>;
+  unmappedProperties: Map<string, PropertyValuesType>;
   documentLabel: string;
   /**
    * Short locale code defined by iso-639-1
@@ -106,7 +106,7 @@ export class VocabularyEdit extends React.Component<
   };
 
   private onPropertiesChange = (
-    newProperties: Map<string, PropertyValueType[]>
+    newProperties: Map<string, PropertyValuesType>
   ) => {
     this.setState({ unmappedProperties: newProperties });
   };
