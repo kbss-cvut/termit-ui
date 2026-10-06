@@ -37,8 +37,8 @@ const TextFacet: React.FC<TextFacetProps> = ({
   return (
     <>
       <FormGroup>
-        <div className="d-flex justify-content-between">
-          <Label className="attribute-label mb-3">{label}</Label>
+        <div className="d-flex justify-content-between align-items-end mb-2">
+          <Label className="attribute-label mb-0">{label}</Label>
           {value.matchType !== MatchType.IRI && !disableMatchTypeToggle && (
             <ExactMatchToggle
               active={value.matchType === MatchType.EXACT_MATCH}
@@ -63,11 +63,6 @@ const ExactMatchToggle: React.FC<{
   onToggle: () => void;
 }> = ({ active, id, onToggle }) => {
   const { i18n } = useI18n();
-  let toggleStyle = {
-    height: "calc(1.5 * 0.875rem + 0.5rem + 2px)",
-    margin: "0 0 0.125rem 0",
-    alignSelf: "flex-end",
-  };
   return (
     <Toggle
       id={id}
@@ -80,7 +75,6 @@ const ExactMatchToggle: React.FC<{
       onClassName="toggle-custom"
       offClassName="toggle-custom"
       handleClassName="toggle-handle-custom"
-      style={toggleStyle}
       active={active}
       recalculateOnResize={true}
     />

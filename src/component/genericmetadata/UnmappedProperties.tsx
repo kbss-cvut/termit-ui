@@ -85,7 +85,7 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = ({
     );
   });
   return (
-    <Table striped={true} className="mt-3">
+    <Table striped={true} borderless={true} className="mt-3">
       <thead>
         <tr>
           <th>{i18n("properties.edit.property")}</th>

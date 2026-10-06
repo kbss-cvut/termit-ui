@@ -15,6 +15,11 @@ import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import TermOccurrence from "../../../model/TermOccurrence";
 import { StompClient } from "../../hoc/withStompClient";
+import { describe, expect, it, vi } from "vitest";
+import {
+  SubTermRemovalStrategy,
+  TermRemovalOptions,
+} from "../../../model/TermRemovalOptions";
 
 vi.mock("../ParentTermSelector", () => ({
   default: () => <div>Parent selector</div>,
@@ -40,7 +45,10 @@ describe("TermDetail", () => {
   let onLoad: (termName: string, vocabIri: IRI) => Promise<any>;
   let loadVocabulary: (iri: IRI) => void;
   let onUpdate: (term: Term) => Promise<any>;
-  let removeTerm: (term: Term) => Promise<any>;
+  let removeTerm: (
+    term: Term,
+    removalOptions: TermRemovalOptions
+  ) => Promise<any>;
   let approveOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   let removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   let onPublishNotification: (notification: AppNotification) => void;
@@ -367,8 +375,13 @@ describe("TermDetail", () => {
         {...intlFunctions()}
       />
     );
-    wrapper.instance().onRemove();
-    expect(removeTerm).toHaveBeenCalledWith(term);
+    const removalOptions: TermRemovalOptions = {
+      removeOccurrences: false,
+      removeRelationships: false,
+      subTermsStrategy: SubTermRemovalStrategy.FAIL,
+    };
+    wrapper.instance().onRemove(removalOptions);
+    expect(removeTerm).toHaveBeenCalledWith(term, removalOptions);
     expect(wrapper.state("showRemoveDialog")).toBeFalsy();
   });
 

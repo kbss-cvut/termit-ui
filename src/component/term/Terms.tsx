@@ -102,6 +102,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
   }
 
   public componentDidUpdate(prevProps: GlossaryTermsProps) {
+    const selectedTermChanged =
+      prevProps.selectedTerms !== this.props.selectedTerms;
+    const shouldReloadTerms = this.shouldReloadTerms(prevProps);
+    if (selectedTermChanged || shouldReloadTerms) {
+      this.setState({ selectedTermLoaded: false });
+    }
     const matchingNotification = this.props.notifications.find(
       (n) =>
         Terms.isNotificationRelevant(n) ||
@@ -110,8 +116,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     if (matchingNotification && this.treeComponent.current) {
       this.treeComponent.current.resetOptions();
       this.props.consumeNotification(matchingNotification);
-    } else if (this.shouldReloadTerms(prevProps)) {
-      this.setState({ selectedTermLoaded: false });
+    } else if (shouldReloadTerms || selectedTermChanged) {
       this.treeComponent.current?.resetOptions();
     }
     if (prevProps.locale !== this.props.locale) {
@@ -120,6 +125,13 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
 
     if (prevProps.flatList !== this.props.flatList) {
       this.treeComponent.current?.resetOptions();
+    }
+
+    if (
+      Utils.didNavigationOccur(prevProps, this.props) ||
+      selectedTermChanged
+    ) {
+      this.treeComponent.current?.resetScrollState();
     }
   }
 
@@ -155,18 +167,19 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           this.props.location.search,
           this.props.configuration
         );
+    const selectedTermIris =
+      !this.state.selectedTermLoaded &&
+      this.props.isDetailView &&
+      this.props.selectedTerms
+        ? [this.props.selectedTerms.iri]
+        : undefined;
     return this.props
       .fetchTerms(
         {
           ...fetchOptions,
           includeImported: this.state.includeImported,
           flatList: this.props.flatList,
-          includeTerms:
-            !this.state.selectedTermLoaded &&
-            this.props.isDetailView &&
-            this.props.selectedTerms
-              ? [this.props.selectedTerms.iri]
-              : undefined,
+          includeTerms: selectedTermIris,
         },
         vocabularyIri
       )
@@ -178,6 +191,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           : [this.props.vocabulary!.iri];
         this.setState({
           disableIncludeImportedToggle: this.props.isDetailView || false,
+          selectedTermLoaded: true,
         });
 
         // For flat list, just filter and return without tree processing
@@ -201,6 +215,9 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
         }
         return processTermsForTreeSelect(terms, termFilters, {
           searchString: fetchOptions.searchString,
+          selectedIris: selectedTermIris,
+          loadingSubTerms: !!fetchOptions.optionID,
+          flatList: this.props.flatList,
         });
       });
   };
@@ -407,7 +424,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             isClearable={!isDetailView}
             onChange={this.onTermSelect}
             value={this.props.selectedTerms}
-            valueIsControlled={false}
+            valueIsControlled={true}
             fetchOptions={this.fetchOptions}
             isMenuOpen={true}
             multi={false}

@@ -1,3 +1,11 @@
+#### Version 5.1.0
+
+- Unterstützung für das Zurücksetzen von Asset-Änderungen hinzugefügt
+- Unterstützung für die Filterung in der Vokabular-Tabellenansicht hinzugefügt
+- Unterstützung für das erzwungene Entfernen von Begriffen, auf die verwiesen wird (diese Verweise werden entfernt), sowie für das Entfernen einschließlich der Unterbegriffe hinzugefügt
+- Unterstützung für die Stapelbearbeitung ausgewählter Begriffsattribute in der Vokabular-Tabellenansicht hinzugefügt
+- Unterstützung für das Entfernen benutzerdefinierter Attribute hinzugefügt
+
 #### Version 5.0.0
 
 - Bessere Ausrichtung des Datenmodells an SKOS - die Struktur `Vocabulary = Glossary + Model` wird durch nur `Vocabulary` (~ SKOS ConceptScheme) ersetzt, die Disjunktheit von SKOS-Eigenschaften wird validiert

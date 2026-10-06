@@ -9,8 +9,8 @@ import { langString } from "../../../model/MultilingualString";
 import * as Redux from "react-redux";
 import { ThunkDispatch } from "src/util/Types";
 import * as AsyncActions from "../../../action/AsyncActions";
-import { loadVocabularies } from "../../../action/AsyncActions";
 import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../../misc/HelpIcon", () => ({
   default: () => <span>Help</span>,
@@ -55,7 +55,9 @@ describe("VocabulariesReferenceListEdit", () => {
     onChange = vi.fn();
     fakeDispatch = vi.fn();
     vi.spyOn(Redux, "useDispatch").mockReturnValue(fakeDispatch);
-    vi.spyOn(AsyncActions, "loadVocabularies");
+    vi.spyOn(AsyncActions, "loadVocabulariesIfNotLoaded").mockReturnValue(
+      vi.fn()
+    );
     mockUseI18n();
   });
 
@@ -70,7 +72,8 @@ describe("VocabulariesReferenceListEdit", () => {
         helpKey="vocabulary.importedVocabularies.help"
       />
     );
-    expect(loadVocabularies).toHaveBeenCalled();
+    expect(AsyncActions.loadVocabulariesIfNotLoaded).toHaveBeenCalled();
+    expect(fakeDispatch).toHaveBeenCalled();
   });
 
   it("renders select without any value when no imported vocabularies are specified", () => {

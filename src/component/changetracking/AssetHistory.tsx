@@ -5,7 +5,12 @@ import ChangeRecord from "../../model/changetracking/ChangeRecord";
 import { Table } from "reactstrap";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
-import { loadHistory as loadHistoryAction } from "../../action/AsyncActions";
+import {
+  loadHistory as loadHistoryAction,
+  loadVocabulary,
+  rollbackChange,
+} from "../../action/AsyncActions";
+import { loadTerm } from "../../action/AsyncTermActions";
 import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
 import UpdateRow from "./UpdateRow";
 import PersistRow from "./PersistRow";
@@ -22,10 +27,15 @@ import DeleteRow from "./DeleteRow";
 import debounce from "lodash/debounce";
 import { VocabularyContentChangeFilterData } from "../../model/filter/VocabularyContentChangeFilterData";
 import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination";
+import VocabularyUtils from "../../util/VocabularyUtils";
+import { trackPromise } from "react-promise-tracker";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 
 interface AssetHistoryProps {
   asset: Asset;
 }
+
+const PROMISE_AREA = "ASSET_HISTORY_PROMISE_AREA";
 
 export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
   const { i18n } = useI18n();
@@ -48,6 +58,31 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
       Constants.INPUT_DEBOUNCE_WAIT_TIME
     )
   );
+
+  const reloadCurrentAsset = async () => {
+    if (asset instanceof Vocabulary) {
+      await dispatch(loadVocabulary(VocabularyUtils.create(asset.iri)));
+    } else if (asset instanceof Term && asset.vocabulary) {
+      await dispatch(
+        loadTerm(
+          VocabularyUtils.create(asset.iri).fragment,
+          VocabularyUtils.create(asset.vocabulary.iri)
+        )
+      );
+    }
+  };
+
+  const rollback = (record: UpdateRecord) => {
+    trackPromise(
+      dispatch(rollbackChange(record)).then((successful) => {
+        if (!successful) {
+          return Promise.resolve();
+        }
+        return reloadCurrentAsset();
+      }),
+      PROMISE_AREA
+    );
+  };
 
   React.useEffect(() => {
     if (asset.iri === Constants.EMPTY_ASSET_IRI) {
@@ -121,6 +156,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
             <th className="col-2">{i18n("history.changedAttribute")}</th>
             <th className="col-2">{i18n("history.originalValue")}</th>
             <th className="col-2">{i18n("history.newValue")}</th>
+            <th className="col-1 text-center">{i18n("actions")}</th>
           </tr>
           <tr>
             <td>
@@ -157,6 +193,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
                 onChange={(e) => setFilterAttribute(e.target.value)}
               />
             </td>
+            <td />
           </tr>
         </thead>
         <tbody>
@@ -165,7 +202,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
               return <PersistRow key={r.iri} record={r} />;
             }
             if (r instanceof UpdateRecord) {
-              return <UpdateRow key={r.iri} record={r} />;
+              return <UpdateRow key={r.iri} record={r} onRollback={rollback} />;
             }
             if (r instanceof DeleteRecord) {
               return <DeleteRow key={r.iri} record={r} />;
@@ -182,6 +219,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
           itemCount={pageRecords.length}
         />
       ) : null}
+      <PromiseTrackingMask area={PROMISE_AREA} />
     </div>
   );
 };

@@ -191,6 +191,32 @@ function selectedFile(
   }
 }
 
+/**
+ * Follows the actions of {@link vocabularies} and sets the respective value for {@link TermItState#areVocabulariesLoaded}
+ */
+function areVocabulariesLoaded(
+  state: boolean = false,
+  action: AsyncActionSuccess<any>
+): boolean {
+  switch (action.type) {
+    case ActionType.LOAD_VOCABULARIES:
+      if (isAsyncSuccess(action)) {
+        return true;
+      }
+      return state;
+    case ActionType.LOGOUT:
+      return false;
+    case ActionType.IMPORT_VOCABULARY:
+      if (isAsyncSuccess(action)) {
+        return false;
+      }
+      return state;
+    case ActionType.LOAD_VOCABULARY: // ignoring loading of a single vocabulary
+    default:
+      return state;
+  }
+}
+
 function vocabularies(
   state: { [key: string]: Vocabulary } | any = {},
   action: AsyncActionSuccess<Vocabulary[] | Vocabulary>
@@ -830,6 +856,7 @@ const rootReducer = combineReducers<TermItState>({
   user,
   loading,
   vocabulary,
+  areVocabulariesLoaded,
   vocabularies,
   selectedFile,
   messages,

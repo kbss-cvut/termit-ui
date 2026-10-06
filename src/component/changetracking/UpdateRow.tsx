@@ -6,12 +6,14 @@ import {
 } from "../../model/changetracking/UpdateRecord";
 import AssetLabel from "../misc/AssetLabel";
 import OutgoingLink from "../misc/OutgoingLink";
-import { Badge, Label } from "reactstrap";
+import { Badge, Button, Label } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import { stringifyPropertyValue } from "../../model/WithUnmappedProperties";
+import { MdSettingsBackupRestore } from "react-icons/md";
 
 export interface UpdateRowProps {
   record: UpdateRecord;
+  onRollback: (record: UpdateRecord) => void;
 }
 
 export const UpdateRow: React.FC<UpdateRowProps> = (props) => {
@@ -36,6 +38,19 @@ export const UpdateRow: React.FC<UpdateRowProps> = (props) => {
       </td>
       <td>{renderValue(record.originalValue)}</td>
       <td>{renderValue(record.newValue)}</td>
+      <td className="text-center">
+        {record.isReversible && (
+          <Button
+            color="link"
+            className="icon-button p-0"
+            title={i18n("history.rollback")}
+            aria-label={i18n("history.rollback")}
+            onClick={() => props.onRollback(record)}
+          >
+            <MdSettingsBackupRestore size={"1.5em"} />
+          </Button>
+        )}
+      </td>
     </tr>
   );
 };

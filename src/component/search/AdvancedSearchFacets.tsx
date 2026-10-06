@@ -13,6 +13,7 @@ import TermStateFacet from "./facet/TermStateFacet";
 import FacetToggle from "./facet/FacetToggle";
 import { TermSelectorFacet } from "./facet/TermSelectorFacet";
 import { CustomAttributeFacets } from "./facet/CustomAttributeFacets";
+import "./AdvancedSearch.scss";
 
 export const FACET_KEYS = [
   "vocabulary",
@@ -110,7 +111,7 @@ const AdvancedSearchFacets: React.FC<AdvancedSearchFacetsProps> = ({
           </Row>
 
           {/* Facet widgets */}
-          <Row>
+          <Row className="align-items-end">
             {visibleFacets.vocabulary && (
               <Col xl={4} md={6} xs={12} className="mb-3">
                 <VocabularyFacet

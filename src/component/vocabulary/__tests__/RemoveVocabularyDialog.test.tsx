@@ -5,7 +5,7 @@ import {
   getVocabularyRelations,
   getVocabularyTermsRelations,
 } from "../../../action/AsyncVocabularyActions";
-import RDFStatement from "../../../model/RDFStatement";
+import RdfIriStatement from "../../../model/RdfStatement";
 import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,7 +51,7 @@ describe.skip("RemoveVocabularyDialog", () => {
   const vocabulary = Generator.generateVocabulary();
   const locale = intlFunctions().locale;
 
-  const rdfStatement: RDFStatement = {
+  const rdfStatement: RdfIriStatement = {
     subject: { iri: Generator.generateUri() },
     relation: { iri: Generator.generateUri() },
     value: { iri: Generator.generateUri() },

@@ -22,6 +22,7 @@ const de = {
     time: "Uhrzeit",
     close: "Schließen",
     copy: "Kopieren",
+    filters: "Filter",
     "copy.success": "Kopiert!",
     "basic-information": "Grundlegende Informationen",
     "created-info": "Erstellt von {author} am {date}",
@@ -249,6 +250,8 @@ const de = {
       "Die Bezeichnung der Benutzergruppe darf nicht leer sein.",
     "administration.groups.members": "Gruppenmitglieder",
     "administration.customization.title": "Anpassung",
+    "administration.customization.customAttribute":
+      "Benutzerdefinierte Attribut",
     "administration.customization.customAttributes.title":
       "Benutzerdefinierte Attribute",
     "administration.customization.customAttributes.domain": "Domain",
@@ -264,6 +267,14 @@ const de = {
       "Anwendbar auf Beziehungseigenschaften",
     "administration.customization.customAttributes.annotatedRelationships.help":
       "Wählen Sie aus, welche Term-Beziehungseigenschaften dieses benutzerdefinierte Attribut annotieren kann. Gilt nur, wenn die Domäne 'Term-Beziehung' ist.",
+    "administration.customization.customAttributes.removal.description":
+      'Sind Sie sicher, dass Sie das benutzerdefinierte Attribut "{label}" dauerhaft entfernen möchten?',
+    "administration.customization.customAttributes.removal.removeUsages":
+      "Alle Verwendungen des benutzerdefinierten Attributs entfernen.",
+    "administration.customization.customAttributes.removal.removeUsages.tooltip":
+      "Wenn Sie sich entscheiden, die Verwendungen nicht zu entfernen, bleibt der Attributwert in den Daten erhalten (verfügbar und editierbar unter „Weitere attribute“).",
+    "administration.customization.customAttributes.removal.confirm":
+      "Um das Löschen des benutzerdefinierten Attributs und all seiner Verwendungen zu bestätigen, geben Sie den Attributnamen ein",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":
@@ -280,6 +291,29 @@ const de = {
     "asset.modify.dialog.title": 'Ändern Sie {type} "{label}"',
     "asset.remove.dialog.text":
       'Sind Sie sicher, dass Sie {type} "{label}" entfernen möchten?',
+
+    "term.remove.description":
+      'Möchten Sie den Begriff "{label}" wirklich dauerhaft entfernen? Wählen Sie, wie mit abhängigen Daten verfahren werden soll.',
+    "term.remove.references.found":
+      "Auf diesen Begriff {count, plural, one {verweist # Beziehung} other {verweisen # Beziehungen}}.",
+    "term.remove.references.source": "Verweisende Entität",
+    "term.remove.references.relationship": "Beziehung",
+    "term.remove.subTermsStrategy": "Umgang mit Unterbegriffen",
+    "term.remove.subTermsStrategy.reconnect":
+      "Unterbegriffe eine Ebene nach oben verschieben",
+    "term.remove.subTermsStrategy.reconnect.description":
+      "Jeder Unterbegriff wird den übergeordneten Begriffen des zu entfernenden Begriffs untergeordnet. Bei einem Wurzelbegriff werden seine Unterbegriffe zu Wurzelbegriffen.",
+    "term.remove.subTermsStrategy.cascade": "Alle Unterbegriffe entfernen",
+    "term.remove.subTermsStrategy.cascade.description":
+      "Entfernt rekursiv alle Unterbegriffe.",
+    "term.remove.occurrences": "Vorkommen des Begriffs entfernen",
+    "term.remove.occurrences.hint":
+      "Wenn diese Option nicht ausgewählt ist und der Begriff Vorkommen hat, schlägt das Entfernen fehl.",
+    "term.remove.relationships":
+      "Beziehungen entfernen, die auf diesen Begriff verweisen",
+    "term.remove.relationships.hint":
+      "Wenn diese Option nicht ausgewählt ist und eine Beziehung auf den Begriff verweist, schlägt das Entfernen fehl.",
+
     "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
       "Die Übersetzung im Vokabular der Primärsprache kann nicht entfernt werden!",
     "document.remove.tooltip.disabled":
@@ -348,7 +382,7 @@ const de = {
     "vocabulary.summary.import.dialog.label":
       "Laden Sie eine exportierte Version dieses Vokabulars hoch",
     "vocabulary.summary.import.dialog.skosImport":
-      "Im SKOS-Format und mit einem einzelnen skos:ConceptScheme mit IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář",
+      "Im SKOS-Format und mit genau einem skos:ConceptScheme, dessen IRI der IRI dieses Vokabulars entspricht.",
     "vocabulary.summary.import.dialog.excelImport":
       "Als MS-Excel-Datei entsprechend <a>dieser Vorlage</a>",
     "vocabulary.summary.import.excel.template.tooltip":
@@ -451,6 +485,14 @@ const de = {
       "Zugriffskontrolldatensatz aktualisieren",
     "vocabulary.acl.record.update.success":
       "Zugriffskontrolldatensatz erfolgreich aktualisiert.",
+    "vocabulary.batchEdit.title": "Begriffe stapelweise bearbeiten",
+    "vocabulary.batchEdit.propertyToEdit": "Zu bearbeitende Eigenschaft",
+    "vocabulary.batchEdit.propertySelect.placeholder": "Eigenschaft auswählen",
+    "vocabulary.batchEdit.button": "Stapelweise bearbeiten ({count})",
+    "vocabulary.batchEdit.selectedTerms": "Ausgewählte Begriffe",
+    "vocabulary.batchEdit.noExistingValues": "Keine bestehenden Werte",
+    "vocabulary.batchEdit.hideValues": "Aktuelle Werte ausblenden",
+    "vocabulary.batchEdit.showValues": "Aktuelle Werte anzeigen",
     "vocabulary.term.created.message": "Begriff erfolgreich erstellt.",
     "vocabulary.select-vocabulary": "Wählen Sie ein Vokabular aus",
     "vocabulary.remove.dialog.text.nonEmpty":
@@ -656,6 +698,7 @@ const de = {
     "glossary.table.workspace.open": "Tabellenansicht öffnen",
     "glossary.table.workspace.open.help":
       "Öffnet eine dedizierte Tabellenansicht für Massenbearbeitung und Metadaten-Übersicht.",
+    "glossary.table.filters.clear": "Filter löschen",
     "glossary.table.workspace.back": "Zurück zum Vokabular",
     "glossary.table.workspace.back.help": "Zurück zur Vokabular-Detailansicht.",
     "glossary.table.fontSize": "Schriftgröße",
@@ -870,16 +913,16 @@ const de = {
     "annotator.unknown.unauthorized": "Begriff nicht ausgewählt.",
     "message.welcome": "Willkommen bei TermIt!",
     "link.external.title": "{url} – in einem neuen Browser-Tab öffnen",
-    "properties.edit.title": "Zusätzliche Eigenschaften",
-    "properties.empty": "Es gibt hier keine zusätzlichen Eigenschaften.",
-    "properties.edit.remove": "Entfernen Sie diesen Eigenschaftswert",
+    "properties.edit.title": "Weitere attribute",
+    "properties.empty": "Es gibt hier keine weiteren attribute.",
+    "properties.edit.remove": "Entfernen Sie diesen Attributwert",
     "properties.edit.remove.text": "Entfernen",
-    "properties.edit.property": "Eigenschaft",
-    "properties.edit.property.select.placeholder": "Eigenschaft auswählen",
+    "properties.edit.property": "Attribut",
+    "properties.edit.property.select.placeholder": "Attribut auswählen",
     "properties.edit.value": "Wert",
-    "properties.edit.add.title": "Der Eigenschaft einen Wert hinzufügen",
+    "properties.edit.add.title": "Dem Attribut einen Wert hinzufügen",
     "properties.edit.add.text": "Hinzufügen",
-    "properties.edit.new": "Eigenschaft erstellen",
+    "properties.edit.new": "Attribut erstellen",
     "properties.edit.new.iri": "Ressourcenkennung",
     "properties.edit.new.label": "Label",
     "properties.edit.new.comment": "Kommentar",
@@ -918,8 +961,8 @@ const de = {
     "error.term.remove.annotationsExist":
       "Der Begriff kann nicht gelöscht werden. ",
     "error.term.remove.hasSubTerms": "Der Begriff kann nicht gelöscht werden. ",
-    "error.term.remove.skosRelationshipsExist":
-      "Der Begriff kann nicht gelöscht werden. ",
+    "error.term.remove.relationshipsExist":
+      "Der Begriff kann nicht gelöscht werden, da er mit anderen Objekten verknüpft ist!",
     "error.invalidUriCharacter":
       'Ungültiger Bezeichner: "{uri}", unerwartetes Zeichen "{char}" bei {index}.',
     "error.invalidIdentifier": 'Ungültiger Bezeichner: "{uri}"',
@@ -939,6 +982,11 @@ const de = {
     "history.changedAttribute": "Attribut",
     "history.originalValue": "Ursprünglicher Wert",
     "history.newValue": "Neuer Wert",
+    "history.rollback": "Änderung rückgängig machen",
+    "history.rollback.success":
+      "Die Änderung wurde erfolgreich rückgängig gemacht.",
+    "history.rollback.failure":
+      "Die Änderung konnte nicht rückgängig gemacht werden.",
     "changefrequency.label": "Aktivität",
     "tooltip.copy-iri": "IRI kopieren",
     "tooltip.copied": "Kopiert!",

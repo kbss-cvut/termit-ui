@@ -51,6 +51,8 @@ interface TermsState {
   // Whether terms from imported vocabularies should be displayed as well
   includeImported: boolean;
   disableIncludeImportedToggle: boolean;
+  // Whether the selectedTerms were already loaded for the tree select
+  selectedTermLoaded: boolean;
 }
 
 export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
@@ -73,6 +75,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
     this.state = {
       includeImported: includeImported || false,
       disableIncludeImportedToggle: props.isDetailView || false,
+      selectedTermLoaded: false,
     };
   }
 
@@ -82,6 +85,12 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
       this.treeComponent.current
     ) {
       this.treeComponent.current.resetOptions();
+    }
+    if (prevProps.selectedTerms !== this.props.selectedTerms) {
+      this.setState({ selectedTermLoaded: false });
+      if (this.treeComponent.current) {
+        this.treeComponent.current.resetOptions();
+      }
     }
   }
 
@@ -103,11 +112,18 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           fragment: this.props.match.params.name,
           namespace,
         };
+    const selectedTermIris =
+      !this.state.selectedTermLoaded &&
+      this.props.isDetailView &&
+      this.props.selectedTerms
+        ? [this.props.selectedTerms.iri]
+        : undefined;
     return this.props
       .fetchTerms(
         {
           ...fetchOptions,
           includeImported: this.state.includeImported,
+          includeTerms: selectedTermIris,
         },
         vocabularyIri
       )
@@ -119,6 +135,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
           : [this.props.vocabulary!.iri];
         this.setState({
           disableIncludeImportedToggle: this.props.isDetailView || false,
+          selectedTermLoaded: true,
         });
         return processTermsForTreeSelect(
           terms,
@@ -126,7 +143,11 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             createVocabularyMatcher(matchingVocabularies),
             createTermNonTerminalStateMatcher(this.props.terminalStates),
           ],
-          fetchOptions
+          {
+            ...fetchOptions,
+            selectedIris: selectedTermIris,
+            loadingSubTerms: !!fetchOptions.optionID,
+          }
         );
       });
   };
@@ -221,7 +242,7 @@ export class Terms extends React.Component<GlossaryTermsProps, TermsState> {
             isClearable={!isDetailView}
             onChange={this.onTermSelect}
             value={this.props.selectedTerms}
-            valueIsControlled={false}
+            valueIsControlled={true}
             fetchOptions={this.fetchOptions}
             isMenuOpen={true}
             multi={false}

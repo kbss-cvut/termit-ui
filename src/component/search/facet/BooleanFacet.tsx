@@ -22,8 +22,8 @@ export const BooleanFacet: React.FC<{
 
   return (
     <FormGroup>
-      <div className="d-flex justify-content-between">
-        <Label className="attribute-label mb-3">{label}</Label>
+      <div className="d-flex justify-content-between align-items-end mb-2">
+        <Label className="attribute-label mb-0">{label}</Label>
       </div>
       <TriStateCheckbox
         id={id}

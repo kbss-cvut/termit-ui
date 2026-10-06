@@ -8,7 +8,7 @@ import {
 import Vocabulary from "../../model/Vocabulary";
 import TermItState from "../../model/TermItState";
 import { useDispatch, useSelector } from "react-redux";
-import { loadVocabularies } from "../../action/AsyncActions";
+import { loadVocabulariesIfNotLoaded } from "../../action/AsyncActions";
 import Utils from "../../util/Utils";
 import { useI18n } from "../hook/useI18n";
 import { ThunkDispatch } from "../../util/Types";
@@ -26,10 +26,8 @@ const VocabularySelect: React.FC<VocabularySelectProps> = (props) => {
   const vocabularies = useSelector((state: TermItState) => state.vocabularies);
   const dispatch: ThunkDispatch = useDispatch();
   React.useEffect(() => {
-    if (Object.getOwnPropertyNames(vocabularies).length === 0) {
-      dispatch(loadVocabularies());
-    }
-  });
+    dispatch(loadVocabulariesIfNotLoaded());
+  }, [dispatch, vocabularies]);
   const onChange = (vIri: string) => onVocabularySet(vocabularies[vIri]);
   const { i18n, locale } = useI18n();
 

@@ -1,12 +1,25 @@
+#### Verze 5.1.0
+
+- Podpora pro rollback změn slovníků a pojmů
+- Přidána podpora pro filtrování v tabulkovém rozhraní slovníku
+- Přidána podpora pro smazání pojmu i v případě existence referencí na něj (tyto reference jsou odstraněny spolu s
+  pojmem) a smazání spolu s podřazenými pojmy
+- Přidána podpora pro hromadnou editaci vybraných atributů pojmů v tabulkovém rozhraní slovníku
+- Přidána podpora pro odstranění vlastních atributů
+
 #### Verze 5.0.0
 
-- Lepší propojení datového modelu se SKOS - struktura `Vocabulary = Glossary + Model` nahrazena pouze `Vocabulary` (~ SKOS ConceptScheme)
-- Překlad základních ontologií - Ontologie pro popis dat, TermIt ontologie - z angličtiny do češtiny (včetně identifikátorů, např. `http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu` => `http://onto.fel.cvut.cz/ontologies/application/termit/administrator`)
+- Lepší propojení datového modelu se SKOS - struktura `Vocabulary = Glossary + Model` nahrazena pouze `Vocabulary` (~
+  SKOS ConceptScheme)
+- Překlad základních ontologií - Ontologie pro popis dat, TermIt ontologie - z angličtiny do češtiny (včetně
+  identifikátorů, např. `http://onto.fel.cvut.cz/ontologies/application/termit/pojem/administrátor-termitu` =>
+  `http://onto.fel.cvut.cz/ontologies/application/termit/administrator`)
 - Odstraněna podpora pro pracovní prostory
 - Přidána podpora pro správu namespace URI a prefixu slovníku
 - Přidána podpora pro změnu uživatelského jména
 - Export do Excel nyní zahrnuje externí rodiče pojmu
-- Přidána možnost určit související slovníky - tyto jsou použity k předfiltrování termínů pro selektory jako relatedMatch, exactMatch (lze vypnout)
+- Přidána možnost určit související slovníky - tyto jsou použity k předfiltrování termínů pro selektory jako
+  relatedMatch, exactMatch (lze vypnout)
 - Opravy v fulltextovém vyhledávání, vylepšení výkonu
 - Vylepšení tabulkového rozhraní slovníku
 - Aktualizace závislostí
@@ -42,7 +55,8 @@
 #### Verze 4.4.0
 
 - Přidána podpora pro osobní přístupové tokeny (Personal Access Token - PAT).
-- Přidána podpora Prometheus metrik a možnost monitoringu pomocí Prometheus + Grafana. Odebrán monitoring pomocí Java Melody.
+- Přidána podpora Prometheus metrik a možnost monitoringu pomocí Prometheus + Grafana. Odebrán monitoring pomocí Java
+  Melody.
 - Zlepšena accessibility (a11y) uživatelského rozhraní.
 - Přidána možnost smazat slovníky pouze pro čtení (při dostatečných právech).
 

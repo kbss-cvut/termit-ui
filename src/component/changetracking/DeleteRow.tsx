@@ -28,6 +28,7 @@ export const DeleteRow: React.FC<DeleteRowProps> = (props) => {
       <td />
       <td />
       <td />
+      <td />
     </tr>
   );
 };

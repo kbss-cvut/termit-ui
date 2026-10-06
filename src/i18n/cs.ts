@@ -22,6 +22,7 @@ const cs = {
     time: "Čas",
     close: "Zavřít",
     copy: "Zkopírovat",
+    filters: "Filtrovat",
     "copy.success": "Zkopírováno!",
     "basic-information": "Základní informace",
     "created-info": "Vytvořeno uživatelem {author} dne {date}",
@@ -254,6 +255,7 @@ const cs = {
     "administration.groups.label.invalid": "Název skupiny nesmí být prázdný.",
     "administration.groups.members": "Členové skupiny",
     "administration.customization.title": "Přizpůsobení",
+    "administration.customization.customAttribute": "Vlastní atribut",
     "administration.customization.customAttributes.title": "Vlastní atributy",
     "administration.customization.customAttributes.domain": "Doména",
     "administration.customization.customAttributes.range": "Obor hodnot",
@@ -267,6 +269,14 @@ const cs = {
       "Vztahuje se na vlastnosti vztahů",
     "administration.customization.customAttributes.annotatedRelationships.help":
       "Vyberte, které vlastnosti vztahů mezi pojmy může tento vlastní atribut anotovat. Platí pouze když doména je 'Vztah mezi pojmy'.",
+    "administration.customization.customAttributes.removal.description":
+      'Opravdu chcete odstranit atribut "{label}"?',
+    "administration.customization.customAttributes.removal.removeUsages":
+      "Odebrat všechna použití vlastního atributu.",
+    "administration.customization.customAttributes.removal.removeUsages.tooltip":
+      "Pokud se rozhodnete použití zachovat, zůstanou v datech hodnoty atributu (dostupné a editovatelné v části 'Ostatní atributy').",
+    "administration.customization.customAttributes.removal.confirm":
+      "Pro potvrzení odstranění vlastního atributu a všech jeho použití zadejte název atributu",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -283,6 +293,27 @@ const cs = {
     "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
     "asset.modify.dialog.title": 'Upravit {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
+
+    "term.remove.description":
+      'Opravdu chcete trvale odstranit pojem "{label}"? Vyberte, jak se má naložit se závislými daty.',
+    "term.remove.references.found":
+      "Na tento pojem {count, plural, one {odkazuje # vztah} few {odkazují # vztahy} other {odkazuje # vztahů}}.",
+    "term.remove.references.source": "Odkazující",
+    "term.remove.references.relationship": "Vztah",
+    "term.remove.subTermsStrategy": "Zpracování podřazených pojmů",
+    "term.remove.subTermsStrategy.reconnect":
+      "Přesunout podřazené pojmy o úroveň výše",
+    "term.remove.subTermsStrategy.reconnect.description":
+      "Každý podřazený pojem se stane potomkem nadřazených pojmů odstraňovaného pojmu. U kořenového pojmu se jeho podřazené pojmy stanou kořenovými.",
+    "term.remove.subTermsStrategy.cascade": "Odstranit všechny podřazené pojmy",
+    "term.remove.subTermsStrategy.cascade.description":
+      "Rekurzivně odstraní všechny podřazené pojmy.",
+    "term.remove.occurrences": "Odstranit výskyty pojmu",
+    "term.remove.occurrences.hint":
+      "Pokud tato volba není vybrána a pojem má výskyty, odstranění selže.",
+    "term.remove.relationships": "Odstranit vztahy odkazující na tento pojem",
+    "term.remove.relationships.hint":
+      "Pokud tato volba není vybrána a na pojem odkazuje nějaký vztah, odstranění selže.",
     "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
       "Nelze odebrat překlad pro hlavní jazyk slovníku!",
 
@@ -349,7 +380,7 @@ const cs = {
     "vocabulary.summary.import.dialog.label":
       "Nahrajte vyexportovanou verzi tohoto slovníku",
     "vocabulary.summary.import.dialog.skosImport":
-      "Ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI ve tvaru '<'IRI-TOHOTO-SLOVNÍKU'>'/glosář.",
+      "Ve formátu SKOS a obsahující jediný skos:ConceptScheme s IRI odpovídající IRI tohoto slovníku.",
     "vocabulary.summary.import.dialog.excelImport":
       "Ve formátu MS Excel odpovídající <a>této šabloně</a>",
     "vocabulary.summary.import.excel.template.tooltip":
@@ -458,6 +489,14 @@ const cs = {
       "Upravit záznam řízení přístupu",
     "vocabulary.acl.record.update.success":
       "Záznam řízení přístupu úspěšně upraven.",
+    "vocabulary.batchEdit.title": "Hromadná úprava pojmů",
+    "vocabulary.batchEdit.propertyToEdit": "Atribut k úpravě",
+    "vocabulary.batchEdit.propertySelect.placeholder": "Vyberte atribut",
+    "vocabulary.batchEdit.button": "Hromadná úprava ({count})",
+    "vocabulary.batchEdit.noExistingValues": "Žádné existující hodnoty",
+    "vocabulary.batchEdit.selectedTerms": "Vybrané pojmy",
+    "vocabulary.batchEdit.hideValues": "Skrýt aktuální hodnoty",
+    "vocabulary.batchEdit.showValues": "Zobrazit aktuální hodnoty",
 
     "vocabulary.term.created.message": "Pojem úspěšně vytvořen.",
     "vocabulary.select-vocabulary": "Vyberte slovník",
@@ -698,6 +737,7 @@ const cs = {
     "glossary.table.workspace.open": "Otevřít tabulkové zobrazení",
     "glossary.table.workspace.open.help":
       "Otevře oddělené tabulkové zobrazení pojmů pro hromadné úpravy a zobrazení metadat.",
+    "glossary.table.filters.clear": "Vymazat filtry",
     "glossary.table.workspace.back": "Zpět na detail slovníku",
     "glossary.table.workspace.back.help": "Vrátí vás na detail slovníku.",
     "glossary.table.fontSize": "Velikost písma",
@@ -907,7 +947,7 @@ const cs = {
 
     "message.welcome": "Vítejte v aplikaci TermIt!",
     "link.external.title": "{url} - otevřít v nové záložce",
-    "properties.edit.title": "Další atributy",
+    "properties.edit.title": "Ostatní atributy",
     "properties.empty": "Žádné další atributy nebyly nalezeny.",
     "properties.edit.remove": "Odebrat tuto hodnotu",
     "properties.edit.remove.text": "Odebrat",
@@ -965,8 +1005,8 @@ const cs = {
       "Pojem nelze odstranit, protože se je použit k anotaci jiných pojmů či zdrojů: {resources}",
     "error.term.remove.hasSubTerms":
       "Pojem nelze odstranit, protože má podřazené pojmy: {subTerms}",
-    "error.term.remove.skosRelationshipsExist":
-      "Pojem nelze odstranit, protože je propojen s jinými pojmy těmito SKOS vztahy: {properties}",
+    "error.term.remove.relationshipsExist":
+      "Pojem nelze odstranit, protože je propojen s jinými objekty!",
 
     "error.invalidUriCharacter":
       'Neplatný identifikátor: "{uri}", neočekávaný znak "{char}" na pozici {index}.',
@@ -988,6 +1028,9 @@ const cs = {
     "history.changedAttribute": "Atribut",
     "history.originalValue": "Původní hodnota",
     "history.newValue": "Nová hodnota",
+    "history.rollback": "Vrátit změnu",
+    "history.rollback.success": "Změna byla úspěšně vrácena.",
+    "history.rollback.failure": "Změnu se nepodařilo vrátit.",
 
     "changefrequency.label": "Aktivita",
 

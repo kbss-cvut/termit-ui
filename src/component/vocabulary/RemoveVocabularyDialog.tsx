@@ -4,6 +4,7 @@ import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
 import { Col, Label, Row } from "reactstrap";
 import Vocabulary from "../../model/Vocabulary";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import * as React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -12,7 +13,7 @@ import {
 } from "../../action/AsyncVocabularyActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { ThunkDispatch } from "../../util/Types";
-import RDFStatement from "../../model/RDFStatement";
+import RdfIriStatement from "../../model/RdfStatement";
 import { trackPromise } from "react-promise-tracker";
 import "./RemoveVocabularyDialog.scss";
 import AssetLabel from "../misc/AssetLabel";
@@ -20,7 +21,6 @@ import CopyIriIcon from "../misc/CopyIriIcon";
 import TermIriLink from "../term/TermIriLink";
 import VocabularyIriLink from "./VocabularyIriLink";
 import CustomInput from "../misc/CustomInput";
-import * as React from "react";
 import ValidationResult from "../../model/form/ValidationResult";
 import If from "../misc/If";
 
@@ -43,9 +43,9 @@ const RemoveVocabularyDialog: React.FC<RemoveVocabularyDialogProps> = (
   const typeLabel = i18n(typeLabelId || "type.asset").toLowerCase();
 
   const [vocabularyRelations, setVocabularyRelations] = useState<
-    RDFStatement[]
+    RdfIriStatement[]
   >([]);
-  const [termsRelations, setTermsRelations] = useState<RDFStatement[]>([]);
+  const [termsRelations, setTermsRelations] = useState<RdfIriStatement[]>([]);
   const [confirmationVocabularyName, setconfirmationVocabularyName] =
     useState("");
 
@@ -90,7 +90,7 @@ const RemoveVocabularyDialog: React.FC<RemoveVocabularyDialogProps> = (
   };
 
   const renderStatementArray = (
-    statements: RDFStatement[],
+    statements: RdfIriStatement[],
     keyBase: string,
     LinkComponent: typeof VocabularyIriLink | typeof TermIriLink
   ) =>

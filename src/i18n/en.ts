@@ -22,6 +22,7 @@ const en = {
     time: "Time",
     close: "Close",
     copy: "Copy",
+    filters: "Filters",
     "copy.success": "Copied!",
     "basic-information": "Basic Information",
     "created-info": "Created by {author} on {date}",
@@ -242,6 +243,7 @@ const en = {
       "User group label must not be empty.",
     "administration.groups.members": "Group members",
     "administration.customization.title": "Customization",
+    "administration.customization.customAttribute": "Custom attribute",
     "administration.customization.customAttributes.title": "Custom attributes",
     "administration.customization.customAttributes.domain": "Domain",
     "administration.customization.customAttributes.range": "Range",
@@ -255,6 +257,14 @@ const en = {
       "Applicable to relationship properties",
     "administration.customization.customAttributes.annotatedRelationships.help":
       "Select which term relationship properties this custom attribute can annotate. Only applicable when domain is 'Term relationship'.",
+    "administration.customization.customAttributes.removal.description":
+      'Are you sure you want to permanently remove custom attribute "{label}"?',
+    "administration.customization.customAttributes.removal.removeUsages":
+      "Remove all usages of the custom attribute.",
+    "administration.customization.customAttributes.removal.removeUsages.tooltip":
+      "If you decide not to remove the usages, the attribute value will remain in the data (available and editable in 'Other properties').",
+    "administration.customization.customAttributes.removal.confirm":
+      "To confirm the deletion of the custom attribute and all its uses, enter the attribute name",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
@@ -272,6 +282,27 @@ const en = {
     "asset.modify.dialog.title": 'Modify {type} "{label}"',
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
+
+    "term.remove.description":
+      'Are you sure you want to permanently remove the term "{label}"? Choose how to handle dependent data.',
+    "term.remove.references.found":
+      "This term is referenced by {count, plural, one {# relationship} other {# relationships}}.",
+    "term.remove.references.source": "Referencing entity",
+    "term.remove.references.relationship": "Relationship",
+    "term.remove.subTermsStrategy": "Handling of sub terms",
+    "term.remove.subTermsStrategy.reconnect": "Move sub terms up one level",
+    "term.remove.subTermsStrategy.reconnect.description":
+      "Each sub term becomes a child of the parent terms of the term being removed. If the term is a root term, its sub terms become root terms.",
+    "term.remove.subTermsStrategy.cascade": "Remove all sub terms",
+    "term.remove.subTermsStrategy.cascade.description":
+      "Recursively removes all sub terms.",
+    "term.remove.occurrences": "Remove term occurrences",
+    "term.remove.occurrences.hint":
+      "If this option is not selected and the term has occurrences, removal will fail.",
+    "term.remove.relationships": "Remove relationships referencing this term",
+    "term.remove.relationships.hint":
+      "If this option is not selected and any relationship references the term, removal will fail.",
+
     "asset.modify.error.cannotRemoveVocabularyPrimaryLanguage":
       "Cannot remove translation in the vocabulary primary language!",
 
@@ -340,7 +371,7 @@ const en = {
     "vocabulary.summary.import.dialog.label":
       "Upload an exported version of this vocabulary",
     "vocabulary.summary.import.dialog.skosImport":
-      "In the SKOS format and containing a single skos:ConceptScheme with IRI '<'IRI-OF-THIS-VOCABULARY'>'/glosář",
+      "In the SKOS format and containing a single skos:ConceptScheme with IRI corresponding to the IRI of this vocabulary",
     "vocabulary.summary.import.dialog.excelImport":
       "As an MS Excel file corresponding to <a>this template</a>",
     "vocabulary.summary.import.excel.template.tooltip":
@@ -450,6 +481,14 @@ const en = {
     "vocabulary.acl.record.update.dialog.title": "Update access control record",
     "vocabulary.acl.record.update.success":
       "Access control record successfully updated.",
+    "vocabulary.batchEdit.title": "Batch edit terms",
+    "vocabulary.batchEdit.propertyToEdit": "Property to edit",
+    "vocabulary.batchEdit.propertySelect.placeholder": "Select property",
+    "vocabulary.batchEdit.button": "Batch Edit ({count})",
+    "vocabulary.batchEdit.selectedTerms": "Selected Terms",
+    "vocabulary.batchEdit.noExistingValues": "No existing values",
+    "vocabulary.batchEdit.hideValues": "Hide current values",
+    "vocabulary.batchEdit.showValues": "Show current values",
 
     "vocabulary.term.created.message": "Term successfully created.",
     "vocabulary.select-vocabulary": "Select a Vocabulary",
@@ -690,6 +729,7 @@ const en = {
     "glossary.table.workspace.open": "Open sheet view",
     "glossary.table.workspace.open.help":
       "Open the dedicated sheet view for bulk updates and metadata overview.",
+    "glossary.table.filters.clear": "Clear filters",
     "glossary.table.workspace.back": "Back to vocabulary",
     "glossary.table.workspace.back.help": "Return to vocabulary detail view.",
     "glossary.table.fontSize": "Font size",
@@ -901,7 +941,7 @@ const en = {
 
     "message.welcome": "Welcome to TermIt!",
     "link.external.title": "{url} - open in a new browser tab",
-    "properties.edit.title": "Additional properties",
+    "properties.edit.title": "Other properties",
     "properties.empty": "There are no additional properties here.",
     "properties.edit.remove": "Remove this property value",
     "properties.edit.remove.text": "Remove",
@@ -959,8 +999,8 @@ const en = {
       "Cannot delete the term. It is used for annotating resources or terms:  {resources}",
     "error.term.remove.hasSubTerms":
       "Cannot delete the term. It is a parent of other terms: {subTerms}",
-    "error.term.remove.skosRelationshipsExist":
-      "Cannot delete the term. It is linked to other terms through properties: {properties}",
+    "error.term.remove.relationshipsExist":
+      "The term cannot be removed because it is linked to other objects!",
 
     "error.invalidUriCharacter":
       'Invalid identifier: "{uri}", unexpected character "{char}" at {index}.',
@@ -982,6 +1022,9 @@ const en = {
     "history.changedAttribute": "Attribute",
     "history.originalValue": "Original value",
     "history.newValue": "New value",
+    "history.rollback": "Roll back change",
+    "history.rollback.success": "The change was rolled back successfully.",
+    "history.rollback.failure": "The change could not be rolled back.",
 
     "changefrequency.label": "Activity",
 

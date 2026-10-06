@@ -7,6 +7,7 @@ import { TermFetchParams, TreeSelectOption } from "../../util/Types";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import SearchResult from "../../model/search/SearchResult";
 import unionBy from "lodash/unionBy";
+import removeMd from "remove-markdown";
 
 /**
  * Common properties for a tree selector containing terms
@@ -17,6 +18,8 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     valueKey: "iri",
     getOptionLabel: (option: Term | TermData) =>
       getLocalized(option.label, getShortLocale(intl.locale)),
+    getOptionTitle: (option: Term | TermData) =>
+      removeMd(getLocalized(option.definition, getShortLocale(intl.locale))),
     childrenKey: "plainSubTerms",
     renderAsTree: true,
     simpleTreeData: true,
@@ -166,14 +169,12 @@ function traverseToAncestor(
   child: Term & TreeSelectOption,
   options: Term[]
 ): void {
+  if (!options.find((t) => t.iri === child.iri)) {
+    child.syncPlainSubTerms();
+    options.unshift(child);
+  }
   if (Utils.sanitizeArray(child.parentTerms).length > 0) {
     child.parentTerms!.forEach((pt) => traverseToAncestor(pt, options));
-  } else {
-    if (!options.find((t) => t.iri === child.iri)) {
-      // Expand the ancestor of a selected item by default
-      child.expanded = true;
-      options.unshift(child);
-    }
   }
 }
 

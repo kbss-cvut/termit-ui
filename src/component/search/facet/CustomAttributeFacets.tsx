@@ -13,7 +13,7 @@ import { getShortLocale } from "../../../util/IntlUtil";
 import { TermSelectorFacet } from "./TermSelectorFacet";
 import TextFacet from "./TextFacet";
 import { ThunkDispatch } from "../../../util/Types";
-import { getCustomAttributes } from "../../../action/AsyncActions";
+import { getCustomAttributes } from "../../../action/AsyncCustomizationActions";
 import { NumberFacet } from "./NumberFacet";
 import { createSearchParam } from "./FacetedSearchUtil";
 

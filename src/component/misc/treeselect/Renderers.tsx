@@ -76,8 +76,16 @@ export function createTermRenderer<T extends TermData>(
       marginLeft: `${option.depth * 16}px`,
     };
 
-    const { valueKey, renderAsTree, labelKey, getOptionLabel, inputValue } =
-      params.selectProps;
+    const {
+      valueKey,
+      renderAsTree,
+      labelKey,
+      getOptionLabel,
+      getOptionTitle,
+      inputValue,
+      isOptionExpanded,
+      isOptionFetchingChild,
+    } = params.selectProps;
 
     const className = classNames("VirtualizedSelectOption", {
       VirtualizedSelectDisabledOption: params.isDisabled,
@@ -108,11 +116,14 @@ export function createTermRenderer<T extends TermData>(
         labelKey={labelKey}
         valueKey={valueKey}
         getOptionLabel={getOptionLabel}
+        getOptionTitle={getOptionTitle}
         style={optionStyle}
         searchString={inputValue}
         addonBefore={addonBefore}
         addonAfter={addonAfter}
         displayInfoOnHover={false}
+        isOptionExpanded={isOptionExpanded}
+        isOptionFetchingChild={isOptionFetchingChild}
         {...eventHandlers}
       />
     );
@@ -165,5 +176,8 @@ export function createTermValueRenderer(vocabularyIri?: string) {
 }
 
 export function createVocabularyValueRenderer() {
-  return (_: any, option: Vocabulary) => <VocabularyLink vocabulary={option} />;
+  // Ensure instance passed to VocabularyLink has the correct prototype
+  return (_: any, option: Vocabulary) => (
+    <VocabularyLink vocabulary={new Vocabulary(option)} />
+  );
 }

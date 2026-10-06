@@ -40,8 +40,6 @@ import ActionType, {
 import Resource, { ResourceData } from "../model/Resource";
 import RdfsResource, {
   CONTEXT as RDFS_RESOURCE_CONTEXT,
-  CustomAttribute,
-  CustomAttributeData,
   RdfsResourceData,
 } from "../model/RdfsResource";
 import TermItState from "../model/TermItState";
@@ -61,7 +59,7 @@ import {
   TextAnalysisRecord,
   TextAnalysisRecordData,
 } from "../model/TextAnalysisRecord";
-import {
+import ChangeRecord, {
   ChangeRecordData,
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
@@ -75,6 +73,7 @@ import {
   VocabularyContentChangeFilterData,
 } from "../model/filter/VocabularyContentChangeFilterData";
 import ResourceSaveReason from "../component/annotator/ResourceSaveReason";
+import { TermRemovalOptions } from "../model/TermRemovalOptions";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -426,8 +425,22 @@ export function removeVocabulary(vocabulary: Vocabulary) {
   );
 }
 
-export function removeTerm(term: Term) {
+/**
+ * Removes a term and optionally configures handling of its dependent data.
+ * Omitting options preserves the server's default removal behavior.
+ *
+ * @param term term to remove
+ * @param removalOptions handling of sub-terms, occurrences, and relationships
+ */
+export function removeTerm(term: Term, removalOptions?: TermRemovalOptions) {
   const vocabularyIri = VocabularyUtils.create(term.vocabulary?.iri!);
+  const additionalParams = removalOptions
+    ? new Map([
+        ["subTermsStrategy", removalOptions.subTermsStrategy],
+        ["removeOccurrences", removalOptions.removeOccurrences.toString()],
+        ["removeRelationships", removalOptions.removeRelationships.toString()],
+      ])
+    : undefined;
   return removeAsset(
     VocabularyUtils.create(term.iri),
     vocabularyIri.namespace,
@@ -441,7 +454,8 @@ export function removeTerm(term: Term) {
       query: vocabularyIri.namespace
         ? new Map([["namespace", vocabularyIri.namespace]])
         : undefined,
-    }
+    },
+    additionalParams
   );
 }
 
@@ -453,14 +467,17 @@ export function removeAsset(
   load: () => (dispatch: ThunkDispatch, getState: GetStoreState) => Promise<{}>,
   messageId: string,
   transitionRoute: Route,
-  options?: {}
+  options?: {},
+  additionalParams?: Map<string, string>
 ) {
   const action: RemoveAssetAction = { type, iri: IRIImpl.toString(iri) };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action));
+    const requestConfig = param("namespace", namespace);
+    additionalParams?.forEach((value, key) => requestConfig.param(key, value));
     return Ajax.delete(
       Constants.API_PREFIX + "/" + assetPathFragment + "/" + iri.fragment,
-      param("namespace", namespace)
+      requestConfig
     )
       .then(() => {
         dispatch(asyncActionSuccess(action));
@@ -478,6 +495,21 @@ export function removeAsset(
           SyncActions.publishMessage(new Message(error, MessageType.ERROR))
         );
       });
+  };
+}
+
+/**
+ * Loads vocabularies into the store only if there were not loaded yet.
+ *
+ * @return Already loaded vocabularies or newly loaded vocabularies if they were not loaded yet.
+ */
+export function loadVocabulariesIfNotLoaded() {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
+    const { areVocabulariesLoaded, vocabularies } = getState();
+    if (areVocabulariesLoaded) {
+      return Promise.resolve(vocabularies);
+    }
+    return dispatch(loadVocabularies());
   };
 }
 
@@ -1081,7 +1113,10 @@ export function getProperties() {
   );
 }
 
-function getPropertiesImpl<T extends RdfsResourceData, E extends RdfsResource>(
+export function getPropertiesImpl<
+  T extends RdfsResourceData,
+  E extends RdfsResource
+>(
   action: Action,
   endpoint: string,
   mapper: (data: T) => E,
@@ -1113,7 +1148,7 @@ export function createProperty(property: RdfsResource) {
   return createPropertyImpl(property, action, "/data/properties");
 }
 
-function createPropertyImpl(
+export function createPropertyImpl(
   property: { toJsonLd: () => object },
   action: Action,
   endpoint: string
@@ -1130,51 +1165,6 @@ function createPropertyImpl(
           publishMessage(
             new Message(
               { messageId: "properties.edit.new.success" },
-              MessageType.SUCCESS
-            )
-          )
-        );
-      })
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
-  };
-}
-
-export function getCustomAttributes() {
-  return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
-    { type: ActionType.GET_CUSTOM_ATTRIBUTES },
-    "/data/custom-attributes",
-    (d) => new CustomAttribute(d),
-    () => []
-  );
-}
-
-export function createCustomAttribute(attribute: CustomAttribute) {
-  return createPropertyImpl(
-    attribute,
-    { type: ActionType.CREATE_CUSTOM_ATTRIBUTE },
-    "/data/custom-attributes"
-  );
-}
-
-export function updateCustomAttribute(attribute: CustomAttribute) {
-  const action = { type: ActionType.UPDATE_CUSTOM_ATTRIBUTE };
-  return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action, true));
-    return Ajax.put(
-      Constants.API_PREFIX +
-        "/data/custom-attributes/" +
-        VocabularyUtils.create(attribute.iri).fragment,
-      content(attribute.toJsonLd())
-    )
-      .then(() => {
-        dispatch(asyncActionSuccess(action));
-        dispatch(
-          publishMessage(
-            new Message(
-              {
-                messageId:
-                  "administration.customization.customAttributes.update.success",
-              },
               MessageType.SUCCESS
             )
           )
@@ -1424,5 +1414,51 @@ export function removeSnapshot(snapshotIri: IRI) {
         );
       })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+/**
+ * Rolls back the specified change to a term or vocabulary.
+ *
+ * Publishes a message describing the outcome and resolves to `true` when the
+ * rollback succeeds or `false` when the request fails.
+ *
+ * @param changeRecord Record identifying the change to roll back
+ * @returns Promise of boolean. {@code true} when the rollback was successful,
+ *          {@code false} otherwise.
+ */
+export function rollbackChange(changeRecord: ChangeRecord) {
+  const action = { type: ActionType.ROLLBACK_CHANGE };
+  const recordIri = VocabularyUtils.create(changeRecord.iri);
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/history/${recordIri.fragment}/rollback`,
+      param("namespace", recordIri.namespace)
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "history.rollback.success" },
+              MessageType.SUCCESS
+            )
+          )
+        );
+        return true;
+      })
+      .catch((error: ErrorData) => {
+        dispatch(asyncActionFailure(action, error));
+        dispatch(
+          publishMessage(
+            new Message(
+              { messageId: "history.rollback.failure" },
+              MessageType.ERROR
+            )
+          )
+        );
+        return false;
+      });
   };
 }

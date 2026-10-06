@@ -296,13 +296,13 @@ export const TermCellEditor: React.FC<TermCellEditorProps> = ({
     <div className="term-cell-editor d-flex flex-column h-100">
       <PromiseTrackingMask area="term-cell-editor" />
       <div className="editor-header p-3 border-bottom d-flex justify-content-between align-items-center">
-        <h5 className="mb-0">
+        <h4 className="mb-0">
           <FormattedMessage
             id="term.edit.property"
             defaultMessage="Edit {property}"
             values={{ property: column.title }}
           />
-        </h5>
+        </h4>
         <button
           type="button"
           className="close"

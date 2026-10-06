@@ -8,7 +8,7 @@ import TermItState from "../../model/TermItState";
 import Utils from "../../util/Utils";
 import { createVocabularyValueRenderer } from "../misc/treeselect/Renderers";
 import { ThunkDispatch } from "../../util/Types";
-import { loadVocabularies } from "../../action/AsyncActions";
+import { loadVocabulariesIfNotLoaded } from "../../action/AsyncActions";
 import { useI18n } from "../hook/useI18n";
 import { getLocalized } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
@@ -38,9 +38,7 @@ const VocabulariesReferenceListEdit: React.FC<
   const dispatch: ThunkDispatch = useDispatch();
 
   React.useEffect(() => {
-    if (Object.getOwnPropertyNames(vocabularies).length === 0) {
-      dispatch(loadVocabularies());
-    }
+    dispatch(loadVocabulariesIfNotLoaded());
   }, [dispatch, vocabularies]);
 
   const onSelect = (selected: readonly Vocabulary[]) => {

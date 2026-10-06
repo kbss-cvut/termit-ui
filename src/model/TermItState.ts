@@ -31,6 +31,10 @@ export default class TermItState {
   public user: User;
   public vocabulary: Vocabulary;
   public selectedFile: File;
+  /**
+   * Describes whether {@link #vocabularies} were already loaded or not.
+   */
+  public areVocabulariesLoaded: boolean;
   public vocabularies: { [key: string]: Vocabulary };
   public fileContent: string | null;
   public messages: Message[];
@@ -83,6 +87,7 @@ export default class TermItState {
     this.user = EMPTY_USER;
     this.vocabulary = EMPTY_VOCABULARY;
     this.selectedFile = EMPTY_FILE;
+    this.areVocabulariesLoaded = false;
     this.vocabularies = {};
     this.fileContent = null;
     this.messages = [];

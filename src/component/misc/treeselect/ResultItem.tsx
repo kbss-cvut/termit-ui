@@ -11,6 +11,7 @@ interface ResultItemProps {
   valueKey: string;
   labelKey: string;
   getOptionLabel: (option: any) => string;
+  getOptionTitle?: (option: any) => string;
   tooltipKey?: string | ValueMapper<any>;
   className?: string;
   renderAsTree: boolean;
@@ -24,6 +25,11 @@ interface ResultItemProps {
   onMouseEnter?: (option: any) => void;
   onClick?: () => void;
   onToggleClick?: (option: any) => void;
+
+  /// checks whether the given option is expanded
+  isOptionExpanded: (option: any) => boolean;
+  /// checks whether the child is waiting for children options request
+  isOptionFetchingChild: (option: any) => boolean;
 }
 
 /**
@@ -52,8 +58,14 @@ class ResultItem extends React.Component<ResultItemProps> {
 
   public render() {
     let button: React.ReactElement | null = null;
-    const { option, childrenKey, valueKey, labelKey, getOptionLabel } =
-      this.props;
+    const {
+      option,
+      childrenKey,
+      valueKey,
+      labelKey,
+      getOptionLabel,
+      getOptionTitle,
+    } = this.props;
     if (option[childrenKey].length > 0) {
       button = this.getCollapseButton();
     }
@@ -62,12 +74,16 @@ class ResultItem extends React.Component<ResultItemProps> {
       ? getOptionLabel(option)
       : option[labelKey];
     const value: string = option[valueKey];
+    const title = getOptionTitle ? getOptionTitle(option) : undefined;
+
+    const isFetchingChild = this.props.isOptionFetchingChild(value);
 
     return (
       <div
         className={this.props.className}
         onMouseEnter={this.onMouseEnter}
         style={this.props.style}
+        title={title}
       >
         {this.props.renderAsTree && (
           <div className="tree-result-item-toggle-button">{button}</div>
@@ -91,7 +107,7 @@ class ResultItem extends React.Component<ResultItemProps> {
           />
           {this.props.addonAfter}
 
-          {option.fetchingChild && (
+          {isFetchingChild && (
             <span className="Select-loading-zone" aria-hidden="true">
               <span className="Select-loading" />
             </span>
@@ -102,6 +118,7 @@ class ResultItem extends React.Component<ResultItemProps> {
   }
 
   private getCollapseButton() {
+    const isExpanded = this.props.isOptionExpanded(this.props.option);
     return (
       <button
         type="button"
@@ -114,7 +131,7 @@ class ResultItem extends React.Component<ResultItemProps> {
           cursor: "pointer",
         }}
       >
-        {this.props.option.expanded ? <ToggleMinusIcon /> : <TogglePlusIcon />}
+        {isExpanded ? <ToggleMinusIcon /> : <TogglePlusIcon />}
       </button>
     );
   }

@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   loadAllTerms,
   loadTerms,
-  loadVocabularies,
+  loadVocabulariesIfNotLoaded,
 } from "../../action/AsyncActions";
 import TermItState from "../../model/TermItState";
 import TermListToggle from "./TermListToggle";
@@ -51,6 +51,8 @@ export const TermSelector: React.FC<{
   vocabularyIri?: string;
   suffix?: React.ReactNode;
   forceFlatList?: boolean;
+  includeImported?: boolean;
+  disableScopeToggle?: boolean;
 
   fetchedTermsFilter?: (terms: Term[]) => Term[];
   onChange: (selected: readonly Term[]) => void;
@@ -63,6 +65,8 @@ export const TermSelector: React.FC<{
   onChange,
   suffix,
   vocabularyIri,
+  includeImported = true,
+  disableScopeToggle = false,
 }) => {
   const intl = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
@@ -73,9 +77,7 @@ export const TermSelector: React.FC<{
   const treeSelect = React.useRef<IntelligentTreeSelect<Term>>(null);
 
   React.useEffect(() => {
-    if (Object.keys(vocabularies).length === 0) {
-      dispatch(loadVocabularies());
-    }
+    dispatch(loadVocabulariesIfNotLoaded());
   }, [dispatch, vocabularies]);
 
   let flatList = useSelector((state: TermItState) => state.showTermsFlatList);
@@ -113,7 +115,7 @@ export const TermSelector: React.FC<{
               {
                 ...options,
                 flatList,
-                includeImported: true,
+                includeImported: includeImported,
                 includeRelated: true,
               },
               VocabularyUtils.create(vocabularyIri)
@@ -151,7 +153,7 @@ export const TermSelector: React.FC<{
       <div className="d-flex justify-content-between mb-2">
         {label}
         <div className="d-flex align-items-center">
-          {vocabularyIri && (
+          {vocabularyIri && !disableScopeToggle && (
             <>
               {limitToRelated && filteredVocabs.length > 0 && (
                 <VocabulariesInfoIcon
@@ -192,7 +194,7 @@ export const TermSelector: React.FC<{
         onChange={(v: readonly Term[]) => onChange(v)}
         value={selected}
         fetchOptions={fetchOptions}
-        fetchLimit={Constants.DEFAULT_PAGE_SIZE}
+        fetchLimit={Constants.DEFAULT_TREE_SELECT_FETCH_SIZE}
         maxHeight={200}
         multi={true}
         optionRenderer={createTermsWithImportsOptionRenderer(vocabularyIri)}
