@@ -1,3 +1,5 @@
+@use "sass:color";
+@use "sass:map";
 $white: #fff !default;
 $gray-100: #f6f9fc !default;
 $gray-200: #e9ecef !default;
@@ -12,7 +14,7 @@ $black: #000 !default;
 $gray-input: #5d5d5d !default;
 
 $grays: () !default;
-$grays: map-merge(
+$grays: map.merge(
   (
     "100": $gray-100,
     "200": $gray-200,
@@ -42,7 +44,7 @@ $dark-red: #7f0806 !default;
 $dark-yellow: #9bab11 !default;
 
 $colors: () !default;
-$colors: map-merge(
+$colors: map.merge(
   (
     "blue": $blue,
     "indigo": $indigo,
@@ -65,14 +67,14 @@ $colors: map-merge(
 
 $default: #172b4d !default;
 $primary: $green !default;
-$secondary: lighten($green, 10%) !default;
+$secondary: color.adjust($green, $lightness: 10%) !default;
 $success: $green !default;
 $info: $teal !default;
 $warning: $orange !default;
 $danger: $red !default;
 $light: $gray-500 !default;
 $dark: $gray-900 !default;
-$darker: darken($gray-900, 15%) !default;
+$darker: color.adjust($gray-900, $lightness: -15%) !default;
 $purple: #b79aff !default;
 
 $facebook: #3b5999 !default;
@@ -86,7 +88,7 @@ $dribbble: #ea4c89 !default;
 $github: #222222 !default;
 
 $theme-colors: () !default;
-$theme-colors: map-merge(
+$theme-colors: map.merge(
   (
     "default": $default,
     "primary": $primary,
@@ -112,7 +114,7 @@ $theme-colors: map-merge(
 );
 
 $brand-colors: () !default;
-$brand-colors: map-merge(
+$brand-colors: map.merge(
   (
     "facebook": $facebook,
     "twitter": $twitter,
@@ -128,7 +130,7 @@ $brand-colors: map-merge(
 );
 
 $shape-colors: () !default;
-$shape-colors: map-merge(
+$shape-colors: map.merge(
   (
     "default": #32325d,
     "primary": #5533ff,
@@ -140,7 +142,7 @@ $shape-colors: map-merge(
 );
 
 $shapes-primary-colors: () !default;
-$shapes-primary-colors: map-merge(
+$shapes-primary-colors: map.merge(
   (
     "step-1-gradient-bg": #281483,
     "step-2-gradient-bg": #8f6ed5,
@@ -155,7 +157,7 @@ $shapes-primary-colors: map-merge(
 );
 
 $shapes-default-colors: () !default;
-$shapes-default-colors: map-merge(
+$shapes-default-colors: map.merge(
   (
     "step-1-gradient-bg": #7795f8,
     "step-2-gradient-bg": #6772e5,
@@ -170,7 +172,7 @@ $shapes-default-colors: map-merge(
 );
 
 $shapes-light-colors: () !default;
-$shapes-light-colors: map-merge(
+$shapes-light-colors: map.merge(
   (
     "step-1-gradient-bg": #b2cbe1,
     "step-2-gradient-bg": #f6f9fc,
@@ -185,7 +187,7 @@ $shapes-light-colors: map-merge(
 );
 
 $shapes-dark-colors: () !default;
-$shapes-dark-colors: map-merge(
+$shapes-dark-colors: map.merge(
   (
     "step-1-gradient-bg": #32325d,
     "step-2-gradient-bg": #32325d,
@@ -229,7 +231,7 @@ $body-color: $black !default;
 // Sections
 
 $section-colors: () !default;
-$section-colors: map-merge(
+$section-colors: map.merge(
   (
     "primary": $body-bg,
     "secondary": $secondary,
@@ -244,5 +246,5 @@ $section-colors: map-merge(
 
 $link-color: $green !default;
 $link-decoration: none !default;
-$link-hover-color: lighten($link-color, 10%) !default;
+$link-hover-color: color.adjust($link-color, $lightness: 10%) !default;
 $link-hover-decoration: none !default;

@@ -1,3 +1,11 @@
+#### Version 5.1.0
+
+- Added support for asset change rollback
+- Added support for filtering in the vocabulary sheet view
+- Added support for force term removal when there are references to it (these references are removed) and removal including subterms
+- Added support for batch editing of selected term attributes in vocabulary sheet view
+- Added support for removing custom attributes
+
 #### Version 5.0.0
 
 - Better align data model with SKOS - replace structure `Vocabulary = Glossary + Model` with just `Vocabulary` (~ SKOS ConceptScheme), validate SKOS property disjointness
