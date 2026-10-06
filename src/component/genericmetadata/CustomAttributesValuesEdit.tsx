@@ -1,5 +1,5 @@
 import React from "react";
-import { PropertyValueType } from "../../model/WithUnmappedProperties";
+import { PropertyValuesType } from "../../model/WithUnmappedProperties";
 import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { Col, Row } from "reactstrap";
@@ -9,9 +9,10 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 
 export const CustomAttributesValuesEdit: React.FC<{
   assetType: "term" | "vocabulary";
-  values: Map<string, PropertyValueType[]>;
-  onChange: (property: string, value: PropertyValueType[]) => void;
-}> = ({ assetType, values, onChange }) => {
+  values: Map<string, PropertyValuesType>;
+  onChange: (property: string, value: PropertyValuesType) => void;
+  language: string;
+}> = ({ assetType, values, onChange, language }) => {
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes
   );
@@ -30,8 +31,9 @@ export const CustomAttributesValuesEdit: React.FC<{
             <CustomAttributeValueEdit
               key={Utils.hashCode(att.iri)}
               attribute={att}
-              values={Utils.sanitizeArray(values.get(att.iri)) || []}
+              values={values.get(att.iri) || []}
               onChange={(attribute, values) => onChange(attribute.iri, values)}
+              language={language}
             />
           </Col>
         </Row>

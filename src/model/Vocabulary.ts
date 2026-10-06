@@ -8,7 +8,7 @@ import Document, {
 import { CONTEXT as USER_CONTEXT, UserData } from "./User";
 import WithUnmappedProperties, {
   HasUnmappedProperties,
-  PropertyValueType,
+  PropertyValuesType,
   stringifyPropertyValue,
 } from "./WithUnmappedProperties";
 import Utils from "../util/Utils";
@@ -26,6 +26,7 @@ import {
   getLocalized,
   langString,
   MultilingualString,
+  pluralContext,
 } from "./MultilingualString";
 
 // @id and @type are merged from ASSET_CONTEXT
@@ -121,7 +122,7 @@ export default class Vocabulary
     return getLocalized(this.label, lang);
   }
 
-  public toJsonLd(): VocabularyData {
+  public toJsonLd(multilingualCustomAttributes: string[] = []): VocabularyData {
     const result: VocabularyData = Object.assign({}, this, {
       "@context": CONTEXT,
     });
@@ -131,6 +132,11 @@ export default class Vocabulary
     if (result.document) {
       result.document = this.document?.toJsonLd();
     }
+    Object.keys(result)
+      .filter((att) => multilingualCustomAttributes.includes(att))
+      .forEach((prop) => {
+        result["@context"][prop] = pluralContext(prop);
+      });
     return result;
   }
 
@@ -175,14 +181,14 @@ export default class Vocabulary
     return !this.isSnapshot() && !this.hasType(VocabularyUtils.IS_READ_ONLY);
   }
 
-  public get unmappedProperties(): Map<string, PropertyValueType[]> {
+  public get unmappedProperties(): Map<string, PropertyValuesType> {
     return WithUnmappedProperties.getUnmappedProperties(
       this,
       MAPPED_PROPERTIES
     );
   }
 
-  public set unmappedProperties(properties: Map<string, PropertyValueType[]>) {
+  public set unmappedProperties(properties: Map<string, PropertyValuesType>) {
     WithUnmappedProperties.setUnmappedProperties(
       this,
       properties,

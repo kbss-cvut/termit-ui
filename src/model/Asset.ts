@@ -57,7 +57,7 @@ export default abstract class Asset implements AssetData, HasLocalizableLabel {
 
   public abstract getLabel(lang?: string): string;
 
-  public abstract toJsonLd(): {};
+  public abstract toJsonLd(multilingualCustomAttributes?: string[]): {};
 
   public static equals(a?: Asset | null, b?: Asset | null) {
     if (!a && !b) {
