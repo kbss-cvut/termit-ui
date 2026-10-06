@@ -1,9 +1,14 @@
+import { beforeEach, describe, expect, it } from "vitest";
 import Vocabulary, { VocabularyData } from "../Vocabulary";
 import Document from "../Document";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import Generator from "../../__tests__/environment/Generator";
 import AccessLevel from "../acl/AccessLevel";
-import { langString } from "../MultilingualString";
+import {
+  langString,
+  pluralContext,
+  PluralMultilingualString,
+} from "../MultilingualString";
 
 describe("Vocabulary", () => {
   let data: VocabularyData;
@@ -148,6 +153,20 @@ describe("Vocabulary", () => {
       );
       const result = sut.toJsonLd();
       expect(result.accessLevel).not.toBeDefined();
+    });
+
+    it("adds language container context for multilingual unmapped property value", () => {
+      const sut = new Vocabulary(data);
+      const property = VocabularyUtils.PREFIX_DC + "abstract";
+      sut[property] = {
+        cs: ["Hodnota"],
+        en: ["Value"],
+      } as PluralMultilingualString;
+      const result = sut.toJsonLd([property]);
+      expect(result["@context"]).toHaveProperty([property]);
+      expect(result["@context"][property]).toMatchObject(
+        pluralContext(property)
+      );
     });
   });
 

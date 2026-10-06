@@ -6,6 +6,7 @@ import Utils from "../../util/Utils";
 import AttributeSectionContainer from "../layout/AttributeSectionContainer";
 import "./UnmappedProperties.scss";
 import {
+  PropertyValuesType,
   PropertyValueType,
   stringifyPropertyValue,
 } from "../../model/WithUnmappedProperties";
@@ -13,12 +14,13 @@ import { CustomAttributesValuesEdit } from "./CustomAttributesValuesEdit";
 import { UnmappedPropertyValueEdit } from "./UnmappedPropertyValueEdit";
 import UnmappedProperties from "./UnmappedProperties";
 import { useI18n } from "../hook/useI18n";
+import { PluralMultilingualString } from "../../model/MultilingualString";
 
 interface UnmappedPropertiesEditProps {
   assetType: "term" | "vocabulary";
-  properties: Map<string, PropertyValueType[]>;
+  properties: Map<string, PropertyValuesType>;
   ignoredProperties?: string[]; // Properties that should not be offered in the editor
-  onChange: (properties: Map<string, PropertyValueType[]>) => void;
+  onChange: (properties: Map<string, PropertyValuesType>) => void;
   languages: string[];
   language: string;
 }
@@ -41,21 +43,26 @@ const UnmappedPropertiesEdit: React.FC<UnmappedPropertiesEditProps> = ({
   const onRemove = (property: string, valueToRemove: string) => {
     const newProperties = new Map(properties);
     const propValues = newProperties.get(property)!;
-    if (propValues.length === 1) {
-      newProperties.delete(property);
-    } else {
-      const indexToRemove = propValues.findIndex(
-        (v) => stringifyPropertyValue(v) === valueToRemove
-      );
-      if (indexToRemove >= 0) {
-        propValues.splice(indexToRemove, 1);
+    if (Array.isArray(propValues)) {
+      if (propValues.length === 1) {
+        newProperties.delete(property);
+      } else {
+        const indexToRemove = propValues.findIndex(
+          (v) => stringifyPropertyValue(v) === valueToRemove
+        );
+        if (indexToRemove >= 0) {
+          propValues.splice(indexToRemove, 1);
+        }
       }
+    } else {
+      const pv = propValues as PluralMultilingualString;
+      pv[language] = pv[language].filter((v) => v !== valueToRemove);
     }
     onChange(newProperties);
   };
   const onPropertyValueChange = (
     attribute: string,
-    value: PropertyValueType[]
+    value: PropertyValuesType
   ) => {
     const newProperties = new Map(properties);
     newProperties.set(attribute, value);
@@ -63,7 +70,7 @@ const UnmappedPropertiesEdit: React.FC<UnmappedPropertiesEditProps> = ({
   };
   const onSingleValueAdded = (property: string, value: PropertyValueType) => {
     const newValue = properties.has(property)
-      ? properties.get(property)!.slice()
+      ? (properties.get(property) as PropertyValueType[])!.slice()
       : [];
     newValue.push(value);
     onPropertyValueChange(property, newValue);
@@ -78,6 +85,7 @@ const UnmappedPropertiesEdit: React.FC<UnmappedPropertiesEditProps> = ({
           assetType={assetType}
           values={properties}
           onChange={onPropertyValueChange}
+          language={language}
         />
       </AttributeSectionContainer>
       <AttributeSectionContainer label={i18n("properties.edit.title")}>

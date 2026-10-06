@@ -2,12 +2,16 @@ import React from "react";
 import { RdfProperty } from "../../model/RdfsResource";
 import {
   extractPropertyValue,
+  PropertyValuesType,
   PropertyValueType,
 } from "../../model/WithUnmappedProperties";
 import { useI18n } from "../hook/useI18n";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
-import { getLocalized } from "../../model/MultilingualString";
+import {
+  getLocalized,
+  PluralMultilingualString,
+} from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import ValueListEdit from "../misc/ValueListEdit";
 import { TermSelector } from "../term/TermSelector";
@@ -18,14 +22,22 @@ import Utils from "../../util/Utils";
 
 export const CustomAttributeValueEdit: React.FC<{
   attribute: RdfProperty;
-  values: PropertyValueType[];
-  onChange: (attribute: RdfProperty, values: PropertyValueType[]) => void;
-}> = ({ attribute, values, onChange }) => {
+  values: PropertyValuesType;
+  onChange: (attribute: RdfProperty, values: PropertyValuesType) => void;
+  language: string;
+}> = ({ attribute, values, onChange, language }) => {
   const { locale } = useI18n();
   const lang = getShortLocale(locale);
+  const onMultilingualChange = (newList: string[]) => {
+    const newValues = { ...(values as PluralMultilingualString) };
+    newValues[language] = newList;
+    onChange(attribute, newValues);
+  };
+
   if (attribute.rangeIri === VocabularyUtils.XSD_BOOLEAN) {
     const checked =
-      values.length > 0 && Boolean(extractPropertyValue(values[0]));
+      Utils.sanitizeArray(values as PropertyValueType[]).length > 0 &&
+      Boolean(extractPropertyValue(values[0]));
     return (
       <div className="form-group">
         <CustomCheckBoxInput
@@ -44,7 +56,11 @@ export const CustomAttributeValueEdit: React.FC<{
         <ValueListEdit<number>
           type="number"
           onChange={(newList) => onChange(attribute, newList)}
-          list={values.map((v) => extractPropertyValue(v)) as number[]}
+          list={
+            Utils.sanitizeArray(values as PropertyValueType[]).map((v) =>
+              extractPropertyValue(v)
+            ) as number[]
+          }
           label={getLocalized(attribute.label, lang)}
           helpText={getLocalized(attribute.comment, lang)}
         />
@@ -54,7 +70,11 @@ export const CustomAttributeValueEdit: React.FC<{
   if (attribute.rangeIri === VocabularyUtils.TERM) {
     return (
       <TermSelector
-        value={values.map((v) => extractPropertyValue(v)) as string[]}
+        value={
+          Utils.sanitizeArray(values as PropertyValueType[]).map((v) =>
+            extractPropertyValue(v)
+          ) as string[]
+        }
         onChange={(sel: readonly Term[]) =>
           onChange(
             attribute,
@@ -83,10 +103,30 @@ export const CustomAttributeValueEdit: React.FC<{
               newList.map((s) => ({ iri: s }))
             )
           }
-          list={values.map((v) => extractPropertyValue(v)) as string[]}
+          list={
+            Utils.sanitizeArray(values as PropertyValueType[]).map((v) =>
+              extractPropertyValue(v)
+            ) as string[]
+          }
           label={getLocalized(attribute.label, lang)}
           helpText={getLocalized(attribute.comment, lang)}
           validator={(s) => Utils.isUri(s)}
+        />
+      </div>
+    );
+  }
+  if (attribute.rangeIri === VocabularyUtils.RDF_LANGSTRING) {
+    const valueList = Utils.sanitizeArray(
+      (values as PluralMultilingualString)[language]
+    );
+    return (
+      <div className="form-group">
+        <ValueListEdit
+          onChange={onMultilingualChange}
+          list={valueList}
+          label={getLocalized(attribute.label, lang)}
+          helpText={getLocalized(attribute.comment, lang)}
+          multilingual={true}
         />
       </div>
     );
@@ -95,7 +135,7 @@ export const CustomAttributeValueEdit: React.FC<{
     <div className="form-group">
       <ValueListEdit
         onChange={(newList) => onChange(attribute, newList)}
-        list={values as string[]}
+        list={Utils.sanitizeArray(values as string[])}
         label={getLocalized(attribute.label, lang)}
         helpText={getLocalized(attribute.comment, lang)}
       />

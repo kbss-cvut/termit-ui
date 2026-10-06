@@ -16,10 +16,15 @@ import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import * as redux from "react-redux";
 import * as SyncActions from "../../../action/SyncActions";
-import { ThunkDispatch } from "../../../util/Types";
+import { ThunkDispatch, useAppSelector } from "../../../util/Types";
 import type { Mock } from "vitest";
 import Tabs from "../../misc/Tabs";
+import { selectVocabularyLanguages } from "../../../store/StateSelectors";
 
+vi.mock("../../../util/Types", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../../util/Types")>()),
+  useAppSelector: vi.fn(),
+}));
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
@@ -29,6 +34,10 @@ vi.mock("react-redux", async (importOriginal) => {
 });
 vi.mock("../../misc/Tabs", () => ({
   default: () => <div className="tabs" />,
+}));
+vi.mock("../../../store/StateSelectors", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../../store/StateSelectors")>()),
+  selectVocabularyLanguages: vi.fn(),
 }));
 
 describe("VocabularyMetadata", () => {
@@ -44,6 +53,12 @@ describe("VocabularyMetadata", () => {
 
   beforeEach(() => {
     mockUseI18n();
+    (useAppSelector as Mock).mockImplementation((selector) =>
+      selector({ customAttributes: [] })
+    );
+    (selectVocabularyLanguages as Mock).mockReturnValue([
+      Constants.DEFAULT_LANGUAGE,
+    ]);
     onChange = vi.fn();
     fakeDispatch = vi.fn().mockResolvedValue({});
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);

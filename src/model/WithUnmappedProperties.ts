@@ -1,5 +1,6 @@
 import Utils from "../util/Utils";
 import { HasIdentifier } from "./Asset";
+import { PluralMultilingualString } from "./MultilingualString";
 
 export type TypedLiteral = {
   "@value": boolean | number | string;
@@ -13,9 +14,11 @@ export type PropertyValueType =
   | boolean
   | number;
 
+export type PropertyValuesType = PropertyValueType[] | PluralMultilingualString;
+
 export interface HasUnmappedProperties {
-  get unmappedProperties(): Map<string, PropertyValueType[]>;
-  set unmappedProperties(properties: Map<string, PropertyValueType[]>);
+  get unmappedProperties(): Map<string, PropertyValuesType>;
+  set unmappedProperties(properties: Map<string, PropertyValuesType>);
 }
 
 /**
@@ -51,7 +54,7 @@ const WithUnmappedProperties = {
   getUnmappedProperties(
     instance: any,
     mappedProperties: string[]
-  ): Map<string, PropertyValueType[]> {
+  ): Map<string, PropertyValuesType> {
     const map = new Map<string, PropertyValueType[]>();
     Object.getOwnPropertyNames(instance)
       .filter((p) => mappedProperties.indexOf(p) === -1)
@@ -64,7 +67,7 @@ const WithUnmappedProperties = {
 
   setUnmappedProperties(
     instance: any,
-    properties: Map<string, PropertyValueType[]>,
+    properties: Map<string, PropertyValuesType>,
     mappedProperties: string[]
   ) {
     // Remove all unmapped properties
