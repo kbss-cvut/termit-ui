@@ -63,6 +63,16 @@
 
   .vocabulary-sheet-view-header-cell {
     border-right: 1px solid $gray-300;
+
+    &.sortable-column-header {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease-in-out;
+
+      &:hover {
+        color: $primary;
+      }
+    }
   }
 
   .vocabulary-sheet-view-grid-scroll {
