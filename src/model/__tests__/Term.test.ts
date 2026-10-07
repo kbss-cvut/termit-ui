@@ -3,7 +3,12 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import Term, { TermData } from "../Term";
 import Generator from "../../__tests__/environment/Generator";
 import { TermOccurrenceData } from "../TermOccurrence";
-import { langString } from "../MultilingualString";
+import {
+  langString,
+  pluralContext,
+  PluralMultilingualString,
+} from "../MultilingualString";
+import { expect, it } from "vitest";
 
 describe("Term tests", () => {
   let termData: TermData;
@@ -443,6 +448,22 @@ describe("Term tests", () => {
       sut.types = [VocabularyUtils.TERM_SNAPSHOT];
 
       expect(sut.isEditable()).toBeFalsy();
+    });
+  });
+
+  describe("toJsonLd", () => {
+    it("adds language container context for multilingual unmapped property value", () => {
+      const sut = Generator.generateTerm();
+      const property = VocabularyUtils.PREFIX + "termValue";
+      sut[property] = {
+        en: ["Value"],
+        de: ["Wert"],
+      } as PluralMultilingualString;
+      const result = sut.toJsonLd([property]);
+      expect(result["@context"]).toHaveProperty([property]);
+      expect(result["@context"][property]).toMatchObject(
+        pluralContext(property)
+      );
     });
   });
 });
