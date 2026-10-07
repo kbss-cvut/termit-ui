@@ -183,7 +183,7 @@ export const VocabularyMetadata: React.FC<VocabularyMetadataProps> = ({
               {vocabulary.preferredNamespacePrefix}
             </Col>
           </Row>
-          <CustomAttributesValues asset={vocabulary} />
+          <CustomAttributesValues asset={vocabulary} language={language} />
         </CardBody>
       </Card>
       <Card>

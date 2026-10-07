@@ -139,7 +139,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
           )}
         </Col>
       </Row>
-      <CustomAttributesValues asset={term} />
+      <CustomAttributesValues asset={term} language={language} />
       <Row>
         <Col xl={2} md={4}>
           <Label
