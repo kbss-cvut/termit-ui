@@ -948,7 +948,9 @@ export function updateTerm(term: Term) {
     // Vocabulary namespace defines also term namespace
     return Ajax.put(
       reqUrl,
-      content(term.toJsonLd()).params({
+      content(
+        term.toJsonLd(selectMultilingualCustomAttributeIris(getState()))
+      ).params({
         namespace: vocabularyIri.namespace,
       })
     )

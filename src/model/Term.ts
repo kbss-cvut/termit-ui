@@ -9,7 +9,7 @@ import { CONTEXT as USER_CONTEXT, UserData } from "./User";
 import Utils from "../util/Utils";
 import WithUnmappedProperties, {
   HasUnmappedProperties,
-  PropertyValueType,
+  PropertyValuesType,
   stringifyPropertyValue,
 } from "./WithUnmappedProperties";
 import VocabularyUtils from "../util/VocabularyUtils";
@@ -253,6 +253,9 @@ export default class Term
       result,
       MAPPED_PROPERTIES
     ).forEach((val) => {
+      if (!Array.isArray(val)) {
+        return;
+      }
       for (let i = 0; i < val.length; i++) {
         if (
           (val[i] as HasIdentifier).iri &&
@@ -274,14 +277,14 @@ export default class Term
     };
   }
 
-  public get unmappedProperties(): Map<string, PropertyValueType[]> {
+  public get unmappedProperties(): Map<string, PropertyValuesType> {
     return WithUnmappedProperties.getUnmappedProperties(
       this,
       MAPPED_PROPERTIES
     );
   }
 
-  public set unmappedProperties(properties: Map<string, PropertyValueType[]>) {
+  public set unmappedProperties(properties: Map<string, PropertyValuesType>) {
     WithUnmappedProperties.setUnmappedProperties(
       this,
       properties,
@@ -293,9 +296,14 @@ export default class Term
     return getLocalized(this.label, lang);
   }
 
-  public toJsonLd(): TermData {
+  public toJsonLd(multilingualCustomAttributes: string[] = []): TermData {
     const termData = this.toTermData();
     Object.assign(termData, { "@context": CONTEXT });
+    Object.keys(termData)
+      .filter((att) => multilingualCustomAttributes.includes(att))
+      .forEach((prop) => {
+        termData["@context"][prop] = pluralContext(prop);
+      });
     return termData;
   }
 
@@ -348,14 +356,28 @@ export default class Term
    *
    * The removal happens in place.
    * @param data Data to remove translation from.
+   * @param multilingualCustomAttributes Identifiers of custom attributes that can have language-tagged values
    * @param lang Language to remove
    */
-  public static removeTranslation(data: TermData, lang: string) {
-    removeTranslation(TERM_MULTILINGUAL_ATTRIBUTES, data, lang);
+  public static removeTranslation(
+    data: TermData,
+    lang: string,
+    multilingualCustomAttributes?: string[]
+  ) {
+    const atts = Utils.sanitizeArray(multilingualCustomAttributes).concat(
+      TERM_MULTILINGUAL_ATTRIBUTES
+    );
+    removeTranslation(atts, data, lang);
   }
 
-  public static getLanguages(term?: Term | TermData | null): string[] {
-    return getLanguages(TERM_MULTILINGUAL_ATTRIBUTES, term);
+  public static getLanguages(
+    term?: Term | TermData | null,
+    multilingualCustomAttributes?: string[]
+  ): string[] {
+    const atts = Utils.sanitizeArray(multilingualCustomAttributes).concat(
+      TERM_MULTILINGUAL_ATTRIBUTES
+    );
+    return getLanguages(atts, term);
   }
 
   public static consolidateRelatedAndRelatedMatch(
