@@ -49,6 +49,9 @@ import { LongRunningTask } from "../model/LongRunningTask";
 import { loadTermsFlatListPreference } from "../util/UISettingsUtil";
 import RelationshipAnnotation from "../model/meta/RelationshipAnnotation";
 import AnnotatedTermRelationship from "../model/meta/AnnotatedTermRelationship";
+import { selectMultilingualCustomAttributeIris } from "../store/StateSelectors";
+import { NO_LANG, PluralMultilingualString } from "../model/MultilingualString";
+import { HasUnmappedProperties } from "../model/WithUnmappedProperties";
 
 function isAsyncSuccess(action: Action) {
   return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
@@ -129,7 +132,7 @@ function intl(
 
 function vocabulary(
   state: Vocabulary = EMPTY_VOCABULARY,
-  action: AsyncActionSuccess<Vocabulary | string[]>
+  action: AsyncActionSuccess<Vocabulary | string[] | CustomAttribute[]>
 ): Vocabulary {
   switch (action.type) {
     case ActionType.LOAD_VOCABULARY:
@@ -150,11 +153,51 @@ function vocabulary(
         : state;
     case ActionType.LOAD_TERM_COUNT:
       return onTermCountLoaded(state, action);
+    case ActionType.GET_CUSTOM_ATTRIBUTES:
+      if (
+        action.status === AsyncActionStatus.SUCCESS &&
+        state !== EMPTY_VOCABULARY
+      ) {
+        return recompactMultilingualCustomAttributeValues(
+          state,
+          (action as AsyncActionSuccess<CustomAttribute[]>).payload
+        );
+      } else {
+        return state;
+      }
     case ActionType.LOGOUT:
       return EMPTY_VOCABULARY;
     default:
       return state;
   }
+}
+
+function recompactMultilingualCustomAttributeValues<
+  T extends HasUnmappedProperties
+>(instance: T, customAttributes: CustomAttribute[]): T {
+  const multilingualCustomAttributes = selectMultilingualCustomAttributeIris({
+    customAttributes,
+  });
+  if (multilingualCustomAttributes.length === 0) {
+    return instance;
+  }
+  multilingualCustomAttributes.forEach((attribute) => {
+    if (!Array.isArray(instance[attribute])) {
+      return;
+    }
+    instance[attribute] = instance[attribute].reduce(
+      (values: PluralMultilingualString, item: any) => {
+        if (item?.["@value"] === undefined) {
+          return values;
+        }
+        const language = item["@language"] || NO_LANG;
+        values[language] = [...(values[language] || []), item["@value"]];
+        return values;
+      },
+      {}
+    );
+  });
+  return instance;
 }
 
 function onTermCountLoaded(state: Vocabulary, action: AsyncActionSuccess<any>) {

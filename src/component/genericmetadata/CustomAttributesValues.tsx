@@ -7,7 +7,9 @@ import { Badge, Col, Label, List, Row } from "reactstrap";
 import Utils from "../../util/Utils";
 import {
   getLocalized,
+  getLocalizedPlural,
   MultilingualString,
+  PluralMultilingualString,
 } from "../../model/MultilingualString";
 import { getShortLocale } from "../../util/IntlUtil";
 import { CustomAttribute, RdfProperty } from "../../model/RdfsResource";
@@ -26,9 +28,10 @@ import { HasIdentifier } from "../../model/Asset";
 
 export const CustomAttributesValues: React.FC<{
   asset: HasUnmappedProperties & HasIdentifier & { label: MultilingualString };
-}> = ({ asset }) => {
+  language: string;
+}> = ({ asset, language }) => {
   const { locale } = useI18n();
-  const lang = getShortLocale(locale);
+  const uiLang = getShortLocale(locale);
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes
   );
@@ -46,25 +49,29 @@ export const CustomAttributesValues: React.FC<{
             <Col xl={2} md={4}>
               <Label
                 className="attribute-label mb-3"
-                title={getLocalized(att.comment, lang)}
+                title={getLocalized(att.comment, uiLang)}
               >
-                {getLocalized(att.label, lang)}
+                {getLocalized(att.label, uiLang)}
               </Label>
             </Col>
             <Col xl={10} md={8}>
-              {Utils.sanitizeArray(asset.unmappedProperties.get(att.iri))
-                .length === 1 ? (
+              {Utils.sanitizeArray<
+                PropertyValueType | PluralMultilingualString
+              >(asset.unmappedProperties.get(att.iri)).length === 1 ? (
                 renderValue(
                   att,
                   asset.unmappedProperties.get(att.iri)![0],
                   asset,
-                  lang
+                  uiLang,
+                  language
                 )
               ) : (
                 <List type="unstyled" className="mb-3">
-                  {asset.unmappedProperties.get(att.iri)?.map((val) => (
+                  {Utils.sanitizeArray<
+                    PropertyValueType | PluralMultilingualString
+                  >(asset.unmappedProperties.get(att.iri))?.map((val) => (
                     <li key={stringifyPropertyValue(val)}>
-                      {renderValue(att, val, asset, lang)}
+                      {renderValue(att, val, asset, uiLang, language)}
                     </li>
                   ))}
                 </List>
@@ -78,22 +85,27 @@ export const CustomAttributesValues: React.FC<{
 
 function renderValue(
   att: CustomAttribute,
-  val: PropertyValueType,
+  val: PropertyValueType | PluralMultilingualString,
   asset: HasUnmappedProperties &
     HasIdentifier & {
       label: MultilingualString;
     },
-  lang: string
+  uiLang: string,
+  selectedLang: string
 ) {
   return (
     <>
-      <CustomAttributeValue attribute={att} value={val} />
+      <CustomAttributeValue
+        attribute={att}
+        value={val}
+        language={selectedLang}
+      />
       {(val as any).iri && (
         <RelationshipAnnotationButton
           relationship={{
             subject: asset,
             predicate: att.iri,
-            predicateLabel: getLocalized(att.label, lang),
+            predicateLabel: getLocalized(att.label, uiLang),
             object: val as HasIdentifier & {
               label: MultilingualString;
             },
@@ -106,9 +118,10 @@ function renderValue(
 
 export const CustomAttributeValue: React.FC<{
   attribute: RdfProperty;
-  value: PropertyValueType;
-}> = ({ attribute, value }) => {
-  const strValue = stringifyPropertyValue(value);
+  value: PropertyValueType | PluralMultilingualString;
+  language: string;
+}> = ({ attribute, value, language }) => {
+  const strValue = stringifyPropertyValue(value as PropertyValueType);
   switch (attribute.rangeIri) {
     case VocabularyUtils.TERM:
       return <TermIriLink iri={strValue} showVocabularyBadge={true} />;
@@ -121,6 +134,10 @@ export const CustomAttributeValue: React.FC<{
         >
           {strValue}
         </Badge>
+      );
+    case VocabularyUtils.RDF_LANGSTRING:
+      return (
+        <>{getLocalizedPlural(value as PluralMultilingualString, language)}</>
       );
     default:
       return (

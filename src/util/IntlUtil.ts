@@ -75,7 +75,15 @@ export function getLanguages(
     .filter((att) => object[att])
     .forEach((att) => {
       Utils.sanitizeArray(object[att]).forEach((attValue) =>
-        Object.getOwnPropertyNames(attValue).forEach((n) => languages.add(n))
+        Object.getOwnPropertyNames(attValue).forEach((n) => {
+          if (n.charAt(0) === "@") {
+            if ("@language" === n) {
+              languages.add(attValue[n]);
+            }
+          } else {
+            languages.add(n);
+          }
+        })
       );
     });
   const langArr = Array.from(languages);
