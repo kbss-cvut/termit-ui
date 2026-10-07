@@ -303,6 +303,9 @@ const de = {
     "asset.migrate.iri.error.preferredNamespace":
       "Der neue Identifikator muss den Namespace des Vokabulars verwenden: {namespace}",
     "asset.migrate.iri.error.invalidIri": "Ungültiger Identifikator",
+    "asset.migrate.iri.started":
+      "Die Änderung des Identifikators wird im Hintergrund durchgeführt. Bitte nehmen Sie keine weiteren Änderungen vor, bis sie abgeschlossen ist.",
+    "asset.migrate.iri.completed": "Änderung des Identifikators abgeschlossen",
 
     "term.remove.description":
       'Möchten Sie den Begriff "{label}" wirklich dauerhaft entfernen? Wählen Sie, wie mit abhängigen Daten verfahren werden soll.',
@@ -1075,6 +1078,8 @@ const de = {
     "longrunningtasks.name.documentAnnotationGeneration":
       "Erstellung einer Dateianmerkung",
     "longrunningtasks.name.restoreBackup": "Wiederherstellung von Sicherung",
+    "longrunningtasks.name.migration.identifier":
+      "Änderung des Ressourcenidentifikators",
   },
 };
 

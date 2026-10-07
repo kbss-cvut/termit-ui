@@ -305,6 +305,9 @@ const cs = {
     "asset.migrate.iri.error.preferredNamespace":
       "Nový identifikátor musí používat jmenný prostor slovíku: {namespace}",
     "asset.migrate.iri.error.invalidIri": "Neplatný identifikátor",
+    "asset.migrate.iri.started":
+      "Změna identifikátoru bude provedena na pozadí. Dokud nebude dokončena, neprovádějte další změny.",
+    "asset.migrate.iri.completed": "Změna identifikátoru dokončena",
 
     "term.remove.description":
       'Opravdu chcete trvale odstranit pojem "{label}"? Vyberte, jak se má naložit se závislými daty.',
@@ -1124,6 +1127,7 @@ const cs = {
     "longrunningtasks.name.documentAnnotationGeneration":
       "Generování anotací dokumentu",
     "longrunningtasks.name.restoreBackup": "Obnovení zálohy",
+    "longrunningtasks.name.migration.identifier": "Změna identifikátoru zdroje",
   },
 };
 

@@ -4,7 +4,10 @@ import ActionType from "../action/ActionType";
 import { asyncActionFailure } from "../action/SyncActions";
 import { Action } from "redux";
 import { vocabularyValidation } from "./WebSocketVocabularyDispatchers";
-import { updateLongRunningTasks } from "./WebSocketUtilityDispatchers";
+import {
+  onIdentifierMigrationCompleted,
+  updateLongRunningTasks,
+} from "./WebSocketUtilityDispatchers";
 import Constants from "../util/Constants";
 
 export interface WebSocketDispatcher<A extends Action> {
@@ -50,6 +53,14 @@ const DISPATCHERS: { [key in ActionType]?: WebSocketDispatcher<any> } = {
     },
     (message, action, dispatch) =>
       dispatch(updateLongRunningTasks(message, action))
+  ),
+  ...d(
+    Constants.WEBSOCKET_ENDPOINT.IDENTIFIER_MIGRATION_COMPLETED,
+    {
+      type: ActionType.IDENTIFIER_MIGRATION_COMPLETED_ANNOUNCEMENT,
+    },
+    (message, action, dispatch) =>
+      dispatch(onIdentifierMigrationCompleted(message))
   ),
 };
 
