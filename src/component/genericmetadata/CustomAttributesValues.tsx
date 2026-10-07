@@ -136,9 +136,21 @@ export const CustomAttributeValue: React.FC<{
         </Badge>
       );
     case VocabularyUtils.RDF_LANGSTRING:
-      return (
-        <>{getLocalizedPlural(value as PluralMultilingualString, language)}</>
+      const values = getLocalizedPlural(
+        value as PluralMultilingualString,
+        language
       );
+      if (values.length === 1) {
+        return <>{values[0]}</>;
+      } else {
+        return (
+          <List type="unstyled" className="mb-3">
+            {values.map((value, index) => (
+              <li key={index}>{value}</li>
+            ))}
+          </List>
+        );
+      }
     default:
       return (
         <>
