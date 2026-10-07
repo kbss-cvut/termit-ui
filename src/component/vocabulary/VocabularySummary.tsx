@@ -325,7 +325,7 @@ export class VocabularySummary extends EditableComponent<
           />
           <VocabularyTermIriMigrationDialog
             isVisible={this.state.showIriMigrationDialog}
-            onCancel={this.onIriMigrationDialogToggle}
+            onClose={this.onIriMigrationDialogToggle}
             vocabulary={this.props.vocabulary}
           />
           <PromiseTrackingMask area="vocabulary-summary" />

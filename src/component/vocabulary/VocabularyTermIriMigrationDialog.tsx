@@ -23,6 +23,12 @@ import {
   IriMigrationType,
   MigrationParams,
 } from "../../model/IriMigrationType";
+import { AsyncAction, AsyncFailureAction } from "../../action/ActionType";
+import AsyncActionStatus from "../../action/AsyncActionStatus";
+import { ThunkDispatch } from "../../util/Types";
+import { useDispatch } from "react-redux";
+import { loadVocabulary } from "../../action/AsyncActions";
+import VocabularyUtils from "../../util/VocabularyUtils";
 
 export interface VocabularyTermIriMigrationDialogProps
   extends IriMigrationDialogControlProps {
@@ -132,7 +138,7 @@ function validateTermIri(
 }
 
 const VocabularyTermIriMigrationDialog = ({
-  onCancel,
+  onClose,
   isVisible,
   vocabulary,
 }: VocabularyTermIriMigrationDialogProps) => {
@@ -143,6 +149,7 @@ const VocabularyTermIriMigrationDialog = ({
   const migrationParams = useRef<MigrationParams>({});
   const selectedAsset =
     activeTab === TAB_KEY.VOCABULARY ? vocabulary : selectedTerm;
+  const dispatch: ThunkDispatch = useDispatch();
 
   useEffect(() => {
     dialogRef.current?.resetForm();
@@ -171,6 +178,15 @@ const VocabularyTermIriMigrationDialog = ({
     return IriMigrationType.TERM;
   };
 
+  const onMigrated = (action: AsyncAction | AsyncFailureAction) => {
+    if (action.status !== AsyncActionStatus.SUCCESS) {
+      return Promise.resolve();
+    }
+    return dispatch(
+      loadVocabulary(VocabularyUtils.create(vocabulary.iri))
+    ).then(onClose);
+  };
+
   return (
     <IriMigrationDialog
       ref={dialogRef}
@@ -180,11 +196,12 @@ const VocabularyTermIriMigrationDialog = ({
         { assetType: ASSET_TYPE[activeTab] }
       )}
       isVisible={isVisible}
-      onCancel={onCancel}
+      onClose={onClose}
       asset={selectedAsset}
       newIriValidator={validateNewIri}
       migrationType={getMigrationType()}
       requestParams={migrationParams.current}
+      onMigrated={onMigrated}
     >
       {({ iriInputs }) => (
         <>

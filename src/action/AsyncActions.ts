@@ -1484,7 +1484,7 @@ export function migrateIdentifier(
         .param("preferredNamespace", params?.newPreferredNamespaceUri)
     )
       .then(() => {
-        dispatch(asyncActionSuccess(action));
+        return dispatch(asyncActionSuccess(action));
       })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };

@@ -13,6 +13,11 @@ import {
   IriMigrationType,
   MigrationParams,
 } from "../../model/IriMigrationType";
+import { AsyncAction, AsyncFailureAction } from "../../action/ActionType";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
+import { publishMessage } from "../../action/SyncActions";
+import Message from "../../model/Message";
 
 export interface ResetHandle {
   /// Clears the form input values in the migration dialog
@@ -23,7 +28,7 @@ export type AssetForMigration = HasLocalizableLabel & HasIdentifier;
 
 export interface IriMigrationDialogControlProps {
   isVisible: boolean;
-  onCancel: () => void;
+  onClose: () => void;
 }
 
 export interface IriMigrationDialogContents {
@@ -47,8 +52,11 @@ export interface IriMigrationDialogProps
   migrationType: IriMigrationType;
   /// Additional parameters for the migration HTTP request
   requestParams?: MigrationParams;
+  onMigrated: (action: AsyncAction | AsyncFailureAction) => void;
   children: (contents: IriMigrationDialogContents) => ReactNode;
 }
+
+const IRI_MIGRATION_DIALOG_PROMISE_AREA = "IRI_MIGRATION_DIALOG_PROMISE_AREA";
 
 /**
  * Dialog offering the migration of a resource identifier.
@@ -77,14 +85,21 @@ const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
         originalIri: asset.iri,
         newIri,
       };
-      // TODO: track promise
-      dispatch(
-        migrateIdentifier(iris, props.migrationType, props.requestParams)
-      )
-        .then(() => {
-          console.error("success");
-        })
-        .catch(() => console.error("error"));
+
+      trackPromise(
+        dispatch(
+          migrateIdentifier(iris, props.migrationType, props.requestParams)
+        ).then(props.onMigrated),
+        IRI_MIGRATION_DIALOG_PROMISE_AREA
+      ).then(() => {
+        dispatch(
+          publishMessage(
+            new Message({
+              messageId: "asset.migrate.iri.started",
+            })
+          )
+        );
+      });
     };
 
     useImperativeHandle(ref, () => ({
@@ -113,7 +128,7 @@ const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
       <ConfirmCancelDialog
         show={props.isVisible}
         onConfirm={onSubmit}
-        onClose={props.onCancel}
+        onClose={props.onClose}
         title={props.title ?? i18n("asset.migrate.iri.label")}
         confirmKey={"asset.migrate.iri.label"}
         id={"asset-migrate-iri-dialog"}
@@ -121,6 +136,7 @@ const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
         confirmColor={"red"}
         confirmDisabled={!isNewIriValid || !isLabelConfirmed}
       >
+        <PromiseTrackingMask area={IRI_MIGRATION_DIALOG_PROMISE_AREA} />
         <h1 className={"text-danger"}>
           {i18n("asset.migrate.iri.dangerZone.label")}
         </h1>
