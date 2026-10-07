@@ -25,13 +25,17 @@ export interface HasUnmappedProperties {
  * Converts an unmapped property value to a string.
  * @param value Unmapped property value
  */
-export function stringifyPropertyValue(value: PropertyValueType): string {
+export function stringifyPropertyValue(
+  value: PropertyValueType | PluralMultilingualString
+): string {
   if ((value as HasIdentifier).iri) {
     return (value as HasIdentifier).iri;
   } else if ((value as TypedLiteral)["@value"] !== undefined) {
     return (value as TypedLiteral)["@value"].toString();
+  } else if (typeof value === "object" && value !== null) {
+    return JSON.stringify(value);
   } else {
-    return value.toString();
+    return value === null ? "null" : value.toString();
   }
 }
 
