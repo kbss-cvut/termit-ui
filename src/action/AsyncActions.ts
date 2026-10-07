@@ -74,6 +74,11 @@ import {
 } from "../model/filter/VocabularyContentChangeFilterData";
 import ResourceSaveReason from "../component/annotator/ResourceSaveReason";
 import { TermRemovalOptions } from "../model/TermRemovalOptions";
+import {
+  IriMigrationPair,
+  IriMigrationType,
+  MigrationParams,
+} from "../model/IriMigrationType";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -1460,5 +1465,27 @@ export function rollbackChange(changeRecord: ChangeRecord) {
         );
         return false;
       });
+  };
+}
+
+export function migrateIdentifier(
+  iris: IriMigrationPair,
+  type: IriMigrationType,
+  params?: MigrationParams
+) {
+  const action = { type: ActionType.MIGRATE_IDENTIFIER };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/migrate/identifier`,
+      param("originalIri", iris.originalIri)
+        .param("newIri", iris.newIri)
+        .param("type", type)
+        .param("preferredNamespace", params?.newPreferredNamespaceUri)
+    )
+      .then(() => {
+        dispatch(asyncActionSuccess(action));
+      })
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }

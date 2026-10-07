@@ -2,10 +2,17 @@ import { forwardRef, ReactNode, useImperativeHandle, useState } from "react";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
 import { useI18n } from "../hook/useI18n";
 import Utils from "../../util/Utils";
-import { FormGroup } from "reactstrap";
 import CustomInput from "../misc/CustomInput";
 import { HasIdentifier, HasLocalizableLabel } from "../../model/Asset";
 import ValidationResult from "../../model/form/ValidationResult";
+import { migrateIdentifier } from "../../action/AsyncActions";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "../../util/Types";
+import {
+  IriMigrationPair,
+  IriMigrationType,
+  MigrationParams,
+} from "../../model/IriMigrationType";
 
 export interface ResetHandle {
   /// Clears the form input values in the migration dialog
@@ -17,6 +24,10 @@ export type AssetForMigration = HasLocalizableLabel & HasIdentifier;
 export interface IriMigrationDialogControlProps {
   isVisible: boolean;
   onCancel: () => void;
+}
+
+export interface IriMigrationDialogContents {
+  iriInputs: ReactNode;
 }
 
 export interface IriMigrationDialogProps
@@ -33,7 +44,10 @@ export interface IriMigrationDialogProps
    * The new IRI is internally already validated for empty value, invalid URI and equality with the original IRI.
    */
   newIriValidator: (newIri: string) => ValidationResult;
-  children?: ReactNode;
+  migrationType: IriMigrationType;
+  /// Additional parameters for the migration HTTP request
+  requestParams?: MigrationParams;
+  children: (contents: IriMigrationDialogContents) => ReactNode;
 }
 
 /**
@@ -48,10 +62,29 @@ const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
     /// The value of the input where user is required to enter the label of the asset
     const [confirmationLabelValue, setConfirmationLabelValue] = useState("");
     const [newIri, setNewIri] = useState("");
+    const dispatch: ThunkDispatch = useDispatch();
 
     const resetForm = () => {
       setNewIri("");
       setConfirmationLabelValue("");
+    };
+
+    const onSubmit = () => {
+      if (!asset?.iri) {
+        return;
+      }
+      const iris: IriMigrationPair = {
+        originalIri: asset.iri,
+        newIri,
+      };
+      // TODO: track promise
+      dispatch(
+        migrateIdentifier(iris, props.migrationType, props.requestParams)
+      )
+        .then(() => {
+          console.error("success");
+        })
+        .catch(() => console.error("error"));
     };
 
     useImperativeHandle(ref, () => ({
@@ -79,7 +112,7 @@ const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
     return (
       <ConfirmCancelDialog
         show={props.isVisible}
-        onConfirm={() => {}}
+        onConfirm={onSubmit}
         onClose={props.onCancel}
         title={props.title ?? i18n("asset.migrate.iri.label")}
         confirmKey={"asset.migrate.iri.label"}
@@ -92,26 +125,29 @@ const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
           {i18n("asset.migrate.iri.dangerZone.label")}
         </h1>
         <label>{i18n("asset.migrate.iri.dangerZone.description")}</label>
-        {props.children}
-        <FormGroup>
-          <CustomInput
-            value={asset?.iri ?? ""}
-            disabled={true}
-            label={i18n("asset.migrate.iri.originalIri")}
-          />
-          <CustomInput
-            value={newIri}
-            onInput={(e) => setNewIri(e.currentTarget.value)}
-            label={i18n("asset.migrate.iri.newIri")}
-            validation={newIriValidationResult}
-          />
-          <CustomInput
-            label={props.confirmationInputLabel}
-            validation={ValidationResult.fromBoolean(isLabelConfirmed)}
-            value={confirmationLabelValue}
-            onInput={(e) => setConfirmationLabelValue(e.currentTarget.value)}
-          />
-        </FormGroup>
+        {props.children({
+          iriInputs: (
+            <>
+              <CustomInput
+                value={asset?.iri ?? ""}
+                disabled={true}
+                label={i18n("asset.migrate.iri.originalIri")}
+              />
+              <CustomInput
+                value={newIri}
+                onInput={(e) => setNewIri(e.currentTarget.value)}
+                label={i18n("asset.migrate.iri.newIri")}
+                validation={newIriValidationResult}
+              />
+            </>
+          ),
+        })}
+        <CustomInput
+          label={props.confirmationInputLabel}
+          validation={ValidationResult.fromBoolean(isLabelConfirmed)}
+          value={confirmationLabelValue}
+          onInput={(e) => setConfirmationLabelValue(e.currentTarget.value)}
+        />
       </ConfirmCancelDialog>
     );
   }

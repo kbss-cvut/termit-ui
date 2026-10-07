@@ -4,13 +4,25 @@ import IriMigrationDialog, {
 } from "../asset/IriMigrationDialog";
 import Vocabulary from "../../model/Vocabulary";
 import Term, { TermData } from "../../model/Term";
-import { FunctionComponent, useEffect, useRef, useState } from "react";
+import {
+  FunctionComponent,
+  MutableRefObject,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Tabs from "../misc/Tabs";
 import { Label } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import { TermSelector } from "../term/TermSelector";
 import Utils from "../../util/Utils";
 import ValidationResult from "../../model/form/ValidationResult";
+import CustomInput from "../misc/CustomInput";
+import {
+  IriMigrationType,
+  MigrationParams,
+} from "../../model/IriMigrationType";
 
 export interface VocabularyTermIriMigrationDialogProps
   extends IriMigrationDialogControlProps {
@@ -27,21 +39,47 @@ const ASSET_TYPE: Record<TAB_KEY, string> = {
   [TAB_KEY.TERM]: "term",
 };
 
-const VocabularyTab: FunctionComponent<{ vocabulary: Vocabulary }> = ({
+interface TabProps {
+  vocabulary: Vocabulary;
+  iriInputs: ReactNode;
+}
+
+interface VocabularyTabProps extends TabProps {
+  migrationParams: MutableRefObject<MigrationParams>;
+}
+
+const VocabularyTab: FunctionComponent<VocabularyTabProps> = ({
   vocabulary,
+  iriInputs,
+  migrationParams,
 }) => {
   const { i18n, locale } = useI18n();
+  const [preferredNamespaceUri, setPreferredNamespaceUri] = useState(
+    vocabulary.preferredNamespaceUri
+  );
+
+  useEffect(() => {
+    migrationParams.current.newPreferredNamespaceUri = preferredNamespaceUri;
+  }, [preferredNamespaceUri]);
 
   return (
-    <Label>
-      {i18n(TAB_KEY.VOCABULARY) + " "}
-      {vocabulary.getLabel(locale)}
-    </Label>
+    <>
+      <Label>
+        {i18n(TAB_KEY.VOCABULARY) + " "}
+        {vocabulary.getLabel(locale)}
+      </Label>
+      {iriInputs}
+      <CustomInput
+        name="edit-vocabulary-namespace-uri"
+        label={i18n("vocabulary.preferredNamespaceUri")}
+        value={preferredNamespaceUri}
+        onChange={(e) => setPreferredNamespaceUri(e.target.value)}
+      />
+    </>
   );
 };
 
-interface TermTabProps {
-  vocabulary: Vocabulary;
+interface TermTabProps extends TabProps {
   selectedTerm: Term | null;
   onSelected: (term: Term | null) => void;
 }
@@ -50,20 +88,32 @@ const TermTab: FunctionComponent<TermTabProps> = ({
   vocabulary,
   selectedTerm,
   onSelected,
+  iriInputs,
 }) => {
+  const { i18n } = useI18n();
   const updateSelectedTerm = (terms: readonly TermData[]) => {
     onSelected(terms[0] != null ? new Term(terms[0]) : null);
   };
 
   return (
-    <TermSelector
-      value={Utils.sanitizeArray(selectedTerm)}
-      onChange={updateSelectedTerm}
-      includeImported={false}
-      vocabularyIri={vocabulary.iri}
-      disableScopeToggle={true}
-      multi={false}
-    />
+    <>
+      <TermSelector
+        value={Utils.sanitizeArray(selectedTerm)}
+        onChange={updateSelectedTerm}
+        includeImported={false}
+        vocabularyIri={vocabulary.iri}
+        disableScopeToggle={true}
+        multi={false}
+      />
+      <CustomInput
+        name="edit-vocabulary-namespace-uri"
+        label={i18n("vocabulary.preferredNamespaceUri")}
+        readOnly={true}
+        disabled={true}
+        value={vocabulary.preferredNamespaceUri}
+      />
+      {iriInputs}
+    </>
   );
 };
 
@@ -90,17 +140,20 @@ const VocabularyTermIriMigrationDialog = ({
   const dialogRef = useRef<ResetHandle | null>(null);
   const [activeTab, setActiveTab] = useState<TAB_KEY>(TAB_KEY.VOCABULARY);
   const [selectedTerm, setSelectedTerm] = useState<Term | null>(null);
+  const migrationParams = useRef<MigrationParams>({});
   const selectedAsset =
     activeTab === TAB_KEY.VOCABULARY ? vocabulary : selectedTerm;
 
   useEffect(() => {
-    console.debug("reset form", selectedAsset, dialogRef.current);
     dialogRef.current?.resetForm();
   }, [selectedAsset]);
 
   const onTabChange = (tabKey: string) => {
     if (tabKey === TAB_KEY.VOCABULARY || tabKey === TAB_KEY.TERM) {
       setActiveTab(tabKey);
+    }
+    if (tabKey != TAB_KEY.VOCABULARY) {
+      migrationParams.current.newPreferredNamespaceUri = undefined;
     }
   };
 
@@ -109,6 +162,13 @@ const VocabularyTermIriMigrationDialog = ({
       return validateTermIri(vocabulary, newIri, formatMessage);
     }
     return ValidationResult.VALID;
+  };
+
+  const getMigrationType = () => {
+    if (activeTab === TAB_KEY.VOCABULARY) {
+      return IriMigrationType.VOCABULARY;
+    }
+    return IriMigrationType.TERM;
   };
 
   return (
@@ -123,22 +183,35 @@ const VocabularyTermIriMigrationDialog = ({
       onCancel={onCancel}
       asset={selectedAsset}
       newIriValidator={validateNewIri}
+      migrationType={getMigrationType()}
+      requestParams={migrationParams.current}
     >
-      <Tabs
-        activeTabLabelKey={activeTab}
-        changeTab={onTabChange}
-        contentClassName={"mt-3"}
-        tabs={{
-          [TAB_KEY.VOCABULARY]: <VocabularyTab vocabulary={vocabulary} />,
-          [TAB_KEY.TERM]: (
-            <TermTab
-              vocabulary={vocabulary}
-              selectedTerm={selectedTerm}
-              onSelected={setSelectedTerm}
-            />
-          ),
-        }}
-      />
+      {({ iriInputs }) => (
+        <>
+          <Tabs
+            activeTabLabelKey={activeTab}
+            changeTab={onTabChange}
+            contentClassName={"mt-3"}
+            tabs={{
+              [TAB_KEY.VOCABULARY]: (
+                <VocabularyTab
+                  vocabulary={vocabulary}
+                  iriInputs={iriInputs}
+                  migrationParams={migrationParams}
+                />
+              ),
+              [TAB_KEY.TERM]: (
+                <TermTab
+                  vocabulary={vocabulary}
+                  selectedTerm={selectedTerm}
+                  onSelected={setSelectedTerm}
+                  iriInputs={iriInputs}
+                />
+              ),
+            }}
+          />
+        </>
+      )}
     </IriMigrationDialog>
   );
 };
