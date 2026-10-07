@@ -1,4 +1,5 @@
 import {
+  compactMultilingualCustomAttributeValues,
   getLocalized,
   getLocalizedOrDefault,
   getLocalizedPlural,
@@ -110,6 +111,85 @@ describe("MultilingualString", () => {
       },
     ])("returns correct value", ({ expected, value }) => {
       expect(hasNonBlankValue(value as any, "cs")).toEqual(expected);
+    });
+  });
+
+  describe("compactMultilingualCustomAttributeValues", () => {
+    it("does nothing when no multilingual custom attributes are supplied", () => {
+      const asset: any = { custom: [{ "@value": "test" }] };
+      compactMultilingualCustomAttributeValues(asset, []);
+      expect(asset.custom).toEqual([{ "@value": "test" }]);
+    });
+
+    it("compacts a single object value into a plural multilingual string", () => {
+      const asset: any = {
+        plainAttribute: { "@value": "test", "@language": "en" },
+      };
+      compactMultilingualCustomAttributeValues(asset, ["plainAttribute"]);
+      expect(asset.plainAttribute).toEqual({
+        en: ["test"],
+      });
+    });
+
+    it("compacts array values into a plural multilingual string grouped by language", () => {
+      const asset: any = {
+        values: [
+          { "@value": "one", "@language": "en" },
+          { "@value": "two", "@language": "en" },
+          { "@value": "jedna", "@language": "cs" },
+        ],
+      };
+      compactMultilingualCustomAttributeValues(asset, ["values"]);
+      expect(asset.values).toEqual({
+        en: ["one", "two"],
+        cs: ["jedna"],
+      });
+    });
+
+    it("uses the no-language key when @language is missing", () => {
+      const asset: any = {
+        values: [
+          { "@value": "no language" },
+          { "@value": "en value", "@language": "en" },
+        ],
+      };
+      compactMultilingualCustomAttributeValues(asset, ["values"]);
+      expect(asset.values).toEqual({
+        [NO_LANG]: ["no language"],
+        en: ["en value"],
+      });
+    });
+
+    it("skips items without an @value", () => {
+      const asset: any = {
+        values: [
+          { "@value": "valid", "@language": "en" },
+          { "@language": "en" },
+          { unrelated: "ignored" },
+        ],
+      };
+      compactMultilingualCustomAttributeValues(asset, ["values"]);
+      expect(asset.values).toEqual({ en: ["valid"] });
+    });
+
+    it("processes multiple attributes", () => {
+      const asset: any = {
+        first: [{ "@value": "a", "@language": "en" }],
+        second: [{ "@value": "b", "@language": "cs" }],
+      };
+      compactMultilingualCustomAttributeValues(asset, ["first", "second"]);
+      expect(asset.first).toEqual({ en: ["a"] });
+      expect(asset.second).toEqual({ cs: ["b"] });
+    });
+
+    it("skips attributes that are not arrays while still processing valid ones", () => {
+      const asset: any = {
+        valid: [{ "@value": "a", "@language": "en" }],
+        invalid: "not an array",
+      };
+      compactMultilingualCustomAttributeValues(asset, ["valid", "invalid"]);
+      expect(asset.valid).toEqual({ en: ["a"] });
+      expect(asset.invalid).toEqual("not an array");
     });
   });
 });
