@@ -14,7 +14,10 @@ export type PropertyValueType =
   | boolean
   | number;
 
-export type PropertyValuesType = PropertyValueType[] | PluralMultilingualString;
+export type PropertyValuesType =
+  | PropertyValueType[]
+  | PluralMultilingualString
+  | PluralMultilingualString[];
 
 export interface HasUnmappedProperties {
   get unmappedProperties(): Map<string, PropertyValuesType>;
@@ -59,11 +62,11 @@ const WithUnmappedProperties = {
     instance: any,
     mappedProperties: string[]
   ): Map<string, PropertyValuesType> {
-    const map = new Map<string, PropertyValueType[]>();
+    const map = new Map<string, PropertyValuesType>();
     Object.getOwnPropertyNames(instance)
       .filter((p) => mappedProperties.indexOf(p) === -1)
       .forEach((prop) => {
-        const values: string[] = Utils.sanitizeArray(instance[prop]);
+        const values: PropertyValuesType = Utils.sanitizeArray(instance[prop]);
         map.set(prop, values);
       });
     return map;

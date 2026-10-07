@@ -29,7 +29,9 @@ export const CustomAttributeValueEdit: React.FC<{
   const { locale } = useI18n();
   const lang = getShortLocale(locale);
   const onMultilingualChange = (newList: string[]) => {
-    const newValues = { ...(values as PluralMultilingualString) };
+    const newValues = Array.isArray(values)
+      ? { ...(values as PluralMultilingualString[])[0] }
+      : { ...(values as PluralMultilingualString) };
     newValues[language] = newList;
     onChange(attribute, newValues);
   };
@@ -116,9 +118,11 @@ export const CustomAttributeValueEdit: React.FC<{
     );
   }
   if (attribute.rangeIri === VocabularyUtils.RDF_LANGSTRING) {
-    const valueList = Utils.sanitizeArray(
-      (values as PluralMultilingualString)[language]
-    );
+    const valueList = Array.isArray(values)
+      ? (values as PluralMultilingualString[]).flatMap(
+          (str) => str[language] || []
+        )
+      : Utils.sanitizeArray((values as PluralMultilingualString)[language]);
     return (
       <div className="form-group">
         <ValueListEdit
