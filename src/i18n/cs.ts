@@ -1050,6 +1050,7 @@ const cs = {
     "history.type.persist": "Vytvoření",
     "history.type.update": "Změna",
     "history.type.delete": "Smazání",
+    "history.type.identifierChange": "Změna identifikátoru",
     "history.changedAttribute": "Atribut",
     "history.originalValue": "Původní hodnota",
     "history.newValue": "Nová hodnota",

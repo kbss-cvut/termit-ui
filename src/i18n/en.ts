@@ -1045,6 +1045,7 @@ const en = {
     "history.type.persist": "Creation",
     "history.type.update": "Update",
     "history.type.delete": "Deletion",
+    "history.type.identifierChange": "Identifier change",
     "history.changedAttribute": "Attribute",
     "history.originalValue": "Original value",
     "history.newValue": "New value",

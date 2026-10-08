@@ -30,6 +30,7 @@ import SimplePagination from "../dashboard/widget/lastcommented/SimplePagination
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import IdentifierChangeRecord from "../../model/changetracking/IdentifierChangeRecord";
 
 interface AssetHistoryProps {
   asset: Asset;
@@ -178,6 +179,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
                   "history.type.persist",
                   "history.type.update",
                   "history.type.delete",
+                  "history.type.identifierChange",
                 ].map((type) => (
                   <option key={type} value={type}>
                     {i18n(type)}
@@ -206,6 +208,9 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
             }
             if (r instanceof DeleteRecord) {
               return <DeleteRow key={r.iri} record={r} />;
+            }
+            if (r instanceof IdentifierChangeRecord) {
+              return <UpdateRow key={r.iri} record={r} onRollback={() => {}} />;
             }
             return null;
           })}

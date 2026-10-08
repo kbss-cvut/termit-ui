@@ -52,7 +52,6 @@ export function onIdentifierMigrationCompleted(message: IMessage) {
       | IdentifierMigrationFailedEvent = JSON.parse(message.body);
 
     if (!("iris" in payload)) {
-      console.error(payload);
       dispatch(
         publishMessage(
           new Message(
