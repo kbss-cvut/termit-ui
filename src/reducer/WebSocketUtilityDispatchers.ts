@@ -4,13 +4,15 @@ import { ThunkDispatch } from "../util/Types";
 import { LongRunningTask } from "../model/LongRunningTask";
 import {
   asyncActionSuccessWithPayload,
+  publishMessage,
   publishSuccessMessage,
 } from "../action/SyncActions";
 import { IriMigrationPair, IriMigrationType } from "../model/IriMigrationType";
-import { loadVocabularies, loadVocabulary } from "../action/AsyncActions";
-import TermItState from "../model/TermItState";
+import Routing from "../util/Routing";
+import Routes from "../util/Routes";
 import VocabularyUtils from "../util/VocabularyUtils";
-import { useLocation } from "react-router-dom";
+import Message from "../model/Message";
+import MessageType from "../model/MessageType";
 
 export function updateLongRunningTasks(message: IMessage, action: Action) {
   return async (dispatch: ThunkDispatch) => {
@@ -33,39 +35,52 @@ export function updateLongRunningTasks(message: IMessage, action: Action) {
 }
 
 interface IdentifierMigrationCompletedEventPayload {
-  type: IriMigrationType;
+  migrationType: IriMigrationType;
   iris: IriMigrationPair;
 }
 
+interface IdentifierMigrationFailedEvent {
+  message: string;
+  messageId?: string;
+}
+
 export function onIdentifierMigrationCompleted(message: IMessage) {
-  return async (dispatch: ThunkDispatch, state: TermItState) => {
-    const {} = useLocation();
-    const payload: IdentifierMigrationCompletedEventPayload = JSON.parse(
-      message.body
-    );
-    // TODO propagate async error
-    const promises: Promise<any>[] = [];
+  return (dispatch: ThunkDispatch) => {
+    const payload:
+      | IdentifierMigrationCompletedEventPayload
+      | IdentifierMigrationFailedEvent = JSON.parse(message.body);
 
-    if (payload.type === IriMigrationType.VOCABULARY) {
-      // reload vocabulary list
-      promises.push(dispatch(loadVocabularies()));
-    }
-
-    if (state.vocabulary?.iri) {
-      // reload current vocabulary
-      promises.push(
-        dispatch(loadVocabulary(VocabularyUtils.create(state.vocabulary.iri)))
-      );
-    }
-
-    // todo: navigation?
-
-    Promise.all(promises).then(() =>
+    if (!("iris" in payload)) {
+      console.error(payload);
       dispatch(
-        publishSuccessMessage({
-          messageId: "asset.migrate.iri.completed",
-        })
-      )
+        publishMessage(
+          new Message(
+            {
+              ...payload,
+            },
+            MessageType.ERROR
+          )
+        )
+      );
+      return;
+    }
+
+    if (payload.migrationType === IriMigrationType.VOCABULARY) {
+      // vocabulary identifier changed, navigating to new location
+      const vocabularyUri = VocabularyUtils.create(payload.iris.newIri);
+      Routing.transitionTo(Routes.vocabularySummary, {
+        params: new Map().set("name", vocabularyUri.fragment),
+        query: new Map().set("namespace", vocabularyUri.namespace),
+      });
+    } else {
+      // Term or Custom Attribute
+      Routing.reload();
+    }
+
+    dispatch(
+      publishSuccessMessage({
+        messageId: "asset.migrate.iri.completed",
+      })
     );
   };
 }
