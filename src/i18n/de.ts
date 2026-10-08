@@ -1003,6 +1003,7 @@ const de = {
     "history.type.persist": "Erzeugung",
     "history.type.update": "Aktualisierung",
     "history.type.delete": "Streichung",
+    "history.type.identifierChange": "Änderung des Identifikators",
     "history.changedAttribute": "Attribut",
     "history.originalValue": "Ursprünglicher Wert",
     "history.newValue": "Neuer Wert",

@@ -26,6 +26,7 @@ import {
 import DeleteRecord, {
   DeleteRecordData,
 } from "../model/changetracking/DeleteRecord";
+import IdentifierChangeRecord from "../model/changetracking/IdentifierChangeRecord";
 
 const AssetFactory = {
   /**
@@ -122,6 +123,10 @@ const AssetFactory = {
       return new UpdateRecord(data as UpdateRecordData);
     } else if (data.types.indexOf(VocabularyUtils.DELETE_EVENT) !== -1) {
       return new DeleteRecord(data as DeleteRecordData);
+    } else if (
+      data.types.indexOf(VocabularyUtils.IDENTIFIER_CHANGE_EVENT) !== -1
+    ) {
+      return new IdentifierChangeRecord(data as UpdateRecordData);
     }
     throw new TypeError(
       "Unsupported type of change record data " + JSON.stringify(data)
