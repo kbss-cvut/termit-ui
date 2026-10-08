@@ -119,14 +119,14 @@ const AssetFactory = {
   createChangeRecord(data: ChangeRecordData): ChangeRecord {
     if (data.types.indexOf(VocabularyUtils.PERSIST_EVENT) !== -1) {
       return new PersistRecord(data);
-    } else if (data.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1) {
-      return new UpdateRecord(data as UpdateRecordData);
-    } else if (data.types.indexOf(VocabularyUtils.DELETE_EVENT) !== -1) {
-      return new DeleteRecord(data as DeleteRecordData);
     } else if (
       data.types.indexOf(VocabularyUtils.IDENTIFIER_CHANGE_EVENT) !== -1
     ) {
       return new IdentifierChangeRecord(data as UpdateRecordData);
+    } else if (data.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1) {
+      return new UpdateRecord(data as UpdateRecordData);
+    } else if (data.types.indexOf(VocabularyUtils.DELETE_EVENT) !== -1) {
+      return new DeleteRecord(data as DeleteRecordData);
     }
     throw new TypeError(
       "Unsupported type of change record data " + JSON.stringify(data)

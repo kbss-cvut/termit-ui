@@ -307,6 +307,8 @@ const de = {
     "asset.migrate.iri.error.preferredNamespace":
       "Der neue Identifikator muss den Namespace des Vokabulars verwenden: {namespace}",
     "asset.migrate.iri.error.invalidIri": "Ungültiger Identifikator",
+    "asset.migrate.iri.error.failure":
+      "Migration des Identifikators fehlgeschlagen",
     "asset.migrate.iri.started":
       "Die Änderung des Identifikators wird im Hintergrund durchgeführt. Bitte nehmen Sie keine weiteren Änderungen vor, bis sie abgeschlossen ist.",
     "asset.migrate.iri.completed": "Änderung des Identifikators abgeschlossen",

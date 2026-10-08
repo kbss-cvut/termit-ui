@@ -298,6 +298,7 @@ const en = {
     "asset.migrate.iri.error.preferredNamespace":
       "The new identifier must use the vocabulary namespace: {namespace}",
     "asset.migrate.iri.error.invalidIri": "Invalid identifier",
+    "asset.migrate.iri.error.failure": "Identifier migration failed",
     "asset.migrate.iri.started":
       "The identifier change will be performed in the background. Please do not make any further changes until it is finished.",
     "asset.migrate.iri.completed": "Identifier change completed",
