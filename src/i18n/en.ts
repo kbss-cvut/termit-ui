@@ -341,7 +341,6 @@ const en = {
     "vocabulary.vocabularies.select.placeholder":
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",
-    "vocabulary.migrate.iri.label": "Migrate Identifier",
     "vocabulary.migrate.iri.title":
       "Change identifier of the vocabulary or a term",
     "vocabulary.migrate.iri.confirmLabel":
