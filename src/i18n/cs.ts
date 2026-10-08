@@ -277,6 +277,10 @@ const cs = {
       "Pokud se rozhodnete použití zachovat, zůstanou v datech hodnoty atributu (dostupné a editovatelné v části 'Ostatní atributy').",
     "administration.customization.customAttributes.removal.confirm":
       "Pro potvrzení odstranění vlastního atributu a všech jeho použití zadejte název atributu",
+    "administration.customization.customAttributes.migrate.iri.title":
+      "Změnit identifikátor vlastního atributu",
+    "administration.customization.customAttributes.migrate.iri.confirmLabel":
+      "Pro potvrzení zadejte název vlastního atributu",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":

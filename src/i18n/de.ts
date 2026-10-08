@@ -275,6 +275,10 @@ const de = {
       "Wenn Sie sich entscheiden, die Verwendungen nicht zu entfernen, bleibt der Attributwert in den Daten erhalten (verfügbar und editierbar unter „Weitere attribute“).",
     "administration.customization.customAttributes.removal.confirm":
       "Um das Löschen des benutzerdefinierten Attributs und all seiner Verwendungen zu bestätigen, geben Sie den Attributnamen ein",
+    "administration.customization.customAttributes.migrate.iri.title":
+      "Identifikator eines benutzerdefinierten Attributs ändern",
+    "administration.customization.customAttributes.migrate.iri.confirmLabel":
+      "Geben Sie zur Bestätigung den Namen des benutzerdefinierten Attributs ein",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":

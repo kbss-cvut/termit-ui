@@ -13,6 +13,7 @@ import Routes from "../util/Routes";
 import VocabularyUtils from "../util/VocabularyUtils";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
+import { getCustomAttributes } from "../action/AsyncCustomizationActions";
 
 export function updateLongRunningTasks(message: IMessage, action: Action) {
   return async (dispatch: ThunkDispatch) => {
@@ -65,6 +66,8 @@ export function onIdentifierMigrationCompleted(message: IMessage) {
       return;
     }
 
+    let promise: Promise<any> | undefined = undefined;
+
     if (payload.migrationType === IriMigrationType.VOCABULARY) {
       // vocabulary identifier changed, navigating to new location
       const vocabularyUri = VocabularyUtils.create(payload.iris.newIri);
@@ -72,15 +75,18 @@ export function onIdentifierMigrationCompleted(message: IMessage) {
         params: new Map().set("name", vocabularyUri.fragment),
         query: new Map().set("namespace", vocabularyUri.namespace),
       });
-    } else {
-      // Term or Custom Attribute
+    } else if (payload.migrationType === IriMigrationType.TERM) {
       Routing.reload();
+    } else if (payload.migrationType === IriMigrationType.CUSTOM_ATTRIBUTE) {
+      promise = dispatch(getCustomAttributes());
     }
 
-    dispatch(
-      publishSuccessMessage({
-        messageId: "asset.migrate.iri.completed",
-      })
-    );
+    Promise.all([promise]).then(() => {
+      dispatch(
+        publishSuccessMessage({
+          messageId: "asset.migrate.iri.completed",
+        })
+      );
+    });
   };
 }
