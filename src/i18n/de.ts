@@ -349,7 +349,6 @@ const de = {
     "vocabulary.vocabularies.select.placeholder":
       "Beginnen Sie mit der Eingabe, um Vokabulare nach Namen zu filtern",
     "vocabulary.title": "Titel",
-    "vocabulary.migrate.iri.label": "Identifikator migrieren",
     "vocabulary.migrate.iri.title":
       "Identifikator des Vokabulars oder eines Begriffs ändern",
     "vocabulary.migrate.iri.confirmLabel":
