@@ -265,6 +265,10 @@ const en = {
       "If you decide not to remove the usages, the attribute value will remain in the data (available and editable in 'Other properties').",
     "administration.customization.customAttributes.removal.confirm":
       "To confirm the deletion of the custom attribute and all its uses, enter the attribute name",
+    "administration.customization.customAttributes.migrate.iri.title":
+      "Change identifier of a custom attribute",
+    "administration.customization.customAttributes.migrate.iri.confirmLabel":
+      "To confirm, enter the name of the custom attribute",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
