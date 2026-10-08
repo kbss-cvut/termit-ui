@@ -307,8 +307,9 @@ const cs = {
     "asset.migrate.iri.error.sameAsOriginal":
       "Nový identifikátor nesmí být stejný jako původní identifikátor",
     "asset.migrate.iri.error.preferredNamespace":
-      "Nový identifikátor musí používat jmenný prostor slovíku: {namespace}",
+      "Nový identifikátor musí používat jmenný prostor slovníku: {namespace}",
     "asset.migrate.iri.error.invalidIri": "Neplatný identifikátor",
+    "asset.migrate.iri.error.failure": "Migrace identifikátoru selhala",
     "asset.migrate.iri.started":
       "Změna identifikátoru bude provedena na pozadí. Dokud nebude dokončena, neprovádějte další změny.",
     "asset.migrate.iri.completed": "Změna identifikátoru dokončena",

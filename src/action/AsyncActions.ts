@@ -1486,6 +1486,15 @@ export function migrateIdentifier(
       .then(() => {
         return dispatch(asyncActionSuccess(action));
       })
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+      .catch((error: ErrorData) => {
+        let messageData = {
+          ...error,
+        };
+        if (!messageData.message && !messageData.messageId) {
+          messageData.messageId = "asset.migrate.iri.error.failure";
+        }
+        dispatch(publishMessage(new Message(messageData, MessageType.ERROR)));
+        return dispatch(asyncActionFailure(action, error));
+      });
   };
 }

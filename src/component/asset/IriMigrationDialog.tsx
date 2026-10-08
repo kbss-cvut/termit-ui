@@ -18,6 +18,7 @@ import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { trackPromise } from "react-promise-tracker";
 import { publishMessage } from "../../action/SyncActions";
 import Message from "../../model/Message";
+import AsyncActionStatus from "../../action/AsyncActionStatus";
 
 export interface ResetHandle {
   /// Clears the form input values in the migration dialog
@@ -89,17 +90,22 @@ const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
       trackPromise(
         dispatch(
           migrateIdentifier(iris, props.migrationType, props.requestParams)
-        ).then(props.onMigrated),
+        )
+          .then((action) => {
+            if (action.status === AsyncActionStatus.SUCCESS) {
+              dispatch(
+                publishMessage(
+                  new Message({
+                    messageId: "asset.migrate.iri.started",
+                  })
+                )
+              );
+            }
+            return action;
+          })
+          .then(props.onMigrated),
         IRI_MIGRATION_DIALOG_PROMISE_AREA
-      ).then(() => {
-        dispatch(
-          publishMessage(
-            new Message({
-              messageId: "asset.migrate.iri.started",
-            })
-          )
-        );
-      });
+      );
     };
 
     useImperativeHandle(ref, () => ({
