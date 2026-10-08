@@ -1223,7 +1223,7 @@ export function loadHistory(
       for (const [key, value] of Object.entries(filterData)) {
         params = params.param(key, value);
       }
-      params = params.param("type", getChangeTypeUri(filterData));
+      params = params.param("changeType", getChangeTypeUri(filterData));
     }
     return Ajax.get(historyConf.url, params)
       .then((data) =>
