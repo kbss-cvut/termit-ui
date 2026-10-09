@@ -46,7 +46,6 @@ import ContainerMask from "../../../misc/ContainerMask";
 import {
   getLocalizedInLanguage,
   getLocalizedPluralInLanguage,
-  hasLabelInLanguage,
 } from "../../../../model/MultilingualString";
 import TermLink from "../../../term/TermLink";
 import { HoverEditWrapper } from "./cell/HoverEditWrapper";
@@ -55,7 +54,7 @@ import { useBatchEditTerms } from "../../../../query/hook/useBatchEditTerms";
 import { TermBatchEditDto } from "../../../../model/TermBatchEditDto";
 import SearchParam from "../../../../model/search/SearchParam";
 import { aggregateSearchParams } from "../../../search/facet/FacetedSearchUtil";
-import { FaFilter } from "react-icons/fa";
+import { FaFilter, FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { FilterPanel } from "./filter/FilterPanel";
 
 interface VocabularySheetViewTableProps {
@@ -125,6 +124,7 @@ export const VocabularySheetViewTable: React.FC<
   const [appliedFacetParams, setAppliedFacetParams] = React.useState<{
     [key: string]: SearchParam;
   }>({});
+  const [sortDirection, setSortDirection] = React.useState("asc");
 
   const debouncedApplyFilters = useDebouncedCallback(
     (params: { [key: string]: SearchParam }) => {
@@ -212,8 +212,9 @@ export const VocabularySheetViewTable: React.FC<
     apiPrefix,
     vocabularyIri,
     searchString: "",
-    language: shortLocale,
+    language: tableLanguage,
     searchParams: activeSearchParams,
+    sort: `label,${sortDirection}`,
   });
 
   const loadedTerms = React.useMemo(
@@ -284,7 +285,10 @@ export const VocabularySheetViewTable: React.FC<
 
   const displayLanguage = React.useMemo(() => {
     const normalizedCurrent = normalizeLanguageTag(tableLanguage);
-    if (availableTermLanguages.includes(normalizedCurrent)) {
+    if (
+      loadedTerms.length === 0 ||
+      availableTermLanguages.includes(normalizedCurrent)
+    ) {
       return normalizedCurrent;
     }
     if (availableTermLanguages.length > 0) {
@@ -299,13 +303,7 @@ export const VocabularySheetViewTable: React.FC<
     }
   }, [displayLanguage, tableLanguage]);
 
-  const displayedTerms = React.useMemo(
-    () =>
-      loadedTerms.filter((term) =>
-        hasLabelInLanguage(term.label, displayLanguage)
-      ),
-    [displayLanguage, loadedTerms]
-  );
+  const displayedTerms = loadedTerms;
 
   const resolvedTotalCount = termsQuery.data?.pages.find(
     (page) => page.totalCount !== undefined
@@ -978,11 +976,41 @@ export const VocabularySheetViewTable: React.FC<
               onChange={toggleAllBatchSelection}
             />
           </div>
-          {visibleColumns.map((column) => (
-            <div key={column.id} className="vocabulary-sheet-view-header-cell">
-              {column.title}
-            </div>
-          ))}
+          {visibleColumns.map((column) => {
+            const isSortable =
+              column.id === "label" && activeSearchParams.length === 0;
+
+            return (
+              <div
+                key={column.id}
+                className={classNames(
+                  "vocabulary-sheet-view-header-cell d-flex align-items-center",
+                  {
+                    "sortable-column-header": isSortable,
+                  }
+                )}
+                onClick={
+                  isSortable
+                    ? () =>
+                        setSortDirection((prev) =>
+                          prev === "asc" ? "desc" : "asc"
+                        )
+                    : undefined
+                }
+              >
+                <span>{column.title}</span>
+                {isSortable && (
+                  <span className="ml-2 text-muted">
+                    {sortDirection === "asc" ? (
+                      <FaSortAlphaDown size={14} />
+                    ) : (
+                      <FaSortAlphaUp size={14} />
+                    )}
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <div
