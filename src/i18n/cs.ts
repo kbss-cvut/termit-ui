@@ -588,7 +588,7 @@ const cs = {
       " vygenerován automaticky na základě názvu, ale může být ručně upraven. Jedná se o možnost pro pokročilé uživatele." +
       "Identifikátor může obsahovat pouze " +
       'alfanumerické znaky a pomlčky ("-"). Lomítka ("/") se používají pouze k oddělení hierarchických komponent ' +
-      "identifikátoru.",
+      "identifikátoru. Musí náležet do jmenného prostoru slovníku.",
     "term.label.help":
       "(Povinné) označení, které daný pojem/význam jednoznačně v rámci slovníku identifikuje. " +
       "Jako názvy pojmů se nepoužívají zkratky ('daň z přidané hodnoty' místo 'DPH'). Celý název pojmu " +
@@ -654,6 +654,8 @@ const cs = {
       "pojem s názvem 'Kopaná' může mít vyhledávací text 'fočus'. ",
     "term.updated.message": "Pojem úspěšně aktualizován.",
     "term.updated.error.message": "Pojem se nepodařilo aktualizovat.",
+    "term.created.error.iriNotInVocabularyNamespace":
+      'Zvolený identifikátor nenáleží jmennému prostoru slovníku: "{namespace}"',
     "term.metadata.labelExists.message":
       'Pojem s názvem "{label}" již v tomto slovníku existuje',
     "term.metadata.multipleSources.message":
