@@ -277,6 +277,10 @@ const cs = {
       "Pokud se rozhodnete použití zachovat, zůstanou v datech hodnoty atributu (dostupné a editovatelné v části 'Ostatní atributy').",
     "administration.customization.customAttributes.removal.confirm":
       "Pro potvrzení odstranění vlastního atributu a všech jeho použití zadejte název atributu",
+    "administration.customization.customAttributes.migrate.iri.title":
+      "Změnit identifikátor vlastního atributu",
+    "administration.customization.customAttributes.migrate.iri.confirmLabel":
+      "Pro potvrzení zadejte název vlastního atributu",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -293,6 +297,22 @@ const cs = {
     "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
     "asset.modify.dialog.title": 'Upravit {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
+
+    "asset.migrate.iri.label": "Změnit identifikátor",
+    "asset.migrate.iri.dangerZone.label": "Nebezpečná zóna",
+    "asset.migrate.iri.dangerZone.description":
+      "Mezinárodní identifikátory by měly být unikátní a neměnné. Jejich změna naruší externí vazby zdrojů a klientů mimo TermIt!",
+    "asset.migrate.iri.originalIri": "Původní identifikátor",
+    "asset.migrate.iri.newIri": "Nový identifikátor",
+    "asset.migrate.iri.error.sameAsOriginal":
+      "Nový identifikátor nesmí být stejný jako původní identifikátor",
+    "asset.migrate.iri.error.preferredNamespace":
+      "Nový identifikátor musí používat jmenný prostor slovníku: {namespace}",
+    "asset.migrate.iri.error.invalidIri": "Neplatný identifikátor",
+    "asset.migrate.iri.error.failure": "Migrace identifikátoru selhala",
+    "asset.migrate.iri.started":
+      "Změna identifikátoru bude provedena na pozadí. Dokud nebude dokončena, neprovádějte další změny.",
+    "asset.migrate.iri.completed": "Změna identifikátoru dokončena",
 
     "term.remove.description":
       'Opravdu chcete trvale odstranit pojem "{label}"? Vyberte, jak se má naložit se závislými daty.',
@@ -519,6 +539,10 @@ const cs = {
       "Existuje {termsRelations, plural, one {<b>1</b> vazba na pojem} other {<b>#</b> vazeb na pojmy}} z tohoto slovníku.",
     "vocabulary.remove.dialog.input.label":
       "Pro ověření, zadejte název slovníku",
+
+    "vocabulary.migrate.iri.title": "Změnit identifikátor slovníku nebo pojmu",
+    "vocabulary.migrate.iri.confirmLabel":
+      "Pro potvrzení zadejte název {assetType, select, vocabulary {slovníku} term {pojmu} other {záznamu}}",
 
     "resource.created.message": "Zdroj úspěšně vytvořen.",
     "resource.updated.message": "Zdroj úspěšně uložen.",
@@ -1027,6 +1051,7 @@ const cs = {
     "history.type.persist": "Vytvoření",
     "history.type.update": "Změna",
     "history.type.delete": "Smazání",
+    "history.type.identifierChange": "Změna identifikátoru",
     "history.changedAttribute": "Atribut",
     "history.originalValue": "Původní hodnota",
     "history.newValue": "Nová hodnota",
@@ -1110,6 +1135,7 @@ const cs = {
     "longrunningtasks.name.documentAnnotationGeneration":
       "Generování anotací dokumentu",
     "longrunningtasks.name.restoreBackup": "Obnovení zálohy",
+    "longrunningtasks.name.migration.identifier": "Změna identifikátoru zdroje",
   },
 };
 

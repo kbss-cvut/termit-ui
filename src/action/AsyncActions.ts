@@ -74,6 +74,11 @@ import {
 } from "../model/filter/VocabularyContentChangeFilterData";
 import ResourceSaveReason from "../component/annotator/ResourceSaveReason";
 import { TermRemovalOptions } from "../model/TermRemovalOptions";
+import {
+  IriMigrationPair,
+  IriMigrationType,
+  MigrationParams,
+} from "../model/IriMigrationType";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -1218,7 +1223,7 @@ export function loadHistory(
       for (const [key, value] of Object.entries(filterData)) {
         params = params.param(key, value);
       }
-      params = params.param("type", getChangeTypeUri(filterData));
+      params = params.param("changeType", getChangeTypeUri(filterData));
     }
     return Ajax.get(historyConf.url, params)
       .then((data) =>
@@ -1459,6 +1464,37 @@ export function rollbackChange(changeRecord: ChangeRecord) {
           )
         );
         return false;
+      });
+  };
+}
+
+export function migrateIdentifier(
+  iris: IriMigrationPair,
+  type: IriMigrationType,
+  params?: MigrationParams
+) {
+  const action = { type: ActionType.MIGRATE_IDENTIFIER };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/migrate/identifier`,
+      param("originalIri", iris.originalIri)
+        .param("newIri", iris.newIri)
+        .param("type", type)
+        .param("preferredNamespace", params?.newPreferredNamespaceUri)
+    )
+      .then(() => {
+        return dispatch(asyncActionSuccess(action));
+      })
+      .catch((error: ErrorData) => {
+        let messageData = {
+          ...error,
+        };
+        if (!messageData.message && !messageData.messageId) {
+          messageData.messageId = "asset.migrate.iri.error.failure";
+        }
+        dispatch(publishMessage(new Message(messageData, MessageType.ERROR)));
+        return dispatch(asyncActionFailure(action, error));
       });
   };
 }

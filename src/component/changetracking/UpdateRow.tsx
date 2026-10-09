@@ -81,7 +81,7 @@ function sortIfMultilingual(value: any[]) {
   }
 }
 
-function renderSingleValue(value: any) {
+export function renderSingleValue(value: any) {
   if ((value as { iri?: string }).iri) {
     const iri = (value as { iri: string }).iri;
     return <OutgoingLink label={<AssetLabel iri={iri} />} iri={iri} />;

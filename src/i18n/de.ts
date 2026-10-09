@@ -275,6 +275,10 @@ const de = {
       "Wenn Sie sich entscheiden, die Verwendungen nicht zu entfernen, bleibt der Attributwert in den Daten erhalten (verfügbar und editierbar unter „Weitere attribute“).",
     "administration.customization.customAttributes.removal.confirm":
       "Um das Löschen des benutzerdefinierten Attributs und all seiner Verwendungen zu bestätigen, geben Sie den Attributnamen ein",
+    "administration.customization.customAttributes.migrate.iri.title":
+      "Identifikator eines benutzerdefinierten Attributs ändern",
+    "administration.customization.customAttributes.migrate.iri.confirmLabel":
+      "Geben Sie zur Bestätigung den Namen des benutzerdefinierten Attributs ein",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":
@@ -291,6 +295,23 @@ const de = {
     "asset.modify.dialog.title": 'Ändern Sie {type} "{label}"',
     "asset.remove.dialog.text":
       'Sind Sie sicher, dass Sie {type} "{label}" entfernen möchten?',
+
+    "asset.migrate.iri.label": "Ändern Identifikator",
+    "asset.migrate.iri.dangerZone.label": "Gefahrenzone",
+    "asset.migrate.iri.dangerZone.description":
+      "Internationale Identifikatoren sollten eindeutig und unveränderlich sein. Ihre Änderung unterbricht externe Verknüpfungen von Ressourcen und Clients außerhalb von TermIt!",
+    "asset.migrate.iri.originalIri": "Ursprünglicher Identifikator",
+    "asset.migrate.iri.newIri": "Neuer Identifikator",
+    "asset.migrate.iri.error.sameAsOriginal":
+      "Der neue Identifikator darf nicht mit dem ursprünglichen Identifikator identisch sein",
+    "asset.migrate.iri.error.preferredNamespace":
+      "Der neue Identifikator muss den Namespace des Vokabulars verwenden: {namespace}",
+    "asset.migrate.iri.error.invalidIri": "Ungültiger Identifikator",
+    "asset.migrate.iri.error.failure":
+      "Migration des Identifikators fehlgeschlagen",
+    "asset.migrate.iri.started":
+      "Die Änderung des Identifikators wird im Hintergrund durchgeführt. Bitte nehmen Sie keine weiteren Änderungen vor, bis sie abgeschlossen ist.",
+    "asset.migrate.iri.completed": "Änderung des Identifikators abgeschlossen",
 
     "term.remove.description":
       'Möchten Sie den Begriff "{label}" wirklich dauerhaft entfernen? Wählen Sie, wie mit abhängigen Daten verfahren werden soll.',
@@ -330,6 +351,11 @@ const de = {
     "vocabulary.vocabularies.select.placeholder":
       "Beginnen Sie mit der Eingabe, um Vokabulare nach Namen zu filtern",
     "vocabulary.title": "Titel",
+    "vocabulary.migrate.iri.title":
+      "Identifikator des Vokabulars oder eines Begriffs ändern",
+    "vocabulary.migrate.iri.confirmLabel":
+      "Geben Sie zur Bestätigung den Namen {assetType, select, vocabulary {des Vokabulars} term {des Begriffs} other {des Eintrags}} ein",
+
     "vocabulary.primaryLanguage": "Primäres Vokabular der Sprache",
     "vocabulary.preferredNamespaceUri": "Bevorzugte Namespace-URI",
     "vocabulary.preferredNamespaceUri.editReadonly":
@@ -982,6 +1008,7 @@ const de = {
     "history.type.persist": "Erzeugung",
     "history.type.update": "Aktualisierung",
     "history.type.delete": "Streichung",
+    "history.type.identifierChange": "Änderung des Identifikators",
     "history.changedAttribute": "Attribut",
     "history.originalValue": "Ursprünglicher Wert",
     "history.newValue": "Neuer Wert",
@@ -1060,6 +1087,8 @@ const de = {
     "longrunningtasks.name.documentAnnotationGeneration":
       "Erstellung einer Dateianmerkung",
     "longrunningtasks.name.restoreBackup": "Wiederherstellung von Sicherung",
+    "longrunningtasks.name.migration.identifier":
+      "Änderung des Ressourcenidentifikators",
   },
 };
 

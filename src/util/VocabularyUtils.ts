@@ -170,6 +170,7 @@ const VocabularyUtils = {
   PERSIST_EVENT: _NS_DATA_DESCRIPTION + "creation-of-entity",
   UPDATE_EVENT: _NS_DATA_DESCRIPTION + "update-of-entity",
   DELETE_EVENT: _NS_DATA_DESCRIPTION + "deletion-of-entity",
+  REPLACEMENT_OF_ENTITY: _NS_DATA_DESCRIPTION + "replacement-of-entity",
 
   TERM_SNAPSHOT: _NS_DATA_DESCRIPTION + "version-of-term",
   VOCABULARY_SNAPSHOT: _NS_DATA_DESCRIPTION + "version-of-vocabulary",
