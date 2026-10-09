@@ -556,7 +556,8 @@ const de = {
       "Begriffsdaten in der Sprache anzeigen: {nativeLang} ({lang})",
     "term.language.add.placeholder": "Wählen...",
     "term.iri.help":
-      "Begriffsidentifikator in Form eines Internationalized Resource Identifier (IRI). ",
+      "Begriffsidentifikator in Form eines Internationalized Resource Identifier (IRI). " +
+      "Er muss zum Namespace des Vokabulars gehören.",
     "term.label.help":
       '(Erforderlicher) Text, der das gegebene Konzept/die Bedeutung innerhalb des aktuellen Vokabulars eindeutig beschreibt. Abkürzungen sind nicht erlaubt ("Mehrwertsteuer" statt "VAT"). ',
     "term.definition.help":
@@ -593,6 +594,8 @@ const de = {
     "term.metadata.status": "Status",
     "term.updated.message": "Begriff erfolgreich aktualisiert.",
     "term.updated.error.message": "Begriff konnte nicht aktualisiert werden.",
+    "term.created.error.iriNotInVocabularyNamespace":
+      'Der gewählte Identifikator gehört nicht zum Namespace des Vokabulars: "{namespace}"',
     "term.metadata.labelExists.message":
       'Der Begriff mit der Bezeichnung "{label}" existiert bereits in diesem Vokabular',
     "term.metadata.multipleSources.message":
