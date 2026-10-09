@@ -556,7 +556,7 @@ const en = {
       "Term identifier in the form of Internationalized Resource Identifier (IRI). It will be " +
       "generated automatically based on the specified label, but you can adjust it manually. The identifier " +
       'can contain just alphanumerical characters and dashes ("-"). Slashes ("/") are used to separate ' +
-      "hierarchical components of identifiers.",
+      "hierarchical components of identifiers. It must belong to the vocabulary namespace.",
     "term.label.help":
       "(Required) text uniquely describing the given concept/meaning within the current vocabulary." +
       "Abbreviations are not allowed ('Value added tax' instead of 'VAT'). The whole label text " +
@@ -620,6 +620,8 @@ const en = {
     "term.metadata.status": "State",
     "term.updated.message": "Term successfully updated.",
     "term.updated.error.message": "Failed to update term.",
+    "term.created.error.iriNotInVocabularyNamespace":
+      'The selected identifier does not belong to the vocabulary namespace: "{namespace}"',
     "term.metadata.labelExists.message":
       'Term with label "{label}" already exists in this vocabulary',
     "term.metadata.multipleSources.message":
