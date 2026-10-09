@@ -14,6 +14,8 @@ const ctx = {
   originalValue: VocabularyUtils.PREFIX + "has-original-value",
   newValue: VocabularyUtils.PREFIX + "has-new-value",
   label: context(VocabularyUtils.RDFS_LABEL),
+  originalIdentifier: VocabularyUtils.PREFIX + "has-replaced-entity",
+  newIdentifier: VocabularyUtils.PREFIX + "has-replacing-entity",
 };
 
 export const CONTEXT = Object.assign({}, ctx, USER_CONTEXT);

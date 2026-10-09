@@ -18,7 +18,7 @@ export function getChangeTypeUri(
     case "history.type.delete":
       return VocabularyUtils.DELETE_EVENT;
     case "history.type.identifierChange":
-      return VocabularyUtils.IDENTIFIER_CHANGE_EVENT;
+      return VocabularyUtils.REPLACEMENT_OF_ENTITY;
   }
   return "";
 }

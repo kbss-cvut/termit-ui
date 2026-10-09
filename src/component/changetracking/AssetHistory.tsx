@@ -31,6 +31,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import IdentifierChangeRecord from "../../model/changetracking/IdentifierChangeRecord";
+import IdentifierChangeRow from "./IdentifierChangeRow";
 
 interface AssetHistoryProps {
   asset: Asset;
@@ -210,7 +211,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
               return <DeleteRow key={r.iri} record={r} />;
             }
             if (r instanceof IdentifierChangeRecord) {
-              return <UpdateRow key={r.iri} record={r} onRollback={() => {}} />;
+              return <IdentifierChangeRow key={r.iri} record={r} />;
             }
             return null;
           })}
