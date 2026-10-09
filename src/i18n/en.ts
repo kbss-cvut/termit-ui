@@ -621,7 +621,7 @@ const en = {
     "term.updated.message": "Term successfully updated.",
     "term.updated.error.message": "Failed to update term.",
     "term.created.error.iriNotInVocabularyNamespace":
-      'The selected identifier does not belong to the vocabulary namespace: "{namespace}"',
+      'The provided identifier does not belong to the vocabulary namespace: "{namespace}"',
     "term.metadata.labelExists.message":
       'Term with label "{label}" already exists in this vocabulary',
     "term.metadata.multipleSources.message":
