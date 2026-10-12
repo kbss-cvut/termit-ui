@@ -1477,7 +1477,7 @@ export function migrateIdentifier(
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.post(
-      `${Constants.API_PREFIX}/migrate/identifier`,
+      `${Constants.API_PREFIX}/migration/identifier`,
       param("originalIri", iris.originalIri)
         .param("newIri", iris.newIri)
         .param("type", type)
