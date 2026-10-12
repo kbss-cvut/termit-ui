@@ -20,7 +20,7 @@ interface FetchVocabularyTermsPageParams {
   apiPrefix: string;
   vocabularyIri: IRI;
   searchString: string;
-  language: string;
+  sortLang: string;
   pageParam: number;
   searchParams?: SearchParam[];
   signal?: AbortSignal;
@@ -54,7 +54,7 @@ export async function fetchVocabularyTermsPage({
   apiPrefix,
   vocabularyIri,
   searchString,
-  language,
+  sortLang,
   pageParam,
   searchParams = [],
   signal,
@@ -65,14 +65,14 @@ export async function fetchVocabularyTermsPage({
     flat: boolean;
     namespace?: string;
     searchString?: string;
-    language?: string;
+    sortLang?: string;
     page: number;
     size: number;
     sort?: string;
   } = {
     full: true,
     flat: true,
-    language,
+    sortLang,
     page: pageParam,
     size: VOCABULARY_TERMS_PAGE_SIZE,
   };
@@ -151,7 +151,7 @@ interface UseVocabularyTermsParams {
   apiPrefix: string;
   vocabularyIri: IRI;
   searchString: string;
-  language: string;
+  sortLang: string;
   searchParams?: SearchParam[];
   sort?: string;
 }
@@ -167,12 +167,12 @@ export function useVocabularyTerms({
   apiPrefix,
   vocabularyIri,
   searchString,
-  language,
+  sortLang,
   searchParams = [],
   sort,
 }: UseVocabularyTermsParams) {
   const normalizedSearchString = searchString.trim();
-  const normalizedLanguage = normalizeLanguageTag(language);
+  const normalizedLanguage = normalizeLanguageTag(sortLang);
 
   const baseQueryKey = queryKeys.terms.list({
     apiPrefix,
@@ -193,7 +193,7 @@ export function useVocabularyTerms({
         apiPrefix,
         vocabularyIri,
         searchString: normalizedSearchString,
-        language: normalizedLanguage,
+        sortLang: normalizedLanguage,
         pageParam: Number(pageParam),
         searchParams,
         signal,

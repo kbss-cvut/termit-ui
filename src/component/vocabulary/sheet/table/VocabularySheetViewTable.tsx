@@ -211,7 +211,7 @@ export const VocabularySheetViewTable: React.FC<
     apiPrefix,
     vocabularyIri,
     searchString: "",
-    language: tableLanguage,
+    sortLang: tableLanguage,
     searchParams: activeSearchParams,
     sort: `label,${sortDirection}`,
   });
