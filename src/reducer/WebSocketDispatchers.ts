@@ -57,7 +57,7 @@ const DISPATCHERS: { [key in ActionType]?: WebSocketDispatcher<any> } = {
   ...d(
     Constants.WEBSOCKET_ENDPOINT.IDENTIFIER_MIGRATION_COMPLETED,
     {
-      type: ActionType.IDENTIFIER_MIGRATION_COMPLETED_ANNOUNCEMENT,
+      type: ActionType.ANNOUNCE_IDENTIFIER_MIGRATION_COMPLETED,
     },
     (message, action, dispatch) =>
       dispatch(onIdentifierMigrationCompleted(message))
