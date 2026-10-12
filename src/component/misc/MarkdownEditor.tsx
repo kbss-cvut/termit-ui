@@ -132,7 +132,7 @@ function removeListStyleWhenCheckbox(htmlText: string): string {
  * To keep the editor working, this function will substitute the preview renderer in EasyMDE (until it gets somehow fixed).
  * @see https://github.com/Ionaru/easy-markdown-editor/blob/a6b121f2e6436fb3b7e3705fe5ca1ba1c991e0a9/src/js/easymde.js#L2059
  */
-function previewRender(markdown: string, element: HTMLElement): string {
+function previewRender(markdown: string): string {
   if (!markdown) {
     return "";
   }

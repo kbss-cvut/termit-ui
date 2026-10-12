@@ -236,6 +236,7 @@ export class TermMetadataEdit extends React.Component<
     if (this.isInvalid()) {
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { labelExist, unmappedProperties, definitionRelated, ...data } =
       this.state;
     const t = new Term(data);
@@ -416,7 +417,7 @@ export class TermMetadataEdit extends React.Component<
                     <RelatedTermsSelector
                       id="edit-term-related"
                       term={this.props.term}
-                      vocabularyIri={this.props.term.vocabulary?.iri!}
+                      vocabularyIri={this.props.term.vocabulary!.iri!}
                       selected={Term.consolidateRelatedAndRelatedMatch(
                         this.state,
                         this.props.language

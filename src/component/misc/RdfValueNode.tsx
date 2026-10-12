@@ -97,7 +97,7 @@ const RdfLiteralNode: React.FC<{ literal: RdfLiteral }> = ({ literal }) => {
 
   return (
     <>
-      "<code>{labelText}</code>"
+      &quot;<code>{labelText}</code>&quot;
     </>
   );
 };

@@ -119,12 +119,16 @@ export const WebSocketWrapper: React.FC<{
       connectHeaders={{
         Authorization: securityToken,
       }}
+      // eslint-disable-next-line no-console
       onUnhandledMessage={(msg) => console.warn("Unhandled STOMP message", msg)}
+      // eslint-disable-next-line no-console
       onUnhandledFrame={(frame) => console.warn("Unhandled STOMP frame", frame)}
       onUnhandledReceipt={(receipt) =>
+        // eslint-disable-next-line no-console
         console.warn("Unhandled STOMP receipt", receipt)
       }
       onStompError={(frame) => {
+        // eslint-disable-next-line no-console
         console.error("WebSocket STOMP error", frame);
         setIsTokenInvalid(true);
       }}

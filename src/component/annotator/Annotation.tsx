@@ -91,8 +91,7 @@ export class Annotation extends React.Component<
 
   public shouldComponentUpdate(
     nextProps: Readonly<AnnotationProps>,
-    nextState: Readonly<AnnotationState>,
-    nextContext: any
+    nextState: Readonly<AnnotationState>
   ): boolean {
     if (
       nextProps.sticky !== this.props.sticky ||

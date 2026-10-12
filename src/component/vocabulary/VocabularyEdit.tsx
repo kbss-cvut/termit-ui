@@ -51,7 +51,7 @@ interface VocabularyEditState {
   importedVocabularies?: AssetData[];
   relatedVocabularies?: AssetData[];
   unmappedProperties: Map<string, PropertyValueType[]>;
-  documentLabel: string;
+  documentLabel?: string;
   /**
    * Short locale code defined by iso-639-1
    * @see import("../../util/IntlUtil").getLanguageOptions()
@@ -72,7 +72,7 @@ export class VocabularyEdit extends React.Component<
         props.vocabulary.comment !== undefined
           ? this.props.vocabulary.comment!
           : langString("", props.language),
-      documentLabel: this.props.vocabulary.document?.label!,
+      documentLabel: this.props.vocabulary.document?.label,
       importedVocabularies: this.props.vocabulary.importedVocabularies,
       relatedVocabularies: this.props.vocabulary.relatedVocabularies,
       primaryLanguage: props.vocabulary.primaryLanguage || this.props.language,
