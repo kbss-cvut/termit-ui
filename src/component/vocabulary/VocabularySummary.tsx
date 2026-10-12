@@ -52,7 +52,7 @@ import { HasStompClient, StompClient } from "../hoc/withStompClient";
 import Constants from "../../util/Constants";
 import { vocabularyValidation } from "../../reducer/WebSocketVocabularyDispatchers";
 import { requestVocabularyValidation } from "../../action/WebSocketVocabularyActions";
-import VocabularyTermIriMigrationDialog from "./VocabularyTermIriMigrationDialog";
+import VocabularyIriMigrationDialog from "./VocabularyIriMigrationDialog";
 
 interface VocabularySummaryProps
   extends HasI18n,
@@ -323,7 +323,7 @@ export class VocabularySummary extends EditableComponent<
             onClose={this.onCreateSnapshotToggle}
             onConfirm={this.onCreateSnapshot}
           />
-          <VocabularyTermIriMigrationDialog
+          <VocabularyIriMigrationDialog
             isVisible={this.state.showIriMigrationDialog}
             onClose={this.onIriMigrationDialogToggle}
             vocabulary={this.props.vocabulary}

@@ -342,10 +342,9 @@ const en = {
     "vocabulary.vocabularies.select.placeholder":
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",
-    "vocabulary.migrate.iri.title":
-      "Change identifier of the vocabulary or a term",
+    "vocabulary.migrate.iri.title": "Change identifier of the vocabulary",
     "vocabulary.migrate.iri.confirmLabel":
-      "To confirm, enter the name of the {assetType, select, vocabulary {vocabulary} term {term} other {asset}}",
+      "To confirm, enter the name of the vocabulary",
 
     "vocabulary.primaryLanguage": "Primary vocabulary language",
     "vocabulary.preferredNamespaceUri": "Preferred namespace URI",
@@ -703,6 +702,8 @@ const en = {
       "Attribute has more than {threshold} values. Click here to show them.",
     "term.largeValueList.open":
       "Attribute has more than {threshold} values. Click here to hide them.",
+    "term.migrate.iri.title": "Change identifier of the term",
+    "term.migrate.iri.confirmLabel": "To confirm, enter the name of the term",
 
     "glossary.title": "Terms",
     "glossary.termCount.tooltip":

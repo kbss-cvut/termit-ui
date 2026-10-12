@@ -14,7 +14,13 @@ import CopyIriIcon from "../misc/CopyIriIcon";
 import TermMetadata from "./TermMetadata";
 import Term from "../../model/Term";
 import TermItState from "../../model/TermItState";
-import { Button } from "reactstrap";
+import {
+  Button,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledButtonDropdown,
+} from "reactstrap";
 import { GoPencil } from "react-icons/go";
 import EditableComponent, {
   EditableComponentState,
@@ -62,6 +68,9 @@ import {
 } from "../../action/AsyncTermRelationshipAnnotationActions";
 import TermRemoveDialog from "./TermRemoveDialog";
 import { TermRemovalOptions } from "../../model/TermRemovalOptions";
+import React from "react";
+import { IoMdMove } from "react-icons/io";
+import TermIriMigrationDialog from "./TermIriMigrationDialog";
 
 const USER_VOCABULARIES_VALIDATION_ENDPOINT =
   "/user" + Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_VALIDATION;
@@ -101,6 +110,7 @@ interface TermDetailProps
 
 export interface TermDetailState extends EditableComponentState {
   language: string;
+  showIriMigrationDialog: boolean;
 }
 
 export function resolveInitialLanguage(props: CommonTermDetailProps) {
@@ -123,6 +133,7 @@ export class TermDetail extends EditableComponent<
       edit: false,
       showRemoveDialog: false,
       language: resolveInitialLanguage(props),
+      showIriMigrationDialog: false,
     };
   }
 
@@ -249,6 +260,13 @@ export class TermDetail extends EditableComponent<
     });
   };
 
+  private onMigrateIriClick = () => {
+    this.setState({ showIriMigrationDialog: true });
+  };
+  private closeIriMigrationDialog = () => {
+    this.setState({ showIriMigrationDialog: false });
+  };
+
   public getActions = () => {
     const actions: React.ReactElement[] = [];
     if (!this.state.edit) {
@@ -294,6 +312,36 @@ export class TermDetail extends EditableComponent<
           <FaTrashAlt />
           &nbsp;{this.props.i18n("remove")}
         </Button>
+      </IfVocabularyActionAuthorized>
+    );
+    actions.push(
+      <IfVocabularyActionAuthorized
+        key={"term-detail-more-actions"}
+        vocabulary={this.props.vocabulary}
+        requiredAccessLevel={AccessLevel.SECURITY}
+      >
+        <UncontrolledButtonDropdown>
+          <DropdownToggle
+            size="sm"
+            caret={false}
+            color="primary"
+            style={{ borderRadius: "0.2rem" }}
+          >
+            <span className="dropdown-toggle">
+              {this.props.i18n("moreActions")}
+            </span>
+          </DropdownToggle>
+          <DropdownMenu className="custom-attributes-actions-menu" right={true}>
+            <DropdownItem
+              className="btn-sm"
+              title={this.props.i18n("term.migrate.iri.title")}
+              onClick={this.onMigrateIriClick}
+            >
+              <IoMdMove className="mr-1" />
+              {this.props.i18n("asset.migrate.iri.label")}
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledButtonDropdown>
       </IfVocabularyActionAuthorized>
     );
     return actions;
@@ -363,6 +411,12 @@ export class TermDetail extends EditableComponent<
         <div className="small italics">
           {altLabels.length > 0 ? altLabels : "\u00a0"}
         </div>
+        <TermIriMigrationDialog
+          term={term}
+          vocabulary={vocabulary}
+          isVisible={this.state.showIriMigrationDialog}
+          onClose={this.closeIriMigrationDialog}
+        />
       </>
     );
   }
