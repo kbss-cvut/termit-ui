@@ -290,7 +290,7 @@ const en = {
     "asset.migrate.iri.label": "Change Identifier",
     "asset.migrate.iri.dangerZone.label": "Danger Zone",
     "asset.migrate.iri.dangerZone.description":
-      "International identifiers should be unique and immutable. Changing them will break external links from resources and clients outside TermIt!",
+      "Identifiers should be unique and immutable. Changing them will break external links from resources and clients outside TermIt!",
     "asset.migrate.iri.originalIri": "Original identifier",
     "asset.migrate.iri.newIri": "New identifier",
     "asset.migrate.iri.error.sameAsOriginal":

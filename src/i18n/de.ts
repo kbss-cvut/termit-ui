@@ -299,7 +299,7 @@ const de = {
     "asset.migrate.iri.label": "Ändern Identifikator",
     "asset.migrate.iri.dangerZone.label": "Gefahrenzone",
     "asset.migrate.iri.dangerZone.description":
-      "Internationale Identifikatoren sollten eindeutig und unveränderlich sein. Ihre Änderung unterbricht externe Verknüpfungen von Ressourcen und Clients außerhalb von TermIt!",
+      "Identifikatoren sollten eindeutig und unveränderlich sein. Ihre Änderung unterbricht externe Verknüpfungen von Ressourcen und Clients außerhalb von TermIt!",
     "asset.migrate.iri.originalIri": "Ursprünglicher Identifikator",
     "asset.migrate.iri.newIri": "Neuer Identifikator",
     "asset.migrate.iri.error.sameAsOriginal":

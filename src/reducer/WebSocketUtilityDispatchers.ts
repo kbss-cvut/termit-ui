@@ -46,7 +46,7 @@ interface IdentifierMigrationFailedEvent {
 }
 
 export function onIdentifierMigrationCompleted(message: IMessage) {
-  return (dispatch: ThunkDispatch) => {
+  return async (dispatch: ThunkDispatch) => {
     const payload:
       | IdentifierMigrationCompletedEventPayload
       | IdentifierMigrationFailedEvent = JSON.parse(message.body);
@@ -80,7 +80,7 @@ export function onIdentifierMigrationCompleted(message: IMessage) {
       promise = dispatch(getCustomAttributes());
     }
 
-    Promise.all([promise]).then(() => {
+    await Promise.all([promise]).then(() => {
       dispatch(
         publishSuccessMessage({
           messageId: "asset.migrate.iri.completed",

@@ -111,13 +111,7 @@ export const TermSelector: React.FC<{
   const selected = multi ? selectedValues : selectedValues.slice(0, 1);
 
   const handleChange = (newValue: readonly Term[] | Term | null) => {
-    if (newValue === null) {
-      onChange([]);
-    } else if (Array.isArray(newValue)) {
-      onChange(newValue);
-    } else {
-      onChange([newValue as Term]);
-    }
+    onChange(Utils.sanitizeArray(newValue as Term[]));
   };
 
   const fetchOptions = async (

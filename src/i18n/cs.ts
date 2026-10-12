@@ -301,7 +301,7 @@ const cs = {
     "asset.migrate.iri.label": "Změnit identifikátor",
     "asset.migrate.iri.dangerZone.label": "Nebezpečná zóna",
     "asset.migrate.iri.dangerZone.description":
-      "Mezinárodní identifikátory by měly být unikátní a neměnné. Jejich změna naruší externí vazby zdrojů a klientů mimo TermIt!",
+      "Identifikátory by měly být unikátní a neměnné. Jejich změna naruší externí vazby zdrojů a klientů mimo TermIt!",
     "asset.migrate.iri.originalIri": "Původní identifikátor",
     "asset.migrate.iri.newIri": "Nový identifikátor",
     "asset.migrate.iri.error.sameAsOriginal":
