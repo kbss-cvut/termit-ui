@@ -80,7 +80,7 @@ export function exportFileContent(
       .then((resp: AxiosResponse) => {
         const fileName = fileIri.fragment;
         const mimeType = resp.headers["content-type"];
-        Utils.fileDownload(resp.data, fileName, mimeType);
+        Utils.fileDownload(resp.data, fileName, mimeType as string);
         return dispatch(asyncActionSuccess(action));
       })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
