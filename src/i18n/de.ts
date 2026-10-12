@@ -351,10 +351,9 @@ const de = {
     "vocabulary.vocabularies.select.placeholder":
       "Beginnen Sie mit der Eingabe, um Vokabulare nach Namen zu filtern",
     "vocabulary.title": "Titel",
-    "vocabulary.migrate.iri.title":
-      "Identifikator des Vokabulars oder eines Begriffs ändern",
+    "vocabulary.migrate.iri.title": "Identifikator des Vokabulars ändern",
     "vocabulary.migrate.iri.confirmLabel":
-      "Geben Sie zur Bestätigung den Namen {assetType, select, vocabulary {des Vokabulars} term {des Begriffs} other {des Eintrags}} ein",
+      "Geben Sie zur Bestätigung den Namen des Vokabulars ein",
 
     "vocabulary.primaryLanguage": "Primäres Vokabular der Sprache",
     "vocabulary.preferredNamespaceUri": "Bevorzugte Namespace-URI",
@@ -675,6 +674,9 @@ const de = {
       "Das Attribut hat mehr als {threshold} Werte. Klicken Sie hier, um sie anzuzeigen.",
     "term.largeValueList.open":
       "Das Attribut hat mehr als {threshold} Werte. Klicken Sie hier, um sie auszublenden.",
+    "term.migrate.iri.title": "Identifikator des Begriffs ändern",
+    "term.migrate.iri.confirmLabel":
+      "Geben Sie zur Bestätigung den Namen des Begriffs ein",
 
     "glossary.title": "Bedingungen",
     "glossary.termCount.tooltip":

@@ -540,9 +540,9 @@ const cs = {
     "vocabulary.remove.dialog.input.label":
       "Pro ověření, zadejte název slovníku",
 
-    "vocabulary.migrate.iri.title": "Změnit identifikátor slovníku nebo pojmu",
+    "vocabulary.migrate.iri.title": "Změnit identifikátor slovníku",
     "vocabulary.migrate.iri.confirmLabel":
-      "Pro potvrzení zadejte název {assetType, select, vocabulary {slovníku} term {pojmu} other {záznamu}}",
+      "Pro potvrzení zadejte název slovníku",
 
     "resource.created.message": "Zdroj úspěšně vytvořen.",
     "resource.updated.message": "Zdroj úspěšně uložen.",
@@ -710,6 +710,8 @@ const cs = {
       "Atribut má více než {threshold} hodnot. Klikněte pro jejich zobrazení.",
     "term.largeValueList.open":
       "Atribut má více než {threshold} hodnot. Klikněte pro jejich skrytí.",
+    "term.migrate.iri.title": "Změnit identifikátor pojmu",
+    "term.migrate.iri.confirmLabel": "Pro potvrzení zadejte název pojmu",
 
     "glossary.title": "Pojmy",
     "glossary.termCount.tooltip":

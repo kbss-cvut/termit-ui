@@ -38,6 +38,7 @@ export function updateLongRunningTasks(message: IMessage, action: Action) {
 interface IdentifierMigrationCompletedEventPayload {
   migrationType: IriMigrationType;
   iris: IriMigrationPair;
+  vocabularyIri: string;
 }
 
 interface IdentifierMigrationFailedEvent {
@@ -67,15 +68,32 @@ export function onIdentifierMigrationCompleted(message: IMessage) {
 
     let promise: Promise<any> | undefined = undefined;
 
+    const vocabularyIri = payload.vocabularyIri
+      ? VocabularyUtils.create(payload.vocabularyIri)
+      : undefined;
+
     if (payload.migrationType === IriMigrationType.VOCABULARY) {
       // vocabulary identifier changed, navigating to new location
-      const vocabularyUri = VocabularyUtils.create(payload.iris.newIri);
-      Routing.transitionTo(Routes.vocabularySummary, {
-        params: new Map().set("name", vocabularyUri.fragment),
-        query: new Map().set("namespace", vocabularyUri.namespace),
-      });
+      if (vocabularyIri) {
+        Routing.transitionTo(Routes.vocabularySummary, {
+          params: new Map().set("name", vocabularyIri.fragment),
+          query: new Map().set("namespace", vocabularyIri.namespace),
+        });
+      } else {
+        Routing.transitionToHome();
+      }
     } else if (payload.migrationType === IriMigrationType.TERM) {
-      Routing.reload();
+      if (vocabularyIri) {
+        const termIri = VocabularyUtils.create(payload.iris.newIri);
+        Routing.transitionTo(Routes.vocabularyTermDetail, {
+          params: new Map()
+            .set("name", vocabularyIri.fragment)
+            .set("termName", termIri.fragment),
+          query: new Map().set("namespace", vocabularyIri.namespace),
+        });
+      } else {
+        Routing.transitionToHome();
+      }
     } else if (payload.migrationType === IriMigrationType.CUSTOM_ATTRIBUTE) {
       promise = dispatch(getCustomAttributes());
     }
