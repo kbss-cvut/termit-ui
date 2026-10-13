@@ -153,6 +153,7 @@ const VocabularyUtils = {
   XSD_INT: _NS_XSD + "int",
   XSD_BOOLEAN: _NS_XSD + "boolean",
   XSD_STRING: _NS_XSD + "string",
+  RDF_LANGSTRING: _NS_RDF + "langString",
 
   SH_RESULT_SEVERITY: _NS_SH + "resultSeverity",
   SH_SOURCE_SHAPE: _NS_SH + "sourceShape",

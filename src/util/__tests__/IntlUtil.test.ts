@@ -11,6 +11,7 @@ import Generator from "../../__tests__/environment/Generator";
 import { TERM_MULTILINGUAL_ATTRIBUTES } from "../../model/Term";
 import { VOCABULARY_MULTILINGUAL_ATTRIBUTES } from "../../model/Vocabulary";
 import type { Mock } from "vitest";
+import VocabularyUtils from "../VocabularyUtils";
 
 vi.mock("../BrowserStorage");
 
@@ -75,6 +76,22 @@ describe("IntlUtil", () => {
       };
       const result = getLanguages(TERM_MULTILINGUAL_ATTRIBUTES, term);
       expect(result).toEqual(["cs", "de", "en", "es"]);
+    });
+
+    it("resolves languages from compacted multilingual string without context", () => {
+      const voc = Generator.generateVocabulary();
+      const prop = VocabularyUtils.PREFIX_DC + "abstract";
+      voc[prop] = [
+        { "@language": "cs", "@value": "Hodnota" },
+        { "@language": "de", "@value": "Wert" },
+      ];
+      const result = getLanguages(
+        [...VOCABULARY_MULTILINGUAL_ATTRIBUTES, prop],
+        voc
+      );
+      expect(result).toContain("cs");
+      expect(result).toContain("de");
+      expect(result).not.toContain("@value");
     });
   });
 

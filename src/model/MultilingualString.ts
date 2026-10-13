@@ -1,6 +1,7 @@
 import Constants from "../util/Constants";
 import Utils from "../util/Utils";
 import { getShortLocale, normalizeLanguageTag } from "../util/IntlUtil";
+import { HasUnmappedProperties } from "./WithUnmappedProperties";
 
 export function context(propertyIri: string) {
   return {
@@ -235,6 +236,57 @@ export function hasLabelInLanguage(
   language: string
 ): boolean {
   return getLocalizedInLanguage(label, language).length > 0;
+}
+
+/**
+ * Compacts multilingual custom attribute values on the given asset.
+ *
+ * For each attribute name supplied in `multilingualCustomAttributes`, if the
+ * corresponding property on `asset` is an array, the function transforms that
+ * array of objects (each expected to contain an `@value` and optional
+ * `@language` field) into a `PluralMultilingualString`. The resulting object
+ * groups values by language code, using a default language identifier when
+ * `@language` is missing. The original array property on the asset is replaced
+ * with this compacted representation.
+ *
+ * The function mutates the provided `asset` in place and does not return a
+ * value. If `multilingualCustomAttributes` is empty, the function exits early
+ * without making any changes.
+ *
+ * @param asset - The asset object whose multilingual custom attribute
+ *   properties will be compacted. The object must conform to `HasUnmappedProperties`.
+ * @param multilingualCustomAttributes - An array of attribute names
+ *   that should be processed. Each name refers to a property on `asset` expected
+ *   to be an array of multilingual string objects, or a single such object.
+ */
+export function compactMultilingualCustomAttributeValues<
+  T extends HasUnmappedProperties
+>(asset: T, multilingualCustomAttributes: string[]) {
+  if (multilingualCustomAttributes.length === 0) {
+    return;
+  }
+  multilingualCustomAttributes.forEach((attribute) => {
+    const attributeValue = asset[attribute];
+    const items = Array.isArray(attributeValue)
+      ? attributeValue
+      : attributeValue?.["@value"] !== undefined
+      ? [attributeValue]
+      : null;
+    if (!items) {
+      return;
+    }
+    asset[attribute] = items.reduce(
+      (values: PluralMultilingualString, item: any) => {
+        if (item?.["@value"] === undefined) {
+          return values;
+        }
+        const language = item["@language"] || NO_LANG;
+        values[language] = [...(values[language] || []), item["@value"]];
+        return values;
+      },
+      {}
+    );
+  });
 }
 
 export default MultilingualString;

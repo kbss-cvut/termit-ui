@@ -79,6 +79,7 @@ function renderFacet(
           onChange={onChange}
         />
       );
+    case VocabularyUtils.RDF_LANGSTRING:
     case VocabularyUtils.XSD_STRING:
       return (
         <TextFacet

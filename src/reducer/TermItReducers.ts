@@ -49,6 +49,9 @@ import { LongRunningTask } from "../model/LongRunningTask";
 import { loadTermsFlatListPreference } from "../util/UISettingsUtil";
 import RelationshipAnnotation from "../model/meta/RelationshipAnnotation";
 import AnnotatedTermRelationship from "../model/meta/AnnotatedTermRelationship";
+import { selectMultilingualCustomAttributeIris } from "../store/StateSelectors";
+import { compactMultilingualCustomAttributeValues } from "../model/MultilingualString";
+import { HasUnmappedProperties } from "../model/WithUnmappedProperties";
 
 function isAsyncSuccess(action: Action) {
   return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
@@ -129,7 +132,7 @@ function intl(
 
 function vocabulary(
   state: Vocabulary = EMPTY_VOCABULARY,
-  action: AsyncActionSuccess<Vocabulary | string[]>
+  action: AsyncActionSuccess<Vocabulary | string[] | CustomAttribute[]>
 ): Vocabulary {
   switch (action.type) {
     case ActionType.LOAD_VOCABULARY:
@@ -150,11 +153,41 @@ function vocabulary(
         : state;
     case ActionType.LOAD_TERM_COUNT:
       return onTermCountLoaded(state, action);
+    case ActionType.GET_CUSTOM_ATTRIBUTES:
+      if (
+        action.status === AsyncActionStatus.SUCCESS &&
+        state !== EMPTY_VOCABULARY
+      ) {
+        return recompactMultilingualCustomAttributeValues(
+          state,
+          (action as AsyncActionSuccess<CustomAttribute[]>).payload
+        );
+      } else {
+        return state;
+      }
     case ActionType.LOGOUT:
       return EMPTY_VOCABULARY;
     default:
       return state;
   }
+}
+
+/**
+ * Compacts multilingual custom attribute values.
+ *
+ * This has to be done because it may happen that custom attributes are not loaded
+ * when compacting the asset (e.g., a Vocabulary) and are retrieved later.
+ * @param asset The asset to recompact
+ * @param customAttributes All custom attributes
+ */
+function recompactMultilingualCustomAttributeValues<
+  T extends HasUnmappedProperties
+>(asset: T, customAttributes: CustomAttribute[]): T {
+  const multilingualCustomAttributes = selectMultilingualCustomAttributeIris({
+    customAttributes,
+  });
+  compactMultilingualCustomAttributeValues(asset, multilingualCustomAttributes);
+  return asset;
 }
 
 function onTermCountLoaded(state: Vocabulary, action: AsyncActionSuccess<any>) {
@@ -253,7 +286,9 @@ function vocabularies(
 
 function selectedTerm(
   state: Term | null = null,
-  action: SelectingTermsAction | AsyncActionSuccess<Term | string>
+  action:
+    | SelectingTermsAction
+    | AsyncActionSuccess<Term | string | CustomAttribute[]>
 ) {
   switch (action.type) {
     case ActionType.SELECT_VOCABULARY_TERM:
@@ -270,6 +305,18 @@ function selectedTerm(
             })
           )
         : state;
+    case ActionType.GET_CUSTOM_ATTRIBUTES:
+      if (
+        (action as AsyncAction).status === AsyncActionStatus.SUCCESS &&
+        state !== null
+      ) {
+        return recompactMultilingualCustomAttributeValues(
+          state,
+          (action as AsyncActionSuccess<CustomAttribute[]>).payload
+        );
+      } else {
+        return state;
+      }
     case ActionType.LOGOUT:
       return null;
     default:
