@@ -64,7 +64,7 @@
     "build": "npm run typecheck && npm run lint && vite build",
     "preview": "vite preview",
     "test": "vitest watch",
-    "test-ci": "vitest run",
+    "test-ci": "npm run typecheck:test && vitest run",
     "test:coverage": "vitest run --coverage",
     "build-prod": "npm run test-ci && npm run build",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
@@ -73,6 +73,7 @@
     "prepare": "husky",
     "version": "echo $npm_package_version",
     "typecheck": "tsc",
+    "typecheck:test": "tsc -p tsconfig.test.json",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix"
   },
