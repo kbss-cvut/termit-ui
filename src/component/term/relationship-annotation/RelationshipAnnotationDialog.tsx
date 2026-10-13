@@ -16,11 +16,15 @@ interface RelationshipAnnotationDialogProps {
   relationship: ResourceRelationship;
   show: boolean;
   onClose: () => void;
+  /**
+   * The language in which multilingual custom attribute values should be displayed and modified
+   */
+  language: string;
 }
 
 export const RelationshipAnnotationDialog: React.FC<
   RelationshipAnnotationDialogProps
-> = ({ relationship, show, onClose }) => {
+> = ({ relationship, show, onClose, language }) => {
   const { i18n, locale } = useI18n();
   const [edit, setEdit] = React.useState(false);
   React.useEffect(() => {
@@ -70,11 +74,13 @@ export const RelationshipAnnotationDialog: React.FC<
             relationshipAnnotations={relevantAnnotations}
             onCancel={() => setEdit(false)}
             onClose={onClose}
+            language={language}
           />
         ) : (
           <RelationshipAnnotationView
             relationshipAnnotations={relevantAnnotations}
             relationship={relationship}
+            language={language}
           />
         )}
       </ModalBody>
