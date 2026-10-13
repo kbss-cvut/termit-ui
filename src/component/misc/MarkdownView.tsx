@@ -9,6 +9,7 @@ const MarkdownImage = (
     React.ImgHTMLAttributes<HTMLImageElement> &
     ReactMarkdownProps
 ) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { node, alt, ...rest } = props;
   return <img style={{ maxWidth: "100%" }} alt={alt} {...rest} />;
 };

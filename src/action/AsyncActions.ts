@@ -439,7 +439,7 @@ export function removeVocabulary(vocabulary: Vocabulary) {
  * @param removalOptions handling of sub-terms, occurrences, and relationships
  */
 export function removeTerm(term: Term, removalOptions?: TermRemovalOptions) {
-  const vocabularyIri = VocabularyUtils.create(term.vocabulary?.iri!);
+  const vocabularyIri = VocabularyUtils.create(term.vocabulary!.iri!);
   const additionalParams = removalOptions
     ? new Map([
         ["subTermsStrategy", removalOptions.subTermsStrategy],

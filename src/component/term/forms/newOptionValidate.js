@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 const validateLengthMin5 = (value, values, i18n) => {
   return !value || value.length < 5
     ? i18n("glossary.form.validation.validateLengthMin5")

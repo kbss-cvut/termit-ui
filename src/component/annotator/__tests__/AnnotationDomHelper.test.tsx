@@ -1,6 +1,6 @@
 import { DomHandler, DomUtils, Parser as HtmlParser } from "htmlparser2";
 import AnnotationDomHelper, { AnnotationType } from "../AnnotationDomHelper";
-import { DataNode, Element, Node } from "domhandler";
+import { ChildNode, DataNode, Element, Node } from "domhandler";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 
 describe("AnnotationDomHelper", () => {
@@ -31,7 +31,7 @@ describe("AnnotationDomHelper", () => {
     </p>`;
 
   const options = { decodeEntities: true };
-  let dom: Node[];
+  let dom: ChildNode[];
   let annotationSpan: Element;
   let otherSpan: Element;
   const sut = AnnotationDomHelper;
@@ -41,7 +41,7 @@ describe("AnnotationDomHelper", () => {
     const handler = new DomHandler();
     const parser = new HtmlParser(handler, options);
     parser.parseComplete(html);
-    dom = handler.dom as Node[];
+    dom = handler.dom;
     annotationSpan = du.find(
       (n: Node) =>
         (n as Element).name === "span" &&

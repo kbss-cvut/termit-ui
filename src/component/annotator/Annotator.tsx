@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Element, ChildNode as DomHandlerNode } from "domhandler";
+import { ChildNode as DomHandlerNode, Element } from "domhandler";
 import HtmlParserUtils from "./HtmlParserUtils";
 import AnnotationDomHelper, {
   AnnotationType,
@@ -192,7 +192,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
             stickyAnnotationId: highlightedElem.getAttribute("about")!,
           });
         }
-      } catch (e) {
+      } catch (_) {
         this.props.publishMessage(
           new Message(
             { messageId: "annotator.findAnnotation.error" },
@@ -366,7 +366,7 @@ export class Annotator extends React.Component<AnnotatorProps, AnnotatorState> {
 
   public onCloseTermDefinitionDialog = () => {
     this.onRemove(
-      this.state.existingTermDefinitionAnnotationElement?.attribs!.about!
+      this.state.existingTermDefinitionAnnotationElement!.attribs!.about!
     );
     this.setState({
       existingTermDefinitionAnnotationElement: undefined,

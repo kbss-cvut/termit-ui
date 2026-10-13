@@ -65,7 +65,7 @@ describe("AsyncCommentActions", () => {
     });
 
     function generateComments(termIri: IRI) {
-      const comments = [];
+      const comments: Record<string, any>[] = [];
       for (let i = 0; i < 5; i++) {
         comments.push({
           "@id": Generator.generateUri(),

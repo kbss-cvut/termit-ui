@@ -5,7 +5,11 @@ import { ThunkDispatch, useAppSelector } from "../../../util/Types";
 import Utils from "../../../util/Utils";
 import { Button, ButtonToolbar, Col, Row } from "reactstrap";
 import { CustomAttributeValueEdit } from "../../genericmetadata/CustomAttributeValueEdit";
-import { PropertyValueType } from "../../../model/WithUnmappedProperties";
+import {
+  PropertyValuesType,
+  PropertyValueType,
+} from "../../../model/WithUnmappedProperties";
+import { PluralMultilingualString } from "../../../model/MultilingualString";
 import { useI18n } from "../../hook/useI18n";
 import { useDispatch } from "react-redux";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -21,11 +25,21 @@ export const RelationshipAnnotationEdit: React.FC<{
   relationshipAnnotations: RelationshipAnnotation[];
   onCancel: () => void;
   onClose: () => void;
-}> = ({ relationship, relationshipAnnotations, onCancel, onClose }) => {
+  /**
+   * The language in which multilingual custom attribute values should be modified
+   */
+  language: string;
+}> = ({
+  relationship,
+  relationshipAnnotations,
+  onCancel,
+  onClose,
+  language,
+}) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const [state, setState] = React.useState<{
-    [key: string]: PropertyValueType[];
+    [key: string]: PropertyValuesType;
   }>(() => {
     const initState = {};
     relationshipAnnotations.forEach((ann) => {
@@ -39,7 +53,7 @@ export const RelationshipAnnotationEdit: React.FC<{
       .map((ar) => ar.iri)
       .includes(relationship.predicate)
   );
-  const onChange = (annotationProp: string, value: PropertyValueType[]) => {
+  const onChange = (annotationProp: string, value: PropertyValuesType) => {
     setState(Object.assign({}, state, { [annotationProp]: value }));
   };
   const onSave = () => {
@@ -54,7 +68,9 @@ export const RelationshipAnnotationEdit: React.FC<{
               value: relationship.object,
             },
             attribute: { iri: annotationIri },
-            value: state[annotationIri],
+            value: Utils.sanitizeArray<
+              PropertyValueType | PluralMultilingualString
+            >(state[annotationIri]),
           };
           return dispatch(updateTermRelationshipAnnotation(termIri, data));
         })
@@ -81,6 +97,7 @@ export const RelationshipAnnotationEdit: React.FC<{
               attribute={att}
               values={state[att.iri] || []}
               onChange={(attribute, values) => onChange(attribute.iri, values)}
+              language={language}
             />
           </Col>
         </Row>

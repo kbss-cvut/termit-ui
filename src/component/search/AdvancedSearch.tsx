@@ -270,6 +270,8 @@ const AdvancedSearch: React.FC = () => {
       dispatch(updateSearchFilter({ facetParams: nextParams }));
     }
   }, [
+    dispatch,
+    facetParams,
     visibleFacets,
     debouncedSearch,
     runSearch,

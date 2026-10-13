@@ -110,6 +110,7 @@ function renderValue(
               label: MultilingualString;
             },
           }}
+          language={selectedLang}
         />
       )}
     </>

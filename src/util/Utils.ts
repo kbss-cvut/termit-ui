@@ -72,7 +72,7 @@ const Utils = {
         uri.scheme !== undefined &&
         (Utils.notBlank(uri.host) || uri.scheme === "urn")
       );
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   },

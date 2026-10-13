@@ -14,7 +14,11 @@ import { ResourceRelationship } from "./RelationshipAnnotationButton";
 export const RelationshipAnnotationView: React.FC<{
   relationshipAnnotations: RelationshipAnnotation[];
   relationship: ResourceRelationship;
-}> = ({ relationshipAnnotations, relationship }) => {
+  /**
+   * The language in which multilingual custom attribute values should be displayed
+   */
+  language: string;
+}> = ({ relationshipAnnotations, relationship, language }) => {
   const { locale } = useI18n();
   const lang = getShortLocale(locale);
   const customAttributes = useAppSelector((state) => state.customAttributes);
@@ -44,12 +48,20 @@ export const RelationshipAnnotationView: React.FC<{
             </Col>
             <Col md={8}>
               {value.length === 1 ? (
-                <CustomAttributeValue attribute={att} value={value[0]} />
+                <CustomAttributeValue
+                  attribute={att}
+                  value={value[0]}
+                  language={language}
+                />
               ) : (
                 <List type="unstyled" className="mb-3">
                   {value.map((val) => (
                     <li key={stringifyPropertyValue(val)}>
-                      <CustomAttributeValue attribute={att} value={val} />
+                      <CustomAttributeValue
+                        attribute={att}
+                        value={val}
+                        language={language}
+                      />
                     </li>
                   ))}
                 </List>

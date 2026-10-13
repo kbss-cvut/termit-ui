@@ -49,7 +49,7 @@ import TermScopeNoteEdit from "./TermScopeNoteEdit";
 import HelpIcon from "../misc/HelpIcon";
 import TermStateSelector from "./state/TermStateSelector";
 import Vocabulary from "../../model/Vocabulary";
-import { PropertyValueType } from "../../model/WithUnmappedProperties";
+import { PropertyValuesType } from "../../model/WithUnmappedProperties";
 import Message from "../../model/Message";
 import MessageType from "../../model/MessageType";
 import { ThunkDispatch } from "../../util/Types";
@@ -71,7 +71,7 @@ interface TermMetadataEditProps extends HasI18n {
 
 interface TermMetadataEditState extends TermData {
   labelExist: LabelExists;
-  unmappedProperties: Map<string, PropertyValueType[]>;
+  unmappedProperties: Map<string, PropertyValuesType>;
   definitionRelated: DefinitionRelatedChanges;
 }
 
@@ -220,7 +220,7 @@ export class TermMetadataEdit extends React.Component<
     this.setState({ state: { iri: stateIri } });
   };
 
-  private onPropertiesChange = (update: Map<string, PropertyValueType[]>) => {
+  private onPropertiesChange = (update: Map<string, PropertyValuesType>) => {
     this.setState({ unmappedProperties: update });
   };
 
@@ -236,6 +236,7 @@ export class TermMetadataEdit extends React.Component<
     if (this.isInvalid()) {
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { labelExist, unmappedProperties, definitionRelated, ...data } =
       this.state;
     const t = new Term(data);
@@ -416,7 +417,7 @@ export class TermMetadataEdit extends React.Component<
                     <RelatedTermsSelector
                       id="edit-term-related"
                       term={this.props.term}
-                      vocabularyIri={this.props.term.vocabulary?.iri!}
+                      vocabularyIri={this.props.term.vocabulary!.iri!}
                       selected={Term.consolidateRelatedAndRelatedMatch(
                         this.state,
                         this.props.language

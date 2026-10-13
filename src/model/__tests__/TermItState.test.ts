@@ -4,6 +4,7 @@ import Generator from "../../__tests__/environment/Generator";
 import Document from "../Document";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import File from "../File";
+import { langString } from "../MultilingualString";
 
 describe("TermItState", () => {
   describe("toLoggable", () => {
@@ -11,7 +12,7 @@ describe("TermItState", () => {
       const sut = new TermItState();
       const vocabulary = new Vocabulary({
         iri: Generator.generateUri(),
-        label: "Test vocabulary",
+        label: langString("Test vocabulary"),
       });
       const document = new Document({
         iri: Generator.generateUri(),

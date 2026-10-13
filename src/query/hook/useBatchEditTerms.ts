@@ -11,6 +11,7 @@ import MessageType from "../../model/MessageType";
 import Constants from "../../util/Constants";
 
 interface BatchEditParams {
+  apiPrefix: string;
   vocabularyIri: string;
   data: TermBatchEditDto;
 }

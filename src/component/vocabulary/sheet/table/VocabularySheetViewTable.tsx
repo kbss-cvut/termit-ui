@@ -5,13 +5,13 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
+  Input,
   Spinner,
   UncontrolledDropdown,
-  Input,
 } from "reactstrap";
 import { MdFormatSize } from "react-icons/md";
 import { useDebouncedCallback } from "use-debounce";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Term, { TermInfo } from "../../../../model/Term";
 import Vocabulary from "../../../../model/Vocabulary";
 import TermItState from "../../../../model/TermItState";
@@ -34,9 +34,9 @@ import { useUpdateTerm } from "../../../../query/hook/useUpdateTerm";
 import "./VocabularySheetViewTable.scss";
 import {
   previewValues,
-  resolveTypeLabels,
-  resolveGridColumnWidth,
   resolveAvailableTermLanguages,
+  resolveGridColumnWidth,
+  resolveTypeLabels,
   TermsTableColumn,
 } from "./VocabularySheetViewTableUtils";
 import { ExpandableTextCell } from "./cell/ExpandableTextCell";
@@ -61,7 +61,6 @@ import { FilterPanel } from "./filter/FilterPanel";
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;
   selectedTermIri: string | null;
-  onTermSelect: (term: Term) => void;
 }
 
 const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
@@ -90,7 +89,7 @@ type TableFontSize = (typeof FONT_SIZE_OPTIONS)[number];
 
 export const VocabularySheetViewTable: React.FC<
   VocabularySheetViewTableProps
-> = ({ vocabulary, selectedTermIri, onTermSelect }) => {
+> = ({ vocabulary, selectedTermIri }) => {
   const dispatch: ThunkDispatch = useDispatch();
   const { i18n, formatMessage, locale } = useI18n();
   const shortLocale = getShortLocale(locale);
@@ -188,7 +187,7 @@ export const VocabularySheetViewTable: React.FC<
           ...parsed,
           label: true,
         };
-      } catch (e) {
+      } catch (_) {
         // Fallback to default
       }
     }
@@ -400,7 +399,6 @@ export const VocabularySheetViewTable: React.FC<
       getCellKey,
       vocabulary.iri,
       handleEditClick,
-      i18n,
     ]
   );
 
@@ -719,8 +717,10 @@ export const VocabularySheetViewTable: React.FC<
     ],
     [
       displayLanguage,
+      expandedCellKey,
+      getCellKey,
+      handleEditClick,
       i18n,
-      onTermSelect,
       renderExpandableTermListCell,
       typeOptions,
     ]
@@ -761,6 +761,8 @@ export const VocabularySheetViewTable: React.FC<
 
   const virtualRows = rowVirtualizer.getVirtualItems();
 
+  const { fetchNextPage, hasNextPage, isFetchingNextPage } = termsQuery;
+
   React.useEffect(() => {
     const lastVirtualRow = virtualRows[virtualRows.length - 1];
 
@@ -770,17 +772,17 @@ export const VocabularySheetViewTable: React.FC<
 
     if (
       lastVirtualRow.index >= displayedTerms.length - LOAD_MORE_THRESHOLD &&
-      termsQuery.hasNextPage &&
-      !termsQuery.isFetchingNextPage
+      hasNextPage &&
+      !isFetchingNextPage
     ) {
-      termsQuery.fetchNextPage();
+      fetchNextPage();
     }
   }, [
     displayedTerms.length,
     loadedTerms.length,
-    termsQuery.fetchNextPage,
-    termsQuery.hasNextPage,
-    termsQuery.isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     virtualRows,
   ]);
 

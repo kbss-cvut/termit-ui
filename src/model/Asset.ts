@@ -26,7 +26,7 @@ export const ASSET_CONTEXT = {
   types: "@type",
 };
 
-export interface SupportsJsonLd<T extends any> {
+export interface SupportsJsonLd<T> {
   toJsonLd(): T;
 }
 

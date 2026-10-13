@@ -5,7 +5,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { trackPromise } from "react-promise-tracker";
 import { Button, Card, CardBody } from "reactstrap";
 import { GoPlus } from "react-icons/go";
-import Term from "../../../model/Term";
 import TermItState from "../../../model/TermItState";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
 import AppNotification from "../../../model/AppNotification";
@@ -138,10 +137,6 @@ const VocabularySheetViewPage: React.FC<RouteComponentProps<any>> = ({
 
   useRefreshVocabularySheetViewOnNotifications(notifications, dispatch);
 
-  const onTermSelect = (term: Term) => {
-    Routing.transitionToAsset(term);
-  };
-
   const onOpenVocabularyDetail = () => {
     Routing.transitionTo(Routes.vocabularySummary, {
       params: new Map([["name", vocabularyIri.fragment]]),
@@ -207,7 +202,6 @@ const VocabularySheetViewPage: React.FC<RouteComponentProps<any>> = ({
             <VocabularySheetViewTable
               vocabulary={vocabulary}
               selectedTermIri={selectedTerm ? selectedTerm.iri : null}
-              onTermSelect={onTermSelect}
             />
           )}
         </CardBody>

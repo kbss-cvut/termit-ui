@@ -33,9 +33,11 @@ const CommentDislikes: React.FC<CommentDislikesProps> = (props) => {
   let iconClass;
   if (isMine(comment, currentUser)) {
     onClick = () => {
-      reacted
-        ? removeReaction(comment)
-        : addReaction(comment, ReactionType.DISLIKE);
+      if (reacted) {
+        removeReaction(comment);
+      } else {
+        addReaction(comment, ReactionType.DISLIKE);
+      }
     };
     iconClass = "actionable-reaction";
   }
