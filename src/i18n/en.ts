@@ -269,11 +269,28 @@ const en = {
       "Change identifier of a custom attribute",
     "administration.customization.customAttributes.migrate.iri.confirmLabel":
       "To confirm, enter the name of the custom attribute",
+
     "administration.customization.customAttributes.symmetric": "Symmetric",
     "administration.customization.customAttributes.symmetric.tooltip":
       "Attribute is symmetric",
     "administration.customization.customAttributes.symmetric.help":
       "In a symmetric relationship, setting it in one direction automatically applies it in the opposite direction.",
+
+    "administration.customization.customAttributes.profile.import.title":
+      "Import profile",
+    "administration.customization.customAttributes.profile.export.title":
+      "Export profile",
+    "administration.customization.customAttributes.profile.export.heading":
+      "Export a profile of custom attributes",
+    "administration.customization.customAttributes.profile.export.description":
+      "Enter the name and description of the profile to export and select custom attributes that should be included in the profile.",
+    "administration.customization.customAttributes.profile.export.description2":
+      "The profile name and description are shown to administrators before they import the profile. You can share the exported profile as a file or, if it is published online, via its URI.",
+    "administration.customization.customAttributes.profile.name":
+      "Profile name",
+    "administration.customization.customAttributes.profile.description":
+      "Profile description",
+
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
