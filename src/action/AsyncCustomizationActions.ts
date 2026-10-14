@@ -6,7 +6,7 @@ import {
   publishMessage,
 } from "./SyncActions";
 import Constants from "../util/Constants";
-import Ajax, { content, param } from "../util/Ajax";
+import Ajax, { content, param, paramsSerializer } from "../util/Ajax";
 import { ErrorData } from "../model/ErrorInfo";
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
@@ -15,6 +15,12 @@ import { CustomAttribute, CustomAttributeData } from "../model/RdfsResource";
 import { createPropertyImpl, getPropertiesImpl } from "./AsyncActions";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
+import {
+  CustomAttributesProfileDescriptionData,
+  PROFILE_DESCRIPTION_CONTEXT,
+} from "../model/CustomAttributesProfile";
+import Utils from "../util/Utils";
+import { AxiosResponse } from "axios";
 
 export function getCustomAttributes() {
   return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
@@ -100,6 +106,46 @@ export function removeCustomAttribute(
       )
     )
       .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+/**
+ * Exports the specified custom attributes as a JSON-LD profile and downloads it as a file.
+ *
+ * @param profile Description of the exported profile
+ * @param customAttributeIris Identifiers of custom attributes to include in the profile
+ */
+export function exportCustomAttributesProfile(
+  profile: CustomAttributesProfileDescriptionData,
+  customAttributeIris: string[]
+) {
+  const action = { type: ActionType.EXPORT_CUSTOM_ATTRIBUTES_PROFILE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action));
+    const query = paramsSerializer({
+      customAttributeUris: customAttributeIris,
+    });
+    return Ajax.post(
+      `${Constants.API_PREFIX}/data/profile/custom-attributes/export?${query}`,
+      content(
+        Object.assign({}, profile, { "@context": PROFILE_DESCRIPTION_CONTEXT })
+      )
+    )
+      .then((resp: AxiosResponse) => {
+        const disposition = resp.headers[Constants.Headers.CONTENT_DISPOSITION];
+        const filenameMatch = disposition
+          ? disposition.match(/filename="(.+\..+)"/)
+          : null;
+        Utils.fileDownload(
+          typeof resp.data === "string"
+            ? resp.data
+            : JSON.stringify(resp.data, null, 2),
+          filenameMatch ? filenameMatch[1] : "custom-attributes-profile.jsonld",
+          Constants.JSON_LD_MIME_TYPE
+        );
+        return dispatch(asyncActionSuccess(action));
+      })
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }

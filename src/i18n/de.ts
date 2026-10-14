@@ -279,6 +279,7 @@ const de = {
       "Identifikator eines benutzerdefinierten Attributs ändern",
     "administration.customization.customAttributes.migrate.iri.confirmLabel":
       "Geben Sie zur Bestätigung den Namen des benutzerdefinierten Attributs ein",
+
     "administration.customization.customAttributes.symmetric": "Symmetrisch",
     "administration.customization.customAttributes.symmetric.tooltip":
       "Das Attribut ist symmetrisch.",
@@ -288,6 +289,21 @@ const de = {
       "Wenn ein bestehendes benutzerdefiniertes Attribut als symmetrisch markiert wird, werden die entsprechenden Beziehungen automatisch erstellt.",
     "administration.customization.customAttributes.symmetric.disable.help":
       "Wenn ein bestehendes benutzerdefiniertes Attribut als nicht symmetrisch markiert wird, werden keine Beziehungen automatisch entfernt.",
+
+    "administration.customization.customAttributes.profile.import.title":
+      "Profil importieren",
+    "administration.customization.customAttributes.profile.export.title":
+      "Profil exportieren",
+    "administration.customization.customAttributes.profile.export.heading":
+      "Profil benutzerdefinierter Attribute exportieren",
+    "administration.customization.customAttributes.profile.export.description":
+      "Geben Sie den Namen und die Beschreibung des zu exportierenden Profils ein und wählen Sie die benutzerdefinierten Attribute aus, die das Profil enthalten soll.",
+    "administration.customization.customAttributes.profile.export.description2":
+      "Name und Beschreibung des Profils werden den Administratoren vor dem Import angezeigt. Sie können das exportierte Profil als Datei weitergeben oder, falls es online veröffentlicht ist, über seine URI.",
+    "administration.customization.customAttributes.profile.name": "Profilname",
+    "administration.customization.customAttributes.profile.description":
+      "Profilbeschreibung",
+
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":

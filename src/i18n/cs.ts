@@ -281,6 +281,7 @@ const cs = {
       "Změnit identifikátor vlastního atributu",
     "administration.customization.customAttributes.migrate.iri.confirmLabel":
       "Pro potvrzení zadejte název vlastního atributu",
+
     "administration.customization.customAttributes.symmetric": "Symetrický",
     "administration.customization.customAttributes.symmetric.tooltip":
       "Atribut je symetrický",
@@ -290,6 +291,22 @@ const cs = {
       "Označení existujícího vlastního atributu za symetrický povede k automatickému vygenerování relevantních vztahů.",
     "administration.customization.customAttributes.symmetric.disable.help":
       "Zrušení symetričnosti existujícího vlastního atributu nepovede k automatickému odstranění již existujících vztahů.",
+
+    "administration.customization.customAttributes.profile.import.title":
+      "Importovat profil",
+    "administration.customization.customAttributes.profile.export.title":
+      "Exportovat profil",
+    "administration.customization.customAttributes.profile.export.heading":
+      "Export profilu vlastních atributů",
+    "administration.customization.customAttributes.profile.export.description":
+      "Zadejte název a popis exportovaného profilu a vyberte vlastní atributy, které má profil obsahovat.",
+    "administration.customization.customAttributes.profile.export.description2":
+      "Název a popis profilu se administrátorům zobrazí před jeho importem. Exportovaný profil můžete sdílet jako soubor, nebo, pokud je zveřejněn online, pomocí jeho URI.",
+    "administration.customization.customAttributes.profile.name":
+      "Název profilu",
+    "administration.customization.customAttributes.profile.description":
+      "Popis profilu",
+
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":

@@ -2,11 +2,19 @@ import Ajax, { params } from "../../util/Ajax";
 import Constants from "../../util/Constants";
 import last from "last";
 
+type AssetType =
+  | "TERM"
+  | "VOCABULARY"
+  | "FILE"
+  | "RESOURCE"
+  | "CUSTOM_ATTRIBUTE"
+  | "CUSTOM_ATTRIBUTE_PROFILE";
+
 /**
  * Calls backend to generate a new identifier for an asset specified by the parameters.
  * @param parameters Identifier generation parameters
  */
-let loadIdentifier = async <T extends { name: string; assetType: string }>(
+let loadIdentifier = async <T extends { name: string; assetType: AssetType }>(
   parameters: T
 ): Promise<string> => {
   const resp = await Ajax.post(
