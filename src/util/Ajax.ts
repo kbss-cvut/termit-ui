@@ -131,11 +131,17 @@ class RequestConfigBuilder {
     return this;
   }
 
+  /**
+   * When applied, the request wont include credentials
+   */
   public excludeCredentials() {
     this.mExcludeCredentials = true;
     return this;
   }
 
+  /**
+   * Whether credentials should be excluded from the request
+   */
   public shouldExcludeCredentials() {
     return this.mExcludeCredentials;
   }
