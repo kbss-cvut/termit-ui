@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useCallback } from "react";
 import { Col, FormGroup, FormText, Label, Row } from "reactstrap";
 import Dropzone from "react-dropzone";
 import { FaCloudUploadAlt } from "react-icons/fa";
@@ -7,6 +8,11 @@ import { useI18n } from "../../hook/useI18n";
 import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import "./UploadFile.scss";
+import ValidationResult, {
+  Severity,
+} from "../../../model/form/ValidationResult";
+import { renderValidationMessages } from "../../misc/AbstractInput";
+import Utils from "../../../util/Utils";
 
 const BYTES_PER_UNIT = 1024;
 const UNITS = ["B", "KB", "MB", "GB", "TB"];
@@ -47,12 +53,14 @@ interface UploadFileProps {
   setFile: (file: File) => void;
   labelKey?: string;
   accept?: string | string[];
+  validation?: ValidationResult | ValidationResult[];
 }
 
 export const UploadFile: React.FC<UploadFileProps> = ({
   setFile,
   labelKey = "resource.create.file.select.label",
   accept,
+  validation,
 }) => {
   const [currentFile, setCurrentFile] = React.useState<File | undefined>();
   const [dragActive, setDragActive] = React.useState(false);
@@ -71,10 +79,21 @@ export const UploadFile: React.FC<UploadFileProps> = ({
     active: dragActive,
   });
 
+  const renderValidation = useCallback(() => {
+    const messages = Utils.sanitizeArray(validation).filter(
+      (result) => !!result.message || !!result.messageId
+    );
+    return renderValidationMessages(messages);
+  }, [validation]);
+
+  const isInvalid = !!Utils.sanitizeArray(validation).find(
+    (r) => r.severity === Severity.BLOCKER
+  );
+
   return (
     <Row>
       <Col xs={12}>
-        <FormGroup>
+        <FormGroup className={classNames({ invalid: isInvalid })}>
           <Dropzone
             onDrop={onFileSelected}
             onDragEnter={() => setDragActive(true)}
@@ -117,6 +136,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
                     maxUploadFileSize: serverConfig.maxFileUploadSize,
                   })}
                 </FormText>
+                {renderValidation()}
               </>
             )}
           </Dropzone>
