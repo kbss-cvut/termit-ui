@@ -1,13 +1,20 @@
 import {
   Button,
   ButtonToolbar,
+  Label,
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
 } from "reactstrap";
 
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useI18n } from "../../../hook/useI18n";
 import "./CustomAttributesProfileDialog.scss";
 import PromiseTrackingMask from "../../../misc/PromiseTrackingMask";
@@ -23,8 +30,24 @@ import {
 import { importCustomAttributesProfile } from "../../../../action/AsyncCustomizationActions";
 import { publishMessage } from "../../../../action/SyncActions";
 import Message from "../../../../model/Message";
+import { CustomAttribute } from "../../../../model/RdfsResource";
+import {
+  ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import Table from "../../../misc/table/Table";
+import If from "../../../misc/If";
 
-export interface CustomAttributesProfileImportDialogProps {}
+export interface CustomAttributesProfileImportDialogProps {
+  /**
+   * Table columns to render custom attributes
+   */
+  tableColumns: ColumnDef<CustomAttribute>[];
+}
 
 export interface CustomAttributesProfileImportDialogHandle {
   show: () => void;
@@ -49,6 +72,33 @@ export const CustomAttributesProfileImportDialog = forwardRef<
   const isLoadingProfile = usePromiseTracker({
     area: DOWNLOAD_PROMISE_AREA,
   }).promiseInProgress;
+
+  /// Attributes of the loaded profile wrapped as model instances so that the table columns can use their methods
+  const profileAttributes = useMemo(
+    () =>
+      loadedProfile?.customAttributes.map(
+        (attribute) => new CustomAttribute(attribute)
+      ) ?? [],
+    [loadedProfile]
+  );
+
+  const tableInstance = useReactTable<CustomAttribute>({
+    columns: props.tableColumns,
+    data: profileAttributes,
+    getRowId: (attribute) => attribute.iri,
+    initialState: {
+      sorting: [
+        {
+          id: "label",
+          desc: false,
+        },
+      ],
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
   useImperativeHandle(ref, () => ({ show: () => setIsOpen(true) }), []);
 
@@ -95,6 +145,14 @@ export const CustomAttributesProfileImportDialog = forwardRef<
           profile={loadedProfile}
           setProfile={setLoadedProfile}
         />
+        <If expression={!!loadedProfile?.customAttributes}>
+          <Label>
+            {i18n(
+              "administration.customization.customAttributes.profile.import.attributes"
+            )}
+          </Label>
+          <Table instance={tableInstance} />
+        </If>
         <PromiseTrackingMask area={IMPORT_PROMISE_AREA} />
       </ModalBody>
       <ModalFooter>
