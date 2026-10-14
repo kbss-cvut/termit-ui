@@ -2,14 +2,39 @@ import React from "react";
 import { useAppSelector } from "../../../util/Types";
 import Utils from "../../../util/Utils";
 import { useI18n } from "../../hook/useI18n";
-import { getShortLocale } from "../../../util/IntlUtil";
+import { getLanguages, getShortLocale } from "../../../util/IntlUtil";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
-import { getLocalized } from "../../../model/MultilingualString";
-import { stringifyPropertyValue } from "../../../model/WithUnmappedProperties";
+import {
+  compactTranslations,
+  getLocalized,
+  PluralMultilingualString,
+} from "../../../model/MultilingualString";
+import {
+  PropertyValueType,
+  stringifyPropertyValue,
+} from "../../../model/WithUnmappedProperties";
 import { CustomAttributeValue } from "../../genericmetadata/CustomAttributesValues";
 import RelationshipAnnotation from "../../../model/meta/RelationshipAnnotation";
 import { ResourceRelationship } from "./RelationshipAnnotationButton";
+import VocabularyUtils from "../../../util/VocabularyUtils";
+import LanguageSelector from "../../multilingual/LanguageSelector";
+import { CustomAttribute } from "../../../model/RdfsResource";
+
+export function selectRelevantAndMultilingualCustomAttributeIris(
+  customAttributes: CustomAttribute[],
+  relationship: ResourceRelationship
+) {
+  const annotationAtts = customAttributes.filter((att) =>
+    Utils.sanitizeArray(att.annotatedRelationships)
+      .map((ar) => ar.iri)
+      .includes(relationship.predicate)
+  );
+  const multilingualAttIris = annotationAtts
+    .filter((att) => att.rangeIri === VocabularyUtils.RDF_LANGSTRING)
+    .map((att) => att.iri);
+  return { annotationAtts, multilingualAttIris };
+}
 
 export const RelationshipAnnotationView: React.FC<{
   relationshipAnnotations: RelationshipAnnotation[];
@@ -21,21 +46,40 @@ export const RelationshipAnnotationView: React.FC<{
 }> = ({ relationshipAnnotations, relationship, language }) => {
   const { locale } = useI18n();
   const lang = getShortLocale(locale);
+  const [selectedLanguage, setSelectedLanguage] = React.useState(language);
   const customAttributes = useAppSelector((state) => state.customAttributes);
-  const annotationAtts = customAttributes.filter((att) =>
-    Utils.sanitizeArray(att.annotatedRelationships)
-      .map((ar) => ar.iri)
-      .includes(relationship.predicate)
-  );
+  const { annotationAtts, multilingualAttIris } =
+    selectRelevantAndMultilingualCustomAttributeIris(
+      customAttributes,
+      relationship
+    );
+  const annotationObject = {};
+  relationshipAnnotations
+    .filter((ann) => multilingualAttIris.includes(ann.attribute.iri))
+    .forEach((ann) => (annotationObject[ann.attribute.iri] = ann.value));
+  const languages = getLanguages(multilingualAttIris, annotationObject);
 
   return (
     <>
+      {multilingualAttIris.length > 0 && (
+        <LanguageSelector
+          languages={languages}
+          language={selectedLanguage}
+          onSelect={setSelectedLanguage}
+        />
+      )}
       {annotationAtts.map((att) => {
         const annotation: RelationshipAnnotation =
           relationshipAnnotations.find(
             (ann) => ann.attribute.iri === att.iri
           ) || ({} as RelationshipAnnotation);
-        const value = Utils.sanitizeArray(annotation.value);
+        let value = annotation.value;
+        if (multilingualAttIris.includes(att.iri)) {
+          value = compactTranslations(value);
+        }
+        const valueToRender = Utils.sanitizeArray<
+          PropertyValueType | PluralMultilingualString
+        >(value);
         return (
           <Row key={Utils.hashCode(att.iri)}>
             <Col md={4}>
@@ -51,16 +95,16 @@ export const RelationshipAnnotationView: React.FC<{
                 <CustomAttributeValue
                   attribute={att}
                   value={value[0]}
-                  language={language}
+                  language={selectedLanguage}
                 />
               ) : (
                 <List type="unstyled" className="mb-3">
-                  {value.map((val) => (
+                  {valueToRender.map((val) => (
                     <li key={stringifyPropertyValue(val)}>
                       <CustomAttributeValue
                         attribute={att}
                         value={val}
-                        language={language}
+                        language={selectedLanguage}
                       />
                     </li>
                   ))}

@@ -1,6 +1,6 @@
-import { IRI } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import { ThunkDispatch } from "../util/Types";
+import { GetStoreState, ThunkDispatch } from "../util/Types";
 import {
   asyncActionFailure,
   asyncActionRequest,
@@ -17,6 +17,7 @@ import { ErrorData } from "../model/ErrorInfo";
 import AnnotatedTermRelationship, {
   CONTEXT as ANNOTATED_RELATIONSHIP_CONTEXT,
 } from "../model/meta/AnnotatedTermRelationship";
+import { pluralContext } from "../model/MultilingualString";
 
 export function loadTermRelationshipAnnotations(termIri: IRI) {
   const action = { type: ActionType.LOAD_TERM_RELATIONSHIP_ANNOTATIONS };
@@ -71,12 +72,12 @@ export function updateTermRelationshipAnnotation(
   annotation: RelationshipAnnotation
 ) {
   const action = { type: ActionType.UPDATE_TERM_RELATIONSHIP_ANNOTATIONS };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.patch(
       `${Constants.API_PREFIX}/terms/${termIri.fragment}/relationship-annotations`,
       content(
-        JsonLdUtils.toJsonLd(annotation, RELATIONSHIPS_ANNOTATION_CONTEXT)
+        JsonLdUtils.toJsonLd(annotation, buildContext(getState, annotation))
       ).param("namespace", termIri.namespace)
     )
       .then(() => asyncActionSuccess(action))
@@ -85,4 +86,20 @@ export function updateTermRelationshipAnnotation(
         throw error;
       });
   };
+}
+
+function buildContext(
+  getState: GetStoreState,
+  annotation: RelationshipAnnotation
+) {
+  const baseContext: any = { ...RELATIONSHIPS_ANNOTATION_CONTEXT };
+  const multilingualCustomAtts = getState()
+    .customAttributes.filter(
+      (att) => att.rangeIri === VocabularyUtils.RDF_LANGSTRING
+    )
+    .map((att) => att.iri);
+  if (multilingualCustomAtts.includes(annotation.attribute.iri)) {
+    baseContext.value = pluralContext(VocabularyUtils.RDF_OBJECT);
+  }
+  return baseContext;
 }
