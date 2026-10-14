@@ -1,7 +1,12 @@
 import { context, MultilingualString } from "./MultilingualString";
 import VocabularyUtils from "../util/VocabularyUtils";
 import { HasIdentifier } from "./Asset";
-import { CustomAttribute } from "./RdfsResource";
+import {
+  CONTEXT as CUSTOM_ATTRIBUTE_CONTEXT,
+  CustomAttribute,
+} from "./RdfsResource";
+import Utils from "../util/Utils";
+import JsonLdUtils from "../util/JsonLdUtils";
 
 export const PROFILE_DESCRIPTION_CONTEXT = {
   iri: "@id",
@@ -11,7 +16,11 @@ export const PROFILE_DESCRIPTION_CONTEXT = {
 
 export const PROFILE_CONTEXT = {
   ...PROFILE_DESCRIPTION_CONTEXT,
-  customAttributes: VocabularyUtils.HAS_CUSTOM_ATTRIBUTE,
+  customAttributes: {
+    "@id": VocabularyUtils.HAS_CUSTOM_ATTRIBUTE,
+    "@container": "@set",
+    "@context": CUSTOM_ATTRIBUTE_CONTEXT,
+  },
 };
 
 export interface CustomAttributesProfileDescriptionData extends HasIdentifier {
@@ -35,5 +44,30 @@ export class CustomAttributesProfile implements CustomAttributesProfileData {
     this.title = data.title;
     this.description = data.description;
     this.customAttributes = data.customAttributes;
+    validate(this);
+  }
+
+  public toJsonLd() {
+    return JsonLdUtils.toJsonLd(this, PROFILE_CONTEXT);
+  }
+}
+
+function validate(data: CustomAttributesProfileData) {
+  const prefix = "Invalid profile: ";
+  if (!Utils.isUri(data.iri)) {
+    throw new Error(
+      prefix + "Invalid IRI supplied for Custom Attributes profile: " + data.iri
+    );
+  }
+  if (!data.title || Object.keys(data.title).length === 0) {
+    throw new Error(prefix + "Missing title for custom Attributes profile");
+  }
+  if (
+    !Array.isArray(data.customAttributes) ||
+    data.customAttributes.length === 0
+  ) {
+    throw new Error(
+      prefix + "No custom attributes specified for Custom Attributes profile"
+    );
   }
 }
