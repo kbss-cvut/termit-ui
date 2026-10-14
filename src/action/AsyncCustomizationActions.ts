@@ -225,7 +225,32 @@ export function importCustomAttributesProfile(
       content(profile.toJsonLd())
     )
       .then(() => dispatch(getCustomAttributes()))
-      .then(() => dispatch(asyncActionSuccess(action)))
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+      .then(() => {
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId:
+                  "administration.customization.customAttributes.profile.import.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        );
+        return dispatch(asyncActionSuccess(action));
+      })
+      .catch((error: ErrorData) => {
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                ...error,
+              },
+              MessageType.ERROR
+            )
+          )
+        );
+        return dispatch(asyncActionFailure(action, error));
+      });
   };
 }

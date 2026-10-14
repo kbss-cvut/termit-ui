@@ -28,8 +28,6 @@ import {
   DOWNLOAD_PROMISE_AREA,
 } from "./CustomAttributesProfileImportForm";
 import { importCustomAttributesProfile } from "../../../../action/AsyncCustomizationActions";
-import { publishMessage } from "../../../../action/SyncActions";
-import Message from "../../../../model/Message";
 import { CustomAttribute } from "../../../../model/RdfsResource";
 import {
   ColumnDef,
@@ -41,6 +39,7 @@ import {
 } from "@tanstack/react-table";
 import Table from "../../../misc/table/Table";
 import If from "../../../misc/If";
+import AsyncActionStatus from "../../../../action/AsyncActionStatus";
 
 export interface CustomAttributesProfileImportDialogProps {
   /**
@@ -116,15 +115,7 @@ export const CustomAttributesProfileImportDialog = forwardRef<
       dispatch(importCustomAttributesProfile(loadedProfile)),
       IMPORT_PROMISE_AREA
     ).then((action) => {
-      if ("error" in action) {
-        dispatch(
-          publishMessage(
-            new Message({
-              ...action.error,
-            })
-          )
-        );
-      } else {
+      if (action.status === AsyncActionStatus.SUCCESS) {
         onClose();
       }
     });

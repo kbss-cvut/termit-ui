@@ -294,6 +294,27 @@ const cs = {
 
     "administration.customization.customAttributes.profile.import.title":
       "Importovat profil",
+    "administration.customization.customAttributes.profile.import.heading":
+      "Import profilu vlastních atributů",
+    "administration.customization.customAttributes.profile.import.description":
+      "Importujte profil vlastních atributů ze souboru nebo z jeho URI. Vlastní atributy obsažené v profilu budou přidány do této instance TermItu.",
+    "administration.customization.customAttributes.profile.import.url.label":
+      "URI profilu",
+    "administration.customization.customAttributes.profile.import.url.hint":
+      "Zadejte přímou URI profilu. Profil bude automaticky stažen.",
+    "administration.customization.customAttributes.profile.import.selectProfile":
+      "Není vybrán žádný profil",
+    "administration.customization.customAttributes.profile.import.downloadFailed":
+      "Profil se nepodařilo stáhnout ze zadané URI",
+    "administration.customization.customAttributes.profile.import.invalidProfile":
+      "Neplatný profil",
+    "administration.customization.customAttributes.profile.import.loading":
+      "Načítání profilu...",
+    "administration.customization.customAttributes.profile.import.attributes":
+      "Budou importovány následující vlastní atributy:",
+    "administration.customization.customAttributes.profile.import.success":
+      "Profil byl úspěšně importován.",
+
     "administration.customization.customAttributes.profile.export.title":
       "Exportovat profil",
     "administration.customization.customAttributes.profile.export.heading":

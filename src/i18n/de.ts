@@ -292,6 +292,27 @@ const de = {
 
     "administration.customization.customAttributes.profile.import.title":
       "Profil importieren",
+    "administration.customization.customAttributes.profile.import.heading":
+      "Profil benutzerdefinierter Attribute importieren",
+    "administration.customization.customAttributes.profile.import.description":
+      "Importieren Sie ein Profil benutzerdefinierter Attribute aus einer Datei oder über seine URI. Die im Profil enthaltenen benutzerdefinierten Attribute werden zu dieser TermIt-Instanz hinzugefügt.",
+    "administration.customization.customAttributes.profile.import.url.label":
+      "Profil-URI",
+    "administration.customization.customAttributes.profile.import.url.hint":
+      "Geben Sie die direkte URI des Profils ein. Das Profil wird automatisch heruntergeladen.",
+    "administration.customization.customAttributes.profile.import.selectProfile":
+      "Kein Profil ausgewählt",
+    "administration.customization.customAttributes.profile.import.downloadFailed":
+      "Das Profil konnte nicht von der angegebenen URI heruntergeladen werden",
+    "administration.customization.customAttributes.profile.import.invalidProfile":
+      "Ungültiges Profil",
+    "administration.customization.customAttributes.profile.import.loading":
+      "Profil wird geladen...",
+    "administration.customization.customAttributes.profile.import.attributes":
+      "Die folgenden benutzerdefinierten Attribute werden importiert:",
+    "administration.customization.customAttributes.profile.import.success":
+      "Profil wurde erfolgreich importiert.",
+
     "administration.customization.customAttributes.profile.export.title":
       "Profil exportieren",
     "administration.customization.customAttributes.profile.export.heading":

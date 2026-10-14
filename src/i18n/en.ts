@@ -300,6 +300,8 @@ const en = {
       "Loading profile...",
     "administration.customization.customAttributes.profile.import.attributes":
       "The following custom attributes will be imported:",
+    "administration.customization.customAttributes.profile.import.success":
+      "Profile successfully imported.",
 
     "administration.customization.customAttributes.profile.export.title":
       "Export profile",
