@@ -30,6 +30,7 @@ import {
 import ValidationResult from "../../../../model/form/ValidationResult";
 import { ErrorData } from "../../../../model/ErrorInfo";
 import AsyncActionStatus from "../../../../action/AsyncActionStatus";
+import If from "../../../misc/If";
 
 export interface CustomAttributesProfileImportFormProps {
   profile: CustomAttributesProfile | null;
@@ -230,14 +231,16 @@ export const CustomAttributesProfileImportForm = forwardRef<
           readOnly={true}
           value={getLocalized(profile?.title, locale)}
         />
-        <TextArea
-          label={i18n(
-            "administration.customization.customAttributes.profile.description"
-          )}
-          rows={3}
-          readOnly={true}
-          value={getLocalized(profile?.description, locale)}
-        />
+        <If expression={getLocalized(profile?.description, locale) != ""}>
+          <TextArea
+            label={i18n(
+              "administration.customization.customAttributes.profile.description"
+            )}
+            rows={3}
+            readOnly={true}
+            value={getLocalized(profile?.description, locale)}
+          />
+        </If>
         <PromiseTrackingMask
           area={DOWNLOAD_PROMISE_AREA}
           text={i18n(

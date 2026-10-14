@@ -298,6 +298,8 @@ const en = {
       "Invalid profile",
     "administration.customization.customAttributes.profile.import.loading":
       "Loading profile...",
+    "administration.customization.customAttributes.profile.import.attributes":
+      "The following custom attributes will be imported:",
 
     "administration.customization.customAttributes.profile.export.title":
       "Export profile",
