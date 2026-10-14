@@ -1,6 +1,7 @@
 import { RdfIriStatement, RDFSTATEMENT_CONTEXT } from "../RdfStatement";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { ASSET_CONTEXT, HasIdentifier } from "../Asset";
+import { PropertyValuesType } from "../WithUnmappedProperties";
 
 const ctx = {
   relationship: {
@@ -16,5 +17,5 @@ export const CONTEXT = Object.assign({}, ctx, ASSET_CONTEXT);
 export default interface RelationshipAnnotation {
   relationship: RdfIriStatement;
   attribute: HasIdentifier;
-  value: any[];
+  value: PropertyValuesType;
 }

@@ -266,27 +266,29 @@ export function compactMultilingualCustomAttributeValues<
     return;
   }
   multilingualCustomAttributes.forEach((attribute) => {
-    const attributeValue = asset[attribute];
-    const items = Array.isArray(attributeValue)
-      ? attributeValue
-      : attributeValue?.["@value"] !== undefined
-      ? [attributeValue]
-      : null;
-    if (!items) {
-      return;
-    }
-    asset[attribute] = items.reduce(
-      (values: PluralMultilingualString, item: any) => {
-        if (item?.["@value"] === undefined) {
-          return values;
-        }
-        const language = item["@language"] || NO_LANG;
-        values[language] = [...(values[language] || []), item["@value"]];
-        return values;
-      },
-      {}
-    );
+    asset[attribute] = compactTranslations(asset[attribute]);
   });
+}
+
+export function compactTranslations(
+  items: any[] | any
+): PluralMultilingualString {
+  items = Array.isArray(items)
+    ? items
+    : items?.["@value"] !== undefined
+    ? [items]
+    : items;
+  if (!items) {
+    return items;
+  }
+  return items.reduce((values: PluralMultilingualString, item: any) => {
+    if (item?.["@value"] === undefined) {
+      return values;
+    }
+    const language = item["@language"] || NO_LANG;
+    values[language] = [...(values[language] || []), item["@value"]];
+    return values;
+  }, {});
 }
 
 export default MultilingualString;
