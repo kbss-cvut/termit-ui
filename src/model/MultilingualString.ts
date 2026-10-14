@@ -278,7 +278,7 @@ export function compactTranslations(
     : items?.["@value"] !== undefined
     ? [items]
     : items;
-  if (!items) {
+  if (!items || !Array.isArray(items)) {
     return items;
   }
   return items.reduce((values: PluralMultilingualString, item: any) => {
