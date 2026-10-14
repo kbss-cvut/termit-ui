@@ -3,10 +3,11 @@ import {
   asyncActionFailure,
   asyncActionRequest,
   asyncActionSuccess,
+  asyncActionSuccessWithPayload,
   publishMessage,
 } from "./SyncActions";
 import Constants from "../util/Constants";
-import Ajax, { content, param, paramsSerializer } from "../util/Ajax";
+import Ajax, { accept, content, param, paramsSerializer } from "../util/Ajax";
 import { ErrorData } from "../model/ErrorInfo";
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
@@ -16,11 +17,15 @@ import { createPropertyImpl, getPropertiesImpl } from "./AsyncActions";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import {
+  CustomAttributesProfile,
+  CustomAttributesProfileData,
   CustomAttributesProfileDescriptionData,
+  PROFILE_CONTEXT,
   PROFILE_DESCRIPTION_CONTEXT,
 } from "../model/CustomAttributesProfile";
 import Utils from "../util/Utils";
 import { AxiosResponse } from "axios";
+import JsonLdUtils from "../util/JsonLdUtils";
 
 export function getCustomAttributes() {
   return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
@@ -122,7 +127,7 @@ export function exportCustomAttributesProfile(
 ) {
   const action = { type: ActionType.EXPORT_CUSTOM_ATTRIBUTES_PROFILE };
   return (dispatch: ThunkDispatch) => {
-    dispatch(asyncActionRequest(action));
+    dispatch(asyncActionRequest(action, true));
     const query = paramsSerializer({
       customAttributeUris: customAttributeIris,
     });
@@ -146,6 +151,81 @@ export function exportCustomAttributesProfile(
         );
         return dispatch(asyncActionSuccess(action));
       })
+      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+export function downloadProfileFromUri(
+  uri: string,
+  abortController: AbortController
+) {
+  const action = { type: ActionType.DOWNLOAD_CUSTOM_ATTRIBUTES_PROFILE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      uri,
+      accept(Constants.JSON_LD_MIME_TYPE)
+        .signal(abortController)
+        .preserveAcceptHeaderInPost()
+        .excludeCredentials()
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferences<CustomAttributesProfileData>(
+          data,
+          PROFILE_CONTEXT
+        )
+      )
+      .then((data) => new CustomAttributesProfile(data))
+      .then((profile) =>
+        dispatch(asyncActionSuccessWithPayload(action, profile))
+      )
+      .catch((error: ErrorData | Error) => {
+        if (error instanceof Error) {
+          error = { message: error.message };
+        }
+        return dispatch(asyncActionFailure(action, error));
+      });
+  };
+}
+
+export function loadProfileFromFile(file: File) {
+  const action = { type: ActionType.LOAD_CUSTOM_ATTRIBUTES_PROFILE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return file
+      .text()
+      .then(JSON.parse)
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferences<CustomAttributesProfileData>(
+          data,
+          PROFILE_CONTEXT
+        )
+      )
+      .then((data) => new CustomAttributesProfile(data))
+      .then((profile) =>
+        dispatch(asyncActionSuccessWithPayload(action, profile))
+      )
+      .catch((error: ErrorData | Error) => {
+        if (error instanceof Error) {
+          error = { message: `${error.name}: ${error.message}` };
+        }
+        return dispatch(asyncActionFailure(action, error));
+      });
+  };
+}
+
+export function importCustomAttributesProfile(
+  profile: CustomAttributesProfile
+) {
+  const action = { type: ActionType.IMPORT_CUSTOM_ATTRIBUTES_PROFILE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/data/profile/custom-attributes/import`,
+      content(profile.toJsonLd())
+    )
+      .then(() => dispatch(getCustomAttributes()))
+      .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }

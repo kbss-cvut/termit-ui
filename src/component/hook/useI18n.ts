@@ -2,12 +2,14 @@ import { useCallback } from "react";
 import { HasI18n } from "../hoc/withI18n";
 import { useIntl } from "react-intl";
 
+export type TFunction = (translationKey: string) => string;
+
 /**
  * React Hook providing basic i18n functions.
  */
 export function useI18n(): HasI18n {
   const intl = useIntl();
-  const i18n = useCallback(
+  const i18n: TFunction = useCallback(
     (msgId: string) => (intl.messages[msgId] as string) || "{" + msgId + "}",
     [intl]
   );

@@ -282,6 +282,23 @@ const en = {
 
     "administration.customization.customAttributes.profile.import.title":
       "Import profile",
+    "administration.customization.customAttributes.profile.import.heading":
+      "Import a profile of custom attributes",
+    "administration.customization.customAttributes.profile.import.description":
+      "Import a profile of custom attributes from a file or from its URI. Custom attributes contained in the profile will be added to this TermIt instance.",
+    "administration.customization.customAttributes.profile.import.url.label":
+      "Profile URI",
+    "administration.customization.customAttributes.profile.import.url.hint":
+      "Enter the direct URI to the profile. The profile will be automatically downloaded.",
+    "administration.customization.customAttributes.profile.import.selectProfile":
+      "No profile selected",
+    "administration.customization.customAttributes.profile.import.downloadFailed":
+      "Failed to download profile from specified URI",
+    "administration.customization.customAttributes.profile.import.invalidProfile":
+      "Invalid profile",
+    "administration.customization.customAttributes.profile.import.loading":
+      "Loading profile...",
+
     "administration.customization.customAttributes.profile.export.title":
       "Export profile",
     "administration.customization.customAttributes.profile.export.heading":
