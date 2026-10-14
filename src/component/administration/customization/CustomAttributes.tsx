@@ -46,16 +46,22 @@ import {
   CustomAttributesProfileExportDialogHandle,
 } from "./profile/CustomAttributesProfileExportDialog";
 import { FaCloudDownloadAlt, FaCloudUploadAlt } from "react-icons/fa";
+import {
+  CustomAttributesProfileImportDialog,
+  CustomAttributesProfileImportDialogHandle,
+} from "./profile/CustomAttributesProfileImportDialog";
 import { FaArrowsLeftRight } from "react-icons/fa6";
 
 interface MoreActionsProps {
   onMigrateIriClick: () => void;
   onProfileExportClick: () => void;
+  onProfileImportClick: () => void;
 }
 
 const MoreActionsDropdown: React.FunctionComponent<MoreActionsProps> = ({
   onMigrateIriClick,
   onProfileExportClick,
+  onProfileImportClick,
 }) => {
   const { i18n } = useI18n();
   return (
@@ -96,7 +102,7 @@ const MoreActionsDropdown: React.FunctionComponent<MoreActionsProps> = ({
           title={i18n(
             "administration.customization.customAttributes.profile.import.title"
           )}
-          onClick={() => {}}
+          onClick={onProfileImportClick}
         >
           <FaCloudUploadAlt className="mr-1" />
           {i18n(
@@ -116,6 +122,8 @@ export const CustomAttributes: React.FC = () => {
   );
   const profileExportDialog =
     useRef<CustomAttributesProfileExportDialogHandle>(null);
+  const profileImportDialog =
+    useRef<CustomAttributesProfileImportDialogHandle>(null);
 
   /**
    * Attribute that user wants to remove. When non-null, the removal dialog is displayed.
@@ -192,6 +200,10 @@ export const CustomAttributes: React.FC = () => {
   const onProfileExportClick = React.useCallback(() => {
     profileExportDialog.current?.show();
   }, [profileExportDialog]);
+
+  const onProfileImportClick = React.useCallback(() => {
+    profileImportDialog.current?.show();
+  }, [profileImportDialog]);
 
   const lang = getShortLocale(locale);
 
@@ -328,6 +340,7 @@ export const CustomAttributes: React.FC = () => {
           <MoreActionsDropdown
             onMigrateIriClick={onMigrateIriClick}
             onProfileExportClick={onProfileExportClick}
+            onProfileImportClick={onProfileImportClick}
           />
         </ButtonToolbar>
       }
@@ -347,6 +360,7 @@ export const CustomAttributes: React.FC = () => {
         customAttributes={properties}
         tableColumns={infoColumns}
       />
+      <CustomAttributesProfileImportDialog ref={profileImportDialog} />
     </PanelWithActions>
   );
 };
