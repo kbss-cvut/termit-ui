@@ -23,7 +23,7 @@ const scheduler =
   typeof setImmediate === "function" ? setImmediate : setTimeout;
 
 /**
- * Uses enzyme"s mount function, but wraps the specified component in Provider and IntlProvider, so that Redux and
+ * Uses enzyme's mount function, but wraps the specified component in Provider and IntlProvider, so that Redux and
  * React Intl context are set up.
  * @param node The element to render
  * @param options Optional rendering options for Enzyme
