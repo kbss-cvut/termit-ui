@@ -4,31 +4,32 @@ import {
 } from "../../../model/changetracking/UpdateRecord";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import { shallow } from "enzyme";
 import { UpdateRow } from "../UpdateRow";
-import {
-  intlFunctions,
-  mockUseI18n,
-} from "../../../__tests__/environment/IntlUtil";
-import OutgoingLink from "../../misc/OutgoingLink";
-import { Label } from "reactstrap";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { screen } from "@testing-library/react";
 import Constants from "../../../util/Constants";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("../../misc/AssetLabel", () => ({
+  default: () => <span>Asset</span>,
+}));
 
 describe("UpdateRow", () => {
-  beforeEach(() => {
-    mockUseI18n();
-  });
+  function renderUpdateRow(record: UpdateRecord) {
+    return renderWithIntl(
+      <table>
+        <tbody>
+          <UpdateRow record={record} onRollback={vi.fn()} />
+        </tbody>
+      </table>
+    );
+  }
 
   it("renders id value as an outgoing link", () => {
     const newValue = Generator.generateUri();
     const record = generateUpdateRecord({ iri: newValue });
-    const wrapper = shallow(
-      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
-    );
-    const link = wrapper.find(OutgoingLink);
-    expect(link.exists()).toBeTruthy();
-    expect(link.prop("iri")).toEqual(newValue);
+    renderUpdateRow(record);
+    expect(screen.getByRole("link")).toHaveAttribute("href", newValue);
   });
 
   it("renders id value as outgoing link and literal as literal in combined value", () => {
@@ -43,15 +44,9 @@ describe("UpdateRow", () => {
       originalValue: [{ iri: idValue }, literalValue],
       types: [VocabularyUtils.UPDATE_EVENT],
     });
-    const wrapper = shallow(
-      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
-    );
-    const link = wrapper.find(OutgoingLink);
-    expect(link.exists()).toBeTruthy();
-    expect(link.prop("iri")).toEqual(idValue);
-    const label = wrapper.find(Label);
-    expect(label.exists()).toBeTruthy();
-    expect(label.children().text()).toEqual(literalValue);
+    renderUpdateRow(record);
+    expect(screen.getByRole("link")).toHaveAttribute("href", idValue);
+    expect(screen.getByText(literalValue)).toBeInTheDocument();
   });
 
   it("renders lang string value change", () => {
@@ -60,15 +55,9 @@ describe("UpdateRow", () => {
       "@value": "Test value",
     };
     const record = generateUpdateRecord(newValue);
-    const wrapper = shallow(
-      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
-    );
-    const label = wrapper.find(Label);
-    expect(label.exists()).toBeTruthy();
-    expect(label.childAt(1).childAt(0).text()).toContain(
-      Constants.DEFAULT_LANGUAGE
-    );
-    expect(label.childAt(0).text()).toContain(newValue["@value"]);
+    renderUpdateRow(record);
+    expect(screen.getByText(newValue["@value"])).toBeInTheDocument();
+    expect(screen.getByText(Constants.DEFAULT_LANGUAGE)).toBeInTheDocument();
   });
 
   function generateUpdateRecord(newValue: UpdateValueType) {
@@ -95,19 +84,10 @@ describe("UpdateRow", () => {
       },
     ];
     const record = generateUpdateRecord(newValue);
-    const wrapper = shallow(
-      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
-    );
-    const label = wrapper.find(Label);
-    expect(label.exists()).toBeTruthy();
-    expect(label.length).toEqual(newValue.length);
+    renderUpdateRow(record);
     newValue.forEach((nv) => {
-      const matching = label.filterWhere(
-        (lab) =>
-          lab.childAt(1).childAt(0).text().indexOf(nv["@language"]) !== -1
-      );
-      expect(matching.exists()).toBeTruthy();
-      expect(matching.childAt(0).text()).toContain(nv["@value"]);
+      expect(screen.getByText(nv["@value"])).toBeInTheDocument();
+      expect(screen.getByText(nv["@language"])).toBeInTheDocument();
     });
   });
 
@@ -120,11 +100,7 @@ describe("UpdateRow", () => {
       "test",
     ];
     const record = generateUpdateRecord(newValue);
-    const wrapper = shallow(
-      <UpdateRow record={record} onRollback={vi.fn()} {...intlFunctions()} />
-    );
-    const label = wrapper.find(Label);
-    expect(label.exists()).toBeTruthy();
-    expect(label.length).toEqual(newValue.length);
+    renderUpdateRow(record);
+    expect(document.querySelectorAll("label")).toHaveLength(newValue.length);
   });
 });
