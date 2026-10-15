@@ -1,11 +1,12 @@
 import * as Redux from "react-redux";
 import ErrorInfo, { ErrorLogItem } from "../../../model/ErrorInfo";
 import ActionType from "../../../action/ActionType";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import ErrorLogViewer from "../ErrorLogViewer";
-import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import en from "../../../i18n/en";
 import * as SyncActions from "../../../action/SyncActions";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Mock, vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -18,10 +19,6 @@ vi.mock("react-redux", async (importOriginal) => {
 });
 
 describe("ErrorLogViewer", () => {
-  beforeEach(() => {
-    mockUseI18n();
-  });
-
   it("displays error items with timestamps", () => {
     const errors: ErrorLogItem[] = [
       {
@@ -36,20 +33,22 @@ describe("ErrorLogViewer", () => {
       },
     ];
     (Redux.useSelector as Mock).mockReturnValue(errors);
-    const wrapper = mountWithIntl(<ErrorLogViewer />);
-    expect(wrapper.find("tr").length).toEqual(errors.length + 1); // + header
-    const timestamps = wrapper.find(".error-log-timestamp");
-    expect(timestamps.at(0).text()).toContain(
+    renderWithIntl(<ErrorLogViewer />);
+    const rows = screen.getAllByRole("row");
+    expect(rows).toHaveLength(errors.length + 1); // + header
+    const timestamps = document.querySelectorAll(".error-log-timestamp");
+    expect(timestamps).toHaveLength(errors.length);
+    expect(timestamps[0].textContent).toContain(
       new Date(errors[0].timestamp).getFullYear().toString()
     );
-    expect(timestamps.at(1).text()).toContain(
+    expect(timestamps[1].textContent).toContain(
       new Date(errors[1].timestamp).getFullYear().toString()
     );
-    const values = wrapper.find(".error-log-value");
-    expect(values.at(0).text()).toEqual(
+    const values = document.querySelectorAll(".error-log-value");
+    expect(values[0].textContent).toEqual(
       JSON.stringify(errors[0].error, null, 2)
     );
-    expect(values.at(1).text()).toEqual(
+    expect(values[1].textContent).toEqual(
       JSON.stringify(errors[1].error, null, 2)
     );
   });
@@ -64,12 +63,12 @@ describe("ErrorLogViewer", () => {
       },
     ];
     (Redux.useSelector as Mock).mockReturnValue(errors);
-    const wrapper = mountWithIntl(<ErrorLogViewer />);
-    const valueText = wrapper.find(".error-log-value").text();
-    expect(valueText).toContain(en.messages["connection.error"]);
+    renderWithIntl(<ErrorLogViewer />);
+    const value = document.querySelector(".error-log-value");
+    expect(value!.textContent).toContain(en.messages["connection.error"]);
   });
 
-  it("clears errors on clear errors button click", () => {
+  it("clears errors on clear errors button click", async () => {
     const errors: ErrorLogItem[] = [
       {
         timestamp: Date.now() - 1000,
@@ -82,8 +81,11 @@ describe("ErrorLogViewer", () => {
     const fakeDispatch = vi.fn().mockResolvedValue({});
     (Redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
     vi.spyOn(SyncActions, "clearErrors");
-    const wrapper = mountWithIntl(<ErrorLogViewer />);
-    wrapper.find("button#log-viewer-clear").simulate("click");
+    renderWithIntl(<ErrorLogViewer />);
+    const clearButton = screen.getByRole("button", {
+      name: en.messages["log-viewer.clear"],
+    });
+    await userEvent.click(clearButton);
     expect(SyncActions.clearErrors).toHaveBeenCalled();
   });
 });

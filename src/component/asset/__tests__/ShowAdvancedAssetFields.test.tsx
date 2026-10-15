@@ -1,31 +1,36 @@
-import { shallow } from "enzyme";
 import { ShowAdvancedAssetFields } from "../ShowAdvancedAssetFields";
-import {
-  intlFunctions,
-  mockUseI18n,
-} from "../../../__tests__/environment/IntlUtil";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 describe("ShowAdvancedAssetFields", () => {
-  beforeEach(() => {
-    mockUseI18n();
-  });
-
   it("is closed by default", () => {
-    const wrapper = shallow(
-      <ShowAdvancedAssetFields {...intlFunctions()}>
-        <div>Test</div>
+    renderWithIntl(
+      <ShowAdvancedAssetFields>
+        <div data-testid="advanced-content">Test</div>
       </ShowAdvancedAssetFields>
     );
-    expect(wrapper.find("Collapse").prop("isOpen")).toBeFalsy();
+    expect(screen.getByTestId("advanced-content").parentElement).toHaveClass(
+      "collapse"
+    );
+    expect(
+      screen.getByTestId("advanced-content").parentElement
+    ).not.toHaveClass("show");
   });
 
-  it("is open upon click", () => {
-    const wrapper = shallow(
-      <ShowAdvancedAssetFields {...intlFunctions()}>
-        <div>Test</div>
+  it("is open upon click", async () => {
+    const user = userEvent.setup();
+    renderWithIntl(
+      <ShowAdvancedAssetFields>
+        <div data-testid="advanced-content">Test</div>
       </ShowAdvancedAssetFields>
     );
-    wrapper.find("#toggle-advanced").simulate("click");
-    expect(wrapper.find("Collapse").prop("isOpen")).toBeTruthy();
+    await user.click(screen.getByRole("button"));
+    await waitFor(() =>
+      expect(screen.getByTestId("advanced-content").parentElement).toHaveClass(
+        "collapse",
+        "show"
+      )
+    );
   });
 });

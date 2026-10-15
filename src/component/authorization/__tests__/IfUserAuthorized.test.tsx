@@ -2,10 +2,13 @@ import User from "../../../model/User";
 import Generator from "../../../__tests__/environment/Generator";
 import IfUserIsEditor from "../IfUserIsEditor";
 import * as redux from "react-redux";
-import Unauthorized from "../Unauthorized";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { screen } from "@testing-library/react";
 import { Mock, vi } from "vitest";
+import en from "../../../i18n/en";
+
+const unauthorizedMessage = en.messages["unauthorized.message"];
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -26,33 +29,33 @@ describe("IfUserIsEditor", () => {
 
   it("renders children components when current user is not restricted", () => {
     currentUser.types.push(VocabularyUtils.USER_EDITOR);
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <IfUserIsEditor>
-        <div id="test">Test</div>
+        <div>Test</div>
       </IfUserIsEditor>
     );
-    expect(wrapper.exists("#test")).toBeTruthy();
-    expect(wrapper.exists(Unauthorized)).toBeFalsy();
+    expect(screen.getByText("Test")).toBeInTheDocument();
+    expect(screen.queryByText(unauthorizedMessage)).not.toBeInTheDocument();
   });
 
   it("renders unauthorized component when current user is restricted", () => {
     currentUser.types.push(VocabularyUtils.USER_RESTRICTED);
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <IfUserIsEditor renderUnauthorizedAlert={true}>
-        <div id="test">Test</div>
+        <div>Test</div>
       </IfUserIsEditor>
     );
-    expect(wrapper.exists("#test")).toBeFalsy();
-    expect(wrapper.exists(Unauthorized)).toBeTruthy();
+    expect(screen.queryByText("Test")).not.toBeInTheDocument();
+    expect(screen.getByText(unauthorizedMessage)).toBeInTheDocument();
   });
 
   it("renders nothing when user is restricted and renderUnauthorizedAlert is false", () => {
     currentUser.types.push(VocabularyUtils.USER_RESTRICTED);
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <IfUserIsEditor renderUnauthorizedAlert={false}>
-        <div id="test">Test</div>
+        <div>Test</div>
       </IfUserIsEditor>
     );
-    expect(wrapper.isEmptyRender()).toBeTruthy();
+    expect(container).toBeEmptyDOMElement();
   });
 });
