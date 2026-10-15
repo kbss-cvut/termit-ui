@@ -1,12 +1,10 @@
 import Generator from "../../../__tests__/environment/Generator";
 import { AssetHistory } from "../AssetHistory";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import {
   flushPromises,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
-import { Table } from "reactstrap";
+import { act, screen } from "@testing-library/react";
 import PersistRecord from "../../../model/changetracking/PersistRecord";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import * as Redux from "react-redux";
@@ -36,7 +34,7 @@ describe("AssetHistory", () => {
   it("loads asset history on mount", async () => {
     const asset = Generator.generateTerm();
     (mockDispatch as Mock).mockResolvedValue([]);
-    mountWithIntl(<AssetHistory asset={asset} {...intlFunctions()} />);
+    renderWithIntl(<AssetHistory asset={asset} />);
     await act(async () => {
       await flushPromises();
       vi.runAllTimers();
@@ -58,14 +56,11 @@ describe("AssetHistory", () => {
         types: [VocabularyUtils.PERSIST_EVENT],
       }),
     ]);
-    const wrapper = mountWithIntl(
-      <AssetHistory asset={asset} {...intlFunctions()} />
-    );
+    renderWithIntl(<AssetHistory asset={asset} />);
     await act(async () => {
       await flushPromises();
       vi.runAllTimers();
     });
-    wrapper.update();
-    expect(wrapper.exists(Table)).toBeTruthy();
+    expect(screen.getByRole("table")).toBeInTheDocument();
   });
 });
