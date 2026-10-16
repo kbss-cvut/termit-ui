@@ -1,15 +1,13 @@
-import { mountWithIntl } from "../../../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../../../__tests__/environment/Environment";
 import en from "../../../../../i18n/en";
 import Generator from "../../../../../__tests__/environment/Generator";
-import { Link, MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import VocabularyUtils from "../../../../../util/VocabularyUtils";
 import { AssetList } from "../AssetList";
 import User from "../../../../../model/User";
-import { intlFunctions } from "../../../../../__tests__/environment/IntlUtil";
-import { Label } from "reactstrap";
 import RecentlyModifiedAsset from "../../../../../model/RecentlyModifiedAsset";
 import * as Redux from "react-redux";
-import TermLink from "../../../../term/TermLink";
+import { screen } from "@testing-library/react";
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -28,27 +26,26 @@ describe("AssetList", () => {
 
   it("does not render info message during loading", () => {
     vi.spyOn(Redux, "useSelector").mockReturnValue(user);
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <MemoryRouter>
-        <AssetList assets={null} {...intlFunctions()} />
+        <AssetList assets={null} />
       </MemoryRouter>
     );
-    const info = wrapper.find(".italics");
-    expect(info.exists()).toBeFalsy();
+    expect(
+      screen.queryByText(en.messages["dashboard.widget.assetList.empty"])
+    ).not.toBeInTheDocument();
   });
 
   it("renders info message when no assets were found", () => {
     vi.spyOn(Redux, "useSelector").mockReturnValue(user);
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <MemoryRouter>
-        <AssetList assets={[]} {...intlFunctions()} />
+        <AssetList assets={[]} />
       </MemoryRouter>
     );
-    const info = wrapper.find(".italics");
-    expect(info.exists()).toBeTruthy();
-    expect(info.text()).toEqual(
-      en.messages["dashboard.widget.assetList.empty"]
-    );
+    expect(
+      screen.getByText(en.messages["dashboard.widget.assetList.empty"])
+    ).toBeInTheDocument();
   });
 
   it("renders downloaded assets", () => {
@@ -70,18 +67,17 @@ describe("AssetList", () => {
       }),
     ];
     vi.spyOn(Redux, "useSelector").mockReturnValue(user);
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <MemoryRouter>
-        <AssetList assets={assets} {...intlFunctions()} />
+        <AssetList assets={assets} />
       </MemoryRouter>
     );
-    return Promise.resolve().then(() => {
-      wrapper.update();
-      const links = wrapper.find(Link);
-      expect(links.length).toEqual(2);
-      expect(links.at(0).text()).toEqual(assets[0].label);
-      expect(links.at(1).text()).toEqual(assets[1].label);
-    });
+    expect(
+      screen.getByRole("link", { name: assets[0].label })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: assets[1].label })
+    ).toBeInTheDocument();
   });
 
   const renderTermInList = (author: User, containedString: string) => {
@@ -96,18 +92,19 @@ describe("AssetList", () => {
       }),
     ];
     vi.spyOn(Redux, "useSelector").mockReturnValue(user);
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <MemoryRouter>
         <AssetList assets={assets} />
       </MemoryRouter>
     );
-    return Promise.resolve().then(() => {
-      wrapper.update();
-      const labels = wrapper.find(Label);
-      expect(labels.length).toEqual(1);
-      const label = labels.at(0).text();
-      expect(label).toContain(containedString);
-    });
+    expect(
+      screen.getByText((_, element) =>
+        Boolean(
+          element?.classList.contains("asset-list-title-message") &&
+            element.textContent?.includes(containedString)
+        )
+      )
+    ).toBeInTheDocument();
   };
 
   it("renders an asset with 'You' if the author is the currently logged user", () => {
@@ -139,11 +136,14 @@ describe("AssetList", () => {
       }),
     ];
     vi.spyOn(Redux, "useSelector").mockReturnValue(user);
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <MemoryRouter>
         <AssetList assets={assets} />
       </MemoryRouter>
     );
-    expect(wrapper.find(TermLink).length).toEqual(1);
+    expect(screen.getByRole("link", { name: "Term" })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "*****" })
+    ).not.toBeInTheDocument();
   });
 });
