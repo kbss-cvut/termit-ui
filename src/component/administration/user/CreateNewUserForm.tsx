@@ -20,11 +20,11 @@ import {
   Row,
   UncontrolledTooltip,
 } from "reactstrap";
-import Toggle from "react-bootstrap-toggle";
 import { TOGGLE_STYLE } from "../../term/TermListToggle";
 import { UserAccountData } from "../../../model/User";
 import Constants from "../../../util/Constants";
 import CustomInput from "../../misc/CustomInput";
+import CustomToggle from "../../misc/CustomToggle";
 
 interface CreateNewUserFormProps {
   onSubmit: (userAccountData: UserAccountData) => void;
@@ -190,21 +190,14 @@ const CreateNewUserForm: React.FC<CreateNewUserFormProps> = (props) => {
             />
           </Col>
           <Col md={12}>
-            <Toggle
+            <CustomToggle
               id="enter-password-toggle"
               onClick={onEnterPasswordToggle}
               on={i18n("administration.users.create.password-toggle.user")}
               off={i18n("administration.users.create.password-toggle.admin")}
-              onstyle="primary"
-              offstyle="secondary"
-              size="sm"
-              onClassName="toggle-custom"
-              offClassName="toggle-custom"
-              handleClassName="toggle-handle-custom"
               className="mb-4"
               style={TOGGLE_STYLE}
               active={emailPassword}
-              recalculateOnResize={true}
             />
             <UncontrolledTooltip
               target="enter-password-toggle"
