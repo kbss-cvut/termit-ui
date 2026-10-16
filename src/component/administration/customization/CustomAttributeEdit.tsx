@@ -19,6 +19,7 @@ import {
   Form,
   Row,
 } from "reactstrap";
+import Toggle from "react-bootstrap-toggle";
 import CustomInput from "../../misc/CustomInput";
 import MultilingualIcon from "../../misc/MultilingualIcon";
 import ValidationResult from "../../../model/form/ValidationResult";
@@ -50,6 +51,8 @@ import {
   ungroupAnnotatedRelationships,
 } from "./AnnotatedRelationshipsSelector";
 import Utils from "../../../util/Utils";
+import "../../misc/CustomToggle.scss";
+import HelpIcon from "../../misc/HelpIcon";
 
 function propertyWithLabelExists(
   label: string,
@@ -76,6 +79,9 @@ export const CustomAttributeEdit: React.FC = () => {
   const [range, setRange] = React.useState<string>(VocabularyUtils.XSD_STRING);
   const [language, setLanguage] = React.useState(getShortLocale(locale));
   const [iri, setIri] = React.useState("");
+  const [symmetric, setSymmetric] = React.useState(
+    range === VocabularyUtils.TERM
+  );
   const [shouldGenerateIri, setShouldGenerateIri] = React.useState(true);
   const [annotatedRelationships, setAnnotatedRelationships] = React.useState<
     string[]
@@ -108,6 +114,11 @@ export const CustomAttributeEdit: React.FC = () => {
         setComment(editedAttribute.comment || {});
         setDomain(editedAttribute.domainIri || "");
         setRange(editedAttribute.rangeIri || "");
+        setSymmetric(
+          Utils.sanitizeArray(editedAttribute.types).includes(
+            VocabularyUtils.OWL_SYMMETRIC_PROPERTY
+          )
+        );
 
         const grouped = groupAnnotatedRelationships(
           Utils.sanitizeArray(editedAttribute.annotatedRelationships)
@@ -166,6 +177,10 @@ export const CustomAttributeEdit: React.FC = () => {
     newComment[language] = e.target.value;
     setComment(newComment);
   };
+  const onRangeChange = (newRange: string) => {
+    setRange(newRange);
+    setSymmetric(false);
+  };
   const goToAdministration = () => {
     Routing.transitionTo(Routes.administration, {
       query: new Map<string, string>([
@@ -196,6 +211,10 @@ export const CustomAttributeEdit: React.FC = () => {
       });
       promise = dispatch(updateCustomAttribute(data));
     } else {
+      const types = [VocabularyUtils.NS_TERMIT + "custom-attribute"];
+      if (symmetric) {
+        types.push(VocabularyUtils.OWL_SYMMETRIC_PROPERTY);
+      }
       promise = dispatch(
         createCustomAttribute(
           new CustomAttribute({
@@ -205,7 +224,7 @@ export const CustomAttributeEdit: React.FC = () => {
             domain,
             range,
             annotatedRelationships: annotatedRelationshipsData,
-            types: [VocabularyUtils.NS_TERMIT + "custom-attribute"],
+            types,
           })
         )
       );
@@ -291,7 +310,7 @@ export const CustomAttributeEdit: React.FC = () => {
             <Row>
               <Col xs={12}>
                 <CustomAttributeSelector
-                  onChange={setRange}
+                  onChange={onRangeChange}
                   value={range}
                   options={RANGE_OPTIONS}
                   labelKey="administration.customization.customAttributes.range"
@@ -322,6 +341,35 @@ export const CustomAttributeEdit: React.FC = () => {
                     value={iri}
                     help={i18n("asset.create.iri.help")}
                     disabled={editingMode}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <Toggle
+                    id="custom-attribute-symmetric"
+                    on={i18n(
+                      "administration.customization.customAttributes.symmetric"
+                    )}
+                    off={i18n(
+                      "administration.customization.customAttributes.symmetric"
+                    )}
+                    onstyle="primary"
+                    offstyle="secondary"
+                    size="sm"
+                    disabled={range !== VocabularyUtils.TERM || editingMode}
+                    onClick={() => setSymmetric(!symmetric)}
+                    active={symmetric}
+                    onClassName="toggle-custom"
+                    offClassName="toggle-custom"
+                    handleClassName="toggle-handle-custom"
+                    recalculateOnResize={true}
+                  />
+                  <HelpIcon
+                    id="custom-attribute-symmetric-help"
+                    text={i18n(
+                      "administration.customization.customAttributes.symmetric.help"
+                    )}
                   />
                 </Col>
               </Row>

@@ -45,6 +45,7 @@ const _NS_DATA_DESCRIPTION =
 const _NS_TERMIT = "http://onto.fel.cvut.cz/ontologies/application/termit/";
 const _NS_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 const _NS_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
+const _NS_OWL = "http://www.w3.org/2002/07/owl#";
 const _NS_SKOS = "http://www.w3.org/2004/02/skos/core#";
 const _NS_DC = "http://purl.org/dc/terms/";
 const _NS_SH = "http://www.w3.org/ns/shacl#";
@@ -130,6 +131,7 @@ const VocabularyUtils = {
   RDF_SUBJECT: _NS_RDF + "subject",
   RDF_PREDICATE: _NS_RDF + "predicate",
   RDF_NIL: _NS_RDF + "nil",
+  OWL_SYMMETRIC_PROPERTY: _NS_OWL + "SymmetricProperty",
   PREFIX_DC: _NS_DC,
   DC_TITLE: _NS_DC + "title",
   DC_DESCRIPTION: _NS_DC + "description",
