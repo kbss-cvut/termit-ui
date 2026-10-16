@@ -1,12 +1,13 @@
 import ActionType from "../../../action/ActionType";
 import { MemoryRouter } from "react-router";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { ForgotPassword } from "../ForgotPassword";
 import MessageType from "../../../model/MessageType";
-import { act } from "react-dom/test-utils";
-import { changeInputValue } from "../../../__tests__/environment/TestUtil";
 import { requestPasswordReset } from "../../../action/AsyncUserActions";
 import Message from "../../../model/Message";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { waitFor } from "@testing-library/react";
 
 vi.mock("../../../action/AsyncUserActions", () => ({
   ...vi.importActual("../../../action/AsyncUserActions"),
@@ -29,124 +30,116 @@ describe("ForgotPassword", () => {
     );
   });
 
-  it("renders submit button disabled when username field is empty", () => {
-    const wrapper = mountWithIntl(
+  it("renders submit button disabled when username field is empty", async () => {
+    const user = userEvent.setup();
+    renderWithIntl(
       <MemoryRouter>
         <ForgotPassword />
       </MemoryRouter>
     );
-    const button = () => wrapper.find("button#forgotPassword-submit");
-    const usernameInput = () => wrapper.find('input[name="username"]');
-    expect(usernameInput().props().value).toEqual(EMPTY_STRING);
-    expect(button().getElement().props.disabled).toBeTruthy();
+    const button = screen.getByTestId("forgotPassword-submit");
+    const usernameInput = screen.getByTestId("forgotPassword-username");
+    expect(usernameInput).toHaveValue(EMPTY_STRING);
+    expect(button).toBeDisabled();
 
-    changeInputValue(usernameInput(), VALID_EMAIL);
-    expect(usernameInput().props().value).toEqual(VALID_EMAIL);
-    changeInputValue(usernameInput(), EMPTY_STRING);
-    expect(button().getElement().props.disabled).toBeTruthy();
+    await user.type(usernameInput, VALID_EMAIL);
+    expect(usernameInput).toHaveValue(VALID_EMAIL);
+    await user.clear(usernameInput);
+    expect(button).toBeDisabled();
 
-    changeInputValue(usernameInput(), VALID_EMAIL);
-    changeInputValue(usernameInput(), EMPTY_STRING);
-    expect(button().getElement().props.disabled).toBeTruthy();
-    expect(usernameInput().props().value).toEqual(EMPTY_STRING);
+    await user.type(usernameInput, VALID_EMAIL);
+    await user.clear(usernameInput);
+    expect(button).toBeDisabled();
+    expect(usernameInput).toHaveValue(EMPTY_STRING);
   });
 
-  it("renders submit button disabled when username field is not valid email", () => {
-    const wrapper = mountWithIntl(
+  it("renders submit button disabled when username field is not valid email", async () => {
+    const user = userEvent.setup();
+    renderWithIntl(
       <MemoryRouter>
         <ForgotPassword />
       </MemoryRouter>
     );
-    const button = () => wrapper.find("button#forgotPassword-submit");
-    const usernameInput = () => wrapper.find('input[name="username"]');
-    expect(usernameInput().props().value).toEqual("");
-    expect(button().props().disabled).toBeTruthy();
+    const button = screen.getByTestId("forgotPassword-submit");
+    const usernameInput = screen.getByTestId("forgotPassword-username");
+    expect(usernameInput).toHaveValue("");
+    expect(button).toBeDisabled();
 
-    changeInputValue(usernameInput(), VALID_EMAIL);
-    expect(button().props().disabled).toBeFalsy();
+    await user.type(usernameInput, VALID_EMAIL);
+    expect(button).not.toBeDisabled();
 
-    changeInputValue(usernameInput(), INVALID_EMAIL);
-    expect(button().getElement().props.disabled).toBeTruthy();
+    await user.clear(usernameInput);
+    await user.type(usernameInput, INVALID_EMAIL);
+    expect(button).toBeDisabled();
 
-    changeInputValue(usernameInput(), VALID_EMAIL);
-    expect(button().getElement().props.disabled).toBeFalsy();
-    expect(usernameInput().props().value).toEqual(VALID_EMAIL);
+    await user.clear(usernameInput);
+    await user.type(usernameInput, VALID_EMAIL);
+    expect(button).not.toBeDisabled();
+    expect(usernameInput).toHaveValue(VALID_EMAIL);
   });
 
   it("does send form when button is pressed and username is valid", async () => {
-    const wrapper = mountWithIntl(
+    const user = userEvent.setup();
+    renderWithIntl(
       <MemoryRouter>
         <ForgotPassword />
       </MemoryRouter>
     );
-    const button = () => wrapper.find("button#forgotPassword-submit");
-    const usernameInput = () => wrapper.find('input[name="username"]');
+    const button = screen.getByTestId("forgotPassword-submit");
+    const usernameInput = screen.getByTestId("forgotPassword-username");
 
-    changeInputValue(usernameInput(), VALID_EMAIL);
+    await user.type(usernameInput, VALID_EMAIL);
+    expect(usernameInput).toHaveValue(VALID_EMAIL);
 
-    expect(usernameInput().props().value).toEqual(VALID_EMAIL);
-
-    await act(async () => {
-      button().simulate("click");
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
+    await user.click(button);
 
     expect(mockedRequestPasswordReset).toHaveBeenCalled();
   });
 
   it("does send form when enter is pressed and username is valid", async () => {
-    const wrapper = mountWithIntl(
+    const user = userEvent.setup();
+    renderWithIntl(
       <MemoryRouter>
         <ForgotPassword />
       </MemoryRouter>
     );
-    const usernameInput = () => wrapper.find('input[name="username"]');
+    const usernameInput = screen.getByTestId("forgotPassword-username");
 
-    changeInputValue(usernameInput(), VALID_EMAIL);
+    await user.type(usernameInput, VALID_EMAIL);
+    expect(usernameInput).toHaveValue(VALID_EMAIL);
 
-    expect(usernameInput().props().value).toEqual(VALID_EMAIL);
+    await user.type(usernameInput, "{enter}");
 
-    await act(async () => {
-      usernameInput().simulate("keyPress", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
-
-    expect(requestPasswordReset).toHaveBeenCalled();
+    await waitFor(() => expect(mockedRequestPasswordReset).toHaveBeenCalled());
   });
 
-  it("does not send form when enter is pressed and username is invalid", () => {
-    const wrapper = mountWithIntl(
+  it("does not send form when enter is pressed and username is invalid", async () => {
+    const user = userEvent.setup();
+    renderWithIntl(
       <MemoryRouter>
         <ForgotPassword />
       </MemoryRouter>
     );
-    const usernameInput = () => wrapper.find('input[name="username"]');
-    changeInputValue(usernameInput(), INVALID_EMAIL);
-    usernameInput().simulate("keyPress", { key: "Enter" });
-    expect(usernameInput().props().value).toEqual(INVALID_EMAIL);
+    const usernameInput = screen.getByTestId("forgotPassword-username");
+    await user.type(usernameInput, INVALID_EMAIL);
+    await user.type(usernameInput, "{enter}");
+    expect(usernameInput).toHaveValue(INVALID_EMAIL);
     expect(mockedRequestPasswordReset).not.toHaveBeenCalled();
   });
 
   it("clears username input on success", async () => {
-    const wrapper = mountWithIntl(
+    const user = userEvent.setup();
+    renderWithIntl(
       <MemoryRouter>
         <ForgotPassword />
       </MemoryRouter>
     );
 
-    const usernameInput = () => wrapper.find('input[name="username"]');
-    changeInputValue(usernameInput(), VALID_EMAIL);
+    const usernameInput = screen.getByTestId("forgotPassword-username");
+    await user.type(usernameInput, VALID_EMAIL);
 
-    // required to wait on .then execution on requestPasswordReset
-    // and to let component handle its state
-    await act(async () => {
-      usernameInput().simulate("keyPress", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
+    await user.type(usernameInput, "{enter}");
 
-    expect(usernameInput().props().value).toEqual(EMPTY_STRING);
+    await waitFor(() => expect(usernameInput).toHaveValue(EMPTY_STRING));
   });
 });
