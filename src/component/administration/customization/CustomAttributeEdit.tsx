@@ -19,7 +19,6 @@ import {
   Form,
   Row,
 } from "reactstrap";
-import Toggle from "react-bootstrap-toggle";
 import CustomInput from "../../misc/CustomInput";
 import MultilingualIcon from "../../misc/MultilingualIcon";
 import ValidationResult from "../../../model/form/ValidationResult";
@@ -51,7 +50,7 @@ import {
   ungroupAnnotatedRelationships,
 } from "./AnnotatedRelationshipsSelector";
 import Utils from "../../../util/Utils";
-import "../../misc/CustomToggle.scss";
+import CustomToggle from "../../misc/CustomToggle";
 import HelpIcon from "../../misc/HelpIcon";
 
 function propertyWithLabelExists(
@@ -346,7 +345,7 @@ export const CustomAttributeEdit: React.FC = () => {
               </Row>
               <Row>
                 <Col xs={12}>
-                  <Toggle
+                  <CustomToggle
                     id="custom-attribute-symmetric"
                     on={i18n(
                       "administration.customization.customAttributes.symmetric"
@@ -354,16 +353,9 @@ export const CustomAttributeEdit: React.FC = () => {
                     off={i18n(
                       "administration.customization.customAttributes.symmetric"
                     )}
-                    onstyle="primary"
-                    offstyle="secondary"
-                    size="sm"
                     disabled={range !== VocabularyUtils.TERM || editingMode}
                     onClick={() => setSymmetric(!symmetric)}
                     active={symmetric}
-                    onClassName="toggle-custom"
-                    offClassName="toggle-custom"
-                    handleClassName="toggle-handle-custom"
-                    recalculateOnResize={true}
                   />
                   <HelpIcon
                     id="custom-attribute-symmetric-help"
