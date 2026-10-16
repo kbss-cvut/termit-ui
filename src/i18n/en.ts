@@ -269,6 +269,9 @@ const en = {
       "Change identifier of a custom attribute",
     "administration.customization.customAttributes.migrate.iri.confirmLabel":
       "To confirm, enter the name of the custom attribute",
+    "administration.customization.customAttributes.symmetric": "Symmetric",
+    "administration.customization.customAttributes.symmetric.help":
+      "In a symmetric relationship, setting it in one direction automatically applies it in the opposite direction.",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
