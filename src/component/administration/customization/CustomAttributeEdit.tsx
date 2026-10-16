@@ -52,6 +52,7 @@ import {
 import Utils from "../../../util/Utils";
 import CustomToggle from "../../misc/CustomToggle";
 import HelpIcon from "../../misc/HelpIcon";
+import { AxiosResponse } from "axios";
 
 function propertyWithLabelExists(
   label: string,
@@ -78,9 +79,9 @@ export const CustomAttributeEdit: React.FC = () => {
   const [range, setRange] = React.useState<string>(VocabularyUtils.XSD_STRING);
   const [language, setLanguage] = React.useState(getShortLocale(locale));
   const [iri, setIri] = React.useState("");
-  const [symmetric, setSymmetric] = React.useState(
-    range === VocabularyUtils.TERM
-  );
+  const canBeSymmetric =
+    domain === VocabularyUtils.TERM && range === VocabularyUtils.TERM;
+  const [symmetric, setSymmetric] = React.useState(canBeSymmetric);
   const [shouldGenerateIri, setShouldGenerateIri] = React.useState(true);
   const [annotatedRelationships, setAnnotatedRelationships] = React.useState<
     string[]
@@ -150,7 +151,7 @@ export const CustomAttributeEdit: React.FC = () => {
       loadIdentifier({
         name: e.target.value.trim(),
         assetType: "CUSTOM_ATTRIBUTE",
-      }).then((resp) => setIri(resp.data));
+      }).then((resp: AxiosResponse<string>) => setIri(resp.data));
     }
   };
   const labelValidation =
@@ -353,7 +354,7 @@ export const CustomAttributeEdit: React.FC = () => {
                     off={i18n(
                       "administration.customization.customAttributes.symmetric"
                     )}
-                    disabled={range !== VocabularyUtils.TERM || editingMode}
+                    disabled={!canBeSymmetric || editingMode}
                     onClick={() => setSymmetric(!symmetric)}
                     active={symmetric}
                   />
