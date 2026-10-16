@@ -1,10 +1,9 @@
 import React from "react";
 import SearchParam, { MatchType } from "../../../model/search/SearchParam";
 import { FormGroup, Label } from "reactstrap";
-import Toggle from "react-bootstrap-toggle";
 import { useI18n } from "../../hook/useI18n";
-import "../../misc/CustomToggle.scss";
 import CustomInput from "../../misc/CustomInput";
+import CustomToggle from "../../misc/CustomToggle";
 
 interface TextFacetProps {
   id: string;
@@ -64,19 +63,12 @@ const ExactMatchToggle: React.FC<{
 }> = ({ active, id, onToggle }) => {
   const { i18n } = useI18n();
   return (
-    <Toggle
+    <CustomToggle
       id={id}
       onClick={onToggle}
       on={i18n("search.faceted.matchType.exact")}
       off={i18n("search.faceted.matchType.substring")}
-      onstyle="primary"
-      offstyle="secondary"
-      size="sm"
-      onClassName="toggle-custom"
-      offClassName="toggle-custom"
-      handleClassName="toggle-handle-custom"
       active={active}
-      recalculateOnResize={true}
     />
   );
 };

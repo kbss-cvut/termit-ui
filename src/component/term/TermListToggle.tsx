@@ -1,8 +1,7 @@
 import * as React from "react";
 import { UncontrolledTooltip } from "reactstrap";
-import Toggle from "react-bootstrap-toggle";
 import { useI18n } from "../hook/useI18n";
-import "../misc/CustomToggle.scss";
+import CustomToggle from "../misc/CustomToggle";
 
 export const TOGGLE_STYLE = {
   height: "calc(1.5 * 0.875rem + 0.5rem + 2px)",
@@ -53,21 +52,14 @@ const TermListToggle: React.FC<TermListToggleProps> = ({
 
   return (
     <>
-      <Toggle
+      <CustomToggle
         id={id}
         onClick={onToggle}
         on={i18n(labelOnKey as any)}
         off={i18n(labelOffKey as any)}
         disabled={disabled}
-        onstyle="primary"
-        offstyle="secondary"
-        size="sm"
-        onClassName="toggle-custom"
-        offClassName="toggle-custom"
-        handleClassName="toggle-handle-custom"
         style={toggleStyle}
         active={value}
-        recalculateOnResize={true}
       />
       <UncontrolledTooltip target={id} placement="right">
         {i18n((value ? tooltipOnKey : tooltipOffKey) as any)}
