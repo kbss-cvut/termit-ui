@@ -1,9 +1,8 @@
-import { mountWithIntl } from "../../../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../../../__tests__/environment/Environment";
 import en from "../../../../../i18n/en";
 import Generator from "../../../../../__tests__/environment/Generator";
 import { MemoryRouter } from "react-router-dom";
 import User from "../../../../../model/User";
-import { intlFunctions } from "../../../../../__tests__/environment/IntlUtil";
 import {
   CommentedAssetList,
   DISPLAY_LENGTH_THRESHOLD,
@@ -12,7 +11,7 @@ import {
 import Comment from "../../../../../model/Comment";
 import VocabularyUtils from "../../../../../util/VocabularyUtils";
 import * as Redux from "react-redux";
-import TermLink from "../../../../term/TermLink";
+import { screen } from "@testing-library/react";
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -31,59 +30,29 @@ describe("CommentedAssetList", () => {
 
   it("does not render info message during loading", () => {
     vi.spyOn(Redux, "useSelector").mockReturnValue(user);
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <MemoryRouter>
-        <CommentedAssetList assets={null} {...intlFunctions()} />
+        <CommentedAssetList assets={null} />
       </MemoryRouter>
     );
-    const info = wrapper.find(".italics");
-    expect(info.exists()).toBeFalsy();
+    expect(
+      screen.queryByText(en.messages["dashboard.widget.commentList.empty"])
+    ).not.toBeInTheDocument();
   });
 
   it("renders info message when no assets were found", () => {
     vi.spyOn(Redux, "useSelector").mockReturnValue(user);
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <MemoryRouter>
-        <CommentedAssetList assets={[]} {...intlFunctions()} />
+        <CommentedAssetList assets={[]} />
       </MemoryRouter>
     );
-    const info = wrapper.find(".italics");
-    expect(info.exists()).toBeTruthy();
-    expect(info.text()).toEqual(
-      en.messages["dashboard.widget.commentList.empty"]
-    );
+    expect(
+      screen.getByText(en.messages["dashboard.widget.commentList.empty"])
+    ).toBeInTheDocument();
   });
 
   describe("comment content cutting", () => {
-    it("renders substring of the comment text if its length exceeds defined threshold", () => {
-      vi.spyOn(Redux, "useSelector").mockReturnValue(user);
-      let content = "a";
-      while (content.length < DISPLAY_LENGTH_THRESHOLD + 10) {
-        content += "a";
-      }
-      const comment = createComment(content);
-      const wrapper = mountWithIntl(
-        <MemoryRouter>
-          <CommentedAssetList
-            assets={[
-              {
-                lastComment: comment,
-                iri: Generator.generateUri(),
-                label: "Test",
-                vocabulary: { iri: Generator.generateUri() },
-                types: [VocabularyUtils.TERM],
-              },
-            ]}
-            {...intlFunctions()}
-          />
-        </MemoryRouter>
-      );
-      const renderedContent = wrapper.find(".comment-text").text();
-      expect(renderedContent.length).toEqual(
-        DISPLAY_LENGTH_THRESHOLD + ELLIPSIS.length
-      );
-    });
-
     function createComment(content: string) {
       return new Comment({
         iri: Generator.generateUri(),
@@ -93,6 +62,36 @@ describe("CommentedAssetList", () => {
       });
     }
 
+    it("renders substring of the comment text if its length exceeds defined threshold", () => {
+      vi.spyOn(Redux, "useSelector").mockReturnValue(user);
+      let content = "a";
+      while (content.length < DISPLAY_LENGTH_THRESHOLD + 10) {
+        content += "a";
+      }
+      const comment = createComment(content);
+      renderWithIntl(
+        <MemoryRouter>
+          <CommentedAssetList
+            assets={[
+              {
+                lastComment: comment,
+                iri: Generator.generateUri(),
+                label: "Test",
+                vocabulary: { iri: Generator.generateUri() },
+                types: [VocabularyUtils.TERM],
+              },
+            ]}
+          />
+        </MemoryRouter>
+      );
+      const renderedContent = screen.getByTitle(
+        en.messages["dashboard.widget.commentList.lastComment"]
+      ).textContent!;
+      expect(renderedContent.length).toEqual(
+        DISPLAY_LENGTH_THRESHOLD + ELLIPSIS.length
+      );
+    });
+
     it("renders substring of the comment text until last possible space if its length exceeds defined threshold", () => {
       vi.spyOn(Redux, "useSelector").mockReturnValue(user);
       let content = "auto";
@@ -100,7 +99,7 @@ describe("CommentedAssetList", () => {
         content += " auto";
       }
       const comment = createComment(content);
-      const wrapper = mountWithIntl(
+      renderWithIntl(
         <MemoryRouter>
           <CommentedAssetList
             assets={[
@@ -112,18 +111,19 @@ describe("CommentedAssetList", () => {
                 types: [VocabularyUtils.TERM],
               },
             ]}
-            {...intlFunctions()}
           />
         </MemoryRouter>
       );
-      const renderedContent = wrapper.find(".comment-text").text();
+      const renderedContent = screen.getByTitle(
+        en.messages["dashboard.widget.commentList.lastComment"]
+      ).textContent!;
       expect(renderedContent.endsWith("auto" + ELLIPSIS)).toBeTruthy();
     });
 
     it("does not substring comment content when it fits display length threshold", () => {
       vi.spyOn(Redux, "useSelector").mockReturnValue(user);
       const comment = createComment("test comment 12345");
-      const wrapper = mountWithIntl(
+      renderWithIntl(
         <MemoryRouter>
           <CommentedAssetList
             assets={[
@@ -135,11 +135,12 @@ describe("CommentedAssetList", () => {
                 types: [VocabularyUtils.TERM],
               },
             ]}
-            {...intlFunctions()}
           />
         </MemoryRouter>
       );
-      const renderedContent = wrapper.find(".comment-text").text();
+      const renderedContent = screen.getByTitle(
+        en.messages["dashboard.widget.commentList.lastComment"]
+      ).textContent!;
       expect(renderedContent).toEqual(comment.content);
     });
 
@@ -147,7 +148,7 @@ describe("CommentedAssetList", () => {
       vi.spyOn(Redux, "useSelector").mockReturnValue(user);
       const forbiddenComment = createComment("*****");
       const normalComment = createComment("Comment content");
-      const wrapper = mountWithIntl(
+      renderWithIntl(
         <MemoryRouter>
           <CommentedAssetList
             assets={[
@@ -166,11 +167,15 @@ describe("CommentedAssetList", () => {
                 types: [VocabularyUtils.TERM],
               },
             ]}
-            {...intlFunctions()}
           />
         </MemoryRouter>
       );
-      expect(wrapper.find(TermLink).length).toEqual(1);
+      expect(
+        screen.getByRole("link", { name: "Term term" })
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole("link", { name: "*****" })
+      ).not.toBeInTheDocument();
     });
   });
 });
