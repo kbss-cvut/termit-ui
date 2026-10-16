@@ -1,11 +1,17 @@
 import { FileContentDetail } from "../FileContentDetail";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import { shallow } from "enzyme";
-import Annotator from "../../annotator/Annotator";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import Term from "../../../model/Term";
-import Mask from "../../misc/Mask";
 import AppNotification from "../../../model/AppNotification";
+import { screen } from "@testing-library/react";
+import en from "../../../i18n/en";
+
+vi.mock("../../annotator/Annotator", () => ({
+  default: (props: { initialHtml: string }) => (
+    <div data-testid="annotator">{props.initialHtml}</div>
+  ),
+}));
 
 describe("FileDetail", () => {
   const fileIri = VocabularyUtils.create("http://file.org/file-iri");
@@ -42,8 +48,10 @@ describe("FileDetail", () => {
     };
   });
 
-  it("loads file content on mount", () => {
-    shallow(
+  function renderFileContentDetail(
+    props: Partial<React.ComponentProps<typeof FileContentDetail>> = {}
+  ) {
+    return renderWithIntl(
       <FileContentDetail
         iri={fileIri}
         vocabularyIri={vocabularyIri}
@@ -51,66 +59,50 @@ describe("FileDetail", () => {
         {...mockDataProps}
         {...mockedFunctionLikeProps}
         {...intlFunctions()}
+        {...props}
       />
     );
+  }
 
+  it("loads file content on mount", () => {
+    renderFileContentDetail();
     expect(mockedFunctionLikeProps.loadFileContent).toHaveBeenCalledWith(
       fileIri
     );
   });
 
   it("loads vocabulary on mount", () => {
-    shallow(
-      <FileContentDetail
-        iri={fileIri}
-        vocabularyIri={vocabularyIri}
-        fileContent={fileContent}
-        {...mockDataProps}
-        {...mockedFunctionLikeProps}
-        {...intlFunctions()}
-      />
-    );
+    renderFileContentDetail();
     expect(mockedFunctionLikeProps.loadVocabulary).toHaveBeenCalledWith(
       vocabularyIri
     );
   });
 
   it("renders annotator of file content", () => {
-    const wrapper = shallow(
-      <FileContentDetail
-        iri={fileIri}
-        vocabularyIri={vocabularyIri}
-        fileContent={fileContent}
-        {...mockedFunctionLikeProps}
-        {...mockDataProps}
-        {...intlFunctions()}
-      />
-    );
-
-    return Promise.resolve().then(() =>
-      expect(wrapper.find(Annotator).exists()).toBeTruthy()
-    );
+    renderFileContentDetail();
+    expect(screen.getByTestId("annotator")).toHaveTextContent(fileContent);
   });
 
   it("fetches all terms within initialization", () => {
     mockedFunctionLikeProps.fetchTerms = vi.fn(() => Promise.resolve([]));
-
-    shallow(
-      <FileContentDetail
-        iri={fileIri}
-        vocabularyIri={vocabularyIri}
-        fileContent={fileContent}
-        {...mockDataProps}
-        {...mockedFunctionLikeProps}
-        {...intlFunctions()}
-      />
+    renderFileContentDetail();
+    expect(mockedFunctionLikeProps.fetchTerms).toHaveBeenCalledWith(
+      vocabularyIri
     );
-
-    expect(mockedFunctionLikeProps.fetchTerms).toBeCalledWith(vocabularyIri);
   });
 
   it("resets file content before unmounting", () => {
-    const wrapper = shallow<FileContentDetail>(
+    const { unmount } = renderFileContentDetail();
+    unmount();
+    expect(mockedFunctionLikeProps.clearFileContent).toHaveBeenCalled();
+  });
+
+  it("shows loading mask while content is being loaded", () => {
+    const { rerender } = renderFileContentDetail({ fileContent: null });
+    expect(
+      screen.getByText(en.messages["annotator.content.loading"])
+    ).toBeInTheDocument();
+    rerender(
       <FileContentDetail
         iri={fileIri}
         vocabularyIri={vocabularyIri}
@@ -120,28 +112,8 @@ describe("FileDetail", () => {
         {...intlFunctions()}
       />
     );
-    return Promise.resolve().then(() => {
-      wrapper.unmount();
-      expect(mockedFunctionLikeProps.clearFileContent).toHaveBeenCalled();
-    });
-  });
-
-  it("shows loading mask while content is being loaded", () => {
-    const wrapper = shallow<FileContentDetail>(
-      <FileContentDetail
-        iri={fileIri}
-        vocabularyIri={vocabularyIri}
-        fileContent={null}
-        {...mockDataProps}
-        {...mockedFunctionLikeProps}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.exists(Mask)).toBeTruthy();
-    wrapper.setProps({ fileContent });
-    wrapper.update();
-    return Promise.resolve().then(() =>
-      expect(wrapper.exists(Mask)).toBeFalsy()
-    );
+    expect(
+      screen.queryByText(en.messages["annotator.content.loading"])
+    ).not.toBeInTheDocument();
   });
 });

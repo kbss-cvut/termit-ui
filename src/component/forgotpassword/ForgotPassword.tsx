@@ -82,6 +82,7 @@ export const ForgotPassword: React.FC<{}> = () => {
               <Messages renderInPlace={true} />
               <EnhancedInput
                 name="username"
+                data-testid="forgotPassword-username"
                 label={i18n("forgotPassword.username")}
                 autoComplete="username"
                 labelDirection={LabelDirection.vertical}
@@ -93,6 +94,7 @@ export const ForgotPassword: React.FC<{}> = () => {
               />
               <Button
                 id="forgotPassword-submit"
+                data-testid="forgotPassword-submit"
                 color="success"
                 onClick={sendRequest}
                 className="btn-block"

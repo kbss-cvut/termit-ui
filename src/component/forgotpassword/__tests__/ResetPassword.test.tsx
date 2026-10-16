@@ -1,12 +1,12 @@
 import ActionType from "../../../action/ActionType";
 import { MemoryRouter } from "react-router";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import MessageType from "../../../model/MessageType";
-import { act } from "react-dom/test-utils";
-import { changeInputValue } from "../../../__tests__/environment/TestUtil";
 import { ResetPassword } from "../ResetPassword";
 import { resetPassword } from "../../../action/AsyncUserActions";
 import Message from "../../../model/Message";
+import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../action/AsyncUserActions", () => ({
   ...vi.importActual("../../../action/AsyncUserActions"),
@@ -29,205 +29,144 @@ describe("ResetPassword", () => {
   const INVALID_PASSWORD_CONFIRMATION = "NotSoSecretPassword123";
   const EMPTY_STRING = "";
 
-  it("renders submit button disabled when any field is empty", () => {
-    const wrapper = mountWithIntl(
+  function renderResetPassword() {
+    renderWithIntl(
       <MemoryRouter>
         <ResetPassword />
       </MemoryRouter>
     );
-    const button = () => wrapper.find("button#resetPassword-submit");
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
+    return {
+      button: screen.getByTestId("resetPassword-submit"),
+      passwordInput: screen.getByTestId(
+        "resetPassword-password"
+      ) as HTMLInputElement,
+      passwordConfirmationInput: screen.getByTestId(
+        "resetPassword-password-confirm"
+      ) as HTMLInputElement,
+    };
+  }
+
+  it("renders submit button disabled when any field is empty", async () => {
+    const user = userEvent.setup();
+    const { button, passwordInput, passwordConfirmationInput } =
+      renderResetPassword();
     const isAnyEmpty = () =>
-      passwordInput().props().value === EMPTY_STRING ||
-      passwordConfirmationInput().props().value === EMPTY_STRING;
+      passwordInput.value === EMPTY_STRING ||
+      passwordConfirmationInput.value === EMPTY_STRING;
     expect(isAnyEmpty()).toBeTruthy();
-    expect(passwordInput().props().value === EMPTY_STRING);
-    expect(passwordConfirmationInput().props().value === EMPTY_STRING);
-    expect(button().props().disabled).toBeTruthy();
+    expect(button).toBeDisabled();
 
-    changeInputValue(passwordInput(), PASSWORD);
+    await user.type(passwordInput, PASSWORD);
     expect(isAnyEmpty()).toBeTruthy();
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
+    await user.type(passwordConfirmationInput, PASSWORD);
     expect(isAnyEmpty()).toBeFalsy();
-    expect(button().props().disabled).toBeFalsy();
+    expect(button).not.toBeDisabled();
   });
 
-  it("renders submit button disabled when passwords dont match", () => {
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
-    const button = () => wrapper.find("button#resetPassword-submit");
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
+  it("renders submit button disabled when passwords dont match", async () => {
+    const user = userEvent.setup();
+    const { button, passwordInput, passwordConfirmationInput } =
+      renderResetPassword();
 
-    expect(button().props().disabled).toBeTruthy();
+    expect(button).toBeDisabled();
 
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
-    changeInputValue(
-      passwordConfirmationInput(),
-      INVALID_PASSWORD_CONFIRMATION
-    );
-    expect(button().props().disabled).toBeTruthy();
+    await user.type(passwordInput, PASSWORD);
+    await user.type(passwordConfirmationInput, PASSWORD);
+    await user.clear(passwordConfirmationInput);
+    await user.type(passwordConfirmationInput, INVALID_PASSWORD_CONFIRMATION);
+    expect(button).toBeDisabled();
 
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
-    changeInputValue(passwordInput(), INVALID_PASSWORD_CONFIRMATION);
-    expect(button().props().disabled).toBeTruthy();
+    await user.clear(passwordConfirmationInput);
+    await user.type(passwordConfirmationInput, PASSWORD);
+    await user.clear(passwordInput);
+    await user.type(passwordInput, INVALID_PASSWORD_CONFIRMATION);
+    expect(button).toBeDisabled();
   });
 
-  it("renders submit button enabled when passwords match", () => {
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
-    const button = () => wrapper.find("button#resetPassword-submit");
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
+  it("renders submit button enabled when passwords match", async () => {
+    const user = userEvent.setup();
+    const { button, passwordInput, passwordConfirmationInput } =
+      renderResetPassword();
 
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
-    expect(button().props().disabled).toBeFalsy();
+    await user.type(passwordInput, PASSWORD);
+    await user.type(passwordConfirmationInput, PASSWORD);
+    expect(button).not.toBeDisabled();
 
-    changeInputValue(
-      passwordConfirmationInput(),
-      INVALID_PASSWORD_CONFIRMATION
-    );
-    changeInputValue(passwordInput(), INVALID_PASSWORD_CONFIRMATION);
-    expect(button().props().disabled).toBeFalsy();
+    await user.clear(passwordConfirmationInput);
+    await user.type(passwordConfirmationInput, INVALID_PASSWORD_CONFIRMATION);
+    await user.clear(passwordInput);
+    await user.type(passwordInput, INVALID_PASSWORD_CONFIRMATION);
+    expect(button).not.toBeDisabled();
   });
 
   it("does send form when button is pressed and passwords match", async () => {
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
-    const button = () => wrapper.find("button#resetPassword-submit");
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
+    const user = userEvent.setup();
+    const { button, passwordInput, passwordConfirmationInput } =
+      renderResetPassword();
 
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
+    await user.type(passwordInput, PASSWORD);
+    await user.type(passwordConfirmationInput, PASSWORD);
 
-    expect(passwordInput().props().value).toEqual(PASSWORD);
+    expect(passwordInput).toHaveValue(PASSWORD);
 
-    await act(async () => {
-      button().simulate("click");
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
+    await user.click(button);
 
     expect(mockedResetPassword).toHaveBeenCalled();
   });
 
   it("does send form when enter is pressed and passwords match", async () => {
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
+    const user = userEvent.setup();
+    const { passwordInput, passwordConfirmationInput } = renderResetPassword();
 
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
+    await user.type(passwordInput, PASSWORD);
+    await user.type(passwordConfirmationInput, PASSWORD);
 
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
+    expect(passwordInput).toHaveValue(PASSWORD);
 
-    expect(passwordInput().props().value).toEqual(PASSWORD);
+    await user.type(passwordInput, "{enter}");
 
-    await act(async () => {
-      passwordInput().simulate("keyDown", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
-
-    expect(mockedResetPassword).toHaveBeenCalled();
+    await waitFor(() => expect(mockedResetPassword).toHaveBeenCalled());
   });
 
   it("does not send form when enter is pressed and passwords dont match", async () => {
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
+    const user = userEvent.setup();
+    const { passwordInput, passwordConfirmationInput } = renderResetPassword();
 
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
+    await user.type(passwordInput, PASSWORD);
+    await user.type(passwordConfirmationInput, INVALID_PASSWORD_CONFIRMATION);
 
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(
-      passwordConfirmationInput(),
-      INVALID_PASSWORD_CONFIRMATION
-    );
+    await user.type(passwordInput, "{enter}");
 
-    await act(async () => {
-      passwordInput().simulate("keyDown", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
-
-    expect(passwordInput().props().value).toEqual(PASSWORD);
+    expect(passwordInput).toHaveValue(PASSWORD);
     expect(mockedResetPassword).not.toHaveBeenCalled();
   });
 
   it("disables inputs and button on success request", async () => {
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
+    const user = userEvent.setup();
+    const { button, passwordInput, passwordConfirmationInput } =
+      renderResetPassword();
 
-    const button = () => wrapper.find("button#resetPassword-submit");
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
+    await user.type(passwordInput, PASSWORD);
+    await user.type(passwordConfirmationInput, PASSWORD);
 
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
+    await user.type(passwordConfirmationInput, "{enter}");
 
-    await act(async () => {
-      passwordConfirmationInput().simulate("keyDown", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
-
-    expect(button().props().disabled).toBeTruthy();
-    expect(passwordInput().props().disabled).toBeTruthy();
-    expect(passwordConfirmationInput().props().disabled).toBeTruthy();
+    await waitFor(() => expect(button).toBeDisabled());
+    expect(passwordInput).toBeDisabled();
+    expect(passwordConfirmationInput).toBeDisabled();
   });
 
   it("clears password inputs on success", async () => {
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
+    const user = userEvent.setup();
+    const { passwordInput, passwordConfirmationInput } = renderResetPassword();
 
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
+    await user.type(passwordInput, PASSWORD);
+    await user.type(passwordConfirmationInput, PASSWORD);
 
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
+    await user.type(passwordConfirmationInput, "{enter}");
 
-    await act(async () => {
-      passwordConfirmationInput().simulate("keyDown", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
-
-    expect(passwordInput().props().value).toEqual(EMPTY_STRING);
-    expect(passwordConfirmationInput().props().value).toEqual(EMPTY_STRING);
+    await waitFor(() => expect(passwordInput).toHaveValue(EMPTY_STRING));
+    expect(passwordConfirmationInput).toHaveValue(EMPTY_STRING);
     expect(mockedResetPassword).toHaveBeenCalled();
   });
 
@@ -239,27 +178,16 @@ describe("ResetPassword", () => {
       })
     );
 
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
+    const user = userEvent.setup();
+    const { passwordInput, passwordConfirmationInput } = renderResetPassword();
 
-    const passwordInput = () => wrapper.find('input[name="newPassword"]');
-    const passwordConfirmationInput = () =>
-      wrapper.find('input[name="newPassword-confirm"]');
+    await user.type(passwordInput, PASSWORD);
+    await user.type(passwordConfirmationInput, PASSWORD);
 
-    changeInputValue(passwordInput(), PASSWORD);
-    changeInputValue(passwordConfirmationInput(), PASSWORD);
+    await user.type(passwordConfirmationInput, "{enter}");
 
-    await act(async () => {
-      passwordConfirmationInput().simulate("keyDown", { key: "Enter" });
-      await new Promise(process.nextTick);
-      wrapper.update();
-    });
-
-    expect(passwordInput().props().value).toEqual(PASSWORD);
-    expect(passwordConfirmationInput().props().value).toEqual(PASSWORD);
-    expect(mockedResetPassword).toHaveBeenCalled();
+    await waitFor(() => expect(mockedResetPassword).toHaveBeenCalled());
+    expect(passwordInput).toHaveValue(PASSWORD);
+    expect(passwordConfirmationInput).toHaveValue(PASSWORD);
   });
 });

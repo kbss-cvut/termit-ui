@@ -115,6 +115,7 @@ export const ResetPassword: React.FC = () => {
               <EnhancedInput
                 type="password"
                 name="newPassword"
+                data-testid="resetPassword-password"
                 label={i18n(id("password"))}
                 autoComplete="new-password"
                 labelDirection={LabelDirection.vertical}
@@ -130,6 +131,7 @@ export const ResetPassword: React.FC = () => {
               <EnhancedInput
                 type="password"
                 name="newPassword-confirm"
+                data-testid="resetPassword-password-confirm"
                 label={i18n(id("password.confirm"))}
                 autoComplete="new-password"
                 labelDirection={LabelDirection.vertical}
@@ -141,6 +143,7 @@ export const ResetPassword: React.FC = () => {
               />
               <Button
                 id="resetPassword-submit"
+                data-testid="resetPassword-submit"
                 color="success"
                 onClick={sendRequest}
                 className="btn-block"
