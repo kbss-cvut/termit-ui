@@ -294,7 +294,7 @@ export const VocabularySheetViewTable: React.FC<
       return availableTermLanguages[0];
     }
     return shortLocale;
-  }, [availableTermLanguages, shortLocale, tableLanguage]);
+  }, [availableTermLanguages, loadedTerms.length, shortLocale, tableLanguage]);
 
   React.useEffect(() => {
     if (tableLanguage !== displayLanguage) {
@@ -982,21 +982,29 @@ export const VocabularySheetViewTable: React.FC<
             const isSortable =
               column.id === "label" && activeSearchParams.length === 0;
 
+            const toggleSort = () =>
+              setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+
             return (
               <div
                 key={column.id}
+                role={isSortable ? "button" : undefined}
+                tabIndex={isSortable ? 0 : undefined}
                 className={classNames(
                   "vocabulary-sheet-view-header-cell d-flex align-items-center",
                   {
                     "sortable-column-header": isSortable,
                   }
                 )}
-                onClick={
+                onClick={isSortable ? toggleSort : undefined}
+                onKeyDown={
                   isSortable
-                    ? () =>
-                        setSortDirection((prev) =>
-                          prev === "asc" ? "desc" : "asc"
-                        )
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          toggleSort();
+                        }
+                      }
                     : undefined
                 }
               >
