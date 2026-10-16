@@ -52,7 +52,6 @@ import {
 import Utils from "../../../util/Utils";
 import CustomToggle from "../../misc/CustomToggle";
 import HelpIcon from "../../misc/HelpIcon";
-import { AxiosResponse } from "axios";
 
 function propertyWithLabelExists(
   label: string,
@@ -151,7 +150,7 @@ export const CustomAttributeEdit: React.FC = () => {
       loadIdentifier({
         name: e.target.value.trim(),
         assetType: "CUSTOM_ATTRIBUTE",
-      }).then((resp: AxiosResponse<string>) => setIri(resp.data));
+      }).then(setIri);
     }
   };
   const labelValidation =
