@@ -1,17 +1,14 @@
 import Term from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import AssetLinkFactory from "../AssetLinkFactory";
-import { TermLink } from "../../term/TermLink";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { MemoryRouter } from "react-router";
 import Vocabulary from "../../../model/Vocabulary";
 import File from "../../../model/File";
-import VocabularyLink from "../../vocabulary/VocabularyLink";
 import Resource from "../../../model/Resource";
 import Generator from "../../../__tests__/environment/Generator";
-import { Link } from "react-router-dom";
-import { Label } from "reactstrap";
 import { langString } from "../../../model/MultilingualString";
+import { screen } from "@testing-library/react";
 
 describe("AssetLinkFactory", () => {
   describe("createAssetLink", () => {
@@ -27,10 +24,12 @@ describe("AssetLinkFactory", () => {
         },
         types: [VocabularyUtils.TERM],
       });
-      const result = mountWithIntl(
+      renderWithIntl(
         <MemoryRouter>{AssetLinkFactory.createAssetLink(term)}</MemoryRouter>
       );
-      expect(result.find(TermLink).exists()).toBeTruthy();
+      expect(
+        screen.getByRole("link", { name: "Test one" })
+      ).toBeInTheDocument();
     });
 
     it("creates VocabularyLink for Vocabulary", () => {
@@ -41,12 +40,14 @@ describe("AssetLinkFactory", () => {
         label: langString("Vocabulary"),
         types: [VocabularyUtils.VOCABULARY],
       });
-      const result = mountWithIntl(
+      renderWithIntl(
         <MemoryRouter>
           {AssetLinkFactory.createAssetLink(vocabulary)}
         </MemoryRouter>
       );
-      expect(result.find(VocabularyLink).exists()).toBeTruthy();
+      expect(
+        screen.getByRole("link", { name: "Vocabulary" })
+      ).toBeInTheDocument();
     });
 
     it("creates a plain label for File", () => {
@@ -57,11 +58,11 @@ describe("AssetLinkFactory", () => {
         label: "File",
         types: [VocabularyUtils.FILE, VocabularyUtils.RESOURCE],
       });
-      const result = mountWithIntl(
+      renderWithIntl(
         <MemoryRouter>{AssetLinkFactory.createAssetLink(file)}</MemoryRouter>
       );
-      expect(result.find(Link).exists()).toBeFalsy();
-      expect(result.find(Label).exists()).toBeTruthy();
+      expect(screen.queryByRole("link")).not.toBeInTheDocument();
+      expect(screen.getByText("File")).toBeInTheDocument();
     });
 
     it("creates a plain label when link cannot be created", () => {
@@ -70,13 +71,13 @@ describe("AssetLinkFactory", () => {
         label: "Dataset",
       });
       resource.types = undefined;
-      const result = mountWithIntl(
+      renderWithIntl(
         <MemoryRouter>
           {AssetLinkFactory.createAssetLink(resource)}
         </MemoryRouter>
       );
-      expect(result.find(Link).exists()).toBeFalsy();
-      expect(result.find(Label).exists()).toBeTruthy();
+      expect(screen.queryByRole("link")).not.toBeInTheDocument();
+      expect(screen.getByText("Dataset")).toBeInTheDocument();
     });
   });
 });
