@@ -15,6 +15,9 @@ const VocabularySummary = React.lazy(() => import("./VocabularySummary"));
 const ResourceFileDetail = React.lazy(
   () => import("../resource/ResourceFileDetail")
 );
+const CollectionDetail = React.lazy(
+  () => import("../collection/CollectionDetail")
+);
 
 const VocabularyRoute: React.FC = () => {
   const { i18n } = useI18n();
@@ -48,6 +51,12 @@ const VocabularyRoute: React.FC = () => {
         asset="selectedFile"
         path={Routes.annotateFile.path}
         component={ResourceFileDetail}
+        includeSearch={true}
+      />
+      <DynamicBreadcrumbRoute
+        component={CollectionDetail}
+        asset="selectedCollection"
+        path={Routes.vocabularyCollectionDetail.path}
         includeSearch={true}
       />
       <Route

@@ -1137,6 +1137,8 @@ const en = {
       "Generation of a file annotations",
     "longrunningtasks.name.restoreBackup": "Backup restoration",
     "longrunningtasks.name.migration.identifier": "Resource identifier change",
+
+    "collection.description": "Description",
   },
 };
 

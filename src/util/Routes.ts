@@ -85,6 +85,10 @@ const Routes = {
     "vocabularyTermDetail",
     "/vocabularies/:name/terms/:termName"
   ),
+  vocabularyCollectionDetail: new Route(
+    "vocabularyCollectionDetail",
+    "/vocabularies/:name/collections/:collectionName"
+  ),
   vocabularyTermSnapshotDetail: new Route(
     "vocabularyTermSnapshotDetail",
     "/vocabularies/:name/terms/:termName/versions/:timestamp"
