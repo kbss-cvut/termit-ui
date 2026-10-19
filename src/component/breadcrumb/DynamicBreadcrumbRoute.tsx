@@ -9,6 +9,9 @@ import Breadcrumb from "./Breadcrumb";
 interface DynamicBreadcrumbRouteProps extends RouteProps {
   component: React.ComponentType<any>;
   includeSearch?: boolean;
+  /**
+   * The name of {@link TermItState} property storing {@link Asset}
+   */
   asset: string;
 }
 
