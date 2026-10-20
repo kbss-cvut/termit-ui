@@ -23,3 +23,11 @@ export function getInitialPageSize() {
   }
   return PAGE_SIZES[Math.round(PAGE_SIZES.length / 2)];
 }
+
+/**
+ * Initial table/content pagination with user's preferences for page size
+ */
+export const INITIAL_PAGINATION = Object.freeze({
+  pageSize: getInitialPageSize(),
+  pageIndex: 0,
+});

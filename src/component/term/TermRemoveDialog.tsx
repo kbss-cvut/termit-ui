@@ -27,7 +27,7 @@ import Table from "../misc/table/Table";
 import RdfValueNode, { IriType } from "../misc/RdfValueNode";
 import { useI18n } from "../hook/useI18n";
 import "./TermRemoveDialog.scss";
-import { getInitialPageSize } from "../../util/UISettingsUtil";
+import { INITIAL_PAGINATION } from "../../util/UISettingsUtil";
 
 export interface TermRemoveDialogProps {
   /** Whether the dialog is visible. */
@@ -50,11 +50,6 @@ interface StrategyOption {
 }
 
 const TERM_REFERENCES_PROMISE_AREA = "TERM_REFERENCES_PROMISE_AREA";
-
-const INITIAL_PAGINATION = Object.freeze({
-  pageSize: getInitialPageSize(),
-  pageIndex: 0,
-});
 
 const STRATEGY_OPTIONS: StrategyOption[] = [
   {
