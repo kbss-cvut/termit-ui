@@ -10,6 +10,7 @@ import {
   MultilingualString,
 } from "./MultilingualString";
 import VocabularyUtils from "../util/VocabularyUtils";
+import Utils from "../util/Utils";
 
 export const CONTEXT = {
   ...ASSET_CONTEXT,
@@ -42,6 +43,7 @@ export class SkosCollectionDto
     this.description = data.description;
     this.label = data.label;
     this.vocabulary = data.vocabulary;
+    this.types = Utils.sanitizeArray(data.types);
   }
 
   getLabel(lang?: string): string {
@@ -54,6 +56,13 @@ export class SkosCollectionDto
 
   protected getContext() {
     return CONTEXT;
+  }
+
+  /**
+   * @return {true} when the collection has ordered collection type.
+   */
+  public isOrdered() {
+    return this.hasType(VocabularyUtils.SKOS_ORDERED_COLLECTION);
   }
 }
 

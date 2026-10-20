@@ -65,7 +65,6 @@ export function loadSkosCollections(
         .param("size", pageSize.toString())
         .signal(signal)
     ).then((response) => {
-      console.debug(response.data, response, response.headers);
       return JsonLdUtils.compactAndResolveReferencesAsArray<SkosCollectionDtoData>(
         response.data,
         CONTEXT

@@ -12,7 +12,7 @@ import {
 import TextBasedFilter from "./TextBasedFilter";
 import SelectBasedFilter from "./SelectBasedFilter";
 
-type RowOverride<TData extends RowData> = (
+export type RowOverride<TData extends RowData> = (
   row: Row<TData>
 ) => React.HTMLAttributes<HTMLTableRowElement>;
 

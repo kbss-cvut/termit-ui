@@ -1,88 +1,122 @@
-import { FunctionComponent, useCallback, useMemo } from "react";
+import {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Vocabulary from "../../model/Vocabulary";
 import { SkosCollectionDto } from "../../model/Collection";
-import { ColumnDef, SortingState } from "@tanstack/react-table";
-import { InfiniteTable, QueryFn } from "../../util/InfiniteTable";
+import {
+  ColumnDef,
+  getCoreRowModel,
+  PaginationState,
+  useReactTable,
+} from "@tanstack/react-table";
+import Table, { RowOverride } from "../misc/table/Table";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { loadSkosCollections } from "../../action/AsyncCollectionActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import "./CollectionsList.scss";
-import { Link } from "react-router-dom";
-import Routes from "../../util/Routes";
-import { Routing } from "../../util/Routing";
+import { INITIAL_PAGINATION } from "../../util/UISettingsUtil";
+import { FaSort } from "react-icons/fa";
+import Routing from "../../util/Routing";
 
 export interface CollectionsListProps {
   vocabulary: Vocabulary;
   shortLocale: string;
 }
 
-const queryKey = ["collections-list"];
-
-const CollectionLink: FunctionComponent<{ collection: SkosCollectionDto }> = ({
-  collection,
-  children,
-}) => {
-  console.debug(collection);
-  const path = useMemo(() => {
-    const collectionIri = VocabularyUtils.create(collection.iri);
-    const vocabularyIri = VocabularyUtils.create(collection.vocabulary.iri);
-    return Routing.getTransitionPath(Routes.vocabularyCollectionDetail, {
-      params: new Map([
-        ["name", vocabularyIri.fragment],
-        ["collectionName", collectionIri.fragment],
-      ]),
-      query: new Map([
-        ["namespace", encodeURIComponent(vocabularyIri.namespace!)],
-        ["collectionNamespace", encodeURIComponent(collectionIri.namespace!)],
-      ]),
-    });
-  }, [collection.iri, collection.vocabulary]);
-  return <Link to={path}>{children}</Link>;
-};
-
 export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
   vocabulary,
   shortLocale,
 }) => {
   const dispatch: ThunkDispatch = useDispatch();
+  const [collections, setCollections] = useState<SkosCollectionDto[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [pagination, setPagination] =
+    useState<PaginationState>(INITIAL_PAGINATION);
+
+  // Reset pagination when vocabulary changes
+  useEffect(() => {
+    setPagination(INITIAL_PAGINATION);
+  }, [vocabulary.iri]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const vocabularyIri = VocabularyUtils.create(vocabulary.iri);
+    dispatch(
+      loadSkosCollections(
+        vocabularyIri,
+        pagination.pageIndex,
+        pagination.pageSize,
+        controller.signal
+      )
+    ).then((page) => {
+      if (!controller.signal.aborted) {
+        setCollections(page.pageContent);
+        setTotalCount(page.totalCount);
+      }
+    });
+    return () => controller.abort();
+  }, [vocabulary.iri, pagination.pageIndex, pagination.pageSize, dispatch]);
 
   const columns = useMemo<ColumnDef<SkosCollectionDto>[]>(
     () => [
       {
+        id: "sort-icon",
+        header: "",
+        cell: ({ row }) => {
+          if (row.original.isOrdered()) {
+            return <FaSort />;
+          } else {
+            return null;
+          }
+        },
+        size: 15,
+      },
+      {
         id: "label",
+        header: "",
         accessorFn: (dto) => dto.getLabel(shortLocale),
-        cell: ({ row, getValue }) => (
-          <CollectionLink collection={row.original}>
-            {getValue<string>()}
-          </CollectionLink>
-        ),
         enableSorting: false,
       },
     ],
     [shortLocale]
   );
 
-  const queryFn: QueryFn<SkosCollectionDto> = useCallback(
-    (
-      pageNumber: number,
-      pageSize: number,
-      sorting: SortingState,
-      signal?: AbortSignal
-    ) => {
-      const vocabularyIri = VocabularyUtils.create(vocabulary.iri);
-      return dispatch(
-        loadSkosCollections(vocabularyIri, pageNumber, pageSize, signal)
-      );
-    },
-    [vocabulary.iri, dispatch]
+  const rowProps: RowOverride<SkosCollectionDto> = useCallback(
+    ({ original }) => ({
+      onClick: () => Routing.transitionToSkosCollection(original),
+    }),
+    []
   );
 
+  const tableInstance = useReactTable<SkosCollectionDto>({
+    columns,
+    data: collections,
+    getCoreRowModel: getCoreRowModel(),
+    enableColumnFilters: false,
+    enableSorting: false,
+    manualPagination: true,
+    rowCount: totalCount,
+    state: { pagination },
+    onPaginationChange: (updater) => {
+      const newState =
+        typeof updater === "function" ? updater(pagination) : updater;
+      if (
+        newState.pageSize !== pagination.pageSize ||
+        newState.pageIndex !== pagination.pageIndex
+      ) {
+        setPagination(newState);
+      }
+    },
+  });
+
   return (
-    <InfiniteTable<SkosCollectionDto>
-      {...{ columns, queryKey, queryFn }}
-      className={"skos-collections-list"}
-      disableHeader={true}
-    />
+    <div className={"skos-collections-list"}>
+      <Table instance={tableInstance} overrideRowProps={rowProps} />
+    </div>
   );
 };
