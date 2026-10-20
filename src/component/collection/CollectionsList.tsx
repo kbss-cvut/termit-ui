@@ -117,7 +117,7 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
   });
 
   return (
-    <div className={"skos-collections-list"}>
+    <div className={"skos-collections-list first-row-icon"}>
       <Table instance={tableInstance} overrideRowProps={rowProps} />
     </div>
   );

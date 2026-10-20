@@ -1,4 +1,4 @@
-import { IRI } from "../util/VocabularyUtils";
+import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
 import { ThunkDispatch } from "../util/Types";
 import Ajax, { params } from "../util/Ajax";
@@ -10,12 +10,15 @@ import {
 } from "./SyncActions";
 import JsonLdUtils from "../util/JsonLdUtils";
 import {
+  CollectionMember,
   CONTEXT,
+  MEMBER_CONTEXT,
   SkosCollectionDto,
   SkosCollectionDtoData,
 } from "../model/Collection";
 import { ErrorData } from "../model/ErrorInfo";
-import { ResultPage } from "../model/ResultPage";
+import { EMPTY_PAGE, ResultPage } from "../model/ResultPage";
+import { AxiosResponse } from "axios";
 
 function path(vocabularyUri: IRI) {
   return `${Constants.API_PREFIX}/vocabularies/${vocabularyUri.fragment}/collections`;
@@ -30,6 +33,17 @@ function queryParams(collectionUri?: IRI, vocabularyUri?: IRI) {
     builder.param("namespace", vocabularyUri.namespace);
   }
   return builder;
+}
+
+function createPage<T>(
+  response: AxiosResponse,
+  pageContent: T[]
+): ResultPage<T> {
+  console.debug(response, pageContent);
+  return {
+    totalCount: Number(response.headers[Constants.Headers.X_TOTAL_COUNT] ?? 0),
+    pageContent,
+  };
 }
 
 export function loadSkosCollection(collectionUri: IRI, vocabularyUri: IRI) {
@@ -64,18 +78,55 @@ export function loadSkosCollections(
         .param("page", pageNumber.toString())
         .param("size", pageSize.toString())
         .signal(signal)
-    ).then((response) => {
-      return JsonLdUtils.compactAndResolveReferencesAsArray<SkosCollectionDtoData>(
-        response.data,
-        CONTEXT
+    )
+      .then((response) => {
+        return JsonLdUtils.compactAndResolveReferencesAsArray<SkosCollectionDtoData>(
+          response.data,
+          CONTEXT
+        )
+          .then((data) => data.map((d) => new SkosCollectionDto(d)))
+          .then((pageContent) => createPage(response, pageContent));
+      })
+      .catch((error: ErrorData) => {
+        asyncActionFailureWithMessage(error, action, dispatch);
+        return EMPTY_PAGE;
+      });
+  };
+}
+
+export function loadCollectionMembers(
+  collection: SkosCollectionDto,
+  pageNumber: number,
+  pageSize: number,
+  signal: AbortSignal | undefined
+) {
+  const action = { type: ActionType.LOAD_COLLECTION_MEMBERS };
+  return (dispatch: ThunkDispatch): Promise<ResultPage<CollectionMember>> => {
+    dispatch(asyncActionRequest(action, true));
+    const vocabularyUri = VocabularyUtils.create(collection.vocabulary.iri);
+    const collectionUri = VocabularyUtils.create(collection.iri);
+    let endpoint = path(vocabularyUri);
+    if (collection.isOrdered()) {
+      endpoint += "/ordered";
+    }
+    endpoint += `/${collectionUri.fragment}/members`;
+
+    return Ajax.getResponse(
+      endpoint,
+      queryParams(collectionUri, vocabularyUri)
+        .param("page", pageNumber.toString())
+        .param("size", pageSize.toString())
+        .signal(signal)
+    )
+      .then((response) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<CollectionMember>(
+          response.data,
+          MEMBER_CONTEXT
+        ).then((pageContent) => createPage(response, pageContent))
       )
-        .then((data) => data.map((d) => new SkosCollectionDto(d)))
-        .then((pageContent) => ({
-          totalCount: Number(
-            response.headers[Constants.Headers.X_TOTAL_COUNT] ?? 0
-          ),
-          pageContent,
-        }));
-    });
+      .catch((error: ErrorData) => {
+        asyncActionFailureWithMessage(error, action, dispatch);
+        return EMPTY_PAGE;
+      });
   };
 }

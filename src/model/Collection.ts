@@ -14,7 +14,7 @@ import Utils from "../util/Utils";
 
 export const CONTEXT = {
   ...ASSET_CONTEXT,
-  label: context(VocabularyUtils.DC_TITLE),
+  title: context(VocabularyUtils.DC_TITLE),
   description: context(VocabularyUtils.DC_DESCRIPTION),
   vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
 };
@@ -24,8 +24,14 @@ export const UNORDERED_CONTEXT = {
   members: VocabularyUtils.SKOS_MEMBER,
 };
 
+export const MEMBER_CONTEXT = {
+  ...ASSET_CONTEXT,
+  title: context(VocabularyUtils.DC_TITLE),
+  label: context(VocabularyUtils.SKOS_PREF_LABEL),
+};
+
 export interface SkosCollectionDtoData extends HasIdentifier, HasTypes {
-  label: MultilingualString;
+  title: MultilingualString;
   description?: MultilingualString;
   vocabulary: HasIdentifier;
 }
@@ -35,19 +41,19 @@ export class SkosCollectionDto
   implements SkosCollectionDtoData, HasLocalizableLabel
 {
   public description?: MultilingualString;
-  public label: MultilingualString;
+  public title: MultilingualString;
   public vocabulary: HasIdentifier;
 
   constructor(data: SkosCollectionDtoData) {
     super(data);
     this.description = data.description;
-    this.label = data.label;
+    this.title = data.title;
     this.vocabulary = data.vocabulary;
     this.types = Utils.sanitizeArray(data.types);
   }
 
   getLabel(lang?: string): string {
-    return getLocalized(this.label, lang);
+    return getLocalized(this.title, lang);
   }
 
   public toJsonLd(): {} {
@@ -100,4 +106,26 @@ export class OrderedCollection
     super(data);
     this.members = Array.from(data.members);
   }
+}
+
+export interface CollectionMember extends HasIdentifier {
+  types: string[];
+  label?: MultilingualString;
+  title?: MultilingualString;
+}
+
+export function getMemberLabel(member: CollectionMember, shortLocale?: string) {
+  if ("title" in member) {
+    return getLocalized(member.title, shortLocale);
+  }
+  if ("label" in member) {
+    return getLocalized(member.label, shortLocale);
+  }
+  return "";
+}
+
+export function isMemberCollection(member: CollectionMember) {
+  return Utils.sanitizeArray(member.types).includes(
+    VocabularyUtils.SKOS_COLLECTION
+  );
 }

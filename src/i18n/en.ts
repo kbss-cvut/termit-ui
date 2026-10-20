@@ -1139,8 +1139,10 @@ const en = {
     "longrunningtasks.name.migration.identifier": "Resource identifier change",
 
     "collections.title": "Collections",
+    "collection.title": "Collection",
     "collection.description": "Description",
     "collection.ordered": "Ordered collection",
+    "collection.members": "Members",
   },
 };
 

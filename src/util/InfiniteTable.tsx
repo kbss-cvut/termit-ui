@@ -11,6 +11,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {
+  MutableRefObject,
   UIEvent,
   useCallback,
   useEffect,
@@ -47,6 +48,7 @@ export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
   // classes applied to the div wrapping the table
   className?: string;
   disableHeader?: boolean;
+  tableInstanceRef?: MutableRefObject<Table<T> | null>;
 }
 
 type TableQueryKey = readonly [...QueryKey, SortingState, number];
@@ -165,6 +167,10 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     [fetchMoreOnBottomReached]
   );
 
+  if (props.tableInstanceRef) {
+    props.tableInstanceRef.current = table;
+  }
+
   if (isLoading) {
     return <>Loading...</>; // TODO loading
   }
@@ -175,7 +181,6 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
       ref={tableContainerRef}
       onScroll={onContainerScroll}
     >
-      {/* TODO: try using responsive */}
       <BootstrapTable>
         <If expression={!props.disableHeader}>
           <TableHead table={table} />
@@ -208,7 +213,7 @@ const HeadRow = <T,>({ headerGroup }: { headerGroup: HeaderGroup<T> }) => {
           <th
             key={header.id}
             style={{
-              flexGrow: header.getSize(),
+              width: header.getSize(),
             }}
           >
             <div
@@ -260,7 +265,7 @@ const TableBody = <T,>({ table, rowVirtualizer }: TableBodyProps<T>) => {
                 <td
                   key={cell.id}
                   style={{
-                    flexGrow: cell.column.getSize(),
+                    width: cell.column.getSize(),
                   }}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
