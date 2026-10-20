@@ -20,8 +20,8 @@ import { loadSkosCollections } from "../../action/AsyncCollectionActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import "./CollectionsList.scss";
 import { INITIAL_PAGINATION } from "../../util/UISettingsUtil";
-import { FaSort } from "react-icons/fa";
 import Routing from "../../util/Routing";
+import { OrderedCollectionIcon } from "./OrderedCollectionIcon";
 
 export interface CollectionsListProps {
   vocabulary: Vocabulary;
@@ -69,7 +69,9 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
         header: "",
         cell: ({ row }) => {
           if (row.original.isOrdered()) {
-            return <FaSort />;
+            return (
+              <OrderedCollectionIcon id={"collections-list-entry-" + row.id} />
+            );
           } else {
             return null;
           }
