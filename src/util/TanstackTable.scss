@@ -1,0 +1,38 @@
+.tanstack-table {
+  overflow: auto;
+  position: relative;
+  max-height: 300px;
+
+  table {
+    display: grid;
+
+    tr {
+      display: flex;
+      width: 100%;
+    }
+
+    thead {
+      display: grid;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+
+      th {
+        display: flex;
+      }
+    }
+
+    tbody {
+      display: grid;
+      position: relative;
+
+      tr {
+        position: absolute;
+      }
+
+      td {
+        display: flex;
+      }
+    }
+  }
+}
