@@ -49,6 +49,11 @@ export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
   className?: string;
   disableHeader?: boolean;
   tableInstanceRef?: MutableRefObject<Table<T> | null>;
+  rowVirtualizerRef?: MutableRefObject<Virtualizer<
+    HTMLDivElement,
+    HTMLTableRowElement
+  > | null>;
+  pageSize?: number;
 }
 
 type TableQueryKey = readonly [...QueryKey, SortingState, number];
@@ -70,7 +75,7 @@ function measureElement() {
  */
 export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const pageSize = 50; // TODO page size
+  const pageSize = props.pageSize ?? 50;
 
   const queryFn: QueryFunction<ResultPage<T>, TableQueryKey> = useCallback(
     ({ queryKey, pageParam = 0, signal }) => {
@@ -169,6 +174,9 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
 
   if (props.tableInstanceRef) {
     props.tableInstanceRef.current = table;
+  }
+  if (props.rowVirtualizerRef) {
+    props.rowVirtualizerRef.current = rowVirtualizer;
   }
 
   if (isLoading) {
