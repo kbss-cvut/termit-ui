@@ -13,6 +13,16 @@
     align-items: center;
   }
 
+  // the highlight of a moved row fades out once the class is removed
+  tbody td {
+    transition: background-color 0.5s ease-out;
+  }
+
+  tbody tr.row-moved > td {
+    background-color: rgba($primary, 0.2);
+    transition: none;
+  }
+
   &.first-row-icon {
     td:first-child,
     th:first-child {
@@ -56,6 +66,8 @@
     height: auto;
     width: 4em;
     box-shadow: none;
+    // lets the row hover and highlight show through
+    background-color: transparent;
 
     &:focus {
       outline: 2px solid $primary !important;
