@@ -37,11 +37,11 @@ import ValidationResult from "../../../model/form/ValidationResult";
 import { getLocalized } from "../../../model/MultilingualString";
 import CustomCheckBoxInput from "../../misc/CustomCheckboxInput";
 import "./CustomAttributeRemoveDialog.scss";
-import { getInitialPageSize } from "../../../util/UISettingsUtil";
 import { publishMessage } from "../../../action/SyncActions";
 import Message from "../../../model/Message";
 import MessageType from "../../../model/MessageType";
 import HelpIcon from "../../misc/HelpIcon";
+import { INITIAL_PAGINATION } from "../../../util/UISettingsUtil";
 
 export interface CustomAttributeRemoveDialogProps {
   /**
@@ -130,11 +130,6 @@ function defineColumns(
     },
   ];
 }
-
-const INITIAL_PAGINATION = Object.freeze({
-  pageSize: getInitialPageSize(),
-  pageIndex: 0,
-});
 
 /**
  * Dialog for confirmation of {@link CustomAttribute} removal.
