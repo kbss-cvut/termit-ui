@@ -1140,6 +1140,7 @@ const en = {
 
     "collections.title": "Collections",
     "collection.description": "Description",
+    "collection.ordered": "Ordered collection",
   },
 };
 

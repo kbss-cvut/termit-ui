@@ -59,7 +59,7 @@ export class SkosCollectionDto
   }
 
   /**
-   * @return {true} when the collection has ordered collection type.
+   * @return true when the collection has ordered collection type.
    */
   public isOrdered() {
     return this.hasType(VocabularyUtils.SKOS_ORDERED_COLLECTION);
