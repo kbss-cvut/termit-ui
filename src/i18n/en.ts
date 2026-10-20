@@ -1138,6 +1138,7 @@ const en = {
     "longrunningtasks.name.restoreBackup": "Backup restoration",
     "longrunningtasks.name.migration.identifier": "Resource identifier change",
 
+    "collections.title": "Collections",
     "collection.description": "Description",
   },
 };

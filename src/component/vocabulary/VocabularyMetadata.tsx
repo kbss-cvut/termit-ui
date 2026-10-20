@@ -23,6 +23,7 @@ import LanguageSelector from "../multilingual/LanguageSelector";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
 import VocabulariesReferenceList from "./VocabulariesReferenceList";
 import { selectVocabularyLanguages } from "../../store/StateSelectors";
+import { CollectionsList } from "../collection/CollectionsList";
 
 interface VocabularyMetadataProps {
   vocabulary: Vocabulary;
@@ -36,6 +37,7 @@ interface VocabularyMetadataProps {
 export const TABS = {
   glossary: "glossary.title",
   document: "type.document",
+  collections: "collections.title",
   history: "history.label",
   snapshots: "snapshots.title",
   changefrequency: "changefrequency.label",
@@ -97,6 +99,11 @@ export const VocabularyMetadata: React.FC<VocabularyMetadataProps> = ({
         }
       />
     );
+
+    tabs[TABS.collections] = (
+      <CollectionsList vocabulary={vocabulary} shortLocale={language} />
+    );
+
     tabs[TABS.history] = <AssetHistory asset={vocabulary} />;
     if (!vocabulary.isSnapshot()) {
       tabs[TABS.snapshots] = <VocabularySnapshots asset={vocabulary} />;
