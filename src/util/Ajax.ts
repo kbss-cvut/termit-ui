@@ -124,8 +124,15 @@ class RequestConfigBuilder {
     return this.mAbortSignal;
   }
 
-  public signal(controller: AbortController) {
-    this.mAbortSignal = controller.signal;
+  public signal(controller?: AbortController | AbortSignal) {
+    if (controller == null) {
+      return this;
+    }
+    if ("signal" in controller) {
+      this.mAbortSignal = controller.signal;
+    } else {
+      this.mAbortSignal = controller;
+    }
     return this;
   }
 }

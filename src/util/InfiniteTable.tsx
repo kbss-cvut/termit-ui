@@ -32,7 +32,7 @@ import { ResultPage } from "../model/ResultPage";
 
 interface TanStackProps<T> extends Omit<TableOptions<T>, "instance" | "data"> {}
 
-export type QueryFn = <T>(
+export type QueryFn<T> = (
   pageNumber: number,
   pageSize: number,
   sorting: SortingState,
@@ -41,7 +41,7 @@ export type QueryFn = <T>(
 
 export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
   columns: ColumnDef<T>[];
-  queryFn: QueryFn;
+  queryFn: QueryFn<T>;
   queryKey: QueryKey;
 }
 
