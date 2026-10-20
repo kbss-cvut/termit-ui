@@ -175,6 +175,7 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
       ref={tableContainerRef}
       onScroll={onContainerScroll}
     >
+      {/* TODO: try using responsive */}
       <BootstrapTable>
         <If expression={!props.disableHeader}>
           <TableHead table={table} />
