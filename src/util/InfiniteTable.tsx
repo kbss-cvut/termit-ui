@@ -54,6 +54,8 @@ export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
     HTMLTableRowElement
   > | null>;
   pageSize?: number;
+  // classes applied to the row
+  getRowClassName?: (row: Row<T>) => string | undefined;
 }
 
 type TableQueryKey = readonly [...QueryKey, SortingState, number];
@@ -193,7 +195,11 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
         <If expression={!props.disableHeader}>
           <TableHead table={table} />
         </If>
-        <TableBody table={table} rowVirtualizer={rowVirtualizer} />
+        <TableBody
+          table={table}
+          rowVirtualizer={rowVirtualizer}
+          getRowClassName={props.getRowClassName}
+        />
       </BootstrapTable>
     </div>
   );
@@ -247,9 +253,14 @@ const HeadRow = <T,>({ headerGroup }: { headerGroup: HeaderGroup<T> }) => {
 
 interface TableBodyProps<T> extends HasTable<T> {
   rowVirtualizer: Virtualizer<HTMLDivElement, HTMLTableRowElement>;
+  getRowClassName?: (row: Row<T>) => string | undefined;
 }
 
-const TableBody = <T,>({ table, rowVirtualizer }: TableBodyProps<T>) => {
+const TableBody = <T,>({
+  table,
+  rowVirtualizer,
+  getRowClassName,
+}: TableBodyProps<T>) => {
   const { rows } = table.getRowModel();
   return (
     <tbody
@@ -264,6 +275,7 @@ const TableBody = <T,>({ table, rowVirtualizer }: TableBodyProps<T>) => {
             data-index={virtualRow.index} //needed for dynamic row height measurement
             ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
             key={row.id}
+            className={getRowClassName?.(row)}
             style={{
               transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
             }}

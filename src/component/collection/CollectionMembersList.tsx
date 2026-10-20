@@ -8,6 +8,7 @@ import {
   FunctionComponent,
   KeyboardEvent,
   MutableRefObject,
+  PointerEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -27,6 +28,7 @@ import { Input } from "reactstrap";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { Virtualizer } from "@tanstack/react-virtual";
 import classNames from "classnames";
+import { useRowDragReorder } from "../hook/useRowDragReorder";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
@@ -52,6 +54,14 @@ const DragReorderIcon = (props) => (
     <path d="M5 14h14" />
     <path d="M9 19l3 3 3-3" /> {/* arrow down */}
   </svg>
+);
+
+const DragHandle: FunctionComponent<{
+  onPointerDown: (e: PointerEvent<HTMLDivElement>) => void;
+}> = ({ onPointerDown }) => (
+  <div className={"drag-handle"} onPointerDown={onPointerDown}>
+    <DragReorderIcon />
+  </div>
 );
 
 type IndexChangeCallback = (
@@ -173,6 +183,12 @@ export const CollectionMembersList: FunctionComponent<
     [queryClient, queryKey]
   );
 
+  const { startDrag, getRowClassName } = useRowDragReorder(
+    tableInstanceRef,
+    rowVirtualizerRef,
+    onIndexChange
+  );
+
   const columns = useMemo<ColumnDef<CollectionMember>[]>(
     () => [
       ...(isOrdered // only when collection is ordered
@@ -186,7 +202,9 @@ export const CollectionMembersList: FunctionComponent<
             },
             {
               id: "drag",
-              cell: DragReorderIcon,
+              cell: ({ row }) => (
+                <DragHandle onPointerDown={(e) => startDrag(row, e)} />
+              ),
               enableSorting: false,
             },
           ]
@@ -205,7 +223,7 @@ export const CollectionMembersList: FunctionComponent<
         enableSorting: false,
       },
     ],
-    [isOrdered, onIndexChange, shortLocale]
+    [isOrdered, onIndexChange, shortLocale, startDrag]
   );
 
   const queryFn: QueryFn<CollectionMember> = useCallback(
@@ -237,6 +255,7 @@ export const CollectionMembersList: FunctionComponent<
         })}
         tableInstanceRef={tableInstanceRef}
         rowVirtualizerRef={rowVirtualizerRef}
+        getRowClassName={isOrdered ? getRowClassName : undefined}
       />
     </>
   );
