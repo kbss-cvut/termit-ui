@@ -6,8 +6,10 @@ import {
 } from "../../model/Collection";
 import {
   FunctionComponent,
+  KeyboardEvent,
   MutableRefObject,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -22,6 +24,7 @@ import { useDispatch } from "react-redux";
 import "./CollectionsList.scss";
 import { CollectionIcon } from "./CollectionIcon";
 import { Input } from "reactstrap";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
@@ -54,21 +57,68 @@ type IndexChangeCallback = (
   newIndex: number
 ) => void;
 
+/**
+ * Moves the item at fromIndex to toIndex while preserving the size of each page
+ */
+function moveInPages<T>(
+  data: InfiniteData<ResultPage<T>>,
+  fromIndex: number,
+  toIndex: number
+): InfiniteData<ResultPage<T>> {
+  const flat = data.pages.flatMap((page) => page.pageContent);
+  const [moved] = flat.splice(fromIndex, 1);
+  flat.splice(toIndex, 0, moved);
+  let offset = 0;
+  return {
+    ...data,
+    pages: data.pages.map((page) => {
+      const pageContent = flat.slice(offset, offset + page.pageContent.length);
+      offset += page.pageContent.length;
+      return { ...page, pageContent };
+    }),
+  };
+}
+
+/**
+ * Displays position of the row and allows moving the row by changing it
+ */
 const OrderInput: FunctionComponent<{
   row: Row<CollectionMember>;
   onIndexChange: IndexChangeCallback;
 }> = ({ row, onIndexChange }) => {
-  const [order, setOrder] = useState(row.index);
-  const onFocusLoss = useCallback(() => {
-    onIndexChange(row, order);
+  const [order, setOrder] = useState(String(row.index + 1));
+  // the row may be moved by another row's change
+  useEffect(() => setOrder(String(row.index + 1)), [row.index]);
+
+  const commit = useCallback(() => {
+    const newIndex = Number.parseInt(order) - 1;
+    if (Number.isNaN(newIndex) || newIndex === row.index) {
+      setOrder(String(row.index + 1));
+      return;
+    }
+    onIndexChange(row, newIndex);
   }, [onIndexChange, order, row]);
+
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        commit();
+      } else if (e.key === "Escape") {
+        setOrder(String(row.index + 1));
+      }
+    },
+    [commit, row.index]
+  );
+
   return (
     <Input
       className={"order"}
       type={"text"}
+      inputMode={"numeric"}
       value={order}
-      onChange={(e) => setOrder(Number(e.currentTarget.value) || 0)}
-      onBlur={onFocusLoss}
+      onChange={(e) => setOrder(e.currentTarget.value.replace(/\D/g, ""))}
+      onBlur={commit}
+      onKeyDown={onKeyDown}
     />
   );
 };
@@ -80,8 +130,35 @@ export const CollectionMembersList: FunctionComponent<
   const tableInstanceRef: MutableRefObject<Table<CollectionMember> | null> =
     useRef(null);
 
-  const onIndexChange: IndexChangeCallback = useCallback((row, newIndex) => {},
-  []);
+  const queryClient = useQueryClient();
+  const queryKey = useMemo(
+    () => ["collection-members-list", collection?.iri],
+    [collection?.iri]
+  );
+
+  const onIndexChange: IndexChangeCallback = useCallback(
+    (row, newIndex) => {
+      const loadedCount =
+        tableInstanceRef.current?.getRowModel().rows.length ?? 0;
+      const isTargetLoaded = newIndex < loadedCount;
+      if (isTargetLoaded) {
+        // InfiniteTable appends sorting and page size to the key, so the update is applied by key prefix
+        queryClient.setQueriesData<InfiniteData<ResultPage<CollectionMember>>>(
+          { queryKey },
+          (data) => data && moveInPages(data, row.index, newIndex)
+        );
+      }
+      // TODO persist the new member position
+      Promise.resolve()
+        .then(() =>
+          isTargetLoaded
+            ? undefined
+            : queryClient.invalidateQueries({ queryKey })
+        )
+        .catch(() => queryClient.invalidateQueries({ queryKey }));
+    },
+    [queryClient, queryKey]
+  );
 
   const columns = useMemo<ColumnDef<CollectionMember>[]>(
     () => [
@@ -131,13 +208,12 @@ export const CollectionMembersList: FunctionComponent<
     [collection, dispatch]
   );
 
-  const queryKey = ["collection-members-list", collection?.iri];
-
   return (
     <>
       <FormattedMessage tagName={"h3"} id={"collection.members"} />
       <InfiniteTable<CollectionMember>
         {...{ columns, queryFn, queryKey }}
+        getRowId={(member) => member.iri}
         disableHeader={true}
         className={
           "skos-collections-list first-row-icon second-row-icon second-row-drag"
