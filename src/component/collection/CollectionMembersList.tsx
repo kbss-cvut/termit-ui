@@ -26,6 +26,7 @@ import { CollectionIcon } from "./CollectionIcon";
 import { Input } from "reactstrap";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { Virtualizer } from "@tanstack/react-virtual";
+import classNames from "classnames";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
@@ -135,6 +136,8 @@ export const CollectionMembersList: FunctionComponent<
     HTMLTableRowElement
   > | null> = useRef(null);
 
+  const isOrdered = collection?.isOrdered() ?? false;
+
   const queryClient = useQueryClient();
   const queryKey = useMemo(
     () => ["collection-members-list", collection?.iri],
@@ -172,18 +175,22 @@ export const CollectionMembersList: FunctionComponent<
 
   const columns = useMemo<ColumnDef<CollectionMember>[]>(
     () => [
-      {
-        id: "order",
-        cell: ({ row }) => (
-          <OrderInput row={row} onIndexChange={onIndexChange} />
-        ),
-        enableSorting: false,
-      },
-      {
-        id: "drag",
-        cell: DragReorderIcon,
-        enableSorting: false,
-      },
+      ...(isOrdered // only when collection is ordered
+        ? [
+            {
+              id: "order",
+              cell: ({ row }) => (
+                <OrderInput row={row} onIndexChange={onIndexChange} />
+              ),
+              enableSorting: false,
+            },
+            {
+              id: "drag",
+              cell: DragReorderIcon,
+              enableSorting: false,
+            },
+          ]
+        : []),
       {
         id: "label",
         accessorFn: (member) => getMemberLabel(member, shortLocale),
@@ -198,7 +205,7 @@ export const CollectionMembersList: FunctionComponent<
         enableSorting: false,
       },
     ],
-    [onIndexChange, shortLocale]
+    [isOrdered, onIndexChange, shortLocale]
   );
 
   const queryFn: QueryFn<CollectionMember> = useCallback(
@@ -225,9 +232,9 @@ export const CollectionMembersList: FunctionComponent<
         {...{ columns, queryFn, queryKey }}
         getRowId={(member) => member.iri}
         disableHeader={true}
-        className={
-          "skos-collections-list first-row-icon second-row-icon second-row-drag"
-        }
+        className={classNames("skos-collections-list", {
+          "first-row-icon second-row-icon second-row-drag": isOrdered,
+        })}
         tableInstanceRef={tableInstanceRef}
         rowVirtualizerRef={rowVirtualizerRef}
       />
