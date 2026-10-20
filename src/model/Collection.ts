@@ -26,7 +26,7 @@ export const UNORDERED_CONTEXT = {
 export interface SkosCollectionDtoData extends HasIdentifier, HasTypes {
   label: MultilingualString;
   description?: MultilingualString;
-  vocabulary: string;
+  vocabulary: HasIdentifier;
 }
 
 export class SkosCollectionDto
@@ -35,7 +35,7 @@ export class SkosCollectionDto
 {
   public description?: MultilingualString;
   public label: MultilingualString;
-  public vocabulary: string;
+  public vocabulary: HasIdentifier;
 
   constructor(data: SkosCollectionDtoData) {
     super(data);

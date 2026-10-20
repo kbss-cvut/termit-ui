@@ -2,63 +2,65 @@ import { FunctionComponent, useCallback, useMemo } from "react";
 import Vocabulary from "../../model/Vocabulary";
 import { SkosCollectionDto } from "../../model/Collection";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
-import { useI18n } from "../hook/useI18n";
 import { InfiniteTable, QueryFn } from "../../util/InfiniteTable";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { loadSkosCollections } from "../../action/AsyncCollectionActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import "./CollectionsList.scss";
+import { Link } from "react-router-dom";
+import Routes from "../../util/Routes";
+import { Routing } from "../../util/Routing";
 
 export interface CollectionsListProps {
   vocabulary: Vocabulary;
   shortLocale: string;
 }
 
-export const DragReorderIcon = ({ size = "1em", ...props }) => (
-  <svg
-    viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={2}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M9 5l3-3 3 3" /> {/* arrow up */}
-    <path d="M5 10h14" />
-    <path d="M5 14h14" />
-    <path d="M9 19l3 3 3-3" /> {/* arrow down */}
-  </svg>
-);
-
 const queryKey = ["collections-list"];
+
+const CollectionLink: FunctionComponent<{ collection: SkosCollectionDto }> = ({
+  collection,
+  children,
+}) => {
+  console.debug(collection);
+  const path = useMemo(() => {
+    const collectionIri = VocabularyUtils.create(collection.iri);
+    const vocabularyIri = VocabularyUtils.create(collection.vocabulary.iri);
+    return Routing.getTransitionPath(Routes.vocabularyCollectionDetail, {
+      params: new Map([
+        ["name", vocabularyIri.fragment],
+        ["collectionName", collectionIri.fragment],
+      ]),
+      query: new Map([
+        ["namespace", encodeURIComponent(vocabularyIri.namespace!)],
+        ["collectionNamespace", encodeURIComponent(collectionIri.namespace!)],
+      ]),
+    });
+  }, [collection.iri, collection.vocabulary]);
+  return <Link to={path}>{children}</Link>;
+};
 
 export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
   vocabulary,
   shortLocale,
 }) => {
-  const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
 
   const columns = useMemo<ColumnDef<SkosCollectionDto>[]>(
     () => [
       {
-        id: "drag",
-        cell: DragReorderIcon,
-        enableSorting: false,
-        size: 20,
-      },
-      {
         id: "label",
-        header: i18n("asset.label"),
         accessorFn: (dto) => dto.getLabel(shortLocale),
-        size: 80,
+        cell: ({ row, getValue }) => (
+          <CollectionLink collection={row.original}>
+            {getValue<string>()}
+          </CollectionLink>
+        ),
         enableSorting: false,
       },
     ],
-    [i18n, shortLocale]
+    [shortLocale]
   );
 
   const queryFn: QueryFn<SkosCollectionDto> = useCallback(
@@ -77,6 +79,10 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
   );
 
   return (
-    <InfiniteTable<SkosCollectionDto> {...{ columns, queryKey, queryFn }} />
+    <InfiniteTable<SkosCollectionDto>
+      {...{ columns, queryKey, queryFn }}
+      className={"skos-collections-list"}
+      disableHeader={true}
+    />
   );
 };

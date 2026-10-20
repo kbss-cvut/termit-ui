@@ -19,7 +19,7 @@ import {
   useState,
 } from "react";
 import { Table as BootstrapTable } from "reactstrap";
-import "./TanstackTable.scss";
+import "./InfiniteTable.scss";
 import AlphaNumSortToggle from "../component/misc/table/AlphaNumSortToggle";
 import classNames from "classnames";
 import { useVirtualizer, Virtualizer } from "@tanstack/react-virtual";
@@ -29,6 +29,7 @@ import {
   useInfiniteQuery,
 } from "@tanstack/react-query";
 import { ResultPage } from "../model/ResultPage";
+import If from "../component/misc/If";
 
 interface TanStackProps<T> extends Omit<TableOptions<T>, "instance" | "data"> {}
 
@@ -43,6 +44,9 @@ export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
   columns: ColumnDef<T>[];
   queryFn: QueryFn<T>;
   queryKey: QueryKey;
+  // classes applied to the div wrapping the table
+  className?: string;
+  disableHeader?: boolean;
 }
 
 type TableQueryKey = readonly [...QueryKey, SortingState, number];
@@ -167,12 +171,14 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
 
   return (
     <div
-      className={"tanstack-table"}
+      className={classNames("tanstack-table", props.className)}
       ref={tableContainerRef}
       onScroll={onContainerScroll}
     >
       <BootstrapTable>
-        <TableHead table={table} />
+        <If expression={!props.disableHeader}>
+          <TableHead table={table} />
+        </If>
         <TableBody table={table} rowVirtualizer={rowVirtualizer} />
       </BootstrapTable>
     </div>
@@ -201,7 +207,7 @@ const HeadRow = <T,>({ headerGroup }: { headerGroup: HeaderGroup<T> }) => {
           <th
             key={header.id}
             style={{
-              width: header.getSize(),
+              flexGrow: header.getSize(),
             }}
           >
             <div
@@ -253,7 +259,7 @@ const TableBody = <T,>({ table, rowVirtualizer }: TableBodyProps<T>) => {
                 <td
                   key={cell.id}
                   style={{
-                    width: cell.column.getSize(),
+                    flexGrow: cell.column.getSize(),
                   }}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
