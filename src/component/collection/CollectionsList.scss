@@ -1,3 +1,4 @@
+@import "../../styles/custom/colors";
 .skos-collections-list {
   tbody tr {
     cursor: pointer;
@@ -6,8 +7,48 @@
     }
   }
 
-  td:first-child {
-    width: 1em;
-    text-align: center;
+  th,
+  td {
+    flex-grow: 1;
+    align-items: center;
+  }
+
+  &.first-row-icon {
+    td:first-child,
+    th:first-child {
+      width: 5em !important;
+      text-align: center;
+      flex-grow: 0 !important;
+    }
+  }
+
+  &.second-row-icon {
+    td:nth-child(2),
+    th:nth-child(2) {
+      width: 5em !important;
+      text-align: center;
+      flex-grow: 0 !important;
+    }
+  }
+
+  &.second-row-drag {
+    td:nth-child(2) {
+      cursor: row-resize;
+    }
+  }
+
+  input.order {
+    text-align: right;
+    font-size: inherit;
+    border: none;
+    padding: 3px;
+    margin: 0;
+    height: auto;
+    width: 4em;
+    box-shadow: none;
+
+    &:focus {
+      outline: 2px solid $primary !important;
+    }
   }
 }

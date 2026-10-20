@@ -4,6 +4,7 @@ import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import { FunctionComponent } from "react";
 import { SkosCollectionDto } from "../../model/Collection";
 import { useI18n } from "../hook/useI18n";
+import { CollectionMembersList } from "./CollectionMembersList";
 
 export interface CollectionMetadataProps {
   collection: SkosCollectionDto | null;
@@ -40,7 +41,10 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
       </Card>
       <Card>
         <CardBody>
-          <Row>{/*<Col xs={12}>{renderTabs()}</Col>*/}</Row>
+          <CollectionMembersList
+            collection={collection}
+            shortLocale={shortLocale}
+          />
         </CardBody>
       </Card>
     </>

@@ -15,7 +15,6 @@ import HeaderWithActions from "../misc/HeaderWithActions";
 import { getShortLocale } from "../../util/IntlUtil";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import { selectVocabularyLanguages } from "../../store/StateSelectors";
-import { CollectionMembersList } from "./CollectionMembersList";
 import { OrderedCollectionIcon } from "./OrderedCollectionIcon";
 import CopyIriIcon from "../misc/CopyIriIcon";
 
@@ -92,7 +91,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
       <>
         {collectionDto.isOrdered() && (
           <OrderedCollectionIcon id={"collection-header-title"} />
-        )}
+        )}{" "}
         {label}
         <CopyIriIcon url={collectionDto.iri} />
       </>
@@ -111,10 +110,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
         primaryLanguage={vocabulary.primaryLanguage}
       />
       <CollectionMetadata
-        collection={collectionDto}
-        shortLocale={selectedLanguage}
-      />
-      <CollectionMembersList
         collection={collectionDto}
         shortLocale={selectedLanguage}
       />

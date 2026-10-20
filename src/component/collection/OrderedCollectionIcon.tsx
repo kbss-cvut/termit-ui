@@ -10,7 +10,7 @@ export const OrderedCollectionIcon: FunctionComponent<{ id: string }> = ({
   const targetId = id + "OrderedCollectionIcon";
   return (
     <>
-      <FaSort id={targetId} style={{ verticalAlign: "center" }} />
+      <FaSort id={targetId} />
       <UncontrolledTooltip target={targetId} placement={"top"}>
         {i18n("collection.ordered")}
       </UncontrolledTooltip>
