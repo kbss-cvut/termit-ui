@@ -25,6 +25,7 @@ import "./CollectionsList.scss";
 import { CollectionIcon } from "./CollectionIcon";
 import { Input } from "reactstrap";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { Virtualizer } from "@tanstack/react-virtual";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
@@ -129,6 +130,10 @@ export const CollectionMembersList: FunctionComponent<
   const dispatch: ThunkDispatch = useDispatch();
   const tableInstanceRef: MutableRefObject<Table<CollectionMember> | null> =
     useRef(null);
+  const rowVirtualizerRef: MutableRefObject<Virtualizer<
+    HTMLDivElement,
+    HTMLTableRowElement
+  > | null> = useRef(null);
 
   const queryClient = useQueryClient();
   const queryKey = useMemo(
@@ -147,6 +152,11 @@ export const CollectionMembersList: FunctionComponent<
           { queryKey },
           (data) => data && moveInPages(data, row.index, newIndex)
         );
+        // the number of rows is unchanged, so the virtualizer can scroll to the target right away
+        rowVirtualizerRef.current?.scrollToIndex(newIndex, {
+          align: "auto",
+          behavior: "smooth",
+        });
       }
       // TODO persist the new member position
       Promise.resolve()
@@ -219,6 +229,7 @@ export const CollectionMembersList: FunctionComponent<
           "skos-collections-list first-row-icon second-row-icon second-row-drag"
         }
         tableInstanceRef={tableInstanceRef}
+        rowVirtualizerRef={rowVirtualizerRef}
       />
     </>
   );
