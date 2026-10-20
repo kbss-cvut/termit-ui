@@ -36,6 +36,8 @@ export interface CollectionMembersListProps {
 }
 
 const DRAG_ICON_SIZE = "24px";
+// how long the moved row stays highlighted before it fades out, in milliseconds
+const MOVED_ROW_HIGHLIGHT_DURATION = 1500;
 
 const DragReorderIcon = (props) => (
   <svg
@@ -154,8 +156,22 @@ export const CollectionMembersList: FunctionComponent<
     [collection?.iri]
   );
 
+  // a new object on every move, so moving the same row again restarts the highlight
+  const [movedRow, setMovedRow] = useState<{ id: string } | null>(null);
+  useEffect(() => {
+    if (!movedRow) {
+      return;
+    }
+    const timeout = setTimeout(
+      () => setMovedRow(null),
+      MOVED_ROW_HIGHLIGHT_DURATION
+    );
+    return () => clearTimeout(timeout);
+  }, [movedRow]);
+
   const onIndexChange: IndexChangeCallback = useCallback(
     (row, newIndex) => {
+      setMovedRow({ id: row.id });
       const loadedCount =
         tableInstanceRef.current?.getRowModel().rows.length ?? 0;
       const isTargetLoaded = newIndex < loadedCount;
@@ -183,10 +199,18 @@ export const CollectionMembersList: FunctionComponent<
     [queryClient, queryKey]
   );
 
-  const { startDrag, getRowClassName } = useRowDragReorder(
+  const { startDrag, getRowClassName: getDragRowClassName } = useRowDragReorder(
     tableInstanceRef,
     rowVirtualizerRef,
     onIndexChange
+  );
+
+  const getRowClassName = useCallback(
+    (row: Row<CollectionMember>) =>
+      classNames(getDragRowClassName(row), {
+        "row-moved": row.id === movedRow?.id,
+      }),
+    [getDragRowClassName, movedRow]
   );
 
   const columns = useMemo<ColumnDef<CollectionMember>[]>(
