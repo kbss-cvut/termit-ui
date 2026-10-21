@@ -94,4 +94,10 @@ export class CustomAttribute extends RdfProperty {
     super(data);
     this.annotatedRelationships = data.annotatedRelationships;
   }
+
+  public static isSymmetric(att: CustomAttribute): boolean {
+    return Utils.sanitizeArray(att.types).includes(
+      VocabularyUtils.OWL_SYMMETRIC_PROPERTY
+    );
+  }
 }
