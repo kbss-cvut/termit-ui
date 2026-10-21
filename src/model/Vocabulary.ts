@@ -136,6 +136,7 @@ export default class Vocabulary
       .filter((att) => multilingualCustomAttributes.includes(att))
       .forEach((prop) => {
         result["@context"][prop] = pluralContext(prop);
+        result[prop] = Utils.unwrapArray(result[prop]);
       });
     return result;
   }
