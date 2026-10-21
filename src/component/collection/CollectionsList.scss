@@ -22,21 +22,30 @@
     transition: none;
   }
 
-  &.first-row-icon {
+  &.with-order-controls {
     td:first-child,
     th:first-child {
+      // order index column
       width: 5em !important;
       text-align: center;
       flex-grow: 0 !important;
     }
-  }
 
-  &.second-row-icon {
     td:nth-child(2),
     th:nth-child(2) {
+      // order drag icon column
       width: 5em !important;
       text-align: center;
       flex-grow: 0 !important;
+    }
+
+    td:nth-child(3),
+    th:nth-child(3) {
+      // reorder loading mask column
+      width: 0 !important;
+      flex-grow: 0 !important;
+      padding: 0;
+      margin: 0;
     }
   }
 
