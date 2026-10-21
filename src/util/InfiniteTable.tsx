@@ -44,25 +44,51 @@ export type QueryFn<T> = (
 ) => Promise<ResultPage<T>>;
 
 export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
+  /**
+   * Column definitions of the table
+   */
   columns: ColumnDef<T>[];
+  /**
+   * Function used to fetch pages with data
+   */
   queryFn: QueryFn<T>;
+  /**
+   * Identity of the query
+   */
   queryKey: QueryKey;
-  // classes applied to the div wrapping the table
+  /**
+   * classes applied to the div wrapping the table
+   */
   className?: string;
+  /**
+   * Whether the table header should be hidden
+   */
   disableHeader?: boolean;
+  /**
+   * Reference to the TanStack table instance
+   */
   tableInstanceRef?: MutableRefObject<Table<T> | null>;
+  /**
+   * Reference to the TanStack virtualizer
+   */
   rowVirtualizerRef?: MutableRefObject<Virtualizer<
     HTMLDivElement,
     HTMLTableRowElement
   > | null>;
+  /**
+   * Size of the page that should be fetched from server. Default: 50
+   */
   pageSize?: number;
-  // classes applied to the row
+  /** classes applied to the row */
   getRowClassName?: (row: Row<T>) => string | undefined;
 }
 
 type TableQueryKey = readonly [...QueryKey, SortingState, number];
 
-function measureElement() {
+/**
+ * @see https://github.com/TanStack/table/blob/50f2133167f9b1f96c0908c4c9dfc9dab89ed7f7/examples/react/virtualized-infinite-scrolling/src/main.tsx#L162
+ */
+function getMeasureElementFunction() {
   // measure dynamic row height, except in firefox because it measures table border height incorrectly
   return typeof window !== "undefined" &&
     navigator.userAgent.indexOf("Firefox") === -1
@@ -76,12 +102,13 @@ function measureElement() {
  * @param props
  * @constructor
  * @see https://tanstack.com/table/v8/docs/framework/react/examples/virtualized-infinite-scrolling
+ * @see https://github.com/TanStack/table/blob/v8/examples/react/virtualized-infinite-scrolling/src/main.tsx
  */
 export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
-  const { i18n } = useI18n();
   const [sorting, setSorting] = useState<SortingState>([]);
   const pageSize = props.pageSize ?? 50;
 
+  // wrapped query function from props passing sorting and page size state from the internal query key
   const queryFn: QueryFunction<ResultPage<T>, TableQueryKey> = useCallback(
     ({ queryKey, pageParam = 0, signal }) => {
       const [sorting, pageSize] = queryKey.slice(-2) as [SortingState, number];
@@ -112,15 +139,17 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     () => data?.pages?.flatMap((page) => page.pageContent) ?? [],
     [data]
   );
+  /// total count reported by the first page or 0
   const totalDBRowCount = data?.pages?.[0]?.totalCount ?? 0;
   const totalFetched = flatData.length;
 
-  //called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
+  // called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
+  // https://github.com/TanStack/table/blob/50f2133167f9b1f96c0908c4c9dfc9dab89ed7f7/examples/react/virtualized-infinite-scrolling/src/main.tsx#L108
   const fetchMoreOnBottomReached = useCallback(
     (containerRefElement?: HTMLDivElement | null) => {
       if (containerRefElement) {
         const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-        //once the user has scrolled within 500px of the bottom of the table, fetch more data if we can
+        // once the user has scrolled within 500px of the bottom of the table, fetch more data if we can
         if (
           scrollHeight - scrollTop - clientHeight < 500 &&
           !isFetching &&
@@ -133,7 +162,7 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     [fetchNextPage, isFetching, totalFetched, totalDBRowCount]
   );
 
-  //a check on mount and after a fetch to see if the table is already scrolled to the bottom and immediately needs to fetch more data
+  // a check on mount and after a fetch to see if the table is already scrolled to the bottom and immediately needs to fetch more data
   useEffect(() => {
     fetchMoreOnBottomReached(tableContainerRef.current);
   }, [fetchMoreOnBottomReached]);
@@ -142,7 +171,6 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     data: flatData,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    debugTable: true,
     ...props,
   });
 
@@ -152,7 +180,7 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     count: table.getRowModel().rows.length,
     estimateSize: () => 42, // estimate row height for accurate scrollbar dragging
     getScrollElement: () => tableContainerRef.current,
-    measureElement: measureElement(),
+    measureElement: getMeasureElementFunction(),
     overscan: 10,
   });
 
@@ -162,12 +190,14 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     (updater) => {
       setSorting(updater);
       if (rows.length) {
+        // reset scroll when sorting changes
         rowVirtualizer.scrollToIndex?.(0);
       }
     },
     [rowVirtualizer, rows.length]
   );
 
+  // since this table option is derived from table row model state, we're using the table.setOptions utility
   table.setOptions((prev) => ({
     ...prev,
     onSortingChange,
@@ -201,15 +231,7 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
             rowVirtualizer={rowVirtualizer}
             getRowClassName={props.getRowClassName}
           />
-          <tfoot>
-            <If expression={!isFetchingNextPage}>
-              <tr>
-                <td colSpan={table.getVisibleLeafColumns().length}>
-                  {i18n("select.loading")}
-                </td>
-              </tr>
-            </If>
-          </tfoot>
+          <TableFoot isFetchingNextPage={isFetchingNextPage} table={table} />
         </BootstrapTable>
       </div>
       <If expression={isLoading}>
@@ -306,5 +328,24 @@ const TableBody = <T,>({
         );
       })}
     </tbody>
+  );
+};
+
+interface TableFootProps<T> extends HasTable<T> {
+  isFetchingNextPage: boolean;
+}
+
+const TableFoot = <T,>({ isFetchingNextPage, table }: TableFootProps<T>) => {
+  const { i18n } = useI18n();
+  return (
+    <tfoot>
+      <If expression={isFetchingNextPage}>
+        <tr>
+          <td colSpan={table.getVisibleLeafColumns().length}>
+            {i18n("select.loading")}
+          </td>
+        </tr>
+      </If>
+    </tfoot>
   );
 };
