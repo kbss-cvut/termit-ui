@@ -190,7 +190,6 @@ export const CollectionMembersList: FunctionComponent<
             },
             {
               id: "row-loading-mask",
-              size: 0,
               cell: ({ row }) => (
                 <PromiseTrackingMask
                   area={getMoveArea(row.id)}
@@ -253,7 +252,7 @@ export const CollectionMembersList: FunctionComponent<
         getRowId={(member) => member.iri}
         disableHeader={true}
         className={classNames("skos-collections-list", {
-          "first-row-icon second-row-icon": isOrdered,
+          "with-order-controls": isOrdered,
         })}
         tableInstanceRef={tableInstanceRef}
         rowVirtualizerRef={rowVirtualizerRef}
