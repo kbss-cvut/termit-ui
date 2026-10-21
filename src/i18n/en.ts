@@ -1137,7 +1137,12 @@ const en = {
     "collection.title": "Collection",
     "collection.description": "Description",
     "collection.ordered": "Ordered collection",
+    "collection.ordered.toggle.help":
+      "This option cannot be changed for existing collections.",
+    "collection.ordered.toggle.description":
+      "Members of an ordered collection are kept in a defined order.",
     "collection.members": "Members",
+    "collection.members.add": "Add member",
   },
 };
 

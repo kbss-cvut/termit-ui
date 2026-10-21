@@ -42,6 +42,7 @@ export class SkosCollectionDto
   extends Asset
   implements SkosCollectionDtoData, HasLocalizableLabel
 {
+  public static readonly MULTILINGUAL_ATTRIBUTES = ["title", "description"];
   public description?: MultilingualString;
   public title: MultilingualString;
   public vocabulary: HasIdentifier;

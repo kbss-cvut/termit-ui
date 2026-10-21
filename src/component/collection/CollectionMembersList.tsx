@@ -16,7 +16,6 @@ import {
 import { ColumnDef, Row, SortingState, Table } from "@tanstack/react-table";
 import { InfiniteTable, QueryFn } from "../../util/InfiniteTable";
 import { ResultPage } from "../../model/ResultPage";
-import { FormattedMessage } from "react-intl";
 import {
   loadCollectionMembers,
   updateCollectionMemberPosition,
@@ -245,19 +244,16 @@ export const CollectionMembersList: FunctionComponent<
   );
 
   return (
-    <>
-      <FormattedMessage tagName={"h3"} id={"collection.members"} />
-      <InfiniteTable<CollectionMember>
-        {...{ columns, queryFn, queryKey }}
-        getRowId={(member) => member.iri}
-        disableHeader={true}
-        className={classNames("skos-collections-list", {
-          "with-order-controls": isOrdered,
-        })}
-        tableInstanceRef={tableInstanceRef}
-        rowVirtualizerRef={rowVirtualizerRef}
-        getRowClassName={isOrdered ? getRowClassName : undefined}
-      />
-    </>
+    <InfiniteTable<CollectionMember>
+      {...{ columns, queryFn, queryKey }}
+      getRowId={(member) => member.iri}
+      disableHeader={true}
+      className={classNames("skos-collections-list", {
+        "with-order-controls": isOrdered,
+      })}
+      tableInstanceRef={tableInstanceRef}
+      rowVirtualizerRef={rowVirtualizerRef}
+      getRowClassName={isOrdered ? getRowClassName : undefined}
+    />
   );
 };
