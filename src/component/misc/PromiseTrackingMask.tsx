@@ -7,12 +7,14 @@ interface PromiseTrackingMaskProps {
   area: string;
   text?: string;
   coverViewport?: boolean;
+  withoutText?: boolean;
 }
 
 const PromiseTrackingMask: React.FC<PromiseTrackingMaskProps> = ({
   area,
   text,
   coverViewport,
+  withoutText,
 }) => {
   const { promiseInProgress } = usePromiseTracker({ area });
 
@@ -20,9 +22,9 @@ const PromiseTrackingMask: React.FC<PromiseTrackingMaskProps> = ({
     <>
       {promiseInProgress &&
         (area && !coverViewport ? (
-          <ContainerMask text={text} />
+          <ContainerMask text={text} withoutText={withoutText} />
         ) : (
-          <Mask text={text} />
+          <Mask text={text} withoutText={withoutText} />
         ))}
     </>
   );
