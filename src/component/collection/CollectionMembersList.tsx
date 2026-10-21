@@ -6,7 +6,6 @@ import {
 import {
   FunctionComponent,
   MutableRefObject,
-  PointerEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -25,55 +24,30 @@ import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { Virtualizer } from "@tanstack/react-virtual";
 import classNames from "classnames";
 import { useRowDragReorder } from "../hook/useRowDragReorder";
-import { DragReorderIcon } from "./DragReorderIcon";
+import { DragHandle } from "./DragHandle";
 import { IndexChangeCallback, MemberOrderInput } from "./MemberOrderInput";
 
 import "./CollectionsList.scss";
 import If from "../misc/If";
 import TermLink from "../term/TermLink";
 import { CollectionLink } from "./CollectionLink";
+import { moveInPages } from "./CollectionUtils";
+import { isVocabularyActionAuthorized } from "../vocabulary/authorization/IfVocabularyActionAuthorized";
+import Vocabulary from "../../model/Vocabulary";
+import AccessLevel from "../../model/acl/AccessLevel";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
+  vocabulary: Vocabulary | null;
   shortLocale: string;
 }
 
 // how long the moved row stays highlighted before it fades out, in milliseconds
 const MOVED_ROW_HIGHLIGHT_DURATION = 1500;
 
-const DragHandle: FunctionComponent<{
-  onPointerDown: (e: PointerEvent<HTMLDivElement>) => void;
-}> = ({ onPointerDown }) => (
-  <div className={"drag-handle"} onPointerDown={onPointerDown}>
-    <DragReorderIcon />
-  </div>
-);
-
-/**
- * Moves the item at fromIndex to toIndex while preserving the size of each page
- */
-function moveInPages<T>(
-  data: InfiniteData<ResultPage<T>>,
-  fromIndex: number,
-  toIndex: number
-): InfiniteData<ResultPage<T>> {
-  const flat = data.pages.flatMap((page) => page.pageContent);
-  const [moved] = flat.splice(fromIndex, 1);
-  flat.splice(toIndex, 0, moved);
-  let offset = 0;
-  return {
-    ...data,
-    pages: data.pages.map((page) => {
-      const pageContent = flat.slice(offset, offset + page.pageContent.length);
-      offset += page.pageContent.length;
-      return { ...page, pageContent };
-    }),
-  };
-}
-
 export const CollectionMembersList: FunctionComponent<
   CollectionMembersListProps
-> = ({ shortLocale, collection }: CollectionMembersListProps) => {
+> = ({ shortLocale, collection, vocabulary }: CollectionMembersListProps) => {
   const dispatch: ThunkDispatch = useDispatch();
   const tableInstanceRef: MutableRefObject<Table<CollectionMember> | null> =
     useRef(null);
@@ -83,6 +57,9 @@ export const CollectionMembersList: FunctionComponent<
   > | null> = useRef(null);
 
   const isOrdered = collection?.isOrdered() ?? false;
+  const canModify =
+    vocabulary &&
+    isVocabularyActionAuthorized(vocabulary, AccessLevel.WRITE, "edit");
 
   const queryClient = useQueryClient();
   const queryKey = useMemo(
@@ -90,7 +67,8 @@ export const CollectionMembersList: FunctionComponent<
     [collection?.iri]
   );
 
-  // a new object on every move, so moving the same row again restarts the highlight
+  // The highlighted row that was moved.
+  // A new object on every set, so moving the same row again restarts the highlight
   const [movedRow, setMovedRow] = useState<{ id: string } | null>(null);
   useEffect(() => {
     if (!movedRow) {
@@ -110,12 +88,11 @@ export const CollectionMembersList: FunctionComponent<
         tableInstanceRef.current?.getRowModel().rows.length ?? 0;
       const isTargetLoaded = newIndex < loadedCount;
       if (isTargetLoaded) {
-        // InfiniteTable appends sorting and page size to the key, so the update is applied by key prefix
+        // setting for all queries matching the partial query key
         queryClient.setQueriesData<InfiniteData<ResultPage<CollectionMember>>>(
           { queryKey },
           (data) => data && moveInPages(data, row.index, newIndex)
         );
-        // the number of rows is unchanged, so the virtualizer can scroll to the target right away
         rowVirtualizerRef.current?.scrollToIndex(newIndex, {
           align: "auto",
           behavior: "smooth",
@@ -123,6 +100,7 @@ export const CollectionMembersList: FunctionComponent<
       }
       // TODO persist the new member position
       Promise.resolve()
+        // refresh data
         .then(() =>
           isTargetLoaded
             ? undefined
@@ -149,7 +127,7 @@ export const CollectionMembersList: FunctionComponent<
 
   const columns = useMemo<ColumnDef<CollectionMember>[]>(
     () => [
-      ...(isOrdered // only when collection is ordered
+      ...(isOrdered && canModify
         ? [
             {
               id: "order",
@@ -192,7 +170,7 @@ export const CollectionMembersList: FunctionComponent<
         enableSorting: false,
       },
     ],
-    [isOrdered, onIndexChange, shortLocale, startDrag]
+    [canModify, isOrdered, onIndexChange, shortLocale, startDrag]
   );
 
   const queryFn: QueryFn<CollectionMember> = useCallback(

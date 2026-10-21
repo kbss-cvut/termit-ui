@@ -16,14 +16,17 @@ const DRAG_THRESHOLD = 4;
 const AUTO_SCROLL_EDGE = 40;
 // auto-scroll speed in pixels per frame when the pointer reaches the edge
 const AUTO_SCROLL_MAX_SPEED = 15;
+
 const BODY_DRAGGING_CLASS = "table-row-dragging";
 
 export type RowMoveCallback<T> = (row: Row<T>, newIndex: number) => void;
 
 interface DragState {
   rowId: string;
-  // index of the gap between rows where the row would be dropped (0 is before the first row),
-  // null when the drop would not move the row
+  /**
+   * index of the gap between rows where the row would be dropped (0 is before the first row),
+   * null when the drop would not move the row
+   */
   dropIndex: number | null;
 }
 
@@ -31,7 +34,7 @@ interface DragState {
  * Returns the number of pixels the container should be scrolled by, based on how close the pointer is to its edge
  */
 function autoScrollSpeed(clientY: number, rect: DOMRect): number {
-  const edge = Math.min(AUTO_SCROLL_EDGE, rect.height / 4);
+  const edge = Math.min(AUTO_SCROLL_EDGE, rect.height / 2);
   let ratio = 0;
   if (clientY < rect.top + edge) {
     ratio = -(rect.top + edge - clientY) / edge;
@@ -52,10 +55,10 @@ function autoScrollSpeed(clientY: number, rect: DOMRect): number {
  * Only the loaded rows can be targeted, the table auto-scrolls (and thus loads more rows)
  * when the pointer gets close to its edge.
  *
- * @param tableRef table with the rows
- * @param rowVirtualizerRef virtualizer of the table rows
+ * @param tableRef TanStack table with the rows
+ * @param rowVirtualizerRef TanStack virtualizer of the table rows
  * @param onRowMove called when the row is dropped at a new position
- * @returns startDrag to be called on pointer down on the drag handle of the row
+ * @returns \{startDrag, getRowClassName} - startDrag function to be called on pointer down on the drag handle of the row
  * and getRowClassName providing classes of the dragged row and the drop indicator
  */
 export function useRowDragReorder<T>(
@@ -67,7 +70,7 @@ export function useRowDragReorder<T>(
   onRowMove: RowMoveCallback<T>
 ) {
   const [dragState, setDragState] = useState<DragState | null>(null);
-  // releases listeners of the drag in progress
+  // cleanup function that releases listeners of the drag in progress
   const stopDragRef = useRef<(() => void) | null>(null);
 
   useEffect(() => () => stopDragRef.current?.(), []);

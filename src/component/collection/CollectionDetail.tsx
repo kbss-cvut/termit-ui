@@ -111,6 +111,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
       />
       <CollectionMetadata
         collection={collectionDto}
+        vocabulary={vocabulary}
         shortLocale={selectedLanguage}
       />
     </>
