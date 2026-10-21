@@ -1,10 +1,4 @@
-import {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { FunctionComponent, useEffect, useMemo, useState } from "react";
 import Vocabulary from "../../model/Vocabulary";
 import { SkosCollectionDto } from "../../model/Collection";
 import {
@@ -13,15 +7,15 @@ import {
   PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
-import Table, { RowOverride } from "../misc/table/Table";
+import Table from "../misc/table/Table";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { loadSkosCollections } from "../../action/AsyncCollectionActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import "./CollectionsList.scss";
 import { INITIAL_PAGINATION } from "../../util/UISettingsUtil";
-import Routing from "../../util/Routing";
 import { OrderedCollectionIcon } from "./OrderedCollectionIcon";
+import { CollectionLink } from "./CollectionLink";
 
 export interface CollectionsListProps {
   vocabulary: Vocabulary;
@@ -81,18 +75,13 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
       {
         id: "label",
         header: "",
-        accessorFn: (dto) => dto.getLabel(shortLocale),
+        cell: ({ row }) => (
+          <CollectionLink collection={row.original} shortLocale={shortLocale} />
+        ),
         enableSorting: false,
       },
     ],
     [shortLocale]
-  );
-
-  const rowProps: RowOverride<SkosCollectionDto> = useCallback(
-    ({ original }) => ({
-      onClick: () => Routing.transitionToSkosCollection(original),
-    }),
-    []
   );
 
   const tableInstance = useReactTable<SkosCollectionDto>({
@@ -118,7 +107,7 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
 
   return (
     <div className={"skos-collections-list first-row-icon"}>
-      <Table instance={tableInstance} overrideRowProps={rowProps} />
+      <Table instance={tableInstance} />
     </div>
   );
 };

@@ -1,7 +1,6 @@
 @import "../../styles/custom/colors";
 .skos-collections-list {
   tbody tr {
-    cursor: pointer;
     &:hover {
       background-color: rgba(0, 126, 255, 0.1) !important;
     }
@@ -41,13 +40,8 @@
     }
   }
 
-  &.second-row-drag {
-    td:nth-child(2) {
-      cursor: row-resize;
-    }
-  }
-
   .drag-handle {
+    cursor: row-resize;
     display: flex;
     flex-grow: 1;
     align-self: stretch;

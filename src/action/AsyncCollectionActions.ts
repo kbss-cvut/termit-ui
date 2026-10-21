@@ -11,6 +11,7 @@ import {
 import JsonLdUtils from "../util/JsonLdUtils";
 import {
   CollectionMember,
+  CollectionMemberData,
   CONTEXT,
   MEMBER_CONTEXT,
   SkosCollectionDto,
@@ -118,10 +119,12 @@ export function loadCollectionMembers(
         .signal(signal)
     )
       .then((response) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<CollectionMember>(
+        JsonLdUtils.compactAndResolveReferencesAsArray<CollectionMemberData>(
           response.data,
           MEMBER_CONTEXT
-        ).then((pageContent) => createPage(response, pageContent))
+        )
+          .then((data) => data.map((d) => new CollectionMember(d)))
+          .then((pageContent) => createPage(response, pageContent))
       )
       .catch((error: ErrorData) => {
         asyncActionFailureWithMessage(error, action, dispatch);
