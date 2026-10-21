@@ -282,6 +282,8 @@ const cs = {
     "administration.customization.customAttributes.migrate.iri.confirmLabel":
       "Pro potvrzení zadejte název vlastního atributu",
     "administration.customization.customAttributes.symmetric": "Symetrický",
+    "administration.customization.customAttributes.symmetric.tooltip":
+      "Atribut je symetrický",
     "administration.customization.customAttributes.symmetric.help":
       "Pro symetrický vztah platí, že pokud jej nastavíte v jednom směru, automaticky se vytvoří i ve směru opačném.",
     "asset.link.tooltip": "Zobrazit detail záznamu",

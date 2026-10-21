@@ -280,8 +280,10 @@ const de = {
     "administration.customization.customAttributes.migrate.iri.confirmLabel":
       "Geben Sie zur Bestätigung den Namen des benutzerdefinierten Attributs ein",
     "administration.customization.customAttributes.symmetric": "Symmetrisch",
+    "administration.customization.customAttributes.symmetric.tooltip":
+      "Das Attribut ist symmetrisch.",
     "administration.customization.customAttributes.symmetric.help":
-      "Für eine symmetrische Beziehung gilt, dass wenn Sie sie in eine Richtung setzen, sie automatisch in die Gegensrichtung angewendet wird.",
+      "Für ein symmetrisches Attribut gilt, dass wenn Sie sie in eine Richtung setzen, sie automatisch in die Gegensrichtung angewendet wird.",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":

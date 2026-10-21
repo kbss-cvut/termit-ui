@@ -41,6 +41,7 @@ import CopyIriIcon from "../../misc/CopyIriIcon";
 import CustomAttributeRemoveDialog from "./CustomAttributeRemoveDialog";
 import CustomAttributeIriMigrationDialog from "./CustomAttributeIriMigrationDialog";
 import "./CustomAttributes.scss";
+import { FaArrowsLeftRight } from "react-icons/fa6";
 
 interface MoreActionsProps {
   onMigrateIriClick: () => void;
@@ -165,6 +166,14 @@ export const CustomAttributes: React.FC = () => {
         cell: ({ row }) => (
           <>
             {row.original.getLabel(lang)}
+            {CustomAttribute.isSymmetric(row.original) && (
+              <FaArrowsLeftRight
+                className="ml-1"
+                title={i18n(
+                  "administration.customization.customAttributes.symmetric.tooltip"
+                )}
+              />
+            )}
             <CopyIriIcon url={row.original.iri} />
           </>
         ),

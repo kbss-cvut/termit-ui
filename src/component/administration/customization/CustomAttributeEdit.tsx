@@ -113,11 +113,7 @@ export const CustomAttributeEdit: React.FC = () => {
         setComment(editedAttribute.comment || {});
         setDomain(editedAttribute.domainIri || "");
         setRange(editedAttribute.rangeIri || "");
-        setSymmetric(
-          Utils.sanitizeArray(editedAttribute.types).includes(
-            VocabularyUtils.OWL_SYMMETRIC_PROPERTY
-          )
-        );
+        setSymmetric(CustomAttribute.isSymmetric(editedAttribute));
 
         const grouped = groupAnnotatedRelationships(
           Utils.sanitizeArray(editedAttribute.annotatedRelationships)
