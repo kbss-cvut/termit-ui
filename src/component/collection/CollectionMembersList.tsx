@@ -6,6 +6,7 @@ import {
 import {
   FunctionComponent,
   MutableRefObject,
+  PointerEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -16,7 +17,10 @@ import { ColumnDef, Row, SortingState, Table } from "@tanstack/react-table";
 import { InfiniteTable, QueryFn } from "../../util/InfiniteTable";
 import { ResultPage } from "../../model/ResultPage";
 import { FormattedMessage } from "react-intl";
-import { loadCollectionMembers } from "../../action/AsyncCollectionActions";
+import {
+  loadCollectionMembers,
+  updateCollectionMemberPosition,
+} from "../../action/AsyncCollectionActions";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { CollectionIcon } from "./CollectionIcon";
@@ -35,6 +39,9 @@ import { moveInPages } from "./CollectionUtils";
 import { isVocabularyActionAuthorized } from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import Vocabulary from "../../model/Vocabulary";
 import AccessLevel from "../../model/acl/AccessLevel";
+import AsyncActionStatus from "../../action/AsyncActionStatus";
+import { trackPromise } from "react-promise-tracker";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
@@ -44,6 +51,10 @@ export interface CollectionMembersListProps {
 
 // how long the moved row stays highlighted before it fades out, in milliseconds
 const MOVED_ROW_HIGHLIGHT_DURATION = 1500;
+
+function getMoveArea(id: string) {
+  return "collection-member-moved-row-" + id;
+}
 
 export const CollectionMembersList: FunctionComponent<
   CollectionMembersListProps
@@ -68,10 +79,13 @@ export const CollectionMembersList: FunctionComponent<
   );
 
   // The highlighted row that was moved.
-  // A new object on every set, so moving the same row again restarts the highlight
-  const [movedRow, setMovedRow] = useState<{ id: string } | null>(null);
+  const [movedRow, setMovedRow] = useState<{
+    id: string;
+  } | null>(null);
+  const pendingMove = useRef<{ id: string } | null>(null);
+
   useEffect(() => {
-    if (!movedRow) {
+    if (!movedRow || pendingMove.current) {
       return;
     }
     const timeout = setTimeout(
@@ -83,32 +97,54 @@ export const CollectionMembersList: FunctionComponent<
 
   const onIndexChange: IndexChangeCallback = useCallback(
     (row, newIndex) => {
-      setMovedRow({ id: row.id });
+      if (collection == null) {
+        return;
+      }
+
+      const newMovedRow = { id: row.id };
+      setMovedRow(newMovedRow);
+      pendingMove.current = newMovedRow;
+
       const loadedCount =
         tableInstanceRef.current?.getRowModel().rows.length ?? 0;
       const isTargetLoaded = newIndex < loadedCount;
+      const originalIndex = row.index;
       if (isTargetLoaded) {
         // setting for all queries matching the partial query key
         queryClient.setQueriesData<InfiniteData<ResultPage<CollectionMember>>>(
           { queryKey },
-          (data) => data && moveInPages(data, row.index, newIndex)
+          (data) => data && moveInPages(data, originalIndex, newIndex)
         );
         rowVirtualizerRef.current?.scrollToIndex(newIndex, {
           align: "auto",
           behavior: "smooth",
         });
       }
-      // TODO persist the new member position
-      Promise.resolve()
+
+      trackPromise(
+        dispatch(
+          updateCollectionMemberPosition(
+            collection,
+            row.original.iri,
+            originalIndex,
+            newIndex
+          )
+        ),
+        getMoveArea(row.id)
+      )
         // refresh data
-        .then(() =>
-          isTargetLoaded
-            ? undefined
-            : queryClient.invalidateQueries({ queryKey })
-        )
-        .catch(() => queryClient.invalidateQueries({ queryKey }));
+        .then((action) => {
+          if (action.status !== AsyncActionStatus.SUCCESS || !isTargetLoaded) {
+            queryClient.invalidateQueries({ queryKey });
+          }
+        })
+        // start the highlight fade out, unless another move replaced it meanwhile
+        .finally(() => {
+          pendingMove.current = null;
+          setMovedRow({ ...newMovedRow });
+        });
     },
-    [queryClient, queryKey]
+    [collection, dispatch, queryClient, queryKey]
   );
 
   const { startDrag, getRowClassName: getDragRowClassName } = useRowDragReorder(
@@ -125,6 +161,15 @@ export const CollectionMembersList: FunctionComponent<
     [getDragRowClassName, movedRow]
   );
 
+  const onDrag = useCallback(
+    (row: Row<CollectionMember>, e: PointerEvent<HTMLDivElement>) => {
+      if (pendingMove.current == null) {
+        startDrag(row, e);
+      }
+    },
+    [startDrag]
+  );
+
   const columns = useMemo<ColumnDef<CollectionMember>[]>(
     () => [
       ...(isOrdered && canModify
@@ -139,9 +184,19 @@ export const CollectionMembersList: FunctionComponent<
             {
               id: "drag",
               cell: ({ row }) => (
-                <DragHandle onPointerDown={(e) => startDrag(row, e)} />
+                <DragHandle onPointerDown={(e) => onDrag(row, e)} />
               ),
               enableSorting: false,
+            },
+            {
+              id: "row-loading-mask",
+              size: 0,
+              cell: ({ row }) => (
+                <PromiseTrackingMask
+                  area={getMoveArea(row.id)}
+                  withoutText={true}
+                />
+              ),
             },
           ]
         : []),
@@ -170,7 +225,7 @@ export const CollectionMembersList: FunctionComponent<
         enableSorting: false,
       },
     ],
-    [canModify, isOrdered, onIndexChange, shortLocale, startDrag]
+    [canModify, isOrdered, onDrag, onIndexChange, shortLocale]
   );
 
   const queryFn: QueryFn<CollectionMember> = useCallback(

@@ -1,11 +1,12 @@
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
-import ActionType from "./ActionType";
+import ActionType, { AsyncAction, AsyncFailureAction } from "./ActionType";
 import { ThunkDispatch } from "../util/Types";
 import Ajax, { params } from "../util/Ajax";
 import Constants from "../util/Constants";
 import {
   asyncActionFailureWithMessage,
   asyncActionRequest,
+  asyncActionSuccess,
   asyncActionSuccessWithPayload,
 } from "./SyncActions";
 import JsonLdUtils from "../util/JsonLdUtils";
@@ -63,6 +64,12 @@ export function loadSkosCollection(collectionUri: IRI, vocabularyUri: IRI) {
   };
 }
 
+function parseIris(collection: SkosCollectionDtoData) {
+  const vocabularyUri = VocabularyUtils.create(collection.vocabulary.iri);
+  const collectionUri = VocabularyUtils.create(collection.iri);
+  return { vocabularyUri, collectionUri };
+}
+
 export function loadSkosCollections(
   vocabularyUri: IRI,
   pageNumber: number,
@@ -103,8 +110,8 @@ export function loadCollectionMembers(
   const action = { type: ActionType.LOAD_COLLECTION_MEMBERS };
   return (dispatch: ThunkDispatch): Promise<ResultPage<CollectionMember>> => {
     dispatch(asyncActionRequest(action, true));
-    const vocabularyUri = VocabularyUtils.create(collection.vocabulary.iri);
-    const collectionUri = VocabularyUtils.create(collection.iri);
+    const { collectionUri, vocabularyUri } = parseIris(collection);
+
     let endpoint = path(vocabularyUri);
     if (collection.isOrdered()) {
       endpoint += "/ordered";
@@ -130,5 +137,39 @@ export function loadCollectionMembers(
         asyncActionFailureWithMessage(error, action, dispatch);
         return EMPTY_PAGE;
       });
+  };
+}
+
+export function updateCollectionMemberPosition(
+  collection: SkosCollectionDto,
+  memberIri: string,
+  originalPos: number,
+  newPos: number
+) {
+  if (!collection.isOrdered()) {
+    throw new Error(
+      "Changing member order for unordered collection is not allowed"
+    );
+  }
+  const action = { type: ActionType.UPDATE_COLLECTION_MEMBER_POSITION };
+  return (
+    dispatch: ThunkDispatch
+  ): Promise<AsyncFailureAction | AsyncAction> => {
+    dispatch(asyncActionRequest(action, true));
+    const { vocabularyUri, collectionUri } = parseIris(collection);
+
+    return Ajax.post(
+      `${path(vocabularyUri)}/ordered/${
+        collectionUri.fragment
+      }/members/positions`,
+      queryParams(collectionUri, vocabularyUri)
+        .param("memberIri", memberIri)
+        .param("originalPos", originalPos.toString())
+        .param("newPos", newPos.toString())
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) =>
+        asyncActionFailureWithMessage(error, action, dispatch)
+      );
   };
 }
