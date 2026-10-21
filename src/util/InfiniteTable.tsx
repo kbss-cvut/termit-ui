@@ -202,8 +202,12 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
             getRowClassName={props.getRowClassName}
           />
           <tfoot>
-            <If expression={isFetchingNextPage}>
-              <tr>{i18n("select.loading")}</tr>
+            <If expression={!isFetchingNextPage}>
+              <tr>
+                <td colSpan={table.getVisibleLeafColumns().length}>
+                  {i18n("select.loading")}
+                </td>
+              </tr>
             </If>
           </tfoot>
         </BootstrapTable>
