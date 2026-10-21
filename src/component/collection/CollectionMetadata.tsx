@@ -1,4 +1,4 @@
-import { Card, CardBody, Col, Label, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Label, Row } from "reactstrap";
 import MarkdownView from "../misc/MarkdownView";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import { FunctionComponent } from "react";
@@ -6,6 +6,7 @@ import { SkosCollectionDto } from "../../model/Collection";
 import { useI18n } from "../hook/useI18n";
 import { CollectionMembersList } from "./CollectionMembersList";
 import Vocabulary from "../../model/Vocabulary";
+import { FormattedMessage } from "react-intl";
 
 export interface CollectionMetadataProps {
   collection: SkosCollectionDto | null;
@@ -44,6 +45,13 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
       </Card>
       <Card>
         <CardBody>
+          <Row className={"justify-content-between mb-3"}>
+            <FormattedMessage tagName={"h3"} id={"collection.members"} />
+            <Button color="success" size="sm" style={{ float: "right" }}>
+              {i18n("collection.members.add")}
+            </Button>
+          </Row>
+
           <CollectionMembersList
             {...{
               collection,
