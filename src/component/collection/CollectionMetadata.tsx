@@ -5,14 +5,17 @@ import { FunctionComponent } from "react";
 import { SkosCollectionDto } from "../../model/Collection";
 import { useI18n } from "../hook/useI18n";
 import { CollectionMembersList } from "./CollectionMembersList";
+import Vocabulary from "../../model/Vocabulary";
 
 export interface CollectionMetadataProps {
   collection: SkosCollectionDto | null;
+  vocabulary: Vocabulary | null;
   shortLocale: string;
 }
 
 export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
   collection,
+  vocabulary,
   shortLocale,
 }) => {
   const { i18n } = useI18n();
@@ -42,8 +45,11 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
       <Card>
         <CardBody>
           <CollectionMembersList
-            collection={collection}
-            shortLocale={shortLocale}
+            {...{
+              collection,
+              vocabulary,
+              shortLocale,
+            }}
           />
         </CardBody>
       </Card>

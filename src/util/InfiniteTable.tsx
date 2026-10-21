@@ -53,7 +53,7 @@ export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
    */
   queryFn: QueryFn<T>;
   /**
-   * Identity of the query
+   * Used as part of the final query key.
    */
   queryKey: QueryKey;
   /**

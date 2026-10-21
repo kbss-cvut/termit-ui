@@ -1,4 +1,13 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, PointerEvent } from "react";
+import "./DragHandle.scss";
+
+export const DragHandle: FunctionComponent<{
+  onPointerDown: (e: PointerEvent<HTMLDivElement>) => void;
+}> = ({ onPointerDown }) => (
+  <div className={"drag-handle"} onPointerDown={onPointerDown}>
+    <DragReorderIcon />
+  </div>
+);
 
 export const DragReorderIcon: FunctionComponent<{ size?: string }> = ({
   size = "24px",
