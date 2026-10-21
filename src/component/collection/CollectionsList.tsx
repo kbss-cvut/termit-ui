@@ -16,6 +16,7 @@ import "./CollectionsList.scss";
 import { INITIAL_PAGINATION } from "../../util/UISettingsUtil";
 import { OrderedCollectionIcon } from "./OrderedCollectionIcon";
 import { CollectionLink } from "./CollectionLink";
+import If from "../misc/If";
 
 export interface CollectionsListProps {
   vocabulary: Vocabulary;
@@ -59,24 +60,20 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
   const columns = useMemo<ColumnDef<SkosCollectionDto>[]>(
     () => [
       {
-        id: "sort-icon",
-        header: "",
-        cell: ({ row }) => {
-          if (row.original.isOrdered()) {
-            return (
-              <OrderedCollectionIcon id={"collections-list-entry-" + row.id} />
-            );
-          } else {
-            return null;
-          }
-        },
-        size: 15,
-      },
-      {
         id: "label",
         header: "",
         cell: ({ row }) => (
-          <CollectionLink collection={row.original} shortLocale={shortLocale} />
+          <>
+            <If expression={row.original.isOrdered()}>
+              <OrderedCollectionIcon
+                id={"collections-list-entry-" + row.index}
+              />
+            </If>
+            <CollectionLink
+              collection={row.original}
+              shortLocale={shortLocale}
+            />
+          </>
         ),
         enableSorting: false,
       },
@@ -106,7 +103,7 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
   });
 
   return (
-    <div className={"skos-collections-list first-row-icon"}>
+    <div className={"skos-collections-list"}>
       <Table instance={tableInstance} />
     </div>
   );
