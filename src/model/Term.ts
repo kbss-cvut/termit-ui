@@ -303,6 +303,7 @@ export default class Term
       .filter((att) => multilingualCustomAttributes.includes(att))
       .forEach((prop) => {
         termData["@context"][prop] = pluralContext(prop);
+        termData[prop] = Utils.unwrapArray(termData[prop]);
       });
     return termData;
   }

@@ -45,6 +45,19 @@ const Utils = {
   },
 
   /**
+   * Unwraps the specified argument if it is an array.
+   *
+   * That is, if the argument is an array, it returns its first element. Otherwise, returns the argument itself.
+   * @param arr
+   */
+  unwrapArray<T>(arr: T[] | T): T {
+    if (Array.isArray(arr)) {
+      return arr[0];
+    }
+    return arr;
+  },
+
+  /**
    * Checks if the specified string is a link which can be dereferenced.
    * @param str
    */

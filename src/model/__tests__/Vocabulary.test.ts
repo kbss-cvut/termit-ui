@@ -168,6 +168,20 @@ describe("Vocabulary", () => {
         pluralContext(property)
       );
     });
+
+    it("sanitizes plural multilingual string custom attribute values to ensure they are not wrapped in array", () => {
+      const sut = new Vocabulary(data);
+      const property = VocabularyUtils.PREFIX + "abstract";
+      sut[property] = [
+        {
+          en: ["Value"],
+          de: ["Wert"],
+        },
+      ] as PluralMultilingualString[];
+
+      const result = sut.toJsonLd([property]);
+      expect(Array.isArray(result[property])).toBeFalsy();
+    });
   });
 
   describe("isSnapshot", () => {
