@@ -11,7 +11,7 @@ import { isLoggedIn } from "./Authorization";
 import { isUsingOidcAuth } from "./OidcUtils";
 import Document from "../model/Document";
 import { TABS } from "../component/vocabulary/VocabularyMetadata";
-import { SkosCollectionDto } from "../model/Collection";
+import { SkosCollectionDtoData } from "../model/Collection";
 
 export class Routing {
   get history(): History {
@@ -207,10 +207,10 @@ export class Routing {
     this.makeAssetTransition(asset, options);
   };
 
-  public transitionToSkosCollection(collection: SkosCollectionDto) {
+  public static makeCollectionDetailParams(collection: SkosCollectionDtoData) {
     const collectionIri = VocabularyUtils.create(collection.iri);
     const vocabularyIri = VocabularyUtils.create(collection.vocabulary.iri);
-    this.transitionTo(Routes.vocabularyCollectionDetail, {
+    return {
       params: new Map([
         ["name", vocabularyIri.fragment],
         ["collectionName", collectionIri.fragment],
@@ -219,7 +219,7 @@ export class Routing {
         ["namespace", encodeURIComponent(vocabularyIri.namespace!)],
         ["collectionNamespace", encodeURIComponent(collectionIri.namespace!)],
       ]),
-    });
+    };
   }
 }
 

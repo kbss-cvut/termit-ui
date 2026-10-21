@@ -1,12 +1,10 @@
 import {
   CollectionMember,
-  getMemberLabel,
-  isMemberCollection,
+  isOrderedCollection,
   SkosCollectionDto,
 } from "../../model/Collection";
 import {
   FunctionComponent,
-  KeyboardEvent,
   MutableRefObject,
   PointerEvent,
   useCallback,
@@ -22,41 +20,26 @@ import { FormattedMessage } from "react-intl";
 import { loadCollectionMembers } from "../../action/AsyncCollectionActions";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
-import "./CollectionsList.scss";
 import { CollectionIcon } from "./CollectionIcon";
-import { Input } from "reactstrap";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { Virtualizer } from "@tanstack/react-virtual";
 import classNames from "classnames";
 import { useRowDragReorder } from "../hook/useRowDragReorder";
+import { DragReorderIcon } from "./DragReorderIcon";
+import { IndexChangeCallback, MemberOrderInput } from "./MemberOrderInput";
+
+import "./CollectionsList.scss";
+import If from "../misc/If";
+import TermLink from "../term/TermLink";
+import { CollectionLink } from "./CollectionLink";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
   shortLocale: string;
 }
 
-const DRAG_ICON_SIZE = "24px";
 // how long the moved row stays highlighted before it fades out, in milliseconds
 const MOVED_ROW_HIGHLIGHT_DURATION = 1500;
-
-const DragReorderIcon = (props) => (
-  <svg
-    viewBox="0 0 24 24"
-    width={DRAG_ICON_SIZE}
-    height={DRAG_ICON_SIZE}
-    fill="none"
-    stroke="grey"
-    strokeWidth={2}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M9 5l3-3 3 3" /> {/* arrow up */}
-    <path d="M5 10h14" />
-    <path d="M5 14h14" />
-    <path d="M9 19l3 3 3-3" /> {/* arrow down */}
-  </svg>
-);
 
 const DragHandle: FunctionComponent<{
   onPointerDown: (e: PointerEvent<HTMLDivElement>) => void;
@@ -65,11 +48,6 @@ const DragHandle: FunctionComponent<{
     <DragReorderIcon />
   </div>
 );
-
-type IndexChangeCallback = (
-  row: Row<CollectionMember>,
-  newIndex: number
-) => void;
 
 /**
  * Moves the item at fromIndex to toIndex while preserving the size of each page
@@ -92,50 +70,6 @@ function moveInPages<T>(
     }),
   };
 }
-
-/**
- * Displays position of the row and allows moving the row by changing it
- */
-const OrderInput: FunctionComponent<{
-  row: Row<CollectionMember>;
-  onIndexChange: IndexChangeCallback;
-}> = ({ row, onIndexChange }) => {
-  const [order, setOrder] = useState(String(row.index + 1));
-  // the row may be moved by another row's change
-  useEffect(() => setOrder(String(row.index + 1)), [row.index]);
-
-  const commit = useCallback(() => {
-    const newIndex = Number.parseInt(order) - 1;
-    if (Number.isNaN(newIndex) || newIndex === row.index) {
-      setOrder(String(row.index + 1));
-      return;
-    }
-    onIndexChange(row, newIndex);
-  }, [onIndexChange, order, row]);
-
-  const onKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        commit();
-      } else if (e.key === "Escape") {
-        setOrder(String(row.index + 1));
-      }
-    },
-    [commit, row.index]
-  );
-
-  return (
-    <Input
-      className={"order"}
-      type={"text"}
-      inputMode={"numeric"}
-      value={order}
-      onChange={(e) => setOrder(e.currentTarget.value.replace(/\D/g, ""))}
-      onBlur={commit}
-      onKeyDown={onKeyDown}
-    />
-  );
-};
 
 export const CollectionMembersList: FunctionComponent<
   CollectionMembersListProps
@@ -220,7 +154,7 @@ export const CollectionMembersList: FunctionComponent<
             {
               id: "order",
               cell: ({ row }) => (
-                <OrderInput row={row} onIndexChange={onIndexChange} />
+                <MemberOrderInput row={row} onIndexChange={onIndexChange} />
               ),
               enableSorting: false,
             },
@@ -235,15 +169,26 @@ export const CollectionMembersList: FunctionComponent<
         : []),
       {
         id: "label",
-        accessorFn: (member) => getMemberLabel(member, shortLocale),
-        cell: ({ row, renderValue }) => (
-          <>
-            {isMemberCollection(row.original) && (
-              <CollectionIcon id={"collection-member-" + row.id} />
-            )}
-            {renderValue()}
-          </>
-        ),
+        cell: ({ row }) => {
+          const isCollection = row.original.isCollection();
+          return (
+            <>
+              <If expression={isCollection}>
+                <CollectionIcon
+                  id={"collection-member-collection-icon-" + row.index}
+                  isOrdered={isOrderedCollection(row.original)}
+                />
+                <CollectionLink
+                  collection={row.original}
+                  shortLocale={shortLocale}
+                />
+              </If>
+              <If expression={!isCollection}>
+                <TermLink term={row.original} language={shortLocale} />
+              </If>
+            </>
+          );
+        },
         enableSorting: false,
       },
     ],
@@ -275,7 +220,7 @@ export const CollectionMembersList: FunctionComponent<
         getRowId={(member) => member.iri}
         disableHeader={true}
         className={classNames("skos-collections-list", {
-          "first-row-icon second-row-icon second-row-drag": isOrdered,
+          "first-row-icon second-row-icon": isOrdered,
         })}
         tableInstanceRef={tableInstanceRef}
         rowVirtualizerRef={rowVirtualizerRef}

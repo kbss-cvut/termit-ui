@@ -91,7 +91,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
       <>
         {collectionDto.isOrdered() && (
           <OrderedCollectionIcon id={"collection-header-title"} />
-        )}{" "}
+        )}
         {label}
         <CopyIriIcon url={collectionDto.iri} />
       </>

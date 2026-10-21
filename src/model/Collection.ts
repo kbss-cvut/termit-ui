@@ -11,6 +11,7 @@ import {
 } from "./MultilingualString";
 import VocabularyUtils from "../util/VocabularyUtils";
 import Utils from "../util/Utils";
+import { TermInfo } from "./Term";
 
 export const CONTEXT = {
   ...ASSET_CONTEXT,
@@ -28,6 +29,7 @@ export const MEMBER_CONTEXT = {
   ...ASSET_CONTEXT,
   title: context(VocabularyUtils.DC_TITLE),
   label: context(VocabularyUtils.SKOS_PREF_LABEL),
+  vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
 };
 
 export interface SkosCollectionDtoData extends HasIdentifier, HasTypes {
@@ -68,8 +70,14 @@ export class SkosCollectionDto
    * @return true when the collection has ordered collection type.
    */
   public isOrdered() {
-    return this.hasType(VocabularyUtils.SKOS_ORDERED_COLLECTION);
+    return isOrderedCollection(this);
   }
+}
+
+export function isOrderedCollection(obj: { types?: string[] }) {
+  return Utils.sanitizeArray(obj.types).includes(
+    VocabularyUtils.SKOS_ORDERED_COLLECTION
+  );
 }
 
 export interface CollectionWithMembers<T extends Iterable<string>>
@@ -108,24 +116,43 @@ export class OrderedCollection
   }
 }
 
-export interface CollectionMember extends HasIdentifier {
+export interface CollectionMemberData extends HasIdentifier {
   types: string[];
+  /// term label
   label?: MultilingualString;
+  /// collection title
   title?: MultilingualString;
+  vocabulary: HasIdentifier;
 }
 
-export function getMemberLabel(member: CollectionMember, shortLocale?: string) {
-  if ("title" in member) {
-    return getLocalized(member.title, shortLocale);
-  }
-  if ("label" in member) {
-    return getLocalized(member.label, shortLocale);
-  }
-  return "";
-}
+export class CollectionMember
+  implements CollectionMemberData, TermInfo, SkosCollectionDtoData
+{
+  public readonly iri: string;
+  public readonly types: string[];
+  /// term label
+  public readonly label: MultilingualString;
+  /// collection title
+  public readonly title: MultilingualString;
+  public readonly vocabulary: HasIdentifier;
 
-export function isMemberCollection(member: CollectionMember) {
-  return Utils.sanitizeArray(member.types).includes(
-    VocabularyUtils.SKOS_COLLECTION
-  );
+  constructor(data: CollectionMemberData) {
+    this.iri = data.iri;
+    this.types = Utils.sanitizeArray(data.types);
+    this.label = data.label ?? {};
+    this.title = data.title ?? {};
+    this.vocabulary = data.vocabulary;
+  }
+
+  public getLabel(shortLocale?: string): string {
+    if (this.isCollection()) {
+      return getLocalized(this.title, shortLocale);
+    } else {
+      return getLocalized(this.label, shortLocale);
+    }
+  }
+
+  public isCollection() {
+    return this.types.includes(VocabularyUtils.SKOS_COLLECTION);
+  }
 }

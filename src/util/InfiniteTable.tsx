@@ -32,6 +32,7 @@ import {
 import { ResultPage } from "../model/ResultPage";
 import If from "../component/misc/If";
 import { useI18n } from "../component/hook/useI18n";
+import ContainerMask from "../component/misc/ContainerMask";
 
 interface TanStackProps<T> extends Omit<TableOptions<T>, "instance" | "data"> {}
 
@@ -89,7 +90,7 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     [props]
   );
 
-  const { data, fetchNextPage, isFetching, isLoading, isFetchingNextPage } =
+  const { data, fetchNextPage, isFetching, isFetchingNextPage, isLoading } =
     useInfiniteQuery<
       ResultPage<T>, // page data
       Error,
@@ -149,10 +150,10 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
 
   const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
     count: table.getRowModel().rows.length,
-    estimateSize: () => 33, // estimate row height for accurate scrollbar dragging
+    estimateSize: () => 42, // estimate row height for accurate scrollbar dragging
     getScrollElement: () => tableContainerRef.current,
     measureElement: measureElement(),
-    overscan: 5,
+    overscan: 10,
   });
 
   const { rows } = table.getRowModel();
@@ -184,32 +185,33 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     props.rowVirtualizerRef.current = rowVirtualizer;
   }
 
-  if (isLoading) {
-    return <>{i18n("select.loading")}</>;
-  }
-
   return (
-    <div
-      className={classNames("tanstack-table", props.className)}
-      ref={tableContainerRef}
-      onScroll={onContainerScroll}
-    >
-      <BootstrapTable>
-        <If expression={!props.disableHeader}>
-          <TableHead table={table} />
-        </If>
-        <TableBody
-          table={table}
-          rowVirtualizer={rowVirtualizer}
-          getRowClassName={props.getRowClassName}
-        />
-        <tfoot>
-          <If expression={isFetchingNextPage}>
-            <tr>{i18n("select.loading")}</tr>
+    <>
+      <div
+        className={classNames("tanstack-table", props.className)}
+        ref={tableContainerRef}
+        onScroll={onContainerScroll}
+      >
+        <BootstrapTable>
+          <If expression={!props.disableHeader}>
+            <TableHead table={table} />
           </If>
-        </tfoot>
-      </BootstrapTable>
-    </div>
+          <TableBody
+            table={table}
+            rowVirtualizer={rowVirtualizer}
+            getRowClassName={props.getRowClassName}
+          />
+          <tfoot>
+            <If expression={isFetchingNextPage}>
+              <tr>{i18n("select.loading")}</tr>
+            </If>
+          </tfoot>
+        </BootstrapTable>
+      </div>
+      <If expression={isLoading}>
+        <ContainerMask />
+      </If>
+    </>
   );
 };
 
