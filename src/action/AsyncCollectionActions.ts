@@ -39,7 +39,6 @@ function createPage<T>(
   response: AxiosResponse,
   pageContent: T[]
 ): ResultPage<T> {
-  console.debug(response, pageContent);
   return {
     totalCount: Number(response.headers[Constants.Headers.X_TOTAL_COUNT] ?? 0),
     pageContent,

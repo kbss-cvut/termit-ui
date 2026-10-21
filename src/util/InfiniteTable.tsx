@@ -31,6 +31,7 @@ import {
 } from "@tanstack/react-query";
 import { ResultPage } from "../model/ResultPage";
 import If from "../component/misc/If";
+import { useI18n } from "../component/hook/useI18n";
 
 interface TanStackProps<T> extends Omit<TableOptions<T>, "instance" | "data"> {}
 
@@ -76,6 +77,7 @@ function measureElement() {
  * @see https://tanstack.com/table/v8/docs/framework/react/examples/virtualized-infinite-scrolling
  */
 export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
+  const { i18n } = useI18n();
   const [sorting, setSorting] = useState<SortingState>([]);
   const pageSize = props.pageSize ?? 50;
 
@@ -87,22 +89,23 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     [props]
   );
 
-  const { data, fetchNextPage, isFetching, isLoading } = useInfiniteQuery<
-    ResultPage<T>, // page data
-    Error,
-    ResultPage<T>, // data after select
-    TableQueryKey
-  >({
-    queryKey: [
-      // when key changes, the content is refetched
-      ...props.queryKey,
-      sorting,
-      pageSize,
-    ],
-    queryFn,
-    getNextPageParam: (_lastGroup, groups) => groups.length,
-    refetchOnWindowFocus: false,
-  });
+  const { data, fetchNextPage, isFetching, isLoading, isFetchingNextPage } =
+    useInfiniteQuery<
+      ResultPage<T>, // page data
+      Error,
+      ResultPage<T>, // data after select
+      TableQueryKey
+    >({
+      queryKey: [
+        // when key changes, the content is refetched
+        ...props.queryKey,
+        sorting,
+        pageSize,
+      ],
+      queryFn,
+      getNextPageParam: (_lastGroup, groups) => groups.length,
+      refetchOnWindowFocus: false,
+    });
 
   const flatData: T[] = useMemo(
     () => data?.pages?.flatMap((page) => page.pageContent) ?? [],
@@ -182,7 +185,7 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
   }
 
   if (isLoading) {
-    return <>Loading...</>; // TODO loading
+    return <>{i18n("select.loading")}</>;
   }
 
   return (
@@ -200,6 +203,11 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
           rowVirtualizer={rowVirtualizer}
           getRowClassName={props.getRowClassName}
         />
+        <tfoot>
+          <If expression={isFetchingNextPage}>
+            <tr>{i18n("select.loading")}</tr>
+          </If>
+        </tfoot>
       </BootstrapTable>
     </div>
   );
@@ -230,15 +238,11 @@ const HeadRow = <T,>({ headerGroup }: { headerGroup: HeaderGroup<T> }) => {
               width: header.getSize(),
             }}
           >
-            <div
-              className={classNames({
-                "cursor-pointer select-none": header.column.getCanSort(),
-              })}
-              onClick={header.column.getToggleSortingHandler()}
-            >
+            <div>
               {flexRender(header.column.columnDef.header, header.getContext())}
               {header.column.getCanSort() && (
                 <AlphaNumSortToggle
+                  onClick={header.column.getToggleSortingHandler()}
                   isSorted={header.column.getIsSorted() != false}
                   desc={header.column.getIsSorted() === "desc"}
                 />
