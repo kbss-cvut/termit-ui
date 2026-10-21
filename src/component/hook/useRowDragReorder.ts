@@ -14,8 +14,10 @@ import classNames from "classnames";
 const DRAG_THRESHOLD = 4;
 // distance in pixels from the edge of the scroll container where auto-scrolling starts
 const AUTO_SCROLL_EDGE = 40;
-// auto-scroll speed in pixels per frame when the pointer reaches the edge
-const AUTO_SCROLL_MAX_SPEED = 15;
+// distance in pixels past the start of the auto-scroll zone (possibly outside the container) where the speed is maximal
+const AUTO_SCROLL_RAMP = 120;
+// auto-scroll speed in pixels per frame when the pointer travels the whole ramp
+const AUTO_SCROLL_MAX_SPEED = 20;
 
 const BODY_DRAGGING_CLASS = "table-row-dragging";
 
@@ -31,20 +33,21 @@ interface DragState {
 }
 
 /**
- * Returns the number of pixels the container should be scrolled by, based on how close the pointer is to its edge
+ * Returns the number of pixels the container should be scrolled by, based on how far the pointer is past
+ * the start of the auto-scroll zone at its edge.
  */
 function autoScrollSpeed(clientY: number, rect: DOMRect): number {
-  const edge = Math.min(AUTO_SCROLL_EDGE, rect.height / 2);
+  const edge = AUTO_SCROLL_EDGE; // Math.min(AUTO_SCROLL_EDGE, rect.height / 2);
   let ratio = 0;
   if (clientY < rect.top + edge) {
-    ratio = -(rect.top + edge - clientY) / edge;
+    ratio = -(rect.top + edge - clientY) / AUTO_SCROLL_RAMP;
   } else if (clientY > rect.bottom - edge) {
-    ratio = (clientY - rect.bottom + edge) / edge;
+    ratio = (clientY - rect.bottom + edge) / AUTO_SCROLL_RAMP;
   }
-  // the pointer may be outside the container
+  // the pointer may be far outside the container
   ratio = Math.max(-1, Math.min(1, ratio));
   // browsers may ignore sub-pixel scrolling
-  return Math.sign(ratio) * Math.ceil(Math.abs(ratio) * AUTO_SCROLL_MAX_SPEED);
+  return Math.sign(ratio) * Math.ceil(ratio * ratio * AUTO_SCROLL_MAX_SPEED);
 }
 
 /**
