@@ -1,6 +1,7 @@
 import React, {
   FunctionComponent,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -19,7 +20,6 @@ import {
 import Toggle from "react-bootstrap-toggle";
 import { useDispatch } from "react-redux";
 import { SkosCollectionDto } from "../../model/Collection";
-import Vocabulary from "../../model/Vocabulary";
 import MultilingualString, {
   getLocalizedOrDefault,
   hasNonBlankValue,
@@ -33,13 +33,14 @@ import Constants from "../../util/Constants";
 import {
   getLanguages,
   getLanguagesWithRequired,
+  getShortLocale,
   removeTranslation,
 } from "../../util/IntlUtil";
 import ValidationResult from "../../model/form/ValidationResult";
 import Message from "../../model/Message";
 import MessageType from "../../model/MessageType";
 import { publishMessage } from "../../action/SyncActions";
-import { ThunkDispatch } from "../../util/Types";
+import { ThunkDispatch, useAppSelector } from "../../util/Types";
 import "../misc/CustomToggle.scss";
 import { TOGGLE_STYLE } from "../term/TermListToggle";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
@@ -47,19 +48,18 @@ import { loadIdentifier } from "../asset/CreateAssetUtils";
 import { useDebouncedCallback } from "use-debounce";
 import {
   createSkosCollection,
+  loadSkosCollection,
   updateSkosCollection,
 } from "../../action/AsyncCollectionActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
-import RoutingClass, { Routing } from "../../util/Routing";
+import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
+import { useCollectionUri, useVocabularyUri } from "./CollectionUtils";
+import { loadVocabulary } from "../../action/AsyncActions";
+import { AsyncAction, AsyncFailureAction } from "../../action/ActionType";
 
-export interface CollectionMetadataEditProps {
-  collection?: SkosCollectionDto;
-  vocabulary: Vocabulary;
-  initialShortLocale: string;
-  onCloseEdit: () => void;
-}
+export interface CollectionMetadataEditProps {}
 
 interface CollectionMetadataEditState {
   iri: string;
@@ -68,12 +68,46 @@ interface CollectionMetadataEditState {
   ordered: boolean;
 }
 
-export const CollectionMetadataEdit: FunctionComponent<
+const CollectionMetadataEdit: FunctionComponent<
   CollectionMetadataEditProps
-> = ({ collection, vocabulary, initialShortLocale, onCloseEdit }) => {
-  const { i18n } = useI18n();
+> = () => {
+  const { i18n, locale } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
-  const [selectedLanguage, setSelectedLanguage] = useState(initialShortLocale);
+
+  const collectionUri = useCollectionUri();
+  const vocabularyUri = useVocabularyUri();
+
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    getShortLocale(locale)
+  );
+
+  const vocabulary = useAppSelector((state) => state.vocabulary);
+
+  useEffect(() => {
+    if (vocabulary?.iri !== vocabularyUri.toString()) {
+      dispatch(loadVocabulary(vocabularyUri));
+    }
+  }, [dispatch, vocabulary?.iri, vocabularyUri]);
+
+  const [collection, setCollection] = useState<SkosCollectionDto | null>(null);
+
+  const loadCollection = useCallback(() => {
+    // TODO track promise
+    dispatch(loadSkosCollection(collectionUri, vocabularyUri)).then(
+      (result) => {
+        if (
+          result.status === AsyncActionStatus.SUCCESS &&
+          "payload" in result
+        ) {
+          setCollection(result.payload);
+        }
+      }
+    );
+  }, [collectionUri, dispatch, vocabularyUri]);
+
+  useEffect(() => {
+    loadCollection();
+  }, [loadCollection]);
 
   const isNewCollection = collection == null;
   // the identifier is generated from the title until the user modifies it manually
@@ -194,21 +228,32 @@ export const CollectionMetadataEdit: FunctionComponent<
       types: data.ordered ? [VocabularyUtils.SKOS_ORDERED_COLLECTION] : [],
     });
 
+    let promise: Promise<AsyncAction | AsyncFailureAction>;
+
     if (isNewCollection) {
-      dispatch(createSkosCollection(collection)).then((result) => {
-        if (result.status === AsyncActionStatus.SUCCESS) {
-          RoutingClass.transitionTo(
-            Routes.vocabularyCollectionDetail,
-            Routing.makeCollectionDetailParams(collection)
-          );
-        }
-      });
+      promise = dispatch(createSkosCollection(collection));
     } else {
-      dispatch(updateSkosCollection(collection)).then((result) => {
-        if (result.status === AsyncActionStatus.SUCCESS) {
-          onCloseEdit();
-        }
-      });
+      promise = dispatch(updateSkosCollection(collection));
+    }
+
+    promise.then((result) => {
+      if (result.status === AsyncActionStatus.SUCCESS) {
+        Routing.transitionTo(
+          Routes.vocabularyCollectionDetail,
+          Routing.makeCollectionDetailParams(collection)
+        );
+      }
+    });
+  };
+
+  const onCancel = () => {
+    if (isNewCollection) {
+      Routing.transitionToAsset(vocabulary);
+    } else {
+      Routing.transitionTo(
+        Routes.vocabularyCollectionDetail,
+        Routing.makeCollectionDetailParams(collection)
+      );
     }
   };
 
@@ -316,7 +361,7 @@ export const CollectionMetadataEdit: FunctionComponent<
                     id="edit-collection-cancel"
                     color="outline-dark"
                     size="sm"
-                    onClick={onCloseEdit}
+                    onClick={onCancel}
                   >
                     {i18n("cancel")}
                   </Button>
@@ -329,3 +374,5 @@ export const CollectionMetadataEdit: FunctionComponent<
     </>
   );
 };
+
+export default CollectionMetadataEdit;

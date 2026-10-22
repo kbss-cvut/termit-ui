@@ -247,7 +247,6 @@ export const CollectionMembersList: FunctionComponent<
     <InfiniteTable<CollectionMember>
       {...{ columns, queryFn, queryKey }}
       getRowId={(member) => member.iri}
-      disableHeader={true}
       className={classNames("skos-collections-list", {
         "with-order-controls": isOrdered,
       })}

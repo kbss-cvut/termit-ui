@@ -1139,6 +1139,7 @@ const en = {
     "longrunningtasks.name.migration.identifier": "Resource identifier change",
 
     "collections.title": "Collections",
+    "collection.create": "Create collection",
     "collection.title": "Collection",
     "collection.description": "Description",
     "collection.iri.help":

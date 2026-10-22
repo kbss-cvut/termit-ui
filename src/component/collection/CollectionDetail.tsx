@@ -6,9 +6,6 @@ import {
   useState,
 } from "react";
 import { SkosCollectionDto } from "../../model/Collection";
-import { useLocation, useParams } from "react-router-dom";
-import Utils from "../../util/Utils";
-import { IRIImpl } from "../../util/VocabularyUtils";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch, useAppSelector } from "../../util/Types";
 import { loadSkosCollection } from "../../action/AsyncCollectionActions";
@@ -22,38 +19,16 @@ import { getLanguages, getShortLocale } from "../../util/IntlUtil";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import { OrderedCollectionIcon } from "./OrderedCollectionIcon";
 import CopyIriIcon from "../misc/CopyIriIcon";
-import { CollectionMetadataEdit } from "./CollectionMetadataEdit";
 import { Button } from "reactstrap";
 import { GoPencil } from "react-icons/go";
 import { FaTrashAlt } from "react-icons/fa";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
+import { useCollectionUri, useVocabularyUri } from "./CollectionUtils";
+import Routing from "../../util/Routing";
+import Routes from "../../util/Routes";
 
 export interface CollectionDetailProps {}
-
-function useCollectionUri(): IRIImpl {
-  const { collectionName } = useParams<{
-    collectionName: string;
-  }>();
-  const location = useLocation();
-  const collectionNamespace = Utils.extractQueryParam(
-    location.search,
-    "collectionNamespace"
-  );
-  return useMemo(
-    () => new IRIImpl(collectionName, collectionNamespace),
-    [collectionName, collectionNamespace]
-  );
-}
-
-function useVocabularyUri(): IRIImpl {
-  const { name } = useParams<{
-    name: string; // vocabulary fragment
-  }>();
-  const location = useLocation();
-  const namespace = Utils.extractQueryParam(location.search, "namespace");
-  return useMemo(() => new IRIImpl(name, namespace), [name, namespace]);
-}
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   const collectionUri = useCollectionUri();
@@ -76,7 +51,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(
     vocabulary.primaryLanguage ?? getShortLocale(locale)
   );
-  const [isEditActive, setIsEditActive] = useState(false);
 
   useEffect(() => {
     if (vocabulary?.iri !== vocabularyUri.toString()) {
@@ -85,6 +59,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   }, [dispatch, vocabulary?.iri, vocabularyUri]);
 
   const loadCollection = useCallback(() => {
+    // TODO track promise
     dispatch(loadSkosCollection(collectionUri, vocabularyUri)).then(
       (result) => {
         if (
@@ -101,15 +76,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
     loadCollection();
   }, [loadCollection]);
 
-  useEffect(() => {
-    setIsEditActive(false);
-  }, [collectionUri]);
-
-  const onEditOpen = useCallback(() => setIsEditActive(true), []);
-  const onEditClose = useCallback(() => {
-    loadCollection();
-    setIsEditActive(false);
-  }, [loadCollection]);
+  const onEditOpen = useCallback(() => {
+    if (collectionDto) {
+      Routing.transitionTo(
+        Routes.editVocabularyCollection,
+        Routing.makeCollectionDetailParams(collectionDto)
+      );
+    }
+  }, [collectionDto]);
   const onRemove = useCallback(() => {
     // TODO: collection removal action
   }, []);
@@ -136,24 +110,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
       return null;
     }
     return [
-      !isEditActive && (
-        <IfVocabularyActionAuthorized
-          key="collection-detail-edit"
-          vocabulary={vocabulary}
-          requiredAccessLevel={AccessLevel.WRITE}
+      <IfVocabularyActionAuthorized
+        key="collection-detail-edit"
+        vocabulary={vocabulary}
+        requiredAccessLevel={AccessLevel.WRITE}
+      >
+        <Button
+          id="collection-detail-edit"
+          size="sm"
+          color="primary"
+          onClick={onEditOpen}
+          title={i18n("edit")}
         >
-          <Button
-            id="collection-detail-edit"
-            size="sm"
-            color="primary"
-            onClick={onEditOpen}
-            title={i18n("edit")}
-          >
-            <GoPencil />
-            &nbsp;{i18n("edit")}
-          </Button>
-        </IfVocabularyActionAuthorized>
-      ),
+          <GoPencil />
+          &nbsp;{i18n("edit")}
+        </Button>
+      </IfVocabularyActionAuthorized>,
       <IfVocabularyActionAuthorized
         key="collection-detail-remove"
         vocabulary={vocabulary}
@@ -171,35 +143,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
         </Button>
       </IfVocabularyActionAuthorized>,
     ];
-  }, [collectionDto, isEditActive, vocabulary, onEditOpen, onRemove, i18n]);
+  }, [collectionDto, vocabulary, onEditOpen, onRemove, i18n]);
 
   return (
     <>
       <WindowTitle title={label} />
       <HeaderWithActions title={TitleWithIcon} actions={actions} />
-      {isEditActive && collectionDto ? (
-        <CollectionMetadataEdit
-          collection={collectionDto}
-          vocabulary={vocabulary}
-          initialShortLocale={selectedLanguage}
-          onCloseEdit={onEditClose}
-        />
-      ) : (
-        <>
-          <LanguageSelector
-            key="collection-language-selector"
-            language={selectedLanguage}
-            languages={languages}
-            onSelect={setSelectedLanguage}
-            primaryLanguage={vocabulary.primaryLanguage}
-          />
-          <CollectionMetadata
-            collection={collectionDto}
-            vocabulary={vocabulary}
-            shortLocale={selectedLanguage}
-          />
-        </>
-      )}
+      <LanguageSelector
+        key="collection-language-selector"
+        language={selectedLanguage}
+        languages={languages}
+        onSelect={setSelectedLanguage}
+        primaryLanguage={vocabulary.primaryLanguage}
+      />
+      <CollectionMetadata
+        collection={collectionDto}
+        vocabulary={vocabulary}
+        shortLocale={selectedLanguage}
+      />
     </>
   );
 };

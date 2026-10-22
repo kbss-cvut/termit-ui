@@ -78,6 +78,8 @@ export class Routing {
     return Routing.buildUrl(route, options);
   };
 
+  public getTransitionPath = Routing.getTransitionPath;
+
   /**
    * Transitions to the specified route
    * @param route Route object
@@ -207,7 +209,7 @@ export class Routing {
     this.makeAssetTransition(asset, options);
   };
 
-  public static makeCollectionDetailParams(collection: SkosCollectionDtoData) {
+  public makeCollectionDetailParams(collection: SkosCollectionDtoData) {
     const collectionIri = VocabularyUtils.create(collection.iri);
     const vocabularyIri = VocabularyUtils.create(collection.vocabulary.iri);
     return {
