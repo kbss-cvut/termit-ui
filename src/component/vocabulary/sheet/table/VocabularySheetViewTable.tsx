@@ -54,7 +54,12 @@ import { useBatchEditTerms } from "../../../../query/hook/useBatchEditTerms";
 import { TermBatchEditDto } from "../../../../model/TermBatchEditDto";
 import SearchParam from "../../../../model/search/SearchParam";
 import { aggregateSearchParams } from "../../../search/facet/FacetedSearchUtil";
-import { FaFilter, FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
+import {
+  FaFilter,
+  FaSortAlphaDown,
+  FaSortAlphaUp,
+  FaSort,
+} from "react-icons/fa";
 import { FilterPanel } from "./filter/FilterPanel";
 
 interface VocabularySheetViewTableProps {
@@ -1024,12 +1029,16 @@ export const VocabularySheetViewTable: React.FC<
                 }
               >
                 <span>{column.title}</span>
-                {isSortable && sortColumn === column.id && (
+                {isSortable && (
                   <span className="ml-2 text-muted">
-                    {sortDirection === "asc" ? (
-                      <FaSortAlphaDown size={14} />
+                    {sortColumn === column.id ? (
+                      sortDirection === "asc" ? (
+                        <FaSortAlphaDown size={14} />
+                      ) : (
+                        <FaSortAlphaUp size={14} />
+                      )
                     ) : (
-                      <FaSortAlphaUp size={14} />
+                      <FaSort size={14} />
                     )}
                   </span>
                 )}
