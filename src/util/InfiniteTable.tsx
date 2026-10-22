@@ -61,10 +61,6 @@ export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
    */
   className?: string;
   /**
-   * Whether the table header should be hidden
-   */
-  disableHeader?: boolean;
-  /**
    * Reference to the TanStack table instance
    */
   tableInstanceRef?: MutableRefObject<Table<T> | null>;
@@ -223,9 +219,7 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
         onScroll={onContainerScroll}
       >
         <BootstrapTable>
-          <If expression={!props.disableHeader}>
-            <TableHead table={table} />
-          </If>
+          <TableHead table={table} />
           <TableBody
             table={table}
             rowVirtualizer={rowVirtualizer}

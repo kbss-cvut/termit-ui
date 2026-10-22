@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import { SkosCollectionDtoData } from "../../model/Collection";
 import { getLocalized } from "../../model/MultilingualString";
 import Routes from "../../util/Routes";
-import { Routing } from "../../util/Routing";
+import Routing from "../../util/Routing";
 import AssetLink from "../misc/AssetLink";
 
 export const CollectionLink: FunctionComponent<{

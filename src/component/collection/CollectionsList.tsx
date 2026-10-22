@@ -17,6 +17,8 @@ import { INITIAL_PAGINATION } from "../../util/UISettingsUtil";
 import { OrderedCollectionIcon } from "./OrderedCollectionIcon";
 import { CollectionLink } from "./CollectionLink";
 import If from "../misc/If";
+import { Button, Row } from "reactstrap";
+import { useI18n } from "../hook/useI18n";
 
 export interface CollectionsListProps {
   vocabulary: Vocabulary;
@@ -27,6 +29,7 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
   vocabulary,
   shortLocale,
 }) => {
+  const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const [collections, setCollections] = useState<SkosCollectionDto[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
@@ -103,8 +106,15 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
   });
 
   return (
-    <div className={"skos-collections-list"}>
-      <Table instance={tableInstance} />
-    </div>
+    <>
+      <Row className={"justify-content-end mt-2"}>
+        <Button color="success" size="sm" style={{ float: "right" }}>
+          {i18n("create")}
+        </Button>
+      </Row>
+      <Row className={"skos-collections-list mt-3"}>
+        <Table instance={tableInstance} />
+      </Row>
+    </>
   );
 };

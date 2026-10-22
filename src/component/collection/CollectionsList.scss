@@ -6,6 +6,10 @@
     }
   }
 
+  thead {
+    display: none;
+  }
+
   th,
   td {
     flex-grow: 1;
