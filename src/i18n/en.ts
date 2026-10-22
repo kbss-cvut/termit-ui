@@ -1134,6 +1134,7 @@ const en = {
     "longrunningtasks.name.migration.identifier": "Resource identifier change",
 
     "collections.title": "Collections",
+    "collections.empty": "There are no collections in this vocabulary.",
     "collection.create": "Create collection",
     "collection.title": "Collection",
     "collection.description": "Description",
@@ -1148,6 +1149,7 @@ const en = {
       "Members of an ordered collection are kept in a defined order.",
     "collection.members": "Members",
     "collection.members.add": "Add member",
+    "collection.members.empty": "There are no members in this collection.",
   },
 };
 

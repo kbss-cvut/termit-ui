@@ -77,6 +77,10 @@ export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
   pageSize?: number;
   /** classes applied to the row */
   getRowClassName?: (row: Row<T>) => string | undefined;
+  /**
+   * Text to show when there are no data
+   */
+  emptyText?: string;
 }
 
 type TableQueryKey = readonly [...QueryKey, SortingState, number];
@@ -225,7 +229,12 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
             rowVirtualizer={rowVirtualizer}
             getRowClassName={props.getRowClassName}
           />
-          <TableFoot isFetchingNextPage={isFetchingNextPage} table={table} />
+          <TableFoot
+            isFetchingNextPage={isFetchingNextPage}
+            isLoading={isLoading}
+            table={table}
+            emptyText={props.emptyText}
+          />
         </BootstrapTable>
       </div>
       <If expression={isLoading}>
@@ -327,12 +336,26 @@ const TableBody = <T,>({
 
 interface TableFootProps<T> extends HasTable<T> {
   isFetchingNextPage: boolean;
+  isLoading: boolean;
+  emptyText?: string;
 }
 
-const TableFoot = <T,>({ isFetchingNextPage, table }: TableFootProps<T>) => {
+const TableFoot = <T,>({
+  isFetchingNextPage,
+  isLoading,
+  table,
+  emptyText,
+}: TableFootProps<T>) => {
   const { i18n } = useI18n();
   return (
     <tfoot>
+      <If
+        expression={
+          table.getRowCount() === 0 && !isFetchingNextPage && !isLoading
+        }
+      >
+        <span>{emptyText ?? ""}</span>
+      </If>
       <If expression={isFetchingNextPage}>
         <tr>
           <td colSpan={table.getVisibleLeafColumns().length}>

@@ -27,14 +27,25 @@ import AccessLevel from "../../model/acl/AccessLevel";
 import { useCollectionUri, useVocabularyUri } from "./CollectionUtils";
 import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
+import { trackPromise } from "react-promise-tracker";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 
 export interface CollectionDetailProps {}
+
+const COLLECTION_LOAD_PROMISE_AREA =
+  "collection-detail-collection-load-promise-area";
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   const collectionUri = useCollectionUri();
   const vocabularyUri = useVocabularyUri();
   const dispatch: ThunkDispatch = useDispatch();
   const { i18n, locale } = useI18n();
+
+  if (!collectionUri || !vocabularyUri) {
+    throw new Error(
+      "Invalid routing, failed to load collection and vocabulary"
+    );
+  }
 
   const [collectionDto, setCollectionDto] = useState<SkosCollectionDto | null>(
     null
@@ -44,8 +55,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
     () =>
       collectionDto
         ? getLanguages(SkosCollectionDto.MULTILINGUAL_ATTRIBUTES, collectionDto)
-        : [],
-    [collectionDto]
+        : [getShortLocale(locale)],
+    [collectionDto, locale]
   );
 
   const [selectedLanguage, setSelectedLanguage] = useState(
@@ -60,16 +71,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
 
   const loadCollection = useCallback(() => {
     // TODO track promise
-    dispatch(loadSkosCollection(collectionUri, vocabularyUri)).then(
-      (result) => {
-        if (
-          result.status === AsyncActionStatus.SUCCESS &&
-          "payload" in result
-        ) {
-          setCollectionDto(result.payload);
-        }
+    trackPromise(
+      dispatch(loadSkosCollection(collectionUri, vocabularyUri)),
+      COLLECTION_LOAD_PROMISE_AREA
+    ).then((result) => {
+      if (result.status === AsyncActionStatus.SUCCESS && "payload" in result) {
+        setCollectionDto(result.payload);
       }
-    );
+    });
   }, [collectionUri, dispatch, vocabularyUri]);
 
   useEffect(() => {
@@ -91,24 +100,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   const label = collectionDto?.getLabel(selectedLanguage) ?? "";
 
   const TitleWithIcon = useMemo(() => {
-    if (!collectionDto) {
-      return null;
-    }
     return (
       <>
-        {collectionDto.isOrdered() && (
+        {collectionDto?.isOrdered() && (
           <OrderedCollectionIcon id={"collection-header-title"} />
         )}
         {label}
-        <CopyIriIcon url={collectionDto.iri} />
+        {collectionDto && <CopyIriIcon url={collectionDto.iri} />}
       </>
     );
   }, [collectionDto, label]);
 
   const actions = useMemo(() => {
-    if (!collectionDto) {
-      return null;
-    }
     return [
       <IfVocabularyActionAuthorized
         key="collection-detail-edit"
@@ -143,7 +146,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
         </Button>
       </IfVocabularyActionAuthorized>,
     ];
-  }, [collectionDto, vocabulary, onEditOpen, onRemove, i18n]);
+  }, [vocabulary, onEditOpen, onRemove, i18n]);
 
   return (
     <>
@@ -161,6 +164,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
         vocabulary={vocabulary}
         shortLocale={selectedLanguage}
       />
+      <PromiseTrackingMask area={COLLECTION_LOAD_PROMISE_AREA} />
     </>
   );
 };

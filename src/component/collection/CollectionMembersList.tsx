@@ -41,6 +41,7 @@ import AccessLevel from "../../model/acl/AccessLevel";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { useI18n } from "../hook/useI18n";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
@@ -58,6 +59,7 @@ function getMoveArea(id: string) {
 export const CollectionMembersList: FunctionComponent<
   CollectionMembersListProps
 > = ({ shortLocale, collection, vocabulary }: CollectionMembersListProps) => {
+  const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
   const tableInstanceRef: MutableRefObject<Table<CollectionMember> | null> =
     useRef(null);
@@ -253,6 +255,7 @@ export const CollectionMembersList: FunctionComponent<
       tableInstanceRef={tableInstanceRef}
       rowVirtualizerRef={rowVirtualizerRef}
       getRowClassName={isOrdered ? getRowClassName : undefined}
+      emptyText={i18n("collection.members.empty")}
     />
   );
 };

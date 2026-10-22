@@ -1,9 +1,10 @@
 import { InfiniteData } from "@tanstack/react-query";
 import { ResultPage } from "../../model/ResultPage";
 import { useMemo } from "react";
-import { IRIImpl } from "../../util/VocabularyUtils";
+import { IRI, IRIImpl } from "../../util/VocabularyUtils";
 import { useLocation, useParams } from "react-router-dom";
 import Utils from "../../util/Utils";
+import { useAppSelector } from "../../util/Types";
 
 /**
  * Moves the item at fromIndex to toIndex while preserving the size of each page
@@ -35,7 +36,7 @@ export function moveInPages<T>(
  *
  * @returns collection URI from the current location
  */
-export function useCollectionUri(): IRIImpl {
+export function useCollectionUri(): IRIImpl | null {
   const { collectionName } = useParams<{
     collectionName: string;
   }>();
@@ -44,10 +45,14 @@ export function useCollectionUri(): IRIImpl {
     location.search,
     "collectionNamespace"
   );
-  return useMemo(
+  const iri = useMemo(
     () => new IRIImpl(collectionName, collectionNamespace),
     [collectionName, collectionNamespace]
   );
+  if (!collectionName || !collectionNamespace) {
+    return null;
+  }
+  return iri;
 }
 
 /**
@@ -55,11 +60,14 @@ export function useCollectionUri(): IRIImpl {
  *
  * @returns vocabulary URI from the current location
  */
-export function useVocabularyUri(): IRIImpl {
+export function useVocabularyUri(): IRI {
   const { name } = useParams<{
     name: string; // vocabulary fragment
   }>();
-  const location = useLocation();
-  const namespace = Utils.extractQueryParam(location.search, "namespace");
-  return useMemo(() => new IRIImpl(name, namespace), [name, namespace]);
+  const configuration = useAppSelector((state) => state.configuration);
+  const { search } = useLocation();
+  return useMemo(
+    () => Utils.resolveVocabularyIriFromRoute({ name }, search, configuration),
+    [configuration, name, search]
+  );
 }

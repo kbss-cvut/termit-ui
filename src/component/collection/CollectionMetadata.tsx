@@ -7,6 +7,8 @@ import { useI18n } from "../hook/useI18n";
 import { CollectionMembersList } from "./CollectionMembersList";
 import Vocabulary from "../../model/Vocabulary";
 import { FormattedMessage } from "react-intl";
+import AccessLevel from "../../model/acl/AccessLevel";
+import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 
 export interface CollectionMetadataProps {
   collection: SkosCollectionDto | null;
@@ -45,12 +47,20 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
       </Card>
       <Card>
         <CardBody>
-          <Row className={"justify-content-between mb-3"}>
-            <FormattedMessage tagName={"h3"} id={"collection.members"} />
-            <Button color="success" size="sm" style={{ float: "right" }}>
-              {i18n("collection.members.add")}
-            </Button>
-          </Row>
+          {vocabulary != null && (
+            <IfVocabularyActionAuthorized
+              key="collection-detail-remove"
+              vocabulary={vocabulary}
+              requiredAccessLevel={AccessLevel.WRITE}
+            >
+              <Row className={"justify-content-between mb-3"}>
+                <FormattedMessage tagName={"h3"} id={"collection.members"} />
+                <Button color="success" size="sm" style={{ float: "right" }}>
+                  {i18n("collection.members.add")}
+                </Button>
+              </Row>
+            </IfVocabularyActionAuthorized>
+          )}
 
           <CollectionMembersList
             {...{
