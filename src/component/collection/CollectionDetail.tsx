@@ -84,7 +84,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
     }
   }, [dispatch, vocabulary?.iri, vocabularyUri]);
 
-  useEffect(() => {
+  const loadCollection = useCallback(() => {
     dispatch(loadSkosCollection(collectionUri, vocabularyUri)).then(
       (result) => {
         if (
@@ -98,11 +98,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   }, [collectionUri, dispatch, vocabularyUri]);
 
   useEffect(() => {
+    loadCollection();
+  }, [loadCollection]);
+
+  useEffect(() => {
     setIsEditActive(false);
   }, [collectionUri]);
 
   const onEditOpen = useCallback(() => setIsEditActive(true), []);
-  const onEditClose = useCallback(() => setIsEditActive(false), []);
+  const onEditClose = useCallback(() => {
+    loadCollection();
+    setIsEditActive(false);
+  }, [loadCollection]);
   const onRemove = useCallback(() => {
     // TODO: collection removal action
   }, []);
