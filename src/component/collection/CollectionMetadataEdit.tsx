@@ -58,6 +58,8 @@ import Routes from "../../util/Routes";
 import { useCollectionUri, useVocabularyUri } from "./CollectionUtils";
 import { loadVocabulary } from "../../action/AsyncActions";
 import { AsyncAction, AsyncFailureAction } from "../../action/ActionType";
+import { trackPromise } from "react-promise-tracker";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 
 export interface CollectionMetadataEditProps {}
 
@@ -67,6 +69,8 @@ interface CollectionMetadataEditState {
   description: MultilingualString;
   ordered: boolean;
 }
+
+const COLLECTION_LOAD_PROMISE_AREA = "collection-metadata-edit-promise-area";
 
 const CollectionMetadataEdit: FunctionComponent<
   CollectionMetadataEditProps
@@ -92,17 +96,19 @@ const CollectionMetadataEdit: FunctionComponent<
   const [collection, setCollection] = useState<SkosCollectionDto | null>(null);
 
   const loadCollection = useCallback(() => {
+    if (!collectionUri) {
+      return;
+    }
+
     // TODO track promise
-    dispatch(loadSkosCollection(collectionUri, vocabularyUri)).then(
-      (result) => {
-        if (
-          result.status === AsyncActionStatus.SUCCESS &&
-          "payload" in result
-        ) {
-          setCollection(result.payload);
-        }
+    trackPromise(
+      dispatch(loadSkosCollection(collectionUri, vocabularyUri)),
+      COLLECTION_LOAD_PROMISE_AREA
+    ).then((result) => {
+      if (result.status === AsyncActionStatus.SUCCESS && "payload" in result) {
+        setCollection(result.payload);
       }
-    );
+    });
   }, [collectionUri, dispatch, vocabularyUri]);
 
   useEffect(() => {
@@ -113,16 +119,23 @@ const CollectionMetadataEdit: FunctionComponent<
   // the identifier is generated from the title until the user modifies it manually
   const generateIri = useRef(isNewCollection);
 
-  const [data, setData] = useState<CollectionMetadataEditState>(() =>
-    collection
-      ? {
-          iri: collection.iri,
-          title: { ...collection.title },
-          description: { ...collection.description },
-          ordered: collection.isOrdered(),
-        }
-      : { iri: "", title: {}, description: {}, ordered: false }
-  );
+  const [data, setData] = useState<CollectionMetadataEditState>(() => ({
+    iri: "",
+    title: {},
+    description: {},
+    ordered: false,
+  }));
+
+  useEffect(() => {
+    if (collection) {
+      setData({
+        iri: collection.iri,
+        title: { ...collection.title },
+        description: { ...collection.description },
+        ordered: collection.isOrdered(),
+      });
+    }
+  }, [collection]);
 
   const languages = useMemo(() => {
     if (vocabulary.primaryLanguage != null) {
@@ -371,6 +384,7 @@ const CollectionMetadataEdit: FunctionComponent<
           </Form>
         </CardBody>
       </Card>
+      <PromiseTrackingMask area={COLLECTION_LOAD_PROMISE_AREA} />
     </>
   );
 };
