@@ -1136,6 +1136,10 @@ const en = {
     "collections.title": "Collections",
     "collection.title": "Collection",
     "collection.description": "Description",
+    "collection.iri.help":
+      "Collection identifier in the form of Internationalized Resource Identifier (IRI). It will be " +
+      "generated automatically based on the specified title, but you can adjust it manually. " +
+      "The identifier cannot be changed for existing collections.",
     "collection.ordered": "Ordered collection",
     "collection.ordered.toggle.help":
       "This option cannot be changed for existing collections.",

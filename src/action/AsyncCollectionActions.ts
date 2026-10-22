@@ -173,3 +173,46 @@ export function updateCollectionMemberPosition(
       );
   };
 }
+
+export function updateSkosCollection(collection: SkosCollectionDto) {
+  const action = { type: ActionType.UPDATE_COLLECTION };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    const { vocabularyUri, collectionUri } = parseIris(collection);
+
+    return Ajax.put(
+      `${path(vocabularyUri)}/${collectionUri.fragment}`,
+      queryParams(collectionUri, vocabularyUri)
+        .content(collection.toJsonLd())
+        .contentType(Constants.JSON_LD_MIME_TYPE)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) =>
+        asyncActionFailureWithMessage(error, action, dispatch)
+      );
+  };
+}
+
+export function createSkosCollection(collection: SkosCollectionDto) {
+  const action = { type: ActionType.CREATE_COLLECTION };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    const { vocabularyUri, collectionUri } = parseIris(collection);
+
+    let endpoint = path(vocabularyUri);
+    if (collection.isOrdered()) {
+      endpoint += "/ordered";
+    }
+
+    return Ajax.post(
+      endpoint,
+      queryParams(collectionUri, vocabularyUri)
+        .content(collection.toJsonLd())
+        .contentType(Constants.JSON_LD_MIME_TYPE)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) =>
+        asyncActionFailureWithMessage(error, action, dispatch)
+      );
+  };
+}

@@ -2,6 +2,7 @@ import React, {
   FunctionComponent,
   useCallback,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -41,6 +42,17 @@ import { publishMessage } from "../../action/SyncActions";
 import { ThunkDispatch } from "../../util/Types";
 import "../misc/CustomToggle.scss";
 import { TOGGLE_STYLE } from "../term/TermListToggle";
+import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
+import { loadIdentifier } from "../asset/CreateAssetUtils";
+import { useDebouncedCallback } from "use-debounce";
+import {
+  createSkosCollection,
+  updateSkosCollection,
+} from "../../action/AsyncCollectionActions";
+import VocabularyUtils from "../../util/VocabularyUtils";
+import AsyncActionStatus from "../../action/AsyncActionStatus";
+import RoutingClass, { Routing } from "../../util/Routing";
+import Routes from "../../util/Routes";
 
 export interface CollectionMetadataEditProps {
   collection?: SkosCollectionDto;
@@ -50,6 +62,7 @@ export interface CollectionMetadataEditProps {
 }
 
 interface CollectionMetadataEditState {
+  iri: string;
   title: MultilingualString;
   description: MultilingualString;
   ordered: boolean;
@@ -62,14 +75,19 @@ export const CollectionMetadataEdit: FunctionComponent<
   const dispatch: ThunkDispatch = useDispatch();
   const [selectedLanguage, setSelectedLanguage] = useState(initialShortLocale);
 
+  const isNewCollection = collection == null;
+  // the identifier is generated from the title until the user modifies it manually
+  const generateIri = useRef(isNewCollection);
+
   const [data, setData] = useState<CollectionMetadataEditState>(() =>
     collection
       ? {
+          iri: collection.iri,
           title: { ...collection.title },
           description: { ...collection.description },
           ordered: collection.isOrdered(),
         }
-      : { title: {}, description: {}, ordered: false }
+      : { iri: "", title: {}, description: {}, ordered: false }
   );
 
   const languages = useMemo(() => {
@@ -89,7 +107,35 @@ export const CollectionMetadataEdit: FunctionComponent<
       ...prev,
       title: { ...prev.title, [selectedLanguage]: value },
     }));
+    resolveIdentifier(value);
   };
+
+  const resolveIdentifier = (title: string) => {
+    const isPrimaryLanguage =
+      vocabulary.primaryLanguage == null ||
+      selectedLanguage === vocabulary.primaryLanguage;
+    if (!generateIri.current || !isPrimaryLanguage || title.trim() === "") {
+      return;
+    }
+    loadIdentifier({
+      name: title.trim(),
+      contextIri: vocabulary.iri,
+      assetType: "COLLECTION",
+    }).then((response) => {
+      if (generateIri.current) {
+        setData((prev) => ({ ...prev, iri: response.data }));
+      }
+    });
+  };
+
+  const onIriChange = useDebouncedCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.currentTarget.value;
+      generateIri.current = false;
+      setData((prev) => ({ ...prev, iri: value }));
+    },
+    Constants.INPUT_DEBOUNCE_WAIT_TIME
+  );
 
   const onDescriptionChange = useCallback(
     (value: string) => {
@@ -139,13 +185,31 @@ export const CollectionMetadataEdit: FunctionComponent<
     if (isInvalid) {
       return;
     }
-    // save(
-    //   new SkosCollectionDto({
-    //     ...collection,
-    //     title: data.title,
-    //     description: data.description,
-    //   })
-    // );
+
+    const collection = new SkosCollectionDto({
+      iri: data.iri,
+      title: data.title,
+      description: data.description,
+      vocabulary: { iri: vocabulary.iri },
+      types: data.ordered ? [VocabularyUtils.SKOS_ORDERED_COLLECTION] : [],
+    });
+
+    if (isNewCollection) {
+      dispatch(createSkosCollection(collection)).then((result) => {
+        if (result.status === AsyncActionStatus.SUCCESS) {
+          RoutingClass.transitionTo(
+            Routes.vocabularyCollectionDetail,
+            Routing.makeCollectionDetailParams(collection)
+          );
+        }
+      });
+    } else {
+      dispatch(updateSkosCollection(collection)).then((result) => {
+        if (result.status === AsyncActionStatus.SUCCESS) {
+          onCloseEdit();
+        }
+      });
+    }
   };
 
   return (
@@ -198,7 +262,7 @@ export const CollectionMetadataEdit: FunctionComponent<
                 />
               </Col>
             </Row>
-            <Row>
+            <Row className={"mb-3"}>
               <Col xs={12} className={"d-flex flex-column"}>
                 <Label className={"attribute-label mb-1"}>
                   {i18n("collection.ordered.toggle.description")}
@@ -217,11 +281,25 @@ export const CollectionMetadataEdit: FunctionComponent<
                   style={TOGGLE_STYLE}
                   active={data.ordered}
                   recalculateOnResize={true}
-                  disabled={collection != null}
+                  disabled={!isNewCollection}
                 />
                 <FormText>{i18n("collection.ordered.toggle.help")}</FormText>
               </Col>
             </Row>
+            <ShowAdvancedAssetFields>
+              <Row>
+                <Col xs={12}>
+                  <CustomInput
+                    name="edit-collection-iri"
+                    label={i18n("asset.iri")}
+                    help={i18n("collection.iri.help")}
+                    onChange={onIriChange}
+                    value={data.iri}
+                    disabled={!isNewCollection}
+                  />
+                </Col>
+              </Row>
+            </ShowAdvancedAssetFields>
             <Row>
               <Col xs={12}>
                 <ButtonToolbar className="d-flex justify-content-center mt-4">
