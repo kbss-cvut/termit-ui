@@ -216,3 +216,20 @@ export function createSkosCollection(collection: SkosCollectionDto) {
       );
   };
 }
+
+export function removeSkosCollection(collection: SkosCollectionDto) {
+  const action = { type: ActionType.REMOVE_COLLECTION };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    const { vocabularyUri, collectionUri } = parseIris(collection);
+
+    return Ajax.delete(
+      `${path(vocabularyUri)}/${collectionUri.fragment}`,
+      queryParams(collectionUri, vocabularyUri)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) =>
+        asyncActionFailureWithMessage(error, action, dispatch)
+      );
+  };
+}

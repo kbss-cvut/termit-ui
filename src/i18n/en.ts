@@ -1142,6 +1142,11 @@ const en = {
       "Collection identifier in the form of Internationalized Resource Identifier (IRI). It will be " +
       "generated automatically based on the specified title, but you can adjust it manually. " +
       "The identifier cannot be changed for existing collections.",
+    "collection.remove": "Remove collection",
+    "collection.remove.description":
+      'Are you sure you want to permanently remove collection "{label}"?',
+    "collection.remove.confirm":
+      "To confirm the deletion of the collection, enter it's label",
     "collection.ordered": "Ordered collection",
     "collection.ordered.toggle.help":
       "This option cannot be changed for existing collections.",
