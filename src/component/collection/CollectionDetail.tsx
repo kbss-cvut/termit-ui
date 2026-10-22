@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { SkosCollectionDto } from "../../model/Collection";
@@ -29,6 +30,10 @@ import Routing from "../../util/Routing";
 import Routes from "../../util/Routes";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import {
+  RemoveCollectionDialog,
+  RemoveCollectionDialogHandle,
+} from "./RemoveCollectionDialog";
 
 export interface CollectionDetailProps {}
 
@@ -85,6 +90,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
     loadCollection();
   }, [loadCollection]);
 
+  const removeDialogRef = useRef<RemoveCollectionDialogHandle>(null);
+
   const onEditOpen = useCallback(() => {
     if (collectionDto) {
       Routing.transitionTo(
@@ -94,8 +101,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
     }
   }, [collectionDto]);
   const onRemove = useCallback(() => {
-    // TODO: collection removal action
-  }, []);
+    if (collectionDto) {
+      removeDialogRef.current?.remove({
+        collection: collectionDto,
+        vocabulary,
+      });
+    }
+  }, [collectionDto, vocabulary]);
 
   const label = collectionDto?.getLabel(selectedLanguage) ?? "";
 
@@ -164,6 +176,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
         vocabulary={vocabulary}
         shortLocale={selectedLanguage}
       />
+      <RemoveCollectionDialog ref={removeDialogRef} />
       <PromiseTrackingMask area={COLLECTION_LOAD_PROMISE_AREA} />
     </>
   );
