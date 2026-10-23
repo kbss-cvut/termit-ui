@@ -1,8 +1,8 @@
 import AssetLink from "../AssetLink";
 import { MemoryRouter } from "react-router";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import OutgoingLink from "../OutgoingLink";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import Generator from "../../../__tests__/environment/Generator";
+import { fireEvent } from "@testing-library/react";
 
 describe("Asset Link", () => {
   const asset = {
@@ -10,36 +10,45 @@ describe("Asset Link", () => {
     label: "Test label",
   };
 
-  function mount() {
-    return mountWithIntl(
+  function renderLink() {
+    return renderWithIntl(
       <MemoryRouter>
         <AssetLink asset={asset} path={"/vocabulary"} />
       </MemoryRouter>
     );
   }
 
+  function linkIconSpan(container: HTMLElement): Element | null {
+    return container.querySelector(`a[href="${asset.iri}"] > span`);
+  }
+
   it("Render internal link", () => {
-    const wrapper = mount();
-    expect(wrapper.find('Link[to="/vocabulary"]').exists()).toBeTruthy();
+    const { container } = renderLink();
+    expect(
+      container.querySelector('a[href="/vocabulary"]')
+    ).toBeInTheDocument();
   });
   it("Render outgoing link", () => {
-    const wrapper = mount();
-    expect(wrapper.find(`a[href="${asset.iri}"]`).exists()).toBeTruthy();
+    const { container } = renderLink();
+    expect(
+      container.querySelector(`a[href="${asset.iri}"]`)
+    ).toBeInTheDocument();
   });
   it("showLink is false by default", () => {
-    const wrapper = mount();
-    expect(wrapper.find(OutgoingLink).prop("showLink")).toBeFalsy();
+    const { container } = renderLink();
+    expect(linkIconSpan(container)).toHaveClass("hidden");
   });
   it("On mouse over sets showLink to true", () => {
-    const wrapper = mount();
-    wrapper.find("span.m-asset-link-wrapper").simulate("mouseOver");
-    expect(wrapper.find(OutgoingLink).prop("showLink")).toBeTruthy();
+    const { container } = renderLink();
+    fireEvent.mouseOver(container.querySelector("span.m-asset-link-wrapper")!);
+    expect(linkIconSpan(container)).not.toHaveClass("hidden");
   });
   it("On mouse out sets showLink to false", () => {
-    const wrapper = mount();
-    wrapper.find("span.m-asset-link-wrapper").simulate("mouseOver");
-    expect(wrapper.find(OutgoingLink).prop("showLink")).toBeTruthy();
-    wrapper.find("span.m-asset-link-wrapper").simulate("mouseOut");
-    expect(wrapper.find(OutgoingLink).prop("showLink")).toBeFalsy();
+    const { container } = renderLink();
+    const wrapperSpan = container.querySelector("span.m-asset-link-wrapper")!;
+    fireEvent.mouseOver(wrapperSpan);
+    expect(linkIconSpan(container)).not.toHaveClass("hidden");
+    fireEvent.mouseOut(wrapperSpan);
+    expect(linkIconSpan(container)).toHaveClass("hidden");
   });
 });
