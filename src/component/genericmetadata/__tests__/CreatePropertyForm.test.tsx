@@ -3,37 +3,50 @@ import CreatePropertyForm from "../CreatePropertyForm";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { changeInputValue } from "../../../__tests__/environment/TestUtil";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { fireEvent } from "@testing-library/react";
 import type { Mock } from "vitest";
 
-// Temporarily disabled due to issues with mocking popper.js
-describe.skip("CreatePropertyForm", () => {
+describe("CreatePropertyForm", () => {
   let onCreate: (data: RdfsResourceData) => void;
   let toggleModal: () => void;
 
   beforeEach(() => {
     onCreate = vi.fn();
     toggleModal = vi.fn();
+    mockUseI18n();
   });
 
-  it("adds rdf:Property to types on create", () => {
-    mockUseI18n();
-    const wrapper = mountWithIntl(
+  function input<T extends HTMLElement>(name: string): T {
+    return document.querySelector(`[name='${name}']`) as T;
+  }
+
+  function submitButton(): HTMLElement {
+    return document.querySelector(
+      "button#create-property-submit"
+    ) as HTMLElement;
+  }
+
+  function renderForm(languages: string[], language: string) {
+    return renderWithIntl(
       <CreatePropertyForm
         onOptionCreate={onCreate}
         toggleModal={toggleModal}
-        languages={["en"]}
-        language={"en"}
+        languages={languages}
+        language={language}
       />
     );
-    const iriInput = wrapper.find("input[name='iri']");
-    (iriInput.getDOMNode() as HTMLInputElement).value = Generator.generateUri();
-    iriInput.simulate("change", iriInput);
-    const labelInput = wrapper.find("input[name='label']");
-    (labelInput.getDOMNode() as HTMLInputElement).value = "Test";
-    labelInput.simulate("change", labelInput);
-    wrapper.find("button#create-property-submit").simulate("click");
+  }
+
+  it("adds rdf:Property to types on create", () => {
+    renderForm(["en"], "en");
+    fireEvent.change(input<HTMLInputElement>("iri"), {
+      target: { value: Generator.generateUri() },
+    });
+    fireEvent.change(input<HTMLInputElement>("label"), {
+      target: { value: "Test" },
+    });
+    fireEvent.click(submitButton());
     expect(onCreate).toHaveBeenCalled();
     const data: RdfsResourceData = (onCreate as Mock).mock.calls[0][0];
     expect(data.types).toBeDefined();
@@ -43,26 +56,21 @@ describe.skip("CreatePropertyForm", () => {
   it("wont send label and comment as empty strings when they are blank", () => {
     const languages = ["en", "cs"];
     const language = "en";
-    const wrapper = mountWithIntl(
-      <CreatePropertyForm
-        onOptionCreate={onCreate}
-        toggleModal={toggleModal}
-        languages={languages}
-        language={language}
-      />
-    );
+    renderForm(languages, language);
     const SPACE_CHARACTER = " ";
-    const iriInput = wrapper.find("input[name='iri']");
-    const labelInput = wrapper.find("input[name='label']");
-    const commentInput = wrapper.find("textarea[name='comment']");
-    const submitButton = wrapper.find("button#create-property-submit");
     const iri = Generator.generateUri();
 
-    changeInputValue(iriInput, iri);
-    changeInputValue(labelInput, SPACE_CHARACTER);
-    changeInputValue(commentInput, SPACE_CHARACTER);
+    fireEvent.change(input<HTMLInputElement>("iri"), {
+      target: { value: iri },
+    });
+    fireEvent.change(input<HTMLInputElement>("label"), {
+      target: { value: SPACE_CHARACTER },
+    });
+    fireEvent.change(input<HTMLTextAreaElement>("comment"), {
+      target: { value: SPACE_CHARACTER },
+    });
 
-    submitButton.simulate("click");
+    fireEvent.click(submitButton());
     expect(onCreate).toHaveBeenCalledWith({
       iri,
       label: undefined,
