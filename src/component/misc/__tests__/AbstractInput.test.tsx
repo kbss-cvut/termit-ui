@@ -1,11 +1,9 @@
 import ValidationResult, {
   Severity,
 } from "../../../model/form/ValidationResult";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import CustomInput from "../CustomInput";
-import InputValidationMessage from "../validation/InputValidationMessage";
 import * as React from "react";
-import { FormFeedback } from "reactstrap";
 
 describe("AbstractInput", () => {
   let onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -21,7 +19,7 @@ describe("AbstractInput", () => {
       new ValidationResult(Severity.ERROR, "error"),
     ];
 
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <CustomInput
         validation={validations}
         label={"Test"}
@@ -29,16 +27,16 @@ describe("AbstractInput", () => {
         onChange={onChange}
       />
     );
-    const feedbacks = wrapper.find(InputValidationMessage);
+    const feedbacks = container.querySelectorAll(".validation-feedback li");
     expect(feedbacks.length).toEqual(validations.length);
-    expect(feedbacks.at(0).prop("message").severity).toEqual(Severity.BLOCKER);
-    expect(feedbacks.at(1).prop("message").severity).toEqual(Severity.ERROR);
-    expect(feedbacks.at(2).prop("message").severity).toEqual(Severity.WARNING);
+    expect(feedbacks[0]).toHaveTextContent("blocker");
+    expect(feedbacks[1]).toHaveTextContent("error");
+    expect(feedbacks[2]).toHaveTextContent("warning");
   });
 
   it("does not render form feedback element when no validation results with message are provided", () => {
     const validations = [new ValidationResult(Severity.BLOCKER)];
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <CustomInput
         validation={validations}
         label={"Test"}
@@ -47,6 +45,6 @@ describe("AbstractInput", () => {
       />
     );
 
-    expect(wrapper.exists(FormFeedback)).toBeFalsy();
+    expect(container.querySelector(".validation-feedback")).toBeNull();
   });
 });

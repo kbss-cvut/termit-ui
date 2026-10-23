@@ -1,10 +1,9 @@
 import { Messages } from "../Messages";
 import MessageModel from "../../../model/Message";
-import { Message } from "../Message";
 import Constants from "../../../util/Constants";
 import * as redux from "react-redux";
 import { Mock, vi } from "vitest";
-import { shallow } from "enzyme";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -29,16 +28,16 @@ describe("Messages", () => {
 
   it("renders configured number of messages", () => {
     (redux.useSelector as Mock).mockReturnValue(messages);
-    const wrapper = shallow(<Messages />);
-    const messagesDisplayed = wrapper.find(Message);
+    const { container } = renderWithIntl(<Messages />);
+    const messagesDisplayed = container.querySelectorAll(".alert");
     expect(messagesDisplayed.length).toEqual(Constants.MESSAGE_DISPLAY_COUNT);
   });
 
   it("renders all messages when their number is less than configured max", () => {
     const toRender = messages.slice(0, Constants.MESSAGE_DISPLAY_COUNT - 1);
     (redux.useSelector as Mock).mockReturnValue(toRender);
-    const wrapper = shallow(<Messages />);
-    const messagesDisplayed = wrapper.find(Message);
+    const { container } = renderWithIntl(<Messages />);
+    const messagesDisplayed = container.querySelectorAll(".alert");
     expect(messagesDisplayed.length).toEqual(toRender.length);
   });
 });

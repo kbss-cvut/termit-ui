@@ -1,29 +1,27 @@
 import { FullscreenButton } from "../FullscreenButton";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { GoScreenFull, GoScreenNormal } from "react-icons/go";
-import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { i18n } from "../../../__tests__/environment/IntlUtil";
+import { screen } from "@testing-library/react";
 
 describe("Button Fullscreen", () => {
   it("button in fullscreen", () => {
     const toggleFullScreen = vi.fn();
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <FullscreenButton
         toggleFullscreen={toggleFullScreen}
         isFullscreen={true}
-        {...intlFunctions()}
       />
     );
-    expect(wrapper.find(GoScreenNormal).exists()).toBeTruthy();
+    expect(screen.getByTitle(i18n("fullscreen.exit"))).toBeInTheDocument();
   });
   it("button in window", () => {
     const toggleFullScreen = vi.fn();
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <FullscreenButton
         toggleFullscreen={toggleFullScreen}
         isFullscreen={false}
-        {...intlFunctions()}
       />
     );
-    expect(wrapper.find(GoScreenFull).exists()).toBeTruthy();
+    expect(screen.getByTitle(i18n("fullscreen.enter"))).toBeInTheDocument();
   });
 });
