@@ -1,23 +1,20 @@
 import { OutgoingLink } from "../OutgoingLink";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 
 describe("OutgoingLink", () => {
   it("OutgoingLink shows the link symbol by default", () => {
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <OutgoingLink label="label" iri="http://link.me/link" />
     );
     expect(
-      wrapper.contains(
-        <small>
-          <i className="fas fa-external-link-alt text-primary" />
-        </small>
-      )
-    ).toBeTruthy();
+      container.querySelector("i.fas.fa-external-link-alt")
+    ).toBeInTheDocument();
+    expect(container.querySelector("span.hidden")).not.toBeInTheDocument();
   });
   it("OutgoingLink does not show the link symbol for showLink=false", () => {
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <OutgoingLink label="label" iri="http://link.me/link" showLink={false} />
     );
-    expect(wrapper.find('span[className="hidden"]').exists()).toBeTruthy();
+    expect(container.querySelector("span.hidden")).toBeInTheDocument();
   });
 });

@@ -2,10 +2,11 @@ import { Message } from "../Message";
 import MessageModel from "../../../model/Message";
 import {
   mockStore,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
 import Constants from "../../../util/Constants";
 import ActionType from "../../../action/ActionType";
+import { fireEvent } from "@testing-library/react";
 
 describe("Message", () => {
   beforeEach(() => {
@@ -21,8 +22,8 @@ describe("Message", () => {
     const message: MessageModel = new MessageModel({
       message: "Error message",
     });
-    const wrapper = mountWithIntl(<Message message={message} />);
-    expect(wrapper.text()).toContain(message.message);
+    const { container } = renderWithIntl(<Message message={message} />);
+    expect(container).toHaveTextContent(message.message!);
   });
 
   it("displays alert with formatted message with correct values", () => {
@@ -30,16 +31,16 @@ describe("Message", () => {
       messageId: "vocabulary.summary.title",
       values: { name: "Test" },
     });
-    const wrapper = mountWithIntl(<Message message={message} />);
-    expect(wrapper.text()).toContain("Test - Summary");
+    const { container } = renderWithIntl(<Message message={message} />);
+    expect(container).toHaveTextContent("Test - Summary");
   });
 
   it("publishes dismiss action on alert toggle", () => {
     const message: MessageModel = new MessageModel({
       message: "Error message",
     });
-    const wrapper = mountWithIntl(<Message message={message} />);
-    wrapper.find("button.close").simulate("click");
+    const { container } = renderWithIntl(<Message message={message} />);
+    fireEvent.click(container.querySelector("button.close")!);
     expect(
       mockStore.getActions().find((a) => a.type === ActionType.DISMISS_MESSAGE)
     ).toBeDefined();
@@ -49,7 +50,7 @@ describe("Message", () => {
     const message: MessageModel = new MessageModel({
       message: "Error message",
     });
-    mountWithIntl(<Message message={message} />);
+    renderWithIntl(<Message message={message} />);
     expect(setTimeout).toHaveBeenCalled();
     expect(setTimeout).toHaveBeenCalledWith(
       expect.any(Function),
@@ -61,7 +62,7 @@ describe("Message", () => {
     const message: MessageModel = new MessageModel({
       message: "Error message",
     });
-    mountWithIntl(<Message message={message} />);
+    renderWithIntl(<Message message={message} />);
     vi.runAllTimers();
     expect(
       mockStore.getActions().find((a) => a.type === ActionType.DISMISS_MESSAGE)
