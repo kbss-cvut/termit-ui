@@ -52,6 +52,7 @@ import {
 import Utils from "../../../util/Utils";
 import CustomToggle from "../../misc/CustomToggle";
 import HelpIcon from "../../misc/HelpIcon";
+import { FaInfoCircle } from "react-icons/fa";
 
 function propertyWithLabelExists(
   label: string,
@@ -204,6 +205,15 @@ export const CustomAttributeEdit: React.FC = () => {
         range,
         annotatedRelationships: annotatedRelationshipsData,
       });
+      if (symmetric) {
+        if (!data.types.includes(VocabularyUtils.OWL_SYMMETRIC_PROPERTY)) {
+          data.types.push(VocabularyUtils.OWL_SYMMETRIC_PROPERTY);
+        }
+      } else {
+        data.types = data.types.filter(
+          (t) => t !== VocabularyUtils.OWL_SYMMETRIC_PROPERTY
+        );
+      }
       promise = dispatch(updateCustomAttribute(data));
     } else {
       const types = [VocabularyUtils.NS_TERMIT + "custom-attribute"];
@@ -349,7 +359,7 @@ export const CustomAttributeEdit: React.FC = () => {
                     off={i18n(
                       "administration.customization.customAttributes.symmetric"
                     )}
-                    disabled={!canBeSymmetric || editingMode}
+                    disabled={!canBeSymmetric}
                     onClick={() => setSymmetric(!symmetric)}
                     active={symmetric}
                   />
@@ -359,6 +369,22 @@ export const CustomAttributeEdit: React.FC = () => {
                       "administration.customization.customAttributes.symmetric.help"
                     )}
                   />
+                  {editingMode &&
+                    editedAttribute &&
+                    symmetric !==
+                      CustomAttribute.isSymmetric(editedAttribute) && (
+                      <div
+                        id="custom-attribute-symmetric-change-note"
+                        className="form-text text-muted"
+                      >
+                        <FaInfoCircle className="mr-1 info-icon" />
+                        {i18n(
+                          symmetric
+                            ? "administration.customization.customAttributes.symmetric.enable.help"
+                            : "administration.customization.customAttributes.symmetric.disable.help"
+                        )}
+                      </div>
+                    )}
                 </Col>
               </Row>
             </ShowAdvancedAssetFields>
