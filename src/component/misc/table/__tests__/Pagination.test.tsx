@@ -1,8 +1,8 @@
-import { Pagination as BootstrapPagination } from "reactstrap";
-import { mountWithIntl } from "../../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
 import { Pagination, PaginationApi, getPaginationRange } from "../Pagination";
 import Constants from "../../../../util/Constants";
 import BrowserStorage from "../../../../util/BrowserStorage";
+import { fireEvent } from "@testing-library/react";
 import type { Mock } from "vitest";
 
 vi.mock("../../../../util/BrowserStorage");
@@ -24,13 +24,13 @@ describe("Pagination", () => {
   });
 
   it("stores selected page size in local storage", () => {
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <Pagination table={table} allowSizeChange={true} />
     );
-    const sizeSelect = wrapper.find("select");
-    const value = 20;
-    sizeSelect.simulate("change", { target: { value } });
-    expect(table.setPageSize).toHaveBeenCalledWith(value);
+    const sizeSelect = container.querySelector("select")!;
+    const value = "20";
+    fireEvent.change(sizeSelect, { target: { value } });
+    expect(table.setPageSize).toHaveBeenCalledWith(Number(value));
     expect(BrowserStorage.set).toHaveBeenCalledWith(
       Constants.STORAGE_TABLE_PAGE_SIZE_KEY,
       value
@@ -40,7 +40,7 @@ describe("Pagination", () => {
   it("loads stored page size on mount", () => {
     const size = 20;
     (BrowserStorage.get as Mock).mockReturnValue(size.toString());
-    mountWithIntl(<Pagination table={table} allowSizeChange={true} />);
+    renderWithIntl(<Pagination table={table} allowSizeChange={true} />);
     expect(table.setPageSize).toHaveBeenCalledWith(size);
   });
 
@@ -49,10 +49,10 @@ describe("Pagination", () => {
     (table.getCanPreviousPage as Mock).mockReturnValue(false);
     (table.getCanNextPage as Mock).mockReturnValue(false);
     (BrowserStorage.get as Mock).mockReturnValue(size.toString());
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <Pagination table={table} allowSizeChange={true} />
     );
-    expect(wrapper.exists(BootstrapPagination)).toBeFalsy();
+    expect(container.querySelector(".pagination")).not.toBeInTheDocument();
   });
 });
 
