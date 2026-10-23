@@ -1154,6 +1154,9 @@ const en = {
       "Members of an ordered collection are kept in a defined order.",
     "collection.members": "Members",
     "collection.members.add": "Add member",
+    "collection.members.add.title": "Add collection member",
+    "collection.members.add.description":
+      "Select a collection or term that should be added to the collection.",
     "collection.members.empty": "There are no members in this collection.",
   },
 };

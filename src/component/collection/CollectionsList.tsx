@@ -58,8 +58,7 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
     dispatch(
       loadSkosCollections(
         vocabularyIri,
-        pagination.pageIndex,
-        pagination.pageSize,
+        { page: pagination.pageIndex, size: pagination.pageSize },
         controller.signal
       )
     ).then((page) => {

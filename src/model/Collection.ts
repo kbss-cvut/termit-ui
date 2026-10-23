@@ -75,10 +75,8 @@ export class SkosCollectionDto
   }
 }
 
-export function isOrderedCollection(obj: { types?: string[] }) {
-  return Utils.sanitizeArray(obj.types).includes(
-    VocabularyUtils.SKOS_ORDERED_COLLECTION
-  );
+export function isOrderedCollection(obj: HasTypes) {
+  return obj.types?.includes(VocabularyUtils.SKOS_ORDERED_COLLECTION) || false;
 }
 
 export interface CollectionWithMembers<T extends Iterable<string>>
@@ -154,6 +152,14 @@ export class CollectionMember
   }
 
   public isCollection() {
-    return this.types.includes(VocabularyUtils.SKOS_COLLECTION);
+    return isCollection(this);
   }
+}
+
+export function isCollection(memberData: HasTypes) {
+  return (
+    memberData.types?.includes(VocabularyUtils.SKOS_COLLECTION) ||
+    isOrderedCollection(memberData) ||
+    false
+  );
 }

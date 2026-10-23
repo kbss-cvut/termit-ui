@@ -15,7 +15,7 @@ interface TreeItem {
   depth: number;
 }
 
-interface OptionRendererParams<T> {
+export interface OptionRendererParams<T> {
   data: T & TreeItem;
   key?: string;
   optionStyle: any;

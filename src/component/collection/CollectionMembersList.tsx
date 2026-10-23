@@ -13,7 +13,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { ColumnDef, Row, SortingState, Table } from "@tanstack/react-table";
+import { ColumnDef, Row, Table } from "@tanstack/react-table";
 import { InfiniteTable, QueryFn } from "../../util/InfiniteTable";
 import { ResultPage } from "../../model/ResultPage";
 import {
@@ -22,7 +22,6 @@ import {
 } from "../../action/AsyncCollectionActions";
 import { ThunkDispatch } from "../../util/Types";
 import { useDispatch } from "react-redux";
-import { CollectionIcon } from "./CollectionIcon";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { Virtualizer } from "@tanstack/react-virtual";
 import classNames from "classnames";
@@ -31,9 +30,6 @@ import { DragHandle } from "./DragHandle";
 import { IndexChangeCallback, MemberOrderInput } from "./MemberOrderInput";
 
 import "./CollectionsList.scss";
-import If from "../misc/If";
-import TermLink from "../term/TermLink";
-import { CollectionLink } from "./CollectionLink";
 import { moveInPages } from "./CollectionUtils";
 import { isVocabularyActionAuthorized } from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import Vocabulary from "../../model/Vocabulary";
@@ -42,6 +38,10 @@ import AsyncActionStatus from "../../action/AsyncActionStatus";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { useI18n } from "../hook/useI18n";
+import If from "../misc/If";
+import { CollectionIcon } from "./CollectionIcon";
+import { CollectionLink } from "./CollectionLink";
+import TermLink from "../term/TermLink";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
@@ -229,18 +229,11 @@ export const CollectionMembersList: FunctionComponent<
   );
 
   const queryFn: QueryFn<CollectionMember> = useCallback(
-    (
-      pageNumber: number,
-      pageSize: number,
-      sorting: SortingState,
-      signal?: AbortSignal
-    ): Promise<ResultPage<CollectionMember>> => {
+    (pageRequest, sorting, signal): Promise<ResultPage<CollectionMember>> => {
       if (collection == null) {
         return Promise.resolve({ totalCount: 0, pageContent: [] });
       }
-      return dispatch(
-        loadCollectionMembers(collection, pageNumber, pageSize, signal)
-      );
+      return dispatch(loadCollectionMembers(collection, pageRequest, signal));
     },
     [collection, dispatch]
   );

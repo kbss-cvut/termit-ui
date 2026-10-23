@@ -70,3 +70,8 @@ export interface PageRequest {
   page: number;
   size: number;
 }
+
+export interface PageRequestOptional {
+  page?: number;
+  size?: number;
+}

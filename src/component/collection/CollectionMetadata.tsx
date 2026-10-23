@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, Col, Label, Row } from "reactstrap";
 import MarkdownView from "../misc/MarkdownView";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useRef } from "react";
 import { SkosCollectionDto } from "../../model/Collection";
 import { useI18n } from "../hook/useI18n";
 import { CollectionMembersList } from "./CollectionMembersList";
@@ -9,6 +9,10 @@ import Vocabulary from "../../model/Vocabulary";
 import { FormattedMessage } from "react-intl";
 import AccessLevel from "../../model/acl/AccessLevel";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
+import {
+  AddCollectionMemberDialog,
+  AddCollectionMemberDialogHandle,
+} from "./AddCollectionMemberDialog";
 
 export interface CollectionMetadataProps {
   collection: SkosCollectionDto | null;
@@ -22,6 +26,11 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
   shortLocale,
 }) => {
   const { i18n } = useI18n();
+  const addMemberDialogRef = useRef<AddCollectionMemberDialogHandle>(null);
+
+  const onAddMember = () => {
+    addMemberDialogRef.current?.open();
+  };
 
   return (
     <>
@@ -55,7 +64,12 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
             >
               <Row className={"justify-content-between mb-3"}>
                 <FormattedMessage tagName={"h3"} id={"collection.members"} />
-                <Button color="success" size="sm" style={{ float: "right" }}>
+                <Button
+                  color="success"
+                  size="sm"
+                  style={{ float: "right" }}
+                  onClick={onAddMember}
+                >
                   {i18n("collection.members.add")}
                 </Button>
               </Row>
@@ -69,6 +83,12 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
               shortLocale,
             }}
           />
+          {collection && vocabulary && (
+            <AddCollectionMemberDialog
+              ref={addMemberDialogRef}
+              collection={collection}
+            />
+          )}
         </CardBody>
       </Card>
     </>
