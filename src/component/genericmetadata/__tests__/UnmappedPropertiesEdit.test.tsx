@@ -1,20 +1,29 @@
 import Generator from "../../../__tests__/environment/Generator";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import UnmappedPropertiesEdit from "../UnmappedPropertiesEdit";
-import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
-import { GoPlus } from "react-icons/go";
+import { i18n, mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import RdfsResource from "../../../model/RdfsResource";
-import BadgeButton from "../../misc/BadgeButton";
 import Utils from "../../../util/Utils";
 import { langString } from "../../../model/MultilingualString";
 import { PropertyValuesType } from "../../../model/WithUnmappedProperties";
 import Constants from "../../../util/Constants";
-import { IntelligentTreeSelect } from "intelligent-tree-select";
 import * as Redux from "react-redux";
-import { act } from "react-dom/test-utils";
 import * as AsyncActions from "../../../action/AsyncActions";
+import { act, fireEvent, screen } from "@testing-library/react";
+
+let treeSelectOnChange: ((value: any) => void) | undefined;
 
 vi.mock("../../misc/AssetLabel", () => ({ default: () => <span>Asset</span> }));
+vi.mock("intelligent-tree-select", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    IntelligentTreeSelect: (props: any) => {
+      treeSelectOnChange = props.onChange;
+      return <div data-testid="property-select" />;
+    },
+  };
+});
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
@@ -29,6 +38,7 @@ describe("UnmappedPropertiesEdit", () => {
 
   beforeEach(() => {
     onChange = vi.fn();
+    treeSelectOnChange = undefined;
     vi.spyOn(Redux, "useSelector").mockReturnValue([
       new RdfsResource({
         iri: Generator.generateUri(),
@@ -43,14 +53,14 @@ describe("UnmappedPropertiesEdit", () => {
   it("renders existing properties", () => {
     const property = Generator.generateUri();
     const existing = new Map([[property, ["test"]]]);
-    const wrapper = render(existing);
-    const value = wrapper.find("li");
-    expect(value.length).toEqual(1);
-    expect(value.text()).toContain(existing.get(property)![0]);
+    render(existing);
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(1);
+    expect(items[0]).toHaveTextContent(existing.get(property)![0]);
   });
 
   function render(existing: Map<string, PropertyValuesType>) {
-    return mountWithIntl(
+    return renderWithIntl(
       <UnmappedPropertiesEdit
         assetType="term"
         properties={existing}
@@ -61,14 +71,37 @@ describe("UnmappedPropertiesEdit", () => {
     );
   }
 
+  function selectProperty(property: string) {
+    act(() => {
+      treeSelectOnChange!(
+        new RdfsResource({
+          iri: property,
+          label: langString("Property"),
+        })
+      );
+    });
+  }
+
+  function valueInput(): HTMLInputElement {
+    return document.querySelector('input[name="value"]') as HTMLInputElement;
+  }
+
+  function addButton(): HTMLElement {
+    return screen.getByTitle(i18n("properties.edit.add.title"));
+  }
+
+  function removeButtons(): HTMLElement[] {
+    return screen.getAllByTitle(i18n("properties.edit.remove"));
+  }
+
   it("removes prop value when delete button is clicked", () => {
     const property = Generator.generateUri();
     const existing = new Map([[property, ["test1", "test2"]]]);
-    const wrapper = render(existing);
+    render(existing);
 
-    const removeButtons = wrapper.find(BadgeButton);
-    expect(removeButtons.length).toEqual(2);
-    removeButtons.at(0).simulate("click");
+    const buttons = removeButtons();
+    expect(buttons).toHaveLength(2);
+    fireEvent.click(buttons[0]);
     expect(onChange).toHaveBeenCalledWith(new Map([[property, ["test2"]]]));
   });
 
@@ -80,11 +113,11 @@ describe("UnmappedPropertiesEdit", () => {
         [{ iri: "http://example.com/one" }, { iri: "http://example.com/two" }],
       ],
     ]);
-    const wrapper = render(existing);
+    render(existing);
 
-    const removeButtons = wrapper.find(BadgeButton);
-    expect(removeButtons.length).toEqual(2);
-    removeButtons.at(1).simulate("click");
+    const buttons = removeButtons();
+    expect(buttons).toHaveLength(2);
+    fireEvent.click(buttons[1]);
     expect(onChange).toHaveBeenCalledWith(
       new Map([[property, [{ iri: "http://example.com/one" }]]])
     );
@@ -93,114 +126,67 @@ describe("UnmappedPropertiesEdit", () => {
   it("removes property completely when only value is deleted", () => {
     const property = Generator.generateUri();
     const existing = new Map([[property, ["test1"]]]);
-    const wrapper = render(existing);
+    render(existing);
 
-    const removeButton = wrapper.find(BadgeButton);
-    expect(removeButton.length).toEqual(1);
-    removeButton.simulate("click");
+    const buttons = removeButtons();
+    expect(buttons).toHaveLength(1);
+    fireEvent.click(buttons[0]);
     expect(onChange).toHaveBeenCalledWith(new Map());
   });
 
   it("adds new property with value when inputs are filled in and add button is clicked", () => {
-    const wrapper = render(new Map());
+    render(new Map());
     const property = Generator.generateUri();
     const value = "test";
-    act(() => {
-      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
-        new RdfsResource({
-          iri: property,
-          label: langString("Property"),
-        })
-      );
-    });
-    const valueInput = wrapper.find('input[name="value"]');
-    (valueInput.getDOMNode() as HTMLInputElement).value = value;
-    valueInput.simulate("change", valueInput);
-    wrapper.find(GoPlus).simulate("click");
+    selectProperty(property);
+    fireEvent.change(valueInput(), { target: { value } });
+    fireEvent.click(addButton());
     expect(onChange).toHaveBeenCalledWith(new Map([[property, [value]]]));
   });
 
   it("adds existing property value when inputs are filled in and add button is clicked", () => {
     const property = Generator.generateUri();
     const existing = new Map([[property, ["test"]]]);
-    const wrapper = render(existing);
+    render(existing);
     const value = "test2";
-    act(() => {
-      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
-        new RdfsResource({
-          iri: property,
-          label: langString("Property"),
-        })
-      );
-    });
-    const valueInput = wrapper.find('input[name="value"]');
-    (valueInput.getDOMNode() as HTMLInputElement).value = value;
-    valueInput.simulate("change", valueInput);
-    wrapper.find(GoPlus).simulate("click");
+    selectProperty(property);
+    fireEvent.change(valueInput(), { target: { value } });
+    fireEvent.click(addButton());
     expect(onChange).toHaveBeenCalledWith(
       new Map([[property, ["test", "test2"]]])
     );
   });
 
   it("clears state on add", () => {
-    const wrapper = render(new Map());
+    render(new Map());
     const property = Generator.generateUri();
     const value = "test";
-    act(() => {
-      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
-        new RdfsResource({
-          iri: property,
-          label: langString("Property"),
-        })
-      );
-    });
-    const valueInput = wrapper.find('input[name="value"]');
-    (valueInput.getDOMNode() as HTMLInputElement).value = value;
-    valueInput.simulate("change", valueInput);
-    wrapper.find(GoPlus).simulate("click");
-    expect(
-      (wrapper.find('input[name="value"]').getDOMNode() as HTMLInputElement)
-        .value.length
-    ).toEqual(0);
+    selectProperty(property);
+    fireEvent.change(valueInput(), { target: { value } });
+    fireEvent.click(addButton());
+    expect(valueInput()).toHaveValue("");
   });
 
   it("keeps add button disabled when either input is empty", () => {
-    const wrapper = render(new Map());
-    let addButton = wrapper.find(GoPlus).parent();
-    expect(addButton.prop("disabled")).toBeTruthy();
-    act(() => {
-      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
-        new RdfsResource({
-          iri: Generator.generateUri(),
-          label: langString("Property"),
-        })
-      );
-    });
-    addButton = wrapper.find(GoPlus).parent();
-    expect(addButton.prop("disabled")).toBeTruthy();
-    const valueInput = wrapper.find('input[name="value"]');
-    (valueInput.getDOMNode() as HTMLInputElement).value = "b";
-    valueInput.simulate("change", valueInput);
-    addButton = wrapper.find(GoPlus).parent();
-    expect(addButton.prop("disabled")).toBeFalsy();
+    render(new Map());
+    expect(addButton()).toBeDisabled();
+    selectProperty(Generator.generateUri());
+    expect(addButton()).toBeDisabled();
+    fireEvent.change(valueInput(), { target: { value: "b" } });
+    expect(addButton()).not.toBeDisabled();
   });
 
   it("adds property value on Enter in the value field", () => {
-    const wrapper = render(new Map());
+    render(new Map());
     const property = Generator.generateUri();
     const value = "test";
-    act(() => {
-      (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
-        new RdfsResource({
-          iri: property,
-          label: langString("Property"),
-        })
-      );
+    selectProperty(property);
+    fireEvent.change(valueInput(), { target: { value } });
+    fireEvent.keyPress(valueInput(), {
+      key: "Enter",
+      code: "Enter",
+      charCode: 13,
     });
-    const valueInput = wrapper.find('input[name="value"]');
-    (valueInput.getDOMNode() as HTMLInputElement).value = value;
-    valueInput.simulate("change", valueInput);
-    valueInput.simulate("keyPress", { key: "Enter" });
     expect(onChange).toHaveBeenCalled();
   });
 
@@ -216,12 +202,12 @@ describe("UnmappedPropertiesEdit", () => {
     const sortedValues = [...values];
     sortedValues.sort(Utils.localeComparator);
     const existing = new Map([[property, values]]);
-    const wrapper = render(existing);
+    render(existing);
 
-    const valuesRendered = wrapper.find("li");
-    expect(valuesRendered.length).toEqual(sortedValues.length);
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(sortedValues.length);
     for (let i = 0; i < sortedValues.length; i++) {
-      expect(valuesRendered.get(i).props.children).toContain(sortedValues[i]);
+      expect(items[i]).toHaveTextContent(sortedValues[i]);
     }
   });
 });
