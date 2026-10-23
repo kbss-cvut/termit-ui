@@ -102,12 +102,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   }, [collectionDto]);
   const onRemove = useCallback(() => {
     if (collectionDto) {
-      removeDialogRef.current?.remove({
-        collection: collectionDto,
-        vocabulary,
-      });
+      removeDialogRef.current?.remove(collectionDto);
     }
-  }, [collectionDto, vocabulary]);
+  }, [collectionDto]);
 
   const label = collectionDto?.getLabel(selectedLanguage) ?? "";
 
@@ -176,7 +173,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
         vocabulary={vocabulary}
         shortLocale={selectedLanguage}
       />
-      <RemoveCollectionDialog ref={removeDialogRef} />
+      <RemoveCollectionDialog ref={removeDialogRef} vocabulary={vocabulary} />
       <PromiseTrackingMask area={COLLECTION_LOAD_PROMISE_AREA} />
     </>
   );

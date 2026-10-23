@@ -1,6 +1,6 @@
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType, { AsyncAction, AsyncFailureAction } from "./ActionType";
-import { ThunkDispatch } from "../util/Types";
+import { PageRequest, PageRequestOptional, ThunkDispatch } from "../util/Types";
 import Ajax, { params } from "../util/Ajax";
 import Constants from "../util/Constants";
 import {
@@ -72,8 +72,7 @@ function parseIris(collection: SkosCollectionDtoData) {
 
 export function loadSkosCollections(
   vocabularyUri: IRI,
-  pageNumber: number,
-  pageSize: number,
+  pageRequest: PageRequest,
   signal?: AbortSignal
 ) {
   const action = { type: ActionType.LOAD_COLLECTIONS };
@@ -82,8 +81,8 @@ export function loadSkosCollections(
     return Ajax.getResponse(
       path(vocabularyUri),
       queryParams(undefined, vocabularyUri)
-        .param("page", pageNumber.toString())
-        .param("size", pageSize.toString())
+        .param("page", pageRequest.page.toString())
+        .param("size", pageRequest.size.toString())
         .signal(signal)
     )
       .then((response) => {
@@ -103,8 +102,7 @@ export function loadSkosCollections(
 
 export function loadCollectionMembers(
   collection: SkosCollectionDto,
-  pageNumber: number,
-  pageSize: number,
+  pageRequest: PageRequest,
   signal: AbortSignal | undefined
 ) {
   const action = { type: ActionType.LOAD_COLLECTION_MEMBERS };
@@ -121,8 +119,8 @@ export function loadCollectionMembers(
     return Ajax.getResponse(
       endpoint,
       queryParams(collectionUri, vocabularyUri)
-        .param("page", pageNumber.toString())
-        .param("size", pageSize.toString())
+        .param("page", pageRequest.page.toString())
+        .param("size", pageRequest.size.toString())
         .signal(signal)
     )
       .then((response) =>
@@ -231,5 +229,37 @@ export function removeSkosCollection(collection: SkosCollectionDto) {
       .catch((error: ErrorData) =>
         asyncActionFailureWithMessage(error, action, dispatch)
       );
+  };
+}
+
+export function loadAddCollectionMemberOptions(
+  collection: SkosCollectionDto,
+  pageRequest: PageRequestOptional,
+  searchString?: string
+) {
+  const action = { type: ActionType.LOAD_ADD_COLLECTION_MEMBER_OPTIONS };
+  return (dispatch: ThunkDispatch): Promise<ResultPage<CollectionMember>> => {
+    dispatch(asyncActionRequest(action, true));
+    const { vocabularyUri, collectionUri } = parseIris(collection);
+
+    return Ajax.getResponse(
+      `${path(vocabularyUri)}/${collectionUri.fragment}/members/options`,
+      queryParams(collectionUri, vocabularyUri)
+        .param("page", pageRequest.page?.toString())
+        .param("size", pageRequest.size?.toString())
+        .param("searchString", searchString)
+    )
+      .then((response: AxiosResponse) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<CollectionMemberData>(
+          response.data,
+          MEMBER_CONTEXT
+        )
+          .then((data) => data.map((d) => new CollectionMember(d)))
+          .then((pageContent) => createPage(response, pageContent))
+      )
+      .catch((error: ErrorData) => {
+        asyncActionFailureWithMessage(error, action, dispatch);
+        return EMPTY_PAGE;
+      });
   };
 }

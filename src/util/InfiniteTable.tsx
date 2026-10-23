@@ -33,12 +33,12 @@ import { ResultPage } from "../model/ResultPage";
 import If from "../component/misc/If";
 import { useI18n } from "../component/hook/useI18n";
 import ContainerMask from "../component/misc/ContainerMask";
+import { PageRequest } from "./Types";
 
 interface TanStackProps<T> extends Omit<TableOptions<T>, "instance" | "data"> {}
 
 export type QueryFn<T> = (
-  pageNumber: number,
-  pageSize: number,
+  pageRequest: PageRequest,
   sorting: SortingState,
   signal?: AbortSignal
 ) => Promise<ResultPage<T>>;
@@ -112,7 +112,11 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
   const queryFn: QueryFunction<ResultPage<T>, TableQueryKey> = useCallback(
     ({ queryKey, pageParam = 0, signal }) => {
       const [sorting, pageSize] = queryKey.slice(-2) as [SortingState, number];
-      return props.queryFn(pageParam, pageSize, sorting, signal);
+      return props.queryFn(
+        { page: pageParam, size: pageSize },
+        sorting,
+        signal
+      );
     },
     [props]
   );
@@ -354,7 +358,11 @@ const TableFoot = <T,>({
           table.getRowCount() === 0 && !isFetchingNextPage && !isLoading
         }
       >
-        <span>{emptyText ?? ""}</span>
+        <tr>
+          <td colSpan={table.getVisibleLeafColumns().length}>
+            <span>{emptyText ?? ""}</span>
+          </td>
+        </tr>
       </If>
       <If expression={isFetchingNextPage}>
         <tr>

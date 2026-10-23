@@ -21,97 +21,90 @@ import { useDispatch } from "react-redux";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 
 export interface RemoveCollectionDialogHandle {
-  remove: (arg: VocabularyCollection) => void;
-}
-
-export interface VocabularyCollection {
-  collection: SkosCollectionDto;
-  vocabulary: Vocabulary;
+  remove: (collection: SkosCollectionDto) => void;
 }
 
 const REMOVE_COLLECTION_PROMISE_AREA = "remove-collection-dialog-promise-area";
 
-export const RemoveCollectionDialog = forwardRef<RemoveCollectionDialogHandle>(
-  (props, ref) => {
-    const { i18n, formatMessage, locale } = useI18n();
-    const dispatch: ThunkDispatch = useDispatch();
-    /**
-     * Collection to remove, when null, the dialog is closed
-     */
-    const [vocabularyCollection, setVocabularyCollection] =
-      useState<VocabularyCollection | null>(null);
+export const RemoveCollectionDialog = forwardRef<
+  RemoveCollectionDialogHandle,
+  { vocabulary: Vocabulary }
+>((props, ref) => {
+  const { i18n, formatMessage, locale } = useI18n();
+  const dispatch: ThunkDispatch = useDispatch();
+  /**
+   * Collection to remove, when null, the dialog is closed
+   */
+  const [collection, setCollection] = useState<SkosCollectionDto | null>(null);
+  const { vocabulary } = props;
 
-    const vocabulary = vocabularyCollection?.vocabulary;
-    const collection = vocabularyCollection?.collection;
+  const [confirmLabel, setConfirmLabel] = useState<string>("");
+  const [isConfirmLabelValid, setIsConfirmLabelValid] =
+    useState<boolean>(false);
 
-    const [confirmLabel, setConfirmLabel] = useState<string>("");
-    const [isConfirmLabelValid, setIsConfirmLabelValid] =
-      useState<boolean>(false);
+  useImperativeHandle(ref, () => ({
+    remove: setCollection,
+  }));
 
-    useImperativeHandle(ref, () => ({
-      remove: setVocabularyCollection,
-    }));
+  const onClose = () => {
+    setCollection(null);
+    setConfirmLabel("");
+  };
 
-    const onClose = () => {
-      setVocabularyCollection(null);
-      setConfirmLabel("");
-    };
-
-    const onRemoveConfirm = () => {
-      if (!vocabulary || !collection) {
-        return;
+  const onRemoveConfirm = () => {
+    if (!collection) {
+      return;
+    }
+    trackPromise(
+      dispatch(removeSkosCollection(collection)),
+      REMOVE_COLLECTION_PROMISE_AREA
+    ).then((action) => {
+      if (action.status === AsyncActionStatus.SUCCESS) {
+        onClose();
+        Routing.transitionToAsset(vocabulary);
       }
-      trackPromise(
-        dispatch(removeSkosCollection(collection)),
-        REMOVE_COLLECTION_PROMISE_AREA
-      ).then((action) => {
-        if (action.status === AsyncActionStatus.SUCCESS) {
-          onClose();
-          Routing.transitionToAsset(vocabulary);
-        }
-      });
-    };
+    });
+  };
 
-    useEffect(() => {
-      const expectedLabel = getLocalized(collection?.title, locale);
-      setIsConfirmLabelValid(expectedLabel === confirmLabel);
-    }, [collection?.title, locale, confirmLabel]);
+  useEffect(() => {
+    const expectedLabel = getLocalized(collection?.title, locale);
+    setIsConfirmLabelValid(expectedLabel === confirmLabel);
+  }, [collection?.title, locale, confirmLabel]);
 
-    const label = getLocalized(collection?.title, locale);
+  const label = getLocalized(collection?.title, locale);
 
-    return (
-      <ConfirmCancelDialog
-        show={collection != null}
-        onClose={onClose}
-        onConfirm={onRemoveConfirm}
-        id={"skos-collection-removal-dialog"}
-        title={formatMessage("asset.remove.dialog.title", {
-          type: i18n("collection.title"),
-          label,
-        })}
-        confirmKey={"remove"}
-        confirmColor={"danger"}
-        confirmDisabled={!isConfirmLabelValid}
-      >
-        <Label>
-          <FormattedMessage
-            id={"collection.remove.description"}
-            values={{ label }}
-          />
-        </Label>
-        <CustomInput
-          label={i18n("collection.remove.confirm")}
-          value={confirmLabel}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setConfirmLabel(e.currentTarget.value)
-          }
-          validation={
-            isConfirmLabelValid
-              ? ValidationResult.VALID
-              : ValidationResult.BLOCKER
-          }
+  return (
+    <ConfirmCancelDialog
+      show={collection != null}
+      onClose={onClose}
+      onConfirm={onRemoveConfirm}
+      id={"skos-collection-removal-dialog"}
+      title={formatMessage("asset.remove.dialog.title", {
+        type: i18n("collection.title"),
+        label,
+      })}
+      confirmKey={"remove"}
+      confirmColor={"danger"}
+      confirmDisabled={!isConfirmLabelValid}
+    >
+      <Label>
+        <FormattedMessage
+          id={"collection.remove.description"}
+          values={{ label }}
         />
-      </ConfirmCancelDialog>
-    );
-  }
-);
+      </Label>
+      <CustomInput
+        label={i18n("collection.remove.confirm")}
+        value={confirmLabel}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setConfirmLabel(e.currentTarget.value)
+        }
+        validation={
+          isConfirmLabelValid
+            ? ValidationResult.VALID
+            : ValidationResult.BLOCKER
+        }
+      />
+    </ConfirmCancelDialog>
+  );
+});
