@@ -63,7 +63,7 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
               vocabulary={vocabulary}
               requiredAccessLevel={AccessLevel.WRITE}
             >
-              <Row className={"justify-content-between mb-3"}>
+              <Row className={"justify-content-between mb-3 mx-0"}>
                 <FormattedMessage tagName={"h3"} id={"collection.members"} />
                 <Button
                   color="success"

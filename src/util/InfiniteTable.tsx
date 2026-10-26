@@ -1,5 +1,5 @@
 import {
-  ColumnDef,
+  ColumnDef as TanStackColumnDef,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
@@ -42,6 +42,17 @@ export type QueryFn<T> = (
   sorting: SortingState,
   signal?: AbortSignal
 ) => Promise<ResultPage<T>>;
+
+export interface ColumnMeta {
+  /**
+   * Class name applied to the column cell
+   */
+  className?: string;
+}
+
+export type ColumnDef<T> = TanStackColumnDef<T> & {
+  meta?: ColumnMeta;
+};
 
 export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
   /**
@@ -135,7 +146,8 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
         pageSize,
       ],
       queryFn,
-      getNextPageParam: (_lastGroup, groups) => groups.length,
+      getNextPageParam: (lastGroup, groups) =>
+        lastGroup.totalCount === groups.length ? undefined : groups.length,
       refetchOnWindowFocus: false,
     });
 
@@ -326,6 +338,7 @@ const TableBody = <T,>({
                   style={{
                     width: cell.column.getSize(),
                   }}
+                  className={cell.column.columnDef.meta?.className}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>

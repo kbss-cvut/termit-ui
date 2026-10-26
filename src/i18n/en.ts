@@ -1158,6 +1158,10 @@ const en = {
     "collection.members.add.description":
       "Select a collection or term that should be added to the collection.",
     "collection.members.empty": "There are no members in this collection.",
+    "collection.members.remove": "Remove member",
+    "collection.members.remove.title": "Remove member from this collection",
+    "collection.members.remove.description":
+      'Are you sure you want to remove the member "{label}" from the collection?',
   },
 };
 
