@@ -53,6 +53,9 @@ export class SkosCollectionDto
     this.title = data.title;
     this.vocabulary = data.vocabulary;
     this.types = Utils.sanitizeArray(data.types);
+    if (!this.types.includes(VocabularyUtils.SKOS_COLLECTION)) {
+      this.types?.push(VocabularyUtils.SKOS_COLLECTION);
+    }
   }
 
   getLabel(lang?: string): string {
