@@ -21,28 +21,33 @@ export const MemberOrderInput: FunctionComponent<{
   row: Row<CollectionMember>;
   onIndexChange: IndexChangeCallback;
 }> = ({ row, onIndexChange }) => {
-  const [order, setOrder] = useState(String(row.index + 1));
+  const originalRowOrder = String(row.index + 1);
+
+  const [order, setOrder] = useState(originalRowOrder);
   // the row may be moved by another row's change
-  useEffect(() => setOrder(String(row.index + 1)), [row.index]);
+  useEffect(() => setOrder(originalRowOrder), [originalRowOrder]);
 
   const commit = useCallback(() => {
+    // in result the row may not be moved, reset its position
+    // and wait for update of the row index
+    setOrder(originalRowOrder);
+
     const newIndex = Number.parseInt(order) - 1;
-    if (Number.isNaN(newIndex) || newIndex === row.index) {
-      setOrder(String(row.index + 1));
+    if (!Number.isFinite(newIndex) || newIndex === row.index) {
       return;
     }
     onIndexChange(row, newIndex);
-  }, [onIndexChange, order, row]);
+  }, [onIndexChange, order, originalRowOrder, row]);
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
         commit();
       } else if (e.key === "Escape") {
-        setOrder(String(row.index + 1));
+        setOrder(originalRowOrder);
       }
     },
-    [commit, row.index]
+    [commit, originalRowOrder]
   );
 
   return (
@@ -51,7 +56,14 @@ export const MemberOrderInput: FunctionComponent<{
       type={"text"}
       inputMode={"numeric"}
       value={order}
-      onChange={(e) => setOrder(e.currentTarget.value.replace(/\D/g, ""))}
+      onChange={(e) => {
+        const newValue = Number(e.currentTarget.value.replace(/\D/g, ""));
+        if (isFinite(newValue) && newValue > 0) {
+          setOrder(newValue.toString());
+        } else {
+          setOrder(originalRowOrder);
+        }
+      }}
       onBlur={commit}
       onKeyDown={onKeyDown}
     />

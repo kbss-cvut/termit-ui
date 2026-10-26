@@ -14,7 +14,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import Table from "../misc/table/Table";
-import { ThunkDispatch } from "../../util/Types";
+import { ThunkDispatch, useAppSelector } from "../../util/Types";
 import { useDispatch } from "react-redux";
 import { loadSkosCollections } from "../../action/AsyncCollectionActions";
 import VocabularyUtils from "../../util/VocabularyUtils";
@@ -27,14 +27,20 @@ import { Button, Label, Row } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import Routing, { Vocabularies } from "../../util/Routing";
 import Routes from "../../util/Routes";
-import { GoPlus } from "react-icons/go";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import AccessLevel from "../../model/acl/AccessLevel";
+import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { trackPromise } from "react-promise-tracker";
+import { EMPTY_PAGE } from "../../model/ResultPage";
+import { FaPlus } from "react-icons/fa6";
 
 export interface CollectionsListProps {
   vocabulary: Vocabulary;
   shortLocale: string;
 }
+
+const SKOS_COLLECTIONS_LIST_LOADING_PROMISE_AREA =
+  "SKOS_COLLECTIONS_LIST_LOADING_PROMISE_AREA";
 
 export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
   vocabulary,
@@ -42,8 +48,9 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
 }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
-  const [collections, setCollections] = useState<SkosCollectionDto[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
+  const collectionsPage = useAppSelector((state) => state.skosCollections);
+  const totalCount = collectionsPage?.totalCount;
+
   const [pagination, setPagination] =
     useState<PaginationState>(INITIAL_PAGINATION);
 
@@ -52,23 +59,33 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
     setPagination(INITIAL_PAGINATION);
   }, [vocabulary.iri]);
 
-  useEffect(() => {
+  const loadCollections = useCallback(() => {
     const controller = new AbortController();
     const vocabularyIri = VocabularyUtils.create(vocabulary.iri);
-    dispatch(
-      loadSkosCollections(
-        vocabularyIri,
-        { page: pagination.pageIndex, size: pagination.pageSize },
-        controller.signal
-      )
-    ).then((page) => {
-      if (!controller.signal.aborted) {
-        setCollections(page.pageContent);
-        setTotalCount(page.totalCount);
-      }
-    });
+    trackPromise(
+      dispatch(
+        loadSkosCollections(
+          vocabularyIri,
+          { page: pagination.pageIndex, size: pagination.pageSize },
+          controller.signal
+        )
+      ),
+      SKOS_COLLECTIONS_LIST_LOADING_PROMISE_AREA
+    );
     return () => controller.abort();
-  }, [vocabulary.iri, pagination.pageIndex, pagination.pageSize, dispatch]);
+  }, [dispatch, pagination.pageIndex, pagination.pageSize, vocabulary.iri]);
+
+  useEffect(() => {
+    // vocabulary IRI changed
+    loadCollections();
+  }, [loadCollections, vocabulary.iri]);
+
+  useEffect(() => {
+    // page not loaded
+    if (collectionsPage == null) {
+      loadCollections();
+    }
+  }, [loadCollections, collectionsPage]);
 
   const columns = useMemo<ColumnDef<SkosCollectionDto>[]>(
     () => [
@@ -101,9 +118,11 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
     );
   }, [vocabulary]);
 
+  const { pageContent } = collectionsPage ?? EMPTY_PAGE;
+
   const tableInstance = useReactTable<SkosCollectionDto>({
     columns,
-    data: collections,
+    data: pageContent,
     getCoreRowModel: getCoreRowModel(),
     enableColumnFilters: false,
     enableSorting: false,
@@ -136,20 +155,21 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
             style={{ float: "right" }}
             onClick={onCreateClick}
           >
-            <GoPlus />
+            <FaPlus />
             &nbsp;
             {i18n("collection.create")}
           </Button>
         </Row>
       </IfVocabularyActionAuthorized>
       <Row className={"skos-collections-list mt-3 mx-0"}>
-        <If expression={collections.length === 0}>
+        <If expression={pageContent.length === 0}>
           <Label>{i18n("collections.empty")}</Label>
         </If>
-        <If expression={collections.length > 0}>
+        <If expression={pageContent.length > 0}>
           <Table instance={tableInstance} />
         </If>
       </Row>
+      <PromiseTrackingMask area={SKOS_COLLECTIONS_LIST_LOADING_PROMISE_AREA} />
     </>
   );
 };
