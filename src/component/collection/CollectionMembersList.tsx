@@ -238,6 +238,11 @@ export const CollectionMembersList: FunctionComponent<
     [collection, dispatch]
   );
 
+  useEffect(() => {
+    // refresh data when collection instance is changed
+    queryClient.invalidateQueries({ queryKey });
+  }, [collection, queryClient, queryKey]);
+
   return (
     <InfiniteTable<CollectionMember>
       {...{ columns, queryFn, queryKey }}

@@ -84,6 +84,9 @@ const CollectionMemberSelectOption = (
   );
 };
 
+/**
+ * Select offering members that are not yet contained in the collection
+ */
 export const NewCollectionMemberSelect: FunctionComponent<
   NewCollectionMemberSelectProps
 > = ({ collection, value, setValue }) => {
