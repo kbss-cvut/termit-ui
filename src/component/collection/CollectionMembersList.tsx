@@ -13,8 +13,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { ColumnDef, Row, Table } from "@tanstack/react-table";
-import { InfiniteTable, QueryFn } from "../../util/InfiniteTable";
+import { Row, Table } from "@tanstack/react-table";
+import { ColumnDef, InfiniteTable, QueryFn } from "../../util/InfiniteTable";
 import { ResultPage } from "../../model/ResultPage";
 import {
   loadCollectionMembers,
@@ -42,6 +42,12 @@ import If from "../misc/If";
 import { CollectionIcon } from "./CollectionIcon";
 import { CollectionLink } from "./CollectionLink";
 import TermLink from "../term/TermLink";
+import { FaTrashAlt } from "react-icons/fa";
+import { Button } from "reactstrap";
+import {
+  RemoveCollectionMemberDialog,
+  RemoveCollectionMemberDialogHandle,
+} from "./RemoveCollectionMemberDialog";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
@@ -56,6 +62,30 @@ function getMoveArea(id: string) {
   return "collection-member-moved-row-" + id;
 }
 
+type RemoveCb = (member: CollectionMember) => void;
+
+const RemoveButton = ({
+  row,
+  onRemove,
+}: {
+  row: Row<CollectionMember>;
+  onRemove: RemoveCb;
+}) => {
+  const { i18n } = useI18n();
+  return (
+    <Button
+      id="collection-detail-remove"
+      size="sm"
+      color="outline-danger"
+      title={i18n("collection.members.remove.title")}
+      onClick={() => onRemove(row.original)}
+    >
+      <FaTrashAlt />
+      &nbsp;{i18n("remove")}
+    </Button>
+  );
+};
+
 export const CollectionMembersList: FunctionComponent<
   CollectionMembersListProps
 > = ({ shortLocale, collection, vocabulary }: CollectionMembersListProps) => {
@@ -67,6 +97,8 @@ export const CollectionMembersList: FunctionComponent<
     HTMLDivElement,
     HTMLTableRowElement
   > | null> = useRef(null);
+  const removeMemberDialogRef =
+    useRef<RemoveCollectionMemberDialogHandle>(null);
 
   const isOrdered = collection?.isOrdered() ?? false;
   const canModify =
@@ -171,12 +203,26 @@ export const CollectionMembersList: FunctionComponent<
     [startDrag]
   );
 
+  const onMemberRemoved = useCallback(() => {
+    queryClient.invalidateQueries<InfiniteData<ResultPage<CollectionMember>>>({
+      queryKey,
+    });
+  }, [queryClient, queryKey]);
+
+  const onRemove: RemoveCb = useCallback(
+    (member) => removeMemberDialogRef.current?.open(member),
+    []
+  );
+
   const columns = useMemo<ColumnDef<CollectionMember>[]>(
     () => [
       ...(isOrdered && canModify
         ? [
             {
               id: "order",
+              meta: {
+                className: "icon-column",
+              },
               cell: ({ row }) => (
                 <MemberOrderInput row={row} onIndexChange={onIndexChange} />
               ),
@@ -184,6 +230,9 @@ export const CollectionMembersList: FunctionComponent<
             },
             {
               id: "drag",
+              meta: {
+                className: "icon-column",
+              },
               cell: ({ row }) => (
                 <DragHandle onPointerDown={(e) => onDrag(row, e)} />
               ),
@@ -191,6 +240,9 @@ export const CollectionMembersList: FunctionComponent<
             },
             {
               id: "row-loading-mask",
+              meta: {
+                className: "max-width-0",
+              },
               cell: ({ row }) => (
                 <PromiseTrackingMask
                   area={getMoveArea(row.id)}
@@ -224,8 +276,19 @@ export const CollectionMembersList: FunctionComponent<
         },
         enableSorting: false,
       },
+      ...(canModify
+        ? [
+            {
+              id: "remove",
+              meta: {
+                className: "end-buttons",
+              },
+              cell: ({ row }) => <RemoveButton {...{ row, onRemove }} />,
+            },
+          ]
+        : []),
     ],
-    [canModify, isOrdered, onDrag, onIndexChange, shortLocale]
+    [canModify, isOrdered, onDrag, onIndexChange, onRemove, shortLocale]
   );
 
   const queryFn: QueryFn<CollectionMember> = useCallback(
@@ -244,16 +307,23 @@ export const CollectionMembersList: FunctionComponent<
   }, [collection, queryClient, queryKey]);
 
   return (
-    <InfiniteTable<CollectionMember>
-      {...{ columns, queryFn, queryKey }}
-      getRowId={(member) => member.iri}
-      className={classNames("skos-collections-list", {
-        "with-order-controls": isOrdered,
-      })}
-      tableInstanceRef={tableInstanceRef}
-      rowVirtualizerRef={rowVirtualizerRef}
-      getRowClassName={isOrdered ? getRowClassName : undefined}
-      emptyText={i18n("collection.members.empty")}
-    />
+    <>
+      <InfiniteTable<CollectionMember>
+        {...{ columns, queryFn, queryKey }}
+        getRowId={(member) => member.iri}
+        className="skos-collections-list"
+        tableInstanceRef={tableInstanceRef}
+        rowVirtualizerRef={rowVirtualizerRef}
+        getRowClassName={isOrdered ? getRowClassName : undefined}
+        emptyText={i18n("collection.members.empty")}
+      />
+      {canModify && collection && (
+        <RemoveCollectionMemberDialog
+          ref={removeMemberDialogRef}
+          collection={collection}
+          onMemberRemoved={onMemberRemoved}
+        />
+      )}
+    </>
   );
 };
