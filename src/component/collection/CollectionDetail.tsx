@@ -10,7 +10,6 @@ import { SkosCollectionDto } from "../../model/Collection";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch, useAppSelector } from "../../util/Types";
 import { loadSkosCollection } from "../../action/AsyncCollectionActions";
-import AsyncActionStatus from "../../action/AsyncActionStatus";
 import { loadVocabulary } from "../../action/AsyncActions";
 import { CollectionMetadata } from "./CollectionMetadata";
 import WindowTitle from "../misc/WindowTitle";
@@ -52,9 +51,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
     );
   }
 
-  const [collectionDto, setCollectionDto] = useState<SkosCollectionDto | null>(
-    null
-  );
+  const collectionDto = useAppSelector((state) => state.selectedCollection);
   const vocabulary = useAppSelector((state) => state.vocabulary);
   const languages = useMemo(
     () =>
@@ -75,15 +72,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   }, [dispatch, vocabulary?.iri, vocabularyUri]);
 
   const loadCollection = useCallback(() => {
-    // TODO track promise
     trackPromise(
       dispatch(loadSkosCollection(collectionUri, vocabularyUri)),
       COLLECTION_LOAD_PROMISE_AREA
-    ).then((result) => {
-      if (result.status === AsyncActionStatus.SUCCESS && "payload" in result) {
-        setCollectionDto(result.payload);
-      }
-    });
+    );
   }, [collectionUri, dispatch, vocabularyUri]);
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { PageRequest, PageRequestOptional, ThunkDispatch } from "../util/Types";
 import Ajax, { params } from "../util/Ajax";
 import Constants from "../util/Constants";
 import {
+  asyncActionFailure,
   asyncActionFailureWithMessage,
   asyncActionRequest,
   asyncActionSuccess,
@@ -70,6 +71,11 @@ function parseIris(collection: SkosCollectionDtoData) {
   return { vocabularyUri, collectionUri };
 }
 
+export function reloadSkosCollection(collection: SkosCollectionDtoData) {
+  const { collectionUri, vocabularyUri } = parseIris(collection);
+  return loadSkosCollection(collectionUri, vocabularyUri);
+}
+
 export function loadSkosCollections(
   vocabularyUri: IRI,
   pageRequest: PageRequest,
@@ -132,7 +138,7 @@ export function loadCollectionMembers(
           .then((pageContent) => createPage(response, pageContent))
       )
       .catch((error: ErrorData) => {
-        asyncActionFailureWithMessage(error, action, dispatch);
+        asyncActionFailure(action, error);
         return EMPTY_PAGE;
       });
   };
@@ -261,5 +267,45 @@ export function loadAddCollectionMemberOptions(
         asyncActionFailureWithMessage(error, action, dispatch);
         return EMPTY_PAGE;
       });
+  };
+}
+
+export function addCollectionMember(
+  collection: SkosCollectionDto,
+  memberIri: string
+) {
+  const action = { type: ActionType.ADD_COLLECTION_MEMBER };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    const { vocabularyUri, collectionUri } = parseIris(collection);
+
+    return Ajax.post(
+      `${path(vocabularyUri)}/${collectionUri.fragment}/members`,
+      queryParams(collectionUri, vocabularyUri).param("member", memberIri)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) =>
+        asyncActionFailureWithMessage(error, action, dispatch)
+      );
+  };
+}
+
+export function removeCollectionMember(
+  collection: SkosCollectionDto,
+  memberIri: string
+) {
+  const action = { type: ActionType.REMOVE_COLLECTION_MEMBER };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    const { vocabularyUri, collectionUri } = parseIris(collection);
+
+    return Ajax.delete(
+      `${path(vocabularyUri)}/${collectionUri.fragment}/members`,
+      queryParams(collectionUri, vocabularyUri).param("member", memberIri)
+    )
+      .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) =>
+        asyncActionFailureWithMessage(error, action, dispatch)
+      );
   };
 }
