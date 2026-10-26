@@ -1135,7 +1135,7 @@ const en = {
 
     "collections.title": "Collections",
     "collections.empty": "There are no collections in this vocabulary.",
-    "collection.create": "Create collection",
+    "collection.create": "New collection",
     "collection.title": "Collection",
     "collection.description": "Description",
     "collection.iri.help":

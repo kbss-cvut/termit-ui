@@ -82,7 +82,7 @@ export function loadSkosCollections(
   signal?: AbortSignal
 ) {
   const action = { type: ActionType.LOAD_COLLECTIONS };
-  return (dispatch: ThunkDispatch): Promise<ResultPage<SkosCollectionDto>> => {
+  return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.getResponse(
       path(vocabularyUri),
@@ -97,7 +97,10 @@ export function loadSkosCollections(
           CONTEXT
         )
           .then((data) => data.map((d) => new SkosCollectionDto(d)))
-          .then((pageContent) => createPage(response, pageContent));
+          .then((pageContent) => createPage(response, pageContent))
+          .then((page) =>
+            dispatch(asyncActionSuccessWithPayload(action, page))
+          );
       })
       .catch((error: ErrorData) => {
         asyncActionFailureWithMessage(error, action, dispatch);
@@ -136,9 +139,13 @@ export function loadCollectionMembers(
         )
           .then((data) => data.map((d) => new CollectionMember(d)))
           .then((pageContent) => createPage(response, pageContent))
+          .then((page) => {
+            dispatch(asyncActionSuccess(action));
+            return page;
+          })
       )
       .catch((error: ErrorData) => {
-        asyncActionFailure(action, error);
+        dispatch(asyncActionFailure(action, error));
         return EMPTY_PAGE;
       });
   };

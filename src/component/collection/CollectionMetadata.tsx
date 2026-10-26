@@ -13,6 +13,7 @@ import {
   AddCollectionMemberDialog,
   AddCollectionMemberDialogHandle,
 } from "./AddCollectionMemberDialog";
+import { FaPlus } from "react-icons/fa6";
 
 export interface CollectionMetadataProps {
   collection: SkosCollectionDto | null;
@@ -70,6 +71,8 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
                   style={{ float: "right" }}
                   onClick={onAddMember}
                 >
+                  <FaPlus />
+                  &nbsp;
                   {i18n("collection.members.add")}
                 </Button>
               </Row>
