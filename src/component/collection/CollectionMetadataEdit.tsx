@@ -134,6 +134,7 @@ const CollectionMetadataEdit: FunctionComponent<
         description: { ...collection.description },
         ordered: collection.isOrdered(),
       });
+      generateIri.current = false;
     }
   }, [collection]);
 
