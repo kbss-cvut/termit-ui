@@ -13,7 +13,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Row, Table } from "@tanstack/react-table";
+import { getFilteredRowModel, Row, Table } from "@tanstack/react-table";
 import { ColumnDef, InfiniteTable, QueryFn } from "../../util/InfiniteTable";
 import { ResultPage } from "../../model/ResultPage";
 import {
@@ -48,6 +48,8 @@ import {
   RemoveCollectionMemberDialog,
   RemoveCollectionMemberDialogHandle,
 } from "./RemoveCollectionMemberDialog";
+import CustomInput from "../misc/CustomInput";
+import { isEmpty } from "lodash";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
@@ -217,7 +219,7 @@ export const CollectionMembersList: FunctionComponent<
   const columns = useMemo<ColumnDef<CollectionMember>[]>(
     () => [
       ...(isOrdered && canModify
-        ? [
+        ? ([
             {
               id: "order",
               meta: {
@@ -233,8 +235,11 @@ export const CollectionMembersList: FunctionComponent<
               meta: {
                 className: "icon-column",
               },
-              cell: ({ row }) => (
-                <DragHandle onPointerDown={(e) => onDrag(row, e)} />
+              cell: ({ row, table }) => (
+                <DragHandle
+                  onPointerDown={(e) => onDrag(row, e)}
+                  disabled={!isEmpty(table.getState().globalFilter)}
+                />
               ),
               enableSorting: false,
             },
@@ -250,10 +255,11 @@ export const CollectionMembersList: FunctionComponent<
                 />
               ),
             },
-          ]
+          ] as ColumnDef<CollectionMember>[])
         : []),
       {
         id: "label",
+        accessorFn: (member) => member.getLabel(shortLocale),
         cell: ({ row }) => {
           const isCollection = row.original.isCollection();
           return (
@@ -274,6 +280,7 @@ export const CollectionMembersList: FunctionComponent<
             </>
           );
         },
+        enableGlobalFilter: true,
         enableSorting: false,
       },
       ...(canModify
@@ -306,8 +313,18 @@ export const CollectionMembersList: FunctionComponent<
     queryClient.invalidateQueries({ queryKey });
   }, [collection, queryClient, queryKey]);
 
+  const [searchValue, setSearchValue] = useState<string>("");
+
+  useEffect(() => {
+    tableInstanceRef.current?.setGlobalFilter(searchValue);
+  }, [searchValue]);
+
   return (
     <>
+      <CustomInput
+        onChange={(e) => setSearchValue(e.target.value)}
+        value={searchValue}
+      />
       <InfiniteTable<CollectionMember>
         {...{ columns, queryFn, queryKey }}
         getRowId={(member) => member.iri}
@@ -315,7 +332,13 @@ export const CollectionMembersList: FunctionComponent<
         tableInstanceRef={tableInstanceRef}
         rowVirtualizerRef={rowVirtualizerRef}
         getRowClassName={isOrdered ? getRowClassName : undefined}
-        emptyText={i18n("collection.members.empty")}
+        emptyText={i18n(
+          isEmpty(searchValue)
+            ? "collection.members.empty"
+            : "collection.members.noMatch"
+        )}
+        getFilteredRowModel={getFilteredRowModel()}
+        globalFilterFn={"includesString"}
       />
       {canModify && collection && (
         <RemoveCollectionMemberDialog
