@@ -83,7 +83,6 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
             {...{
               collection,
               vocabulary,
-              shortLocale,
             }}
           />
           {collection && vocabulary && (
