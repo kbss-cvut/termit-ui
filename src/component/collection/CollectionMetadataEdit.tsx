@@ -100,7 +100,6 @@ const CollectionMetadataEdit: FunctionComponent<
       return;
     }
 
-    // TODO track promise
     trackPromise(
       dispatch(loadSkosCollection(collectionUri, vocabularyUri)),
       COLLECTION_LOAD_PROMISE_AREA
