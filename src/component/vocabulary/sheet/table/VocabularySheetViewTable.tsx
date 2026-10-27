@@ -54,7 +54,12 @@ import { useBatchEditTerms } from "../../../../query/hook/useBatchEditTerms";
 import { TermBatchEditDto } from "../../../../model/TermBatchEditDto";
 import SearchParam from "../../../../model/search/SearchParam";
 import { aggregateSearchParams } from "../../../search/facet/FacetedSearchUtil";
-import { FaFilter, FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
+import {
+  FaFilter,
+  FaSortAlphaDown,
+  FaSortAlphaUp,
+  FaSort,
+} from "react-icons/fa";
 import { FilterPanel } from "./filter/FilterPanel";
 
 interface VocabularySheetViewTableProps {
@@ -123,7 +128,12 @@ export const VocabularySheetViewTable: React.FC<
   const [appliedFacetParams, setAppliedFacetParams] = React.useState<{
     [key: string]: SearchParam;
   }>({});
-  const [sortDirection, setSortDirection] = React.useState("asc");
+  const [sortColumn, setSortColumn] = React.useState<"label" | "notation">(
+    "label"
+  );
+  const [sortDirection, setSortDirection] = React.useState<"asc" | "desc">(
+    "asc"
+  );
 
   const debouncedApplyFilters = useDebouncedCallback(
     (params: { [key: string]: SearchParam }) => {
@@ -213,7 +223,7 @@ export const VocabularySheetViewTable: React.FC<
     searchString: "",
     sortLang: tableLanguage,
     searchParams: activeSearchParams,
-    sort: `label,${sortDirection}`,
+    sort: `${sortColumn},${sortDirection}`,
   });
 
   const loadedTerms = React.useMemo(
@@ -556,7 +566,10 @@ export const VocabularySheetViewTable: React.FC<
         growFr: 1,
         hideable: true,
         render: (term, rowIndex) => {
-          const text = previewValues(Utils.sanitizeArray(term.notations));
+          const sortedNotations = [...Utils.sanitizeArray(term.notations)].sort(
+            (a, b) => a.localeCompare(b, displayLanguage, { numeric: true })
+          );
+          const text = previewValues(sortedNotations);
           return (
             <HoverEditWrapper
               onEdit={() => handleEditClick(term.iri, "notation")}
@@ -980,10 +993,17 @@ export const VocabularySheetViewTable: React.FC<
           </div>
           {visibleColumns.map((column) => {
             const isSortable =
-              column.id === "label" && activeSearchParams.length === 0;
+              (column.id === "label" || column.id === "notation") &&
+              activeSearchParams.length === 0;
 
-            const toggleSort = () =>
-              setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+            const toggleSort = () => {
+              if (sortColumn === column.id) {
+                setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+              } else {
+                setSortColumn(column.id as "label" | "notation");
+                setSortDirection("asc");
+              }
+            };
 
             return (
               <div
@@ -1011,10 +1031,14 @@ export const VocabularySheetViewTable: React.FC<
                 <span>{column.title}</span>
                 {isSortable && (
                   <span className="ml-2 text-muted">
-                    {sortDirection === "asc" ? (
-                      <FaSortAlphaDown size={14} />
+                    {sortColumn === column.id ? (
+                      sortDirection === "asc" ? (
+                        <FaSortAlphaDown size={14} />
+                      ) : (
+                        <FaSortAlphaUp size={14} />
+                      )
                     ) : (
-                      <FaSortAlphaUp size={14} />
+                      <FaSort size={14} />
                     )}
                   </span>
                 )}

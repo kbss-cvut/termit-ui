@@ -279,6 +279,15 @@ const de = {
       "Identifikator eines benutzerdefinierten Attributs ändern",
     "administration.customization.customAttributes.migrate.iri.confirmLabel":
       "Geben Sie zur Bestätigung den Namen des benutzerdefinierten Attributs ein",
+    "administration.customization.customAttributes.symmetric": "Symmetrisch",
+    "administration.customization.customAttributes.symmetric.tooltip":
+      "Das Attribut ist symmetrisch.",
+    "administration.customization.customAttributes.symmetric.help":
+      "Für ein symmetrisches Attribut gilt, dass wenn Sie sie in eine Richtung setzen, sie automatisch in die Gegensrichtung angewendet wird.",
+    "administration.customization.customAttributes.symmetric.enable.help":
+      "Wenn ein bestehendes benutzerdefiniertes Attribut als symmetrisch markiert wird, werden die entsprechenden Beziehungen automatisch erstellt.",
+    "administration.customization.customAttributes.symmetric.disable.help":
+      "Wenn ein bestehendes benutzerdefiniertes Attribut als nicht symmetrisch markiert wird, werden keine Beziehungen automatisch entfernt.",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":

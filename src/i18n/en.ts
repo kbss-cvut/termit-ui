@@ -269,6 +269,15 @@ const en = {
       "Change identifier of a custom attribute",
     "administration.customization.customAttributes.migrate.iri.confirmLabel":
       "To confirm, enter the name of the custom attribute",
+    "administration.customization.customAttributes.symmetric": "Symmetric",
+    "administration.customization.customAttributes.symmetric.tooltip":
+      "Attribute is symmetric",
+    "administration.customization.customAttributes.symmetric.help":
+      "In a symmetric relationship, setting it in one direction automatically applies it in the opposite direction.",
+    "administration.customization.customAttributes.symmetric.enable.help":
+      "Marking an existing custom attribute as symmetric will lead to automatic generation of corresponding relationships.",
+    "administration.customization.customAttributes.symmetric.disable.help":
+      "Marking an existing custom attribute as not symmetric will not lead to the automatic removal of any relationships.",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
