@@ -1,10 +1,15 @@
 import { FunctionComponent, PointerEvent } from "react";
 import "./DragHandle.scss";
+import classNames from "classnames";
 
 export const DragHandle: FunctionComponent<{
   onPointerDown: (e: PointerEvent<HTMLDivElement>) => void;
-}> = ({ onPointerDown }) => (
-  <div className={"drag-handle"} onPointerDown={onPointerDown}>
+  disabled?: boolean;
+}> = ({ onPointerDown, disabled }) => (
+  <div
+    className={classNames("drag-handle", { disabled })}
+    onPointerDown={disabled ? undefined : onPointerDown}
+  >
     <DragReorderIcon />
   </div>
 );

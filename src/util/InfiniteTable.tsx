@@ -54,6 +54,8 @@ export type ColumnDef<T> = TanStackColumnDef<T> & {
   meta?: ColumnMeta;
 };
 
+export interface InfiniteTableHandle {}
+
 export interface TanstackTableProps<T> extends Partial<TanStackProps<T>> {
   /**
    * Column definitions of the table
@@ -178,11 +180,6 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
     [fetchNextPage, isFetching, totalFetched, totalDBRowCount]
   );
 
-  // a check on mount and after a fetch to see if the table is already scrolled to the bottom and immediately needs to fetch more data
-  useEffect(() => {
-    fetchMoreOnBottomReached(tableContainerRef.current);
-  }, [fetchMoreOnBottomReached]);
-
   const table = useReactTable({
     data: flatData,
     getCoreRowModel: getCoreRowModel(),
@@ -201,6 +198,14 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
   });
 
   const { rows } = table.getRowModel();
+  const globalFilter = table.getState().globalFilter;
+
+  // Fetch more data when the rows do not fill the container, as the scroll event cannot fire then.
+  // Runs on mount, after each fetch and when the displayed rows change (e.g. by filtering),
+  // so pages keep loading until the container is filled or all data are fetched.
+  useEffect(() => {
+    fetchMoreOnBottomReached(tableContainerRef.current);
+  }, [fetchMoreOnBottomReached, rows.length, globalFilter]);
 
   const onSortingChange = useCallback(
     (updater) => {
