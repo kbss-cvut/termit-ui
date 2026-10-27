@@ -100,9 +100,7 @@ export const VocabularyMetadata: React.FC<VocabularyMetadataProps> = ({
       />
     );
 
-    tabs[TABS.collections] = (
-      <CollectionsList vocabulary={vocabulary} shortLocale={language} />
-    );
+    tabs[TABS.collections] = <CollectionsList vocabulary={vocabulary} />;
 
     tabs[TABS.history] = <AssetHistory asset={vocabulary} />;
     if (!vocabulary.isSnapshot()) {
