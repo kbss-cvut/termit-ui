@@ -78,6 +78,8 @@ export function reloadSkosCollection(collection: SkosCollectionDtoData) {
 
 export function loadSkosCollections(
   vocabularyUri: IRI,
+  searchString: string,
+  searchLanguage: string,
   pageRequest: PageRequest,
   signal?: AbortSignal
 ) {
@@ -89,6 +91,8 @@ export function loadSkosCollections(
       queryParams(undefined, vocabularyUri)
         .param("page", pageRequest.page.toString())
         .param("size", pageRequest.size.toString())
+        .param("searchString", searchString)
+        .param("searchLanguage", searchLanguage)
         .signal(signal)
     )
       .then((response) => {
