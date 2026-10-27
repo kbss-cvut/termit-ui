@@ -50,11 +50,11 @@ import {
 } from "./RemoveCollectionMemberDialog";
 import CustomInput from "../misc/CustomInput";
 import { isEmpty } from "lodash";
+import { getShortLocale } from "../../util/IntlUtil";
 
 export interface CollectionMembersListProps {
   collection: SkosCollectionDto | null;
   vocabulary: Vocabulary | null;
-  shortLocale: string;
 }
 
 // how long the moved row stays highlighted before it fades out, in milliseconds
@@ -90,8 +90,9 @@ const RemoveButton = ({
 
 export const CollectionMembersList: FunctionComponent<
   CollectionMembersListProps
-> = ({ shortLocale, collection, vocabulary }: CollectionMembersListProps) => {
-  const { i18n } = useI18n();
+> = ({ collection, vocabulary }: CollectionMembersListProps) => {
+  const { i18n, locale } = useI18n();
+  const shortLocale = getShortLocale(locale);
   const dispatch: ThunkDispatch = useDispatch();
   const tableInstanceRef: MutableRefObject<Table<CollectionMember> | null> =
     useRef(null);
