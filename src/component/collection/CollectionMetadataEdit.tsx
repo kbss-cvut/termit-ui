@@ -170,7 +170,7 @@ const CollectionMetadataEdit: FunctionComponent<
       assetType: "COLLECTION",
     }).then((response) => {
       if (generateIri.current) {
-        setData((prev) => ({ ...prev, iri: response.data }));
+        setData((prev) => ({ ...prev, iri: response }));
       }
     });
   };
