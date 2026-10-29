@@ -1,13 +1,9 @@
 import * as React from "react";
 
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { Button, ButtonToolbar, Form } from "reactstrap";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { ProfileEditForm } from "../ProfileEditForm";
-import {
-  intlFunctions,
-  mockUseI18n,
-} from "../../../__tests__/environment/IntlUtil";
-import { shallow } from "enzyme";
+import { i18n } from "../../../__tests__/environment/IntlUtil";
+import { fireEvent, screen } from "@testing-library/react";
 
 describe("ProfileEditForm", () => {
   let firstName: string;
@@ -34,8 +30,8 @@ describe("ProfileEditForm", () => {
     vi.restoreAllMocks();
   });
 
-  it("correctly renders component with firstName and lastName set", () => {
-    const wrapper = mountWithIntl(
+  function renderForm(valid = isValid) {
+    return renderWithIntl(
       <ProfileEditForm
         firstName={firstName}
         lastName={lastName}
@@ -44,109 +40,52 @@ describe("ProfileEditForm", () => {
         onSubmit={onSubmit}
         onKeyPress={onKeyPress}
         showProfileView={showProfileView}
-        isValid={isValid}
-        {...intlFunctions()}
+        isValid={valid}
       />
     );
+  }
 
-    const form = wrapper.find(Form);
-    const firstNameInput = form
-      .find('input[name="firstName"]')
-      .getDOMNode() as HTMLInputElement;
-    const lastNameInput = form
-      .find('input[name="lastName"]')
-      .getDOMNode() as HTMLInputElement;
-    const buttons = form.find(ButtonToolbar).find(Button);
-
-    expect(firstNameInput.value).toEqual(firstName);
-    expect(lastNameInput.value).toEqual(lastName);
-    expect(buttons.length).toEqual(2);
-    expect(buttons.find("button#profile-edit-submit").length).toEqual(1);
-    expect(buttons.find("button#profile-edit-cancel").length).toEqual(1);
+  it("correctly renders component with firstName and lastName set", () => {
+    renderForm();
+    expect(screen.getByDisplayValue(firstName)).toHaveValue(firstName);
+    expect(screen.getByDisplayValue(lastName)).toHaveValue(lastName);
+    expect(screen.getAllByRole("button")).toHaveLength(2);
+    expect(
+      screen.getByRole("button", { name: i18n("save") })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: i18n("cancel") })
+    ).toBeInTheDocument();
   });
 
   it("calls onSubmit function on save button click if isValid", () => {
-    const wrapper = mountWithIntl(
-      <ProfileEditForm
-        firstName={firstName}
-        lastName={lastName}
-        username={username}
-        onChange={onChange}
-        onSubmit={onSubmit}
-        onKeyPress={onKeyPress}
-        showProfileView={showProfileView}
-        isValid={isValid}
-        {...intlFunctions()}
-      />
-    );
-
-    const button = wrapper.find("button#profile-edit-submit");
-    button.simulate("click");
-    expect(button.getElement().props.disabled).toBeFalsy();
+    renderForm();
+    const button = screen.getByRole("button", { name: i18n("save") });
+    expect(button).toBeEnabled();
+    fireEvent.click(button);
     expect(onSubmit).toHaveBeenCalled();
   });
 
   it("renders disabled submit button if !isValid", () => {
-    const wrapper = mountWithIntl(
-      <ProfileEditForm
-        firstName={firstName}
-        lastName={lastName}
-        username={username}
-        onChange={onChange}
-        onSubmit={onSubmit}
-        onKeyPress={onKeyPress}
-        showProfileView={showProfileView}
-        isValid={false}
-        {...intlFunctions()}
-      />
-    );
-
-    const button = wrapper.find("button#profile-edit-submit");
-    button.simulate("click");
-    expect(button.getElement().props.disabled).toBeTruthy();
+    renderForm(false);
+    const button = screen.getByRole("button", { name: i18n("save") });
+    fireEvent.click(button);
+    expect(button).toBeDisabled();
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
   it("calls showProfileView on cancel button click", () => {
-    mockUseI18n();
-    const wrapper = shallow(
-      <ProfileEditForm
-        firstName={firstName}
-        lastName={lastName}
-        username={username}
-        onChange={onChange}
-        onSubmit={onSubmit}
-        onKeyPress={onKeyPress}
-        showProfileView={showProfileView}
-        isValid={isValid}
-        {...intlFunctions()}
-      />
-    );
-
-    wrapper
-      .find(Button)
-      .findWhere((b) => b.prop("id") === "profile-edit-cancel")
-      .simulate("click");
+    renderForm();
+    fireEvent.click(screen.getByRole("button", { name: i18n("cancel") }));
     expect(showProfileView).toHaveBeenCalled();
   });
 
   it("invokes onKeyPress function when enter is pressed", () => {
-    const wrapper = mountWithIntl(
-      <ProfileEditForm
-        firstName={firstName}
-        lastName={lastName}
-        username={username}
-        onChange={onChange}
-        onSubmit={onSubmit}
-        onKeyPress={onKeyPress}
-        showProfileView={showProfileView}
-        isValid={isValid}
-        {...intlFunctions()}
-      />
-    );
-
-    const lastNameInput = wrapper.find('input[name="lastName"]');
-    lastNameInput.simulate("keyPress", { key: "Enter" });
+    renderForm();
+    fireEvent.keyPress(screen.getByDisplayValue(lastName), {
+      key: "Enter",
+      charCode: 13,
+    });
     expect(onKeyPress).toHaveBeenCalled();
   });
 });
