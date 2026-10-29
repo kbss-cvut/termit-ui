@@ -5,16 +5,85 @@ import { Location } from "history";
 import { match as Match } from "react-router";
 import Utils from "../../../../util/Utils";
 import Routing from "../../../../util/Routing";
-import { shallow } from "enzyme";
-import { Terms } from "../Terms";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import Generator from "../../../../__tests__/environment/Generator";
 import * as TermTreeSelectHelper from "../../../term/TermTreeSelectHelper";
 import { langString } from "../../../../model/MultilingualString";
-import { TermFetchParams } from "../../../../util/Types";
+import {
+  TermFetchParams,
+  TreeSelectFetchOptionsParams,
+} from "../../../../util/Types";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
+import { Terms } from "../Terms";
+
+vi.mock("intelligent-tree-select", async () => {
+  const React = await import("react");
+  return {
+    IntelligentTreeSelect: React.forwardRef(
+      (
+        props: {
+          fetchOptions: (
+            params: TreeSelectFetchOptionsParams<Term>
+          ) => Promise<Term[]>;
+          onChange: (term: Term) => void;
+        },
+        ref
+      ) => {
+        const [parameters, setParameters] = React.useState("{}");
+        const [options, setOptions] = React.useState<Term[]>([]);
+        const load = () =>
+          props.fetchOptions(JSON.parse(parameters)).then((loaded) => {
+            setOptions(loaded);
+            optionsLoaded(loaded);
+          });
+        React.useImperativeHandle(ref, () => ({
+          resetOptions: () => undefined,
+        }));
+        return (
+          <>
+            <input
+              aria-label="Fetch parameters"
+              value={parameters}
+              onChange={(event) => setParameters(event.target.value)}
+            />
+            <button onClick={load}>Load terms</button>
+            {options.map((option) => (
+              <button key={option.iri} onClick={() => props.onChange(option)}>
+                {option.iri}
+              </button>
+            ))}
+          </>
+        );
+      }
+    ),
+  };
+});
+vi.mock("../../../term/TermListToggle", () => ({
+  default: ({
+    value,
+    disabled,
+    onToggle,
+  }: {
+    value: boolean;
+    disabled: boolean;
+    onToggle: () => void;
+  }) => (
+    <button
+      aria-label="Include imported terms"
+      aria-pressed={value}
+      disabled={disabled}
+      onClick={onToggle}
+    >
+      Include imported terms
+    </button>
+  ),
+}));
 
 vi.mock("../../../../util/Routing");
+
+const { optionsLoaded } = vi.hoisted(() => ({ optionsLoaded: vi.fn() }));
 
 describe("Terms", () => {
   const vocabularyName = "test-vocabulary";
@@ -69,17 +138,8 @@ describe("Terms", () => {
     });
   });
 
-  it("transitions to term detail on term select", () => {
-    const wrapper = renderShallow();
-    wrapper.instance().onTermSelect(new Term(term));
-    const call = (Routing.transitionToPublicAsset as Mock).mock.calls[0];
-    expect(call[0].iri).toEqual(term.iri);
-    expect(call[0].vocabulary).toEqual(term.vocabulary);
-    expect(call[0].types).toEqual(term.types);
-  });
-
-  function renderShallow() {
-    return shallow<Terms>(
+  function renderTerms() {
+    return renderWithIntl(
       <Terms
         selectedTerms={selectedTerms}
         selectVocabularyTerm={selectVocabularyTerm}
@@ -93,60 +153,88 @@ describe("Terms", () => {
     );
   }
 
-  it("transitions to selected term detail", () => {
-    const wrapper = renderShallow();
-    wrapper.instance().onTermSelect(new Term(term));
+  async function loadOptions(
+    params: TreeSelectFetchOptionsParams<Term> = {}
+  ): Promise<Term[]> {
+    optionsLoaded.mockClear();
+    fireEvent.change(
+      screen.getByRole("textbox", { name: "Fetch parameters" }),
+      {
+        target: { value: JSON.stringify(params) },
+      }
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Load terms" }));
+    await waitFor(() => expect(optionsLoaded).toHaveBeenCalledTimes(1));
+    return optionsLoaded.mock.calls[0][0];
+  }
+
+  it("transitions to term detail on term select", async () => {
+    fetchTerms = vi.fn().mockResolvedValue([new Term(term)]);
+    renderTerms();
+    await loadOptions();
+    fireEvent.click(screen.getByRole("button", { name: term.iri }));
     const call = (Routing.transitionToPublicAsset as Mock).mock.calls[0];
     expect(call[0].iri).toEqual(term.iri);
     expect(call[0].vocabulary).toEqual(term.vocabulary);
     expect(call[0].types).toEqual(term.types);
   });
 
-  it("fetches terms including imported when configured to", () => {
-    const wrapper = renderShallow();
-    wrapper.setState({ includeImported: true });
-    wrapper.update();
-    wrapper.instance().fetchOptions({});
+  it("transitions to selected term detail", async () => {
+    fetchTerms = vi.fn().mockResolvedValue([new Term(term)]);
+    renderTerms();
+    await loadOptions();
+    fireEvent.click(screen.getByRole("button", { name: term.iri }));
+    const call = (Routing.transitionToPublicAsset as Mock).mock.calls[0];
+    expect(call[0].iri).toEqual(term.iri);
+    expect(call[0].vocabulary).toEqual(term.vocabulary);
+    expect(call[0].types).toEqual(term.types);
+  });
+
+  it("fetches terms including imported when configured to", async () => {
+    location.search = "?includeImported=true";
+    renderTerms();
+    await loadOptions();
     expect((fetchTerms as Mock).mock.calls[0][0].includeImported).toBeTruthy();
   });
 
-  it("uses term vocabulary when fetching its subterms", () => {
-    const wrapper = renderShallow();
-    wrapper.setState({ includeImported: true });
-    wrapper.update();
+  it("uses term vocabulary when fetching its subterms", async () => {
+    location.search = "?includeImported=true";
+    renderTerms();
     const option = new Term({
       iri: Generator.generateUri(),
       label: langString("Test term"),
       vocabulary: { iri: Generator.generateUri() },
     });
-    wrapper.instance().fetchOptions({ optionID: option.iri, option });
+    await loadOptions({ optionID: option.iri, option });
     expect((fetchTerms as Mock).mock.calls[0][1]).toEqual(
       VocabularyUtils.create(option.vocabulary!.iri!)
     );
   });
 
-  it("disables include imported terms toggle when fetching terms", () => {
-    const wrapper = renderShallow();
-    expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();
-    fetchTerms = vi.fn().mockImplementation(() => {
-      wrapper.update();
-      expect(wrapper.state().disableIncludeImportedToggle).toBeTruthy();
-      return Promise.resolve([]);
+  it("disables include imported terms toggle when fetching terms", async () => {
+    vocabulary.importedVocabularies = [];
+    let resolveFetch!: (terms: Term[]) => void;
+    fetchTerms = vi.fn().mockReturnValue(
+      new Promise<Term[]>((resolve) => {
+        resolveFetch = resolve;
+      })
+    );
+    renderTerms();
+    const toggle = screen.getByRole("button", {
+      name: "Include imported terms",
     });
-    wrapper.setProps({ fetchTerms });
-    wrapper.update();
-    return wrapper
-      .instance()
-      .fetchOptions({})
-      .then(() => {
-        expect(fetchTerms).toHaveBeenCalled();
-        wrapper.update();
-        expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();
-      });
+    expect(toggle).toBeEnabled();
+    fireEvent.click(screen.getByRole("button", { name: "Load terms" }));
+    expect(toggle).toBeDisabled();
+    await act(async () => {
+      resolveFetch([]);
+    });
+    expect(fetchTerms).toHaveBeenCalled();
+    expect(toggle).toBeEnabled();
   });
 
   describe("fetchOptions", () => {
-    it("filters out terms which are not in the vocabulary import chain", () => {
+    it("filters out terms which are not in the vocabulary import chain", async () => {
       const vocabularies = [
         Generator.generateUri(),
         Generator.generateUri(),
@@ -168,17 +256,12 @@ describe("Terms", () => {
         }
       }
       fetchTerms = vi.fn().mockResolvedValue(terms);
-      const wrapper = renderShallow();
-      wrapper.setState({ includeImported: true });
-      return wrapper
-        .instance()
-        .fetchOptions({})
-        .then((options) => {
-          expect(options).toEqual(matching);
-        });
+      location.search = "?includeImported=true";
+      renderTerms();
+      expect(await loadOptions()).toEqual(matching);
     });
 
-    it("filters out terms from different vocabularies when vocabulary has no imports", () => {
+    it("filters out terms from different vocabularies when vocabulary has no imports", async () => {
       const terms: Term[] = [];
       const matching: Term[] = [];
       for (let i = 0; i < 5; i++) {
@@ -192,16 +275,11 @@ describe("Terms", () => {
         }
       }
       fetchTerms = vi.fn().mockResolvedValue(terms);
-      const wrapper = renderShallow();
-      return wrapper
-        .instance()
-        .fetchOptions({})
-        .then((options) => {
-          expect(options).toEqual(matching);
-        });
+      renderTerms();
+      expect(await loadOptions()).toEqual(matching);
     });
 
-    it("filters out term's children which are in vocabularies outside of the vocabulary import chain", () => {
+    it("filters out term's children which are in vocabularies outside of the vocabulary import chain", async () => {
       const terms: Term[] = [Generator.generateTerm(vocabulary.iri)];
       const subTerms = [
         {
@@ -218,20 +296,16 @@ describe("Terms", () => {
       terms[0].subTerms = subTerms;
       terms[0].syncPlainSubTerms();
       fetchTerms = vi.fn().mockResolvedValue(terms);
-      const wrapper = renderShallow();
-      return wrapper
-        .instance()
-        .fetchOptions({})
-        .then((options) => {
-          expect(options.length).toEqual(1);
-          const t = options[0];
-          expect(t.subTerms!.length).toEqual(1);
-          expect(t.subTerms![0].iri).toEqual(subTerms[0].iri);
-          expect(t.plainSubTerms).toEqual([subTerms[0].iri]);
-        });
+      renderTerms();
+      const options = await loadOptions();
+      expect(options.length).toEqual(1);
+      const t = options[0];
+      expect(t.subTerms!.length).toEqual(1);
+      expect(t.subTerms![0].iri).toEqual(subTerms[0].iri);
+      expect(t.plainSubTerms).toEqual([subTerms[0].iri]);
     });
 
-    it("flattens loaded terms when search string was provided", () => {
+    it("flattens loaded terms when search string was provided", async () => {
       const child = Generator.generateTerm(vocabulary.iri);
       const parent = Generator.generateTerm(vocabulary.iri);
       const grandParent = Generator.generateTerm(vocabulary.iri);
@@ -244,40 +318,30 @@ describe("Terms", () => {
       parent.syncPlainSubTerms();
       grandParent.syncPlainSubTerms();
       fetchTerms = vi.fn().mockResolvedValue([child]);
-      const wrapper = renderShallow();
-      return wrapper
-        .instance()
-        .fetchOptions({ searchString: "test" })
-        .then((options) => {
-          expect(options.length).toEqual(3);
-          expect(options.find((t) => t.iri === child.iri)).toBeDefined();
-          expect(options.find((t) => t.iri === parent.iri)).toBeDefined();
-          expect(options.find((t) => t.iri === grandParent.iri)).toBeDefined();
-        });
+      renderTerms();
+      const options = await loadOptions({ searchString: "test" });
+      expect(options.length).toEqual(3);
+      expect(options.find((t) => t.iri === child.iri)).toBeDefined();
+      expect(options.find((t) => t.iri === parent.iri)).toBeDefined();
+      expect(options.find((t) => t.iri === grandParent.iri)).toBeDefined();
     });
 
-    it("excludes imported vocabularies when processing loaded terms when includeImported is set to false", () => {
+    it("excludes imported vocabularies when processing loaded terms when includeImported is set to false", async () => {
       const terms = [Generator.generateTerm(vocabulary.iri)];
       const parent = Generator.generateTerm(Generator.generateUri());
       vocabulary.allImportedVocabularies = [parent.vocabulary!.iri!];
       terms[0].parentTerms = [parent];
       fetchTerms = vi.fn().mockResolvedValue(terms);
       const spy = vi.spyOn(TermTreeSelectHelper, "processTermsForTreeSelect");
-      const wrapper = renderShallow();
-      return wrapper
-        .instance()
-        .fetchOptions({ searchString: "test" })
-        .then((options) => {
-          expect(options.length).toEqual(1);
-          expect(options).toEqual(terms);
-          expect(spy).toHaveBeenCalledWith(
-            terms,
-            [expect.any(Function), expect.any(Function)],
-            expect.objectContaining({
-              searchString: "test",
-            })
-          );
-        });
+      renderTerms();
+      const options = await loadOptions({ searchString: "test" });
+      expect(options.length).toEqual(1);
+      expect(options).toEqual(terms);
+      expect(spy).toHaveBeenCalledWith(
+        terms,
+        [expect.any(Function), expect.any(Function)],
+        expect.objectContaining({ searchString: "test" })
+      );
     });
   });
 });

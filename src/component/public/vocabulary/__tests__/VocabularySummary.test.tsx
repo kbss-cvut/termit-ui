@@ -1,15 +1,13 @@
 import VocabularyUtils from "../../../../util/VocabularyUtils";
-import { flushPromises } from "../../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
+import { waitFor } from "@testing-library/react";
 import { VocabularySummary } from "../VocabularySummary";
 import { EMPTY_VOCABULARY } from "../../../../model/Vocabulary";
-import { act } from "react-dom/test-utils";
-import { match as Match } from "react-router";
 import { Location } from "history";
-import { mountWithIntlAttached } from "../../../annotator/__tests__/AnnotationUtil";
 import { DEFAULT_CONFIGURATION } from "../../../../model/Configuration";
-import * as redux from "react-redux";
 import * as Redux from "react-redux";
 import * as router from "react-router-dom";
+import { match as Match } from "react-router";
 import * as SyncActions from "../../../../action/SyncActions";
 import * as AsyncActions from "../../../../action/AsyncActions";
 
@@ -59,9 +57,12 @@ describe("Public VocabularySummary", () => {
   });
 
   it("resets selected term on mount", async () => {
-    vi.spyOn(redux, "useSelector")
-      .mockReturnValueOnce(EMPTY_VOCABULARY)
-      .mockReturnValueOnce(DEFAULT_CONFIGURATION);
+    vi.spyOn(Redux, "useSelector").mockImplementation((selector) =>
+      selector({
+        vocabulary: EMPTY_VOCABULARY,
+        configuration: DEFAULT_CONFIGURATION,
+      } as any)
+    );
     vi.spyOn(Redux, "useDispatch").mockReturnValue(
       vi.fn().mockResolvedValue({})
     );
@@ -69,10 +70,9 @@ describe("Public VocabularySummary", () => {
     vi.spyOn(router, "useRouteMatch").mockReturnValue(match);
     vi.spyOn(SyncActions, "selectVocabularyTerm");
     vi.spyOn(AsyncActions, "loadVocabulary");
-    mountWithIntlAttached(<VocabularySummary />);
-    await act(async () => {
-      await flushPromises();
+    renderWithIntl(<VocabularySummary />);
+    await waitFor(() => {
+      expect(SyncActions.selectVocabularyTerm).toHaveBeenCalledWith(null);
     });
-    expect(SyncActions.selectVocabularyTerm).toHaveBeenCalledWith(null);
   });
 });
