@@ -1,15 +1,19 @@
 import { IRI } from "../../../../util/VocabularyUtils";
 import Vocabulary from "../../../../model/Vocabulary";
 import Generator from "../../../../__tests__/environment/Generator";
-import { mountWithIntl } from "../../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
 import { TermDetail } from "../TermDetail";
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import { Location } from "history";
-import TermMetadata from "../TermMetadata";
 import Constants from "../../../../util/Constants";
 import * as router from "react-router-dom";
+import { screen } from "@testing-library/react";
 
-vi.mock("../TermMetadata", () => ({ default: () => <div>Term metadata</div> }));
+vi.mock("../TermMetadata", () => ({
+  default: ({ language }: { language: string }) => (
+    <div>Metadata language: {language}</div>
+  ),
+}));
 vi.mock("../../../misc/HeaderWithActions", () => ({
   default: () => <div>Header</div>,
 }));
@@ -55,23 +59,19 @@ describe("TermDetail", () => {
     const lang = "cs";
     vi.spyOn(router, "useParams").mockReturnValue(params);
     vi.spyOn(router, "useLocation").mockReturnValue(location);
-    const wrapper = mountWithIntl(
-      <TermDetail
-        configuredLanguage={lang}
-        versionSeparator="/version"
-        term={null}
-        vocabulary={vocabulary}
-        loadVocabulary={loadVocabulary}
-        loadTerm={loadTerm}
-        {...intlFunctions()}
-      />
-    );
+    const props = {
+      configuredLanguage: lang,
+      versionSeparator: "/version",
+      vocabulary,
+      loadVocabulary,
+      loadTerm,
+      ...intlFunctions(),
+    };
+    const { rerender } = renderWithIntl(<TermDetail {...props} term={null} />);
     const term = Generator.generateTerm(vocabulary.iri);
     delete term.label[Constants.DEFAULT_LANGUAGE];
     term.label[lang] = "test label";
-    wrapper.setProps({ term });
-    wrapper.update();
-    const metadata = wrapper.find(TermMetadata);
-    expect(metadata.prop("language")).toEqual(lang);
+    rerender(<TermDetail {...props} term={term} />);
+    expect(screen.getByText(`Metadata language: ${lang}`)).toBeInTheDocument();
   });
 });
