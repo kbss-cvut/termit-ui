@@ -1,14 +1,30 @@
 import Generator from "../../../../__tests__/environment/Generator";
 import Document from "../../../../model/Document";
-import { shallow } from "enzyme";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
+import { fireEvent, screen } from "@testing-library/react";
 import DocumentSummary from "../DocumentSummary";
 import * as redux from "react-redux";
 import { ThunkDispatch } from "../../../../util/Types";
 import * as Actions from "../../../../action/AsyncActions";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
-import DocumentFiles from "../DocumentFiles";
 import type { Mock } from "vitest";
 import AccessLevel from "../../../../model/acl/AccessLevel";
+
+vi.mock("../DocumentFiles", () => ({
+  default: ({
+    onFileAdded,
+    onFileRemoved,
+  }: {
+    onFileAdded: () => void;
+    onFileRemoved: () => void;
+  }) => (
+    <>
+      <button onClick={onFileAdded}>Add file</button>
+      <button onClick={onFileRemoved}>Remove file</button>
+    </>
+  ),
+}));
+vi.mock("../../ResourceMetadata", () => ({ default: () => null }));
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -35,15 +51,14 @@ describe("DocumentSummaryInTab", () => {
 
   it("reloads document when file was added to it", () => {
     vi.spyOn(Actions, "loadResource");
-    const wrapper = shallow(
+    renderWithIntl(
       <DocumentSummary
         onChange={onChange}
         document={document}
         accessLevel={AccessLevel.WRITE}
       />
     );
-    const files = wrapper.find(DocumentFiles);
-    (files.props() as any).onFileAdded();
+    fireEvent.click(screen.getByRole("button", { name: "Add file" }));
     expect(Actions.loadResource).toHaveBeenCalledWith(
       VocabularyUtils.create(document.iri)
     );
@@ -51,15 +66,14 @@ describe("DocumentSummaryInTab", () => {
 
   it("reloads document when file was removed from it", () => {
     vi.spyOn(Actions, "loadResource");
-    const wrapper = shallow(
+    renderWithIntl(
       <DocumentSummary
         onChange={onChange}
         document={document}
         accessLevel={AccessLevel.WRITE}
       />
     );
-    const files = wrapper.find(DocumentFiles);
-    (files.props() as any).onFileRemoved();
+    fireEvent.click(screen.getByRole("button", { name: "Remove file" }));
     expect(Actions.loadResource).toHaveBeenCalledWith(
       VocabularyUtils.create(document.iri)
     );

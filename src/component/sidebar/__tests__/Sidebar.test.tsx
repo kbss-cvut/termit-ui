@@ -1,9 +1,16 @@
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Sidebar } from "../Sidebar";
-import { shallow } from "enzyme";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { MemoryRouter } from "react-router";
 import User from "../../../model/User";
-import { Container, Form } from "reactstrap";
 import { routingProps } from "../../../__tests__/environment/TestUtil";
+
+vi.mock("../../search/label/NavbarSearch", () => ({
+  default: () => <input aria-label="Search" />,
+}));
+vi.mock("../../misc/UserDropdown", () => ({
+  default: () => <div>User menu</div>,
+}));
 
 describe("Sidebar", () => {
   let toggleSidebar: () => void;
@@ -19,93 +26,59 @@ describe("Sidebar", () => {
     toggleSidebar = vi.fn();
   });
 
-  it("renders correct structure of component on desktop with sidebar expanded", () => {
-    const wrapper = shallow(
-      <Sidebar
-        user={user}
-        toggleSidebar={toggleSidebar}
-        sidebarExpanded={true}
-        desktopView={true}
-        {...intlFunctions()}
-        {...routingProps()}
-      />
+  function renderSidebar(sidebarExpanded: boolean, desktopView: boolean) {
+    return renderWithIntl(
+      <MemoryRouter>
+        <Sidebar
+          user={user}
+          toggleSidebar={toggleSidebar}
+          sidebarExpanded={sidebarExpanded}
+          desktopView={desktopView}
+          {...intlFunctions()}
+          {...routingProps()}
+        />
+      </MemoryRouter>
     );
+  }
 
-    const container = wrapper
-      .find("#sidenav-main.sidebar-expanded")
-      .find(Container);
-
-    expect(container.find(".brand").length).toBe(1);
+  it("renders correct structure of component on desktop with sidebar expanded", () => {
+    const { container } = renderSidebar(true, true);
+    const sidebar = container.querySelector("#sidenav-main")!;
+    expect(sidebar).toHaveClass("sidebar-expanded");
+    expect(sidebar.querySelectorAll(".brand")).toHaveLength(1);
+    const toggler = sidebar.querySelector("#toggler")!;
     expect(
-      container
-        .find("#toggler")
-        .contains([
-          <i key="1" className="fas fa-chevron-left fa-xs" />,
-          <i key="2" className="fas fa-bars fa-lg line-height-1" />,
-        ])
-    ).toBeTruthy();
-
-    expect(container.find("#dropdown").length).toBe(0);
-
-    expect(container.find(Form).length).toBe(0);
+      Array.from(toggler.children).map((child) => child.className)
+    ).toEqual(["fas fa-chevron-left fa-xs", "fas fa-bars fa-lg line-height-1"]);
+    expect(sidebar.querySelector("#dropdown")).not.toBeInTheDocument();
+    expect(sidebar.querySelector("form")).not.toBeInTheDocument();
   });
 
   it("renders correct structure of component on desktop with sidebar collapsed", () => {
-    const wrapper = shallow(
-      <Sidebar
-        user={user}
-        toggleSidebar={toggleSidebar}
-        sidebarExpanded={false}
-        desktopView={true}
-        {...intlFunctions()}
-        {...routingProps()}
-      />
-    );
-
-    const container = wrapper
-      .find("#sidenav-main.sidebar-collapsed")
-      .find(Container);
-
-    expect(container.find(".brand").length).toBe(0);
+    const { container } = renderSidebar(false, true);
+    const sidebar = container.querySelector("#sidenav-main")!;
+    expect(sidebar).toHaveClass("sidebar-collapsed");
+    expect(sidebar.querySelector(".brand")).not.toBeInTheDocument();
+    const toggler = sidebar.querySelector("#toggler")!;
     expect(
-      container
-        .find("#toggler")
-        .contains([
-          <i key="1" className="fas fa-bars fa-lg line-height-1" />,
-          <i key="2" className="fas fa-chevron-right fa-xs" />,
-        ])
-    ).toBeTruthy();
-
-    expect(container.find("#dropdown").length).toBe(0);
-    expect(container.find(".navbar-heading").length).toBe(0);
-
-    expect(container.find(Form).length).toBe(0);
+      Array.from(toggler.children).map((child) => child.className)
+    ).toEqual([
+      "fas fa-bars fa-lg line-height-1",
+      "fas fa-chevron-right fa-xs",
+    ]);
+    expect(sidebar.querySelector("#dropdown")).not.toBeInTheDocument();
+    expect(sidebar.querySelector(".navbar-heading")).not.toBeInTheDocument();
+    expect(sidebar.querySelector("form")).not.toBeInTheDocument();
   });
 
   it("renders correct structure on mobile", () => {
-    const wrapper = shallow(
-      <Sidebar
-        user={user}
-        toggleSidebar={toggleSidebar}
-        sidebarExpanded={false}
-        desktopView={false}
-        {...intlFunctions()}
-        {...routingProps()}
-      />
-    );
-
-    const container = wrapper.find("#sidenav-main").find(Container);
-    expect(container.find(".brand").length).toBe(2);
-    expect(
-      container
-        .find("#toggler")
-        .contains(<i key="1" className="fas fa-bars fa-lg line-height-1" />)
-    ).toBeFalsy();
-
-    expect(container.find(".navbar-toggler").length).toBe(2);
-    expect(container.find("#dropdown").length).toBe(1);
-    expect(container.find(".navbar-heading").length).toBe(0);
-
-    expect(container.find(Form).length).toBe(1);
+    const { container } = renderSidebar(false, false);
+    const sidebar = container.querySelector("#sidenav-main")!;
+    expect(sidebar.querySelectorAll(".brand")).toHaveLength(2);
+    expect(sidebar.querySelector("#toggler")).not.toBeInTheDocument();
+    expect(sidebar.querySelectorAll(".navbar-toggler")).toHaveLength(2);
+    expect(sidebar.querySelector("#dropdown")).toBeInTheDocument();
+    expect(sidebar.querySelector(".navbar-heading")).not.toBeInTheDocument();
+    expect(sidebar.querySelectorAll("form")).toHaveLength(1);
   });
 });
