@@ -1,23 +1,16 @@
 import TermItFile from "../../../../model/File";
 import Generator from "../../../../__tests__/environment/Generator";
-import * as Redux from "react-redux";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
+import { act, screen } from "@testing-library/react";
 import FileContentActions from "../FileContentActions";
-import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
+import { i18n } from "../../../../__tests__/environment/IntlUtil";
 import Constants from "../../../../util/Constants";
-import { UncontrolledButtonDropdown } from "reactstrap";
-import {
-  flushPromises,
-  mountWithIntl,
-} from "../../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import * as Redux from "react-redux";
 
-vi.mock("react-redux", async (importOriginal) => {
-  const actual = (await importOriginal()) as any;
-  return {
-    ...actual,
-    useDispatch: vi.fn(),
-  };
-});
+vi.mock("react-redux", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("react-redux")>()),
+  useDispatch: vi.fn(),
+}));
 
 describe("FileContentActions", () => {
   let file: TermItFile;
@@ -25,48 +18,44 @@ describe("FileContentActions", () => {
   let onDownloadOriginal: (file: TermItFile) => void;
 
   beforeEach(() => {
-    mockUseI18n();
     file = new TermItFile({
       iri: Generator.generateUri(),
       label: "test.html",
     });
     onDownload = vi.fn();
     onDownloadOriginal = vi.fn();
+    vi.mocked(Redux.useDispatch).mockReturnValue(
+      vi.fn().mockResolvedValue(null)
+    );
   });
 
   it("does not display actions dropdown when file has no content", async () => {
-    vi.spyOn(Redux, "useDispatch").mockReturnValue(
-      vi.fn().mockResolvedValue(null)
-    );
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <FileContentActions
         file={file}
         onDownload={onDownload}
         onDownloadOriginal={onDownloadOriginal}
       />
     );
-    await act(async () => {
-      await flushPromises();
-    });
-    wrapper.update();
-    expect(wrapper.isEmptyRender()).toBeTruthy();
+    await act(async () => {});
+    expect(container).toBeEmptyDOMElement();
   });
 
   it("displays actions dropdown for file with content type", async () => {
-    vi.spyOn(Redux, "useDispatch").mockReturnValue(
+    vi.mocked(Redux.useDispatch).mockReturnValue(
       vi.fn().mockResolvedValue(Constants.HTML_MIME_TYPE)
     );
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <FileContentActions
         file={file}
         onDownload={onDownload}
         onDownloadOriginal={onDownloadOriginal}
       />
     );
-    await act(async () => {
-      await flushPromises();
-    });
-    wrapper.update();
-    expect(wrapper.exists(UncontrolledButtonDropdown)).toBeTruthy();
+    expect(
+      await screen.findByRole("button", {
+        name: i18n("resource.metadata.file.content"),
+      })
+    ).toBeInTheDocument();
   });
 });
