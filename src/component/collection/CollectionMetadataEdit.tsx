@@ -45,7 +45,6 @@ import "../misc/CustomToggle.scss";
 import { TOGGLE_STYLE } from "../term/TermListToggle";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import { loadIdentifier } from "../asset/CreateAssetUtils";
-import { useDebouncedCallback } from "use-debounce";
 import {
   createSkosCollection,
   loadSkosCollection,
@@ -60,6 +59,7 @@ import { loadVocabulary } from "../../action/AsyncActions";
 import { AsyncAction, AsyncFailureAction } from "../../action/ActionType";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
+import { useDebouncedCallback } from "use-debounce";
 
 export interface CollectionMetadataEditProps {}
 
@@ -157,7 +157,7 @@ const CollectionMetadataEdit: FunctionComponent<
     resolveIdentifier(value);
   };
 
-  const resolveIdentifier = (title: string) => {
+  const resolveIdentifier = useDebouncedCallback((title: string) => {
     const isPrimaryLanguage =
       vocabulary.primaryLanguage == null ||
       selectedLanguage === vocabulary.primaryLanguage;
@@ -173,16 +173,13 @@ const CollectionMetadataEdit: FunctionComponent<
         setData((prev) => ({ ...prev, iri: response }));
       }
     });
-  };
+  }, Constants.INPUT_DEBOUNCE_WAIT_TIME);
 
-  const onIriChange = useDebouncedCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.currentTarget.value;
-      generateIri.current = false;
-      setData((prev) => ({ ...prev, iri: value }));
-    },
-    Constants.INPUT_DEBOUNCE_WAIT_TIME
-  );
+  const onIriChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    generateIri.current = false;
+    setData((prev) => ({ ...prev, iri: value }));
+  };
 
   const onDescriptionChange = useCallback(
     (value: string) => {
