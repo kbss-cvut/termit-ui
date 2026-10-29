@@ -153,9 +153,12 @@ export const InfiniteTable = <T,>(props: TanstackTableProps<T>) => {
       refetchOnWindowFocus: false,
     });
 
+  // TanStack caches values computed by column accessors in the row instances, which are recreated only when data change.
+  // A new array is created when columns change, so filtering and sorting use the current accessors (e.g., locale-dependent labels).
   const flatData: T[] = useMemo(
     () => data?.pages?.flatMap((page) => page.pageContent) ?? [],
-    [data]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, props.columns]
   );
   /// total count reported by the first page or 0
   const totalDBRowCount = data?.pages?.[0]?.totalCount ?? 0;
