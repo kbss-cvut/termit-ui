@@ -1,11 +1,7 @@
 import { ProfileActionButtons } from "../ProfileActionButtons";
-import { Button, ButtonToolbar } from "reactstrap";
-import { GoKey, GoPencil } from "react-icons/go";
-import { shallow } from "enzyme";
-import {
-  intlFunctions,
-  mockUseI18n,
-} from "../../../__tests__/environment/IntlUtil";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { fireEvent, screen } from "@testing-library/react";
+import { i18n } from "../../../__tests__/environment/IntlUtil";
 
 describe("ProfileActionButtons", () => {
   let showProfileEdit: () => void;
@@ -16,82 +12,62 @@ describe("ProfileActionButtons", () => {
     showProfileEdit = vi.fn();
     navigateToChangePasswordRoute = vi.fn();
     edit = false;
-    mockUseI18n();
   });
 
   it("correctly renders component if !edit", () => {
-    const wrapper = shallow(
+    renderWithIntl(
       <ProfileActionButtons
         edit={edit}
         showProfileEdit={showProfileEdit}
         navigateToChangePasswordRoute={navigateToChangePasswordRoute}
-        {...intlFunctions()}
       />
     );
-    const buttonToolbar = wrapper.find(ButtonToolbar);
-    const buttons = buttonToolbar.find(Button);
-    const buttonEditLabel = buttonToolbar
-      .find(Button)
-      .findWhere((b) => b.key() === "profile.edit")
-      .find(GoPencil);
-    const buttonChangePasswordLabel = buttonToolbar
-      .find(Button)
-      .findWhere((b) => b.key() === "profile.change.password")
-      .find(GoKey);
 
     // expect(buttonToolbar.length).toEqual(1);
-    expect(buttons.length).toEqual(2);
-    expect(buttonEditLabel.length).toEqual(1);
-    expect(buttonChangePasswordLabel.length).toEqual(1);
+    expect(screen.getAllByRole("button")).toHaveLength(2);
+    expect(
+      screen.getByRole("button", { name: i18n("edit") })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: i18n("profile.change-password") })
+    ).toBeInTheDocument();
   });
 
   it("correctly renders component if edit", () => {
-    const wrapper = shallow(
+    renderWithIntl(
       <ProfileActionButtons
         edit={true}
         showProfileEdit={showProfileEdit}
         navigateToChangePasswordRoute={navigateToChangePasswordRoute}
-        {...intlFunctions()}
       />
     );
-
-    const buttonToolbar = wrapper.find(ButtonToolbar);
-    const buttons = buttonToolbar.find(Button);
-
-    expect(buttonToolbar.length).toEqual(1);
-    expect(buttons.length).toEqual(0);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
   it("calls navigateToChangePassword route on change password button click", () => {
-    const wrapper = shallow(
+    renderWithIntl(
       <ProfileActionButtons
         edit={edit}
         showProfileEdit={showProfileEdit}
         navigateToChangePasswordRoute={navigateToChangePasswordRoute}
-        {...intlFunctions()}
       />
     );
 
-    wrapper
-      .find(Button)
-      .findWhere((b) => b.key() === "profile.change.password")
-      .simulate("click");
+    fireEvent.click(
+      screen.getByRole("button", { name: i18n("profile.change-password") })
+    );
     expect(navigateToChangePasswordRoute).toHaveBeenCalled();
   });
 
   it("calls showProfileEdit route on edit profile button click", () => {
-    const wrapper = shallow(
+    renderWithIntl(
       <ProfileActionButtons
         edit={edit}
         showProfileEdit={showProfileEdit}
         navigateToChangePasswordRoute={navigateToChangePasswordRoute}
-        {...intlFunctions()}
       />
     );
-    wrapper
-      .find(Button)
-      .findWhere((b) => b.key() === "profile.edit")
-      .simulate("click");
+    fireEvent.click(screen.getByRole("button", { name: i18n("edit") }));
     expect(showProfileEdit).toHaveBeenCalled();
   });
 });
