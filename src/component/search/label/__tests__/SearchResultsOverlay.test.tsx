@@ -4,13 +4,15 @@ import SearchResult, {
 import Generator from "../../../../__tests__/environment/Generator";
 import Vocabulary from "../../../../util/VocabularyUtils";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
-import { mountWithIntl } from "../../../../__tests__/environment/Environment";
-import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
+import {
+  mockUseI18n,
+  formatMessage,
+} from "../../../../__tests__/environment/IntlUtil";
 import SearchResultsOverlay, {
   MAX_RENDERED_RESULTS,
 } from "../SearchResultsOverlay";
-import { Simulate } from "react-dom/test-utils";
-import { ReactWrapper } from "enzyme";
+import { fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import RdfsResource from "../../../../model/RdfsResource";
 import { langString } from "../../../../model/MultilingualString";
@@ -58,89 +60,77 @@ describe("SearchResultsOverlay", () => {
   let onClose: () => void;
   let onOpenSearch: () => void;
 
-  let element: HTMLDivElement;
-  let wrapper: ReactWrapper;
-
   beforeEach(() => {
     onClose = vi.fn();
     onOpenSearch = vi.fn();
-    element = document.createElement("div");
-    element.id = "root";
-    document.body.appendChild(element);
-    vi.useFakeTimers();
-    mockUseI18n();
     vi.spyOn(Redux, "useSelector").mockReturnValue([]);
-  });
-
-  afterEach(() => {
-    wrapper.unmount();
-    vi.clearAllTimers();
-    document.body.removeChild(element);
-  });
-
-  it("shows only first x search results, others can be viewed on dedicated search page", () => {
-    const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
-    renderWithResults(results);
-    const items = document.getElementsByClassName("search-result-link");
-    expect(items.length).toEqual(MAX_RENDERED_RESULTS);
+    mockUseI18n();
   });
 
   function renderWithResults(results: SearchResult[]) {
-    wrapper = mountWithIntl(
+    renderWithIntl(<div id="search-target" />);
+    return renderWithIntl(
       <MemoryRouter>
         <SearchResultsOverlay
-          targetId="root"
+          targetId="search-target"
           show={true}
           searchResults={results}
           onClose={onClose}
           onOpenSearch={onOpenSearch}
         />
-      </MemoryRouter>,
-      { attachTo: element }
+      </MemoryRouter>
     );
   }
 
+  it("shows only first x search results, others can be viewed on dedicated search page", () => {
+    const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
+    renderWithResults(results);
+    const items = document.querySelectorAll(".search-result-link");
+    expect(items.length).toEqual(MAX_RENDERED_RESULTS);
+  });
+
   it("renders info message about no results when empty results are provided", () => {
     renderWithResults([]);
-    const items = document.getElementsByClassName("search-result-link");
-    expect(items.length).toEqual(0);
+    const items = document.querySelector(".search-result-link");
+    expect(items).toBeNull();
     expect(
-      document.getElementsByClassName("search-result-no-results").length
-    ).toEqual(1);
+      document.querySelector(".search-result-no-results")!.textContent
+    ).toContain("No results found");
   });
 
   it("renders count info when more results than displayable count are provided", () => {
     const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
     renderWithResults(results);
-    expect(
-      document.getElementsByClassName("search-result-link").length
-    ).toEqual(MAX_RENDERED_RESULTS);
-    expect(
-      document.getElementsByClassName("search-result-info").length
-    ).toEqual(1);
+    expect(document.querySelectorAll(".search-result-link").length).toEqual(
+      MAX_RENDERED_RESULTS
+    );
+    expect(document.querySelector(".search-result-info")).toHaveTextContent(
+      formatMessage("main.search.count-info-and-link", {
+        displayed: MAX_RENDERED_RESULTS,
+        count: results.length,
+      })
+    );
   });
 
   it("renders results as links leading to result details", () => {
     const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS);
     renderWithResults(results);
-    const links = document.getElementsByClassName("m-asset-link");
+    const links = document.querySelectorAll(".m-asset-link");
     expect(links.length).toEqual(MAX_RENDERED_RESULTS);
   });
 
   it("invokes search open when no results info link is clicked", () => {
     renderWithResults([]);
-    const noResultsInfo = document.getElementsByClassName(
-      "search-result-no-results"
-    )[0];
-    Simulate.click(noResultsInfo);
+    const noResultsInfo = document.querySelector(".search-result-no-results")!;
+    fireEvent.click(noResultsInfo);
     expect(onOpenSearch).toHaveBeenCalled();
   });
 
   it("invokes search open when count info link is clicked", () => {
     const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
     renderWithResults(results);
-    const infoLink = document.getElementsByClassName("search-result-info")[0];
-    Simulate.click(infoLink);
+    const infoLink = document.querySelector(".search-result-info")!;
+    fireEvent.click(infoLink);
     expect(onOpenSearch).toHaveBeenCalled();
   });
 
@@ -166,7 +156,7 @@ describe("SearchResultsOverlay", () => {
       }),
     ];
     renderWithResults(results);
-    const items = document.getElementsByClassName("search-result-link");
+    const items = document.querySelectorAll(".search-result-link");
     expect(items.length).toEqual(1);
   });
 
@@ -174,7 +164,7 @@ describe("SearchResultsOverlay", () => {
     const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
     results.push(results[0].copy());
     renderWithResults(results);
-    const infoLink = document.getElementsByClassName("search-result-info")[0];
+    const infoLink = document.querySelector(".search-result-info")!;
     const expCount = results.length - 1;
     expect(infoLink.textContent).toContain(expCount.toString());
   });
@@ -192,7 +182,7 @@ describe("SearchResultsOverlay", () => {
     });
     results.push(newItem);
     renderWithResults(results);
-    const items = document.getElementsByClassName("search-result-link");
+    const items = document.querySelectorAll(".search-result-link");
     expect(items.length).toEqual(results.length - 1);
     expect(items[0].id).toContain(newItem.iri);
   });
@@ -201,9 +191,9 @@ describe("SearchResultsOverlay", () => {
     const results = generateResults(Vocabulary.TERM, 1);
     results.push(results[0].copy());
     renderWithResults(results);
-    const infoLink = document.getElementById("search-results-link");
+    const infoLink = document.querySelector(".search-result-info");
     expect(infoLink).toBeNull();
-    const items = document.getElementsByClassName("search-result-link");
+    const items = document.querySelectorAll(".search-result-link");
     expect(items.length).toEqual(1);
   });
 
@@ -233,10 +223,10 @@ describe("SearchResultsOverlay", () => {
     (Redux.useSelector as Mock).mockReset();
     vi.spyOn(Redux, "useSelector").mockReturnValue([states[1].iri]);
     renderWithResults(results);
-    const items = document.getElementsByClassName("search-result-link");
-    expect(items.length).toEqual(0);
+    const items = document.querySelector(".search-result-link");
+    expect(items).toBeNull();
     expect(
-      document.getElementsByClassName("search-result-no-results").length
-    ).toEqual(1);
+      document.querySelector(".search-result-no-results")!.textContent
+    ).toContain("No results found");
   });
 });
