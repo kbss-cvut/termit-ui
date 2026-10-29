@@ -201,7 +201,7 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
           <CustomInput onChange={onSearchInput} value={searchValue} />
         </Col>
       </Row>
-      <Row className={"skos-collections-list mx-0"}>
+      <Row className={"skos-collections-list mx-0 relative"}>
         <If expression={pageContent.length === 0}>
           <Label>{i18n("collections.empty")}</Label>
         </If>
