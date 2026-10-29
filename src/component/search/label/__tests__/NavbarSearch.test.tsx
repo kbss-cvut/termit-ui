@@ -1,13 +1,13 @@
 import { NavbarSearch } from "../NavbarSearch";
-import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
-import SearchResultsOverlay from "../SearchResultsOverlay";
+import {
+  intlFunctions,
+  i18n,
+} from "../../../../__tests__/environment/IntlUtil";
 import Routes, { Route } from "../../../../util/Routes";
-import { shallow } from "enzyme";
 import SearchResult from "../../../../model/search/SearchResult";
 import Generator from "../../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import Routing from "../../../../util/Routing";
-import { InputGroup } from "reactstrap";
 import { EMPTY_USER } from "../../../../model/User";
 import {
   location,
@@ -15,16 +15,32 @@ import {
   routingProps,
 } from "../../../../__tests__/environment/TestUtil";
 import SearchQuery from "../../../../model/search/SearchQuery";
-import { langString } from "../../../../model/MultilingualString";
+import { langString, getLocalized } from "../../../../model/MultilingualString";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
+import { act, fireEvent, screen } from "@testing-library/react";
+import type { ComponentProps } from "react";
 
 vi.mock("../../../../util/Routing");
+vi.mock("../SearchResultsOverlay", () => ({
+  default: ({
+    show,
+    searchResults,
+  }: {
+    show: boolean;
+    searchResults: SearchResult[];
+  }) =>
+    show ? (
+      <div data-testid="search-results">
+        {searchResults.map((result) => (
+          <div key={result.iri}>{getLocalized(result.label)}</div>
+        ))}
+      </div>
+    ) : null,
+}));
 
 describe("NavbarSearch", () => {
-  let updateSearchFilter: () => Promise<object>;
-  let resetSearchFilter: () => void;
-
+  let props: ComponentProps<typeof NavbarSearch>;
   const user = Generator.generateUser();
-
   const searchResults = [
     new SearchResult({
       iri: Generator.generateUri(),
@@ -35,238 +51,143 @@ describe("NavbarSearch", () => {
     }),
   ];
 
-  const navbarConnections = () => {
-    return {
-      updateSearchFilter,
-      resetSearchFilter,
+  beforeEach(() => {
+    props = {
+      updateSearchFilter: vi.fn().mockResolvedValue([]),
+      resetSearchFilter: vi.fn(),
       ...routingProps(),
       indexedLanguages: [],
+      searchQuery: new SearchQuery(),
+      navbar: false,
+      user,
+      searchResults: null,
+      ...intlFunctions(),
     };
-  };
-
-  beforeEach(() => {
-    updateSearchFilter = vi.fn().mockImplementation(() => Promise.resolve([]));
-    resetSearchFilter = vi.fn();
   });
 
-  it("does not render results component for initial state", () => {
-    const wrapper = shallow(
-      <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    const resultsOverlay = wrapper.find(SearchResultsOverlay);
-    expect(resultsOverlay.exists()).toBeFalsy();
-  });
-
-  it("invokes search on change", () => {
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    const searchStr = "test";
-    const input = wrapper.find("#main-search-input");
-    input.simulate("change", { target: { value: searchStr } });
-    return Promise.resolve().then(() => {
-      expect(updateSearchFilter).toHaveBeenCalled();
-    });
-  });
-
-  it("does not display search results when current route is search", () => {
-    verifyResultsNotDisplayed(Routes.search);
-  });
-
-  function verifyResultsNotDisplayed(route: Route) {
-    const props = navbarConnections();
-    props.location.pathname = route.path;
-    props.match.path = route.path;
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={false}
-        user={user}
-        searchResults={searchResults}
-        {...props}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.setState({ showResults: true, searchOriginNavbar: false });
-    wrapper.update();
-    expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeFalsy();
+  function renderSearch(overrides: Partial<typeof props> = {}) {
+    props = { ...props, ...overrides };
+    return renderWithIntl(<NavbarSearch {...props} />);
   }
 
-  it("renders results when they are available", () => {
-    const isInNavbar = false;
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={isInNavbar}
-        user={user}
-        searchResults={searchResults}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.setState({ showResults: true, searchOriginNavbar: isInNavbar });
-    wrapper.update();
-    expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeTruthy();
-    expect(wrapper.find(SearchResultsOverlay).prop("searchResults")).toEqual(
-      searchResults
+  async function search() {
+    await act(async () => {
+      fireEvent.change(screen.getByRole("searchbox", { name: "Search" }), {
+        target: { value: "test" },
+      });
+    });
+  }
+
+  it("does not render results component for initial state", () => {
+    renderSearch();
+    expect(screen.queryByTestId("search-results")).not.toBeInTheDocument();
+  });
+
+  it("invokes search on change", async () => {
+    renderSearch();
+    await search();
+    expect(props.updateSearchFilter).toHaveBeenCalledWith(
+      "test",
+      props.searchQuery.language
     );
   });
 
-  it("hides results when route changes", () => {
-    const isInNavbar = false;
-    const wrapper = shallow<NavbarSearch>(
+  async function verifyResultsNotDisplayed(route: Route) {
+    renderSearch({
+      searchResults,
+      location: { ...location(), pathname: route.path },
+      match: { ...match(), path: route.path },
+    });
+    await search();
+    expect(props.updateSearchFilter).toHaveBeenCalled();
+    expect(screen.queryByTestId("search-results")).not.toBeInTheDocument();
+  }
+
+  it("does not display search results when current route is search", async () => {
+    await verifyResultsNotDisplayed(Routes.search);
+  });
+
+  it("renders results when they are available", async () => {
+    renderSearch({ searchResults });
+    await search();
+    expect(screen.getByTestId("search-results")).toHaveTextContent("test");
+  });
+
+  it("hides results when route changes", async () => {
+    const { rerender } = renderSearch({ searchResults });
+    await search();
+    expect(screen.getByTestId("search-results")).toBeInTheDocument();
+    rerender(
       <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={isInNavbar}
-        user={user}
-        searchResults={searchResults}
-        {...navbarConnections()}
-        {...intlFunctions()}
+        {...props}
+        location={{ ...location(), pathname: Routes.vocabularies.path }}
+        match={{ ...match(), path: Routes.vocabularies.path }}
       />
     );
-    wrapper.setState({ showResults: true, searchOriginNavbar: isInNavbar });
-    wrapper.update();
-    expect(wrapper.find(SearchResultsOverlay).prop("show")).toBeTruthy();
-    const newLoc = Object.assign(location(), {
-      pathname: Routes.vocabularies.path,
-    });
-    const newMatch = Object.assign(match(), { path: Routes.vocabularies.path });
-    wrapper.setProps({ location: newLoc, match: newMatch });
-    wrapper.update();
-    expect(wrapper.find(SearchResultsOverlay).length).toEqual(0);
+    expect(screen.queryByTestId("search-results")).not.toBeInTheDocument();
   });
 
   it("transitions to search view on enter", () => {
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    const input = wrapper.find("#main-search-input");
-    input.simulate("keyPress", { key: "Enter" });
+    renderSearch();
+    fireEvent.keyPress(screen.getByRole("searchbox"), {
+      key: "Enter",
+      charCode: 13,
+    });
     expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search);
   });
 
   it("renders icon before input if search is in navbar", () => {
-    const searchString = "test";
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery({ searchString })}
-        navbar={true}
-        user={user}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    const inputGroup = wrapper.find(InputGroup);
-    expect(inputGroup.childAt(0).prop("id")).toEqual("search-icon");
-    expect(inputGroup.childAt(1).prop("id")).toEqual(
-      "main-search-input-navbar"
-    );
-    expect(inputGroup.childAt(2).prop("id")).toEqual("search-reset");
-    expect(inputGroup.children().length).toEqual(3);
+    const { container } = renderSearch({
+      navbar: true,
+      searchQuery: new SearchQuery({ searchString: "test" }),
+    });
+    const group = container.querySelector(".input-group")!;
+    expect(Array.from(group.children).map((child) => child.id)).toEqual([
+      "search-icon",
+      "main-search-input-navbar",
+      "search-reset",
+    ]);
   });
 
   it("renders icon after input if search is not in navbar", () => {
-    const searchString = "test";
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery({ searchString })}
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    const inputGroup = wrapper.find(InputGroup);
-    expect(inputGroup.childAt(0).prop("id")).toEqual("main-search-input");
-    expect(inputGroup.childAt(1).prop("id")).toEqual("search-icon");
-    expect(inputGroup.childAt(2).prop("id")).toEqual("search-reset");
-    expect(inputGroup.children().length).toEqual(3);
+    const { container } = renderSearch({
+      searchQuery: new SearchQuery({ searchString: "test" }),
+    });
+    const group = container.querySelector(".input-group")!;
+    expect(Array.from(group.children).map((child) => child.id)).toEqual([
+      "main-search-input",
+      "search-icon",
+      "search-reset",
+    ]);
   });
 
   it("does not render clear icon if search string is empty", () => {
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.find("#search-reset").length).toEqual(0);
+    renderSearch();
+    expect(screen.queryByTitle(i18n("search.reset"))).not.toBeInTheDocument();
   });
 
   it("transitions to public search view on enter when user is not logged in", () => {
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={false}
-        user={EMPTY_USER}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    const input = wrapper.find("#main-search-input");
-    input.simulate("keyPress", { key: "Enter" });
+    renderSearch({ user: EMPTY_USER });
+    fireEvent.keyPress(screen.getByRole("searchbox"), {
+      key: "Enter",
+      charCode: 13,
+    });
     expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch);
   });
 
-  it("does not display search results when current route is public search results", () => {
-    verifyResultsNotDisplayed(Routes.publicSearch);
+  it("does not display search results when current route is public search results", async () => {
+    await verifyResultsNotDisplayed(Routes.publicSearch);
   });
 
   it("transitions to search view on search icon click", () => {
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={false}
-        user={user}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.find("#search-icon").simulate("click");
+    renderSearch();
+    fireEvent.click(screen.getByTitle(i18n("main.search.tooltip")));
     expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.search);
   });
 
   it("transitions to search view on search icon click when user is not logged in", () => {
-    const wrapper = shallow<NavbarSearch>(
-      <NavbarSearch
-        searchQuery={new SearchQuery()}
-        navbar={false}
-        user={EMPTY_USER}
-        searchResults={null}
-        {...navbarConnections()}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.find("#search-icon").simulate("click");
+    renderSearch({ user: EMPTY_USER });
+    fireEvent.click(screen.getByTitle(i18n("main.search.tooltip")));
     expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.publicSearch);
   });
 });

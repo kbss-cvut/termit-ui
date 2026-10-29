@@ -1,13 +1,13 @@
-import { shallow } from "enzyme";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import UploadFile from "../UploadFile";
-import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
+import { i18n } from "../../../../__tests__/environment/IntlUtil";
 import * as Redux from "react-redux";
-import Dropzone from "react-dropzone";
 import Generator from "../../../../__tests__/environment/Generator";
 
-vi.mock("react-redux", () => ({
-  ...vi.importActual("react-redux"),
-  useDispatch: vi.fn(),
+vi.mock("react-redux", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("react-redux")>()),
   useSelector: vi.fn(),
 }));
 
@@ -16,26 +16,31 @@ describe("UploadFile", () => {
 
   beforeEach(() => {
     setFile = vi.fn();
-    mockUseI18n();
+    vi.mocked(Redux.useSelector).mockReturnValue({ maxFileUploadSize: "1KB" });
   });
 
-  it("passes dropped file to parent", () => {
-    vi.spyOn(Redux, "useSelector").mockReturnValue({
-      maxFileUploadSize: "1KB",
-    });
-    const wrapper = shallow(<UploadFile setFile={setFile} />);
+  it("passes dropped file to parent", async () => {
+    const user = userEvent.setup();
+    const { container } = renderWithIntl(<UploadFile setFile={setFile} />);
     const file = Generator.generateFile("test.html", 100);
-    wrapper.find(Dropzone).prop("onDrop")!([file], [], {} as any);
+    await user.upload(
+      container.querySelector<HTMLInputElement>('input[type="file"]')!,
+      file
+    );
     expect(setFile).toHaveBeenCalledWith(file);
   });
 
-  it("does not provide dropped file to parent when file size exceeds limit", () => {
-    vi.spyOn(Redux, "useSelector").mockReturnValue({
-      maxFileUploadSize: "1KB",
-    });
-    const wrapper = shallow(<UploadFile setFile={setFile} />);
+  it("does not provide dropped file to parent when file size exceeds limit", async () => {
+    const user = userEvent.setup();
+    const { container } = renderWithIntl(<UploadFile setFile={setFile} />);
     const file = Generator.generateFile("test.html", 1025);
-    wrapper.find(Dropzone).prop("onDrop")!([file], [], {} as any);
+    await user.upload(
+      container.querySelector<HTMLInputElement>('input[type="file"]')!,
+      file
+    );
+    expect(
+      screen.getByText(i18n("file.upload.size.exceeded"))
+    ).toBeInTheDocument();
     expect(setFile).not.toHaveBeenCalled();
   });
 });
