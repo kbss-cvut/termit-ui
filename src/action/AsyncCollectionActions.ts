@@ -123,14 +123,8 @@ export function loadCollectionMembers(
     dispatch(asyncActionRequest(action, true));
     const { collectionUri, vocabularyUri } = parseIris(collection);
 
-    let endpoint = path(vocabularyUri);
-    if (collection.isOrdered()) {
-      endpoint += "/ordered";
-    }
-    endpoint += `/${collectionUri.fragment}/members`;
-
     return Ajax.getResponse(
-      endpoint,
+      `${path(vocabularyUri)}/${collectionUri.fragment}/members`,
       queryParams(collectionUri, vocabularyUri)
         .param("page", pageRequest.page.toString())
         .param("size", pageRequest.size.toString())
