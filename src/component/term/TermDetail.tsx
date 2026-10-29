@@ -385,6 +385,12 @@ export class TermDetail extends EditableComponent<
             selectLanguage={this.setLanguage}
           />
         )}
+        <TermIriMigrationDialog
+          term={term}
+          vocabulary={vocabulary}
+          isVisible={this.state.showIriMigrationDialog}
+          onClose={this.closeIriMigrationDialog}
+        />
       </div>
     );
   }
@@ -411,12 +417,6 @@ export class TermDetail extends EditableComponent<
         <div className="small italics">
           {altLabels.length > 0 ? altLabels : "\u00a0"}
         </div>
-        <TermIriMigrationDialog
-          term={term}
-          vocabulary={vocabulary}
-          isVisible={this.state.showIriMigrationDialog}
-          onClose={this.closeIriMigrationDialog}
-        />
       </>
     );
   }
