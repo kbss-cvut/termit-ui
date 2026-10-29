@@ -12,6 +12,10 @@ import {
 import VocabularyUtils from "../util/VocabularyUtils";
 import Utils from "../util/Utils";
 import { TermInfo } from "./Term";
+import WithUnmappedProperties, {
+  PropertyValuesType,
+  stringifyPropertyValue,
+} from "./WithUnmappedProperties";
 
 export const CONTEXT = {
   ...ASSET_CONTEXT,
@@ -33,6 +37,8 @@ export interface SkosCollectionData extends HasIdentifier, HasTypes {
   vocabulary: HasIdentifier;
 }
 
+const MAPPED_PROPERTIES = ["@context", ...Object.keys(CONTEXT)];
+
 export class SkosCollection
   extends Asset
   implements SkosCollectionData, HasLocalizableLabel
@@ -44,6 +50,7 @@ export class SkosCollection
 
   constructor(data: SkosCollectionData) {
     super(data);
+    Object.assign(this, data);
     this.description = data.description;
     this.title = data.title;
     this.vocabulary = data.vocabulary;
@@ -70,6 +77,33 @@ export class SkosCollection
    */
   public isOrdered() {
     return isOrderedCollection(this);
+  }
+
+  public snapshotOf() {
+    return this.unmappedProperties.has(
+      VocabularyUtils.IS_SNAPSHOT_OF_COLLECTION
+    )
+      ? stringifyPropertyValue(
+          this.unmappedProperties.get(
+            VocabularyUtils.IS_SNAPSHOT_OF_COLLECTION
+          )![0]
+        )
+      : undefined;
+  }
+
+  public isSnapshot() {
+    return this.hasType(VocabularyUtils.COLLECTION_SNAPSHOT);
+  }
+
+  public isEditable(): boolean {
+    return !this.isSnapshot();
+  }
+
+  public get unmappedProperties(): Map<string, PropertyValuesType> {
+    return WithUnmappedProperties.getUnmappedProperties(
+      this,
+      MAPPED_PROPERTIES
+    );
   }
 }
 

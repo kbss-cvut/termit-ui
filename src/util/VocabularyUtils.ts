@@ -180,8 +180,10 @@ const VocabularyUtils = {
 
   TERM_SNAPSHOT: _NS_DATA_DESCRIPTION + "version-of-term",
   VOCABULARY_SNAPSHOT: _NS_DATA_DESCRIPTION + "version-of-vocabulary",
+  COLLECTION_SNAPSHOT: _NS_DATA_DESCRIPTION + "version-of-collection",
   IS_SNAPSHOT_OF_TERM: _NS_DATA_DESCRIPTION + "is-version-of-term",
   IS_SNAPSHOT_OF_VOCABULARY: _NS_DATA_DESCRIPTION + "is-version-of-vocabulary",
+  IS_SNAPSHOT_OF_COLLECTION: _NS_DATA_DESCRIPTION + "is-version-of-collection",
 
   ACCESS_CONTROL_LIST: _NS_TERMIT + "access-control-list",
   HAS_ACCESS_CONTROL_RECORD: _NS_TERMIT + "has-access-control-record",

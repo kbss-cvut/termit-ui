@@ -4,10 +4,11 @@ import { useI18n } from "../hook/useI18n";
 import { UncontrolledTooltip } from "reactstrap";
 import "./SnapshotIcon.scss";
 
-const SnapshotIcon: React.FC<{ assetType: string; id: string }> = ({
-  assetType,
-  id,
-}) => {
+const SnapshotIcon: React.FC<{
+  assetType: string;
+  id: string;
+  messageKey?: string;
+}> = ({ assetType, id, messageKey = "snapshot.message" }) => {
   const { i18n, formatMessage } = useI18n();
 
   return (
@@ -19,7 +20,7 @@ const SnapshotIcon: React.FC<{ assetType: string; id: string }> = ({
         target={id}
         fade={true}
       >
-        {formatMessage("snapshot.message", {
+        {formatMessage(messageKey, {
           type: i18n(assetType).toLowerCase(),
         })}
       </UncontrolledTooltip>

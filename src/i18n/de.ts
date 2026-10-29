@@ -975,6 +975,7 @@ const de = {
     "type.user": "Benutzer",
     "type.usergroup": "Benutzergruppe",
     "type.userrole": "Benutzerrolle",
+    "type.collection": "Sammlung",
     "datatype.string": "Textzeichenfolge",
     "datatype.langString": "Mehrsprachige Zeichenfolge",
     "datatype.integer": "Ganzzahl",
@@ -1129,6 +1130,8 @@ const de = {
     "collection.members.remove.title": "Mitglied aus dieser Sammlung entfernen",
     "collection.members.remove.description":
       'Sind Sie sicher, dass Sie das Mitglied "{label}" aus der Sammlung entfernen möchten?',
+    "collection.snapshot.message":
+      "Diese Sammlung ist ein Snapshot und schreibgeschützt. Klicken Sie, um die aktuelle Version anzuzeigen.",
   },
 };
 
