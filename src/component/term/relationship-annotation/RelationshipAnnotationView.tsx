@@ -69,10 +69,12 @@ export const RelationshipAnnotationView: React.FC<{
         />
       )}
       {annotationAtts.map((att) => {
-        const annotation: RelationshipAnnotation =
-          relationshipAnnotations.find(
-            (ann) => ann.attribute.iri === att.iri
-          ) || ({} as RelationshipAnnotation);
+        const annotation = relationshipAnnotations.find(
+          (ann) => ann.attribute.iri === att.iri
+        );
+        if (!annotation) {
+          return null;
+        }
         let value = annotation.value;
         if (multilingualAttIris.includes(att.iri)) {
           value = compactTranslations(value);
