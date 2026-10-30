@@ -7,7 +7,7 @@ import {
   publishMessage,
 } from "./SyncActions";
 import Constants from "../util/Constants";
-import Ajax, { accept, content, param, paramsSerializer } from "../util/Ajax";
+import Ajax, { accept, content, param } from "../util/Ajax";
 import { ErrorData } from "../model/ErrorInfo";
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
@@ -119,23 +119,20 @@ export function removeCustomAttribute(
  * Exports the specified custom attributes as a JSON-LD profile and downloads it as a file.
  *
  * @param profile Description of the exported profile
- * @param customAttributeIris Identifiers of custom attributes to include in the profile
+ * @param customAttributeUris Identifiers of custom attributes to include in the profile
  */
 export function exportCustomAttributesProfile(
   profile: CustomAttributesProfileDescriptionData,
-  customAttributeIris: string[]
+  customAttributeUris: string[]
 ) {
   const action = { type: ActionType.EXPORT_CUSTOM_ATTRIBUTES_PROFILE };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    const query = paramsSerializer({
-      customAttributeUris: customAttributeIris,
-    });
     return Ajax.post(
-      `${Constants.API_PREFIX}/data/profile/custom-attributes/export?${query}`,
+      `${Constants.API_PREFIX}/data/profile/custom-attributes/export`,
       content(
         Object.assign({}, profile, { "@context": PROFILE_DESCRIPTION_CONTEXT })
-      )
+      ).param("customAttributeUris", customAttributeUris)
     )
       .then((resp: AxiosResponse) => {
         const disposition = resp.headers[Constants.Headers.CONTENT_DISPOSITION];
