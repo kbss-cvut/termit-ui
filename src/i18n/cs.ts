@@ -672,6 +672,8 @@ const cs = {
       "Může se jednat o pojem z aktuálního slovníku nebo z jiného slovníku. Např. pojem 'vozidlo' souvisí s pojmem 'řidič'. " +
       "Nevybírejte pojem, který už je označen jako 'nadřazený pojem', nebo 'pojem se stejným významem'.",
     "term.metadata.vocabulary.tooltip": "Slovník, do kterého tento pojem patří",
+    "term.metadata.collection.tooltip": "Kolekce, do kterých tento pojem patří",
+    "term.metadata.collection.add.title": "Přidat pojem do kolekce",
     "term.metadata.related.tab.title": "Další související pojmy",
     "term.metadata.related.ontologically": "Ontologicky",
     "term.metadata.related.definitionally": "Definičně",

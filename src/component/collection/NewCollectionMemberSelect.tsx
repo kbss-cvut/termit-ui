@@ -1,88 +1,25 @@
 import {
   CollectionMemberData,
   isCollection,
-  isOrderedCollection,
   SkosCollection,
 } from "../../model/Collection";
 import Constants from "../../util/Constants";
 import { FetchOptionsFn, IntelligentTreeSelect } from "intelligent-tree-select";
-import { FunctionComponent, useCallback, useMemo } from "react";
+import { FunctionComponent, useCallback } from "react";
 import { useI18n } from "../hook/useI18n";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
 import { loadAddCollectionMemberOptions } from "../../action/AsyncCollectionActions";
 import Utils from "../../util/Utils";
-import { OptionRendererParams } from "../misc/treeselect/Renderers";
 import { getShortLocale } from "../../util/IntlUtil";
-import ResultItem from "../misc/treeselect/ResultItem";
-import classNames from "classnames";
-import { CollectionIcon } from "./CollectionIcon";
 import { getLocalized } from "../../model/MultilingualString";
+import { CollectionMemberSelectOption } from "./CollectionMemberSelectOption";
 
 export interface NewCollectionMemberSelectProps {
   collection: SkosCollection;
   value: CollectionMemberData | null;
   setValue: (value: CollectionMemberData | null) => void;
 }
-
-const CollectionMemberSelectOption = (
-  props: OptionRendererParams<CollectionMemberData>
-) => {
-  const {
-    valueKey,
-    renderAsTree,
-    labelKey,
-    getOptionLabel,
-    getOptionTitle,
-    inputValue,
-    isOptionExpanded,
-    isOptionFetchingChild,
-    childrenKey,
-    onOptionSelect,
-  } = props.selectProps;
-
-  const className = classNames("VirtualizedSelectOption", {
-    VirtualizedSelectDisabledOption: props.isDisabled,
-    VirtualizedSelectSelectedOption: props.isSelected,
-    VirtualizedSelectFocusedOption: props.isFocused,
-  });
-
-  const addonBefore = useMemo(() => {
-    if (isCollection(props.data)) {
-      return (
-        <CollectionIcon
-          id={
-            "collection-member-collection-icon-" +
-            Utils.hashCode(props.data.iri)
-          }
-          isOrdered={isOrderedCollection(props.data)}
-        />
-      );
-    }
-    return undefined;
-  }, [props.data]);
-
-  return (
-    <ResultItem
-      key={props.data[valueKey]}
-      renderAsTree={renderAsTree}
-      className={className}
-      option={props.data}
-      childrenKey={childrenKey}
-      labelKey={labelKey}
-      valueKey={valueKey}
-      getOptionLabel={getOptionLabel}
-      getOptionTitle={getOptionTitle}
-      style={props.optionStyle}
-      searchString={inputValue}
-      addonBefore={addonBefore}
-      displayInfoOnHover={false}
-      isOptionExpanded={isOptionExpanded}
-      isOptionFetchingChild={isOptionFetchingChild}
-      onClick={() => onOptionSelect(props)}
-    />
-  );
-};
 
 /**
  * Select offering members that are not yet contained in the collection

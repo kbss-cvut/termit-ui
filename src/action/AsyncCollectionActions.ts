@@ -1,7 +1,7 @@
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType, { AsyncAction, AsyncFailureAction } from "./ActionType";
 import { PageRequest, PageRequestOptional, ThunkDispatch } from "../util/Types";
-import Ajax, { params } from "../util/Ajax";
+import Ajax, { param, params } from "../util/Ajax";
 import Constants from "../util/Constants";
 import {
   asyncActionFailure,
@@ -22,6 +22,7 @@ import {
 import { ErrorData } from "../model/ErrorInfo";
 import { EMPTY_PAGE, ResultPage } from "../model/ResultPage";
 import { AxiosResponse } from "axios";
+import Term from "../model/Term";
 
 function path(vocabularyUri: IRI) {
   return `${Constants.API_PREFIX}/vocabularies/${vocabularyUri.fragment}/collections`;
@@ -106,10 +107,9 @@ export function loadSkosCollections(
             dispatch(asyncActionSuccessWithPayload(action, page))
           );
       })
-      .catch((error: ErrorData) => {
-        asyncActionFailureWithMessage(error, action, dispatch);
-        return EMPTY_PAGE;
-      });
+      .catch((error: ErrorData) =>
+        asyncActionFailureWithMessage(error, action, dispatch)
+      );
   };
 }
 
@@ -309,6 +309,36 @@ export function removeCollectionMember(
       queryParams(collectionUri, vocabularyUri).param("member", memberIri)
     )
       .then(() => dispatch(asyncActionSuccess(action)))
+      .catch((error: ErrorData) =>
+        asyncActionFailureWithMessage(error, action, dispatch)
+      );
+  };
+}
+
+export function loadCollectionsWithTerm(term: Term) {
+  const action = { type: ActionType.LOAD_COLLECTIONS_WITH_TERM };
+  if (!term.vocabulary) {
+    throw new Error("Missing term vocabulary");
+  }
+  const vocabularyIri = VocabularyUtils.create(term.vocabulary.iri);
+  const termIri = VocabularyUtils.create(term.iri);
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+
+    return Ajax.get(
+      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/${termIri.fragment}/collections`,
+      param("namespace", vocabularyIri.namespace)
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<SkosCollectionDtoData>(
+          data,
+          CONTEXT
+        )
+          .then((dtos) => dtos.map((d) => new SkosCollectionDto(d)))
+          .then((result) =>
+            dispatch(asyncActionSuccessWithPayload(action, result))
+          )
+      )
       .catch((error: ErrorData) =>
         asyncActionFailureWithMessage(error, action, dispatch)
       );
