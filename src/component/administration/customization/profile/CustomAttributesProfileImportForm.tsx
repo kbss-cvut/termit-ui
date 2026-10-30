@@ -19,7 +19,9 @@ import {
 import Constants from "../../../../util/Constants";
 import { Label } from "reactstrap";
 import CustomInput from "../../../misc/CustomInput";
-import UploadFile from "../../../resource/file/UploadFile";
+import UploadFile, {
+  UploadFileHandle,
+} from "../../../resource/file/UploadFile";
 import { getLocalized } from "../../../../model/MultilingualString";
 import TextArea from "../../../misc/TextArea";
 import PromiseTrackingMask from "../../../misc/PromiseTrackingMask";
@@ -132,6 +134,7 @@ export const CustomAttributesProfileImportForm = forwardRef<
   const dispatch: ThunkDispatch = useDispatch();
 
   const abortControllerRef = useRef(new AbortController());
+  const uploadFileRef = useRef<UploadFileHandle>(null);
 
   const [downloadUri, setDownloadUri] = useState("");
 
@@ -175,6 +178,7 @@ export const CustomAttributesProfileImportForm = forwardRef<
         setProfile(null);
         setUriValidationResult(undefined);
         setFileValidationResult(undefined);
+        uploadFileRef.current?.reset();
       },
     }),
     [setProfile]
@@ -186,6 +190,8 @@ export const CustomAttributesProfileImportForm = forwardRef<
     cancelPending();
     if (value.trim().length > 0) {
       downloadProfile(value.trim());
+      uploadFileRef.current?.reset();
+      setFileValidationResult(undefined);
     } else {
       setUriValidationResult(undefined);
     }
@@ -193,6 +199,8 @@ export const CustomAttributesProfileImportForm = forwardRef<
 
   const onFileSelected = (file: File) => {
     cancelPending();
+    setDownloadUri("");
+    setUriValidationResult(undefined);
     loadFile(file);
   };
 
@@ -216,6 +224,7 @@ export const CustomAttributesProfileImportForm = forwardRef<
         validation={uriValidationResult}
       />
       <UploadFile
+        ref={uploadFileRef}
         setFile={onFileSelected}
         accept={ACCEPT}
         validation={fileValidationResult}
