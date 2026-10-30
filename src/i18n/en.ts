@@ -663,6 +663,8 @@ const en = {
       "It can be a term from the current vocabulary, or another vocabulary. For example, 'car' is related to 'driver'. " +
       "Do not pick a term which is already selected as a 'parent term', or an 'exact match'.",
     "term.metadata.vocabulary.tooltip": "Vocabulary this term belongs to",
+    "term.metadata.collection.tooltip": "Collections this term belongs to",
+    "term.metadata.collection.add.title": "Add term to a collection",
     "term.metadata.related.tab.title": "More related terms",
     "term.metadata.related.ontologically": "Ontologically",
     "term.metadata.related.definitionally": "Definitionally",

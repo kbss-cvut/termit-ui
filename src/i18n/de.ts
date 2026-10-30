@@ -637,6 +637,10 @@ const de = {
       "(Optional) verwandter Begriff (ohne Angaben zur Art der Beziehung zu machen). ",
     "term.metadata.vocabulary.tooltip":
       "Vokabular, zu dem dieser Begriff gehört",
+    "term.metadata.collection.tooltip":
+      "Sammlungen, zu denen dieser Begriff gehört",
+    "term.metadata.collection.add.title":
+      "Begriff zu einer Sammlung hinzufügen",
     "term.metadata.related.tab.title": "Weitere verwandte Begriffe",
     "term.metadata.related.ontologically": "Ontologisch",
     "term.metadata.related.definitionally": "Definitiv",

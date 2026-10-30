@@ -15,6 +15,7 @@ import TermTypes from "./TermTypes";
 import TermState from "./state/TermState";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import { TermCollectionsList } from "./TermCollectionsList";
 
 interface BasicTermMetadataProps {
   term: Term;
@@ -154,6 +155,19 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
             id="term-metadata-vocabulary"
             iri={term.vocabulary!.iri!}
           />
+        </Col>
+      </Row>
+      <Row>
+        <Col xl={2} md={4}>
+          <Label
+            className="attribute-label mb-3"
+            title={i18n("term.metadata.collection.tooltip")}
+          >
+            {i18n("collections.title")}
+          </Label>
+        </Col>
+        <Col xl={10} md={8}>
+          <TermCollectionsList term={term} vocabulary={vocabulary} />
         </Col>
       </Row>
       <Row>
