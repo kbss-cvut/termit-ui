@@ -23,6 +23,8 @@ import { CollectionSelect } from "../collection/CollectionSelect";
 import Vocabulary from "../../model/Vocabulary";
 import If from "../misc/If";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
+import { isVocabularyActionAuthorized } from "../vocabulary/authorization/IfVocabularyActionAuthorized";
+import AccessLevel from "../../model/acl/AccessLevel";
 
 const TERM_COLLECTIONS_LIST_PROMSIE_AREA = "TERM_COLLECTIONS_LIST_PROMSIE_AREA";
 
@@ -58,8 +60,14 @@ export const TermCollectionsList: FunctionComponent<{
     setSelectedCollection(null);
   }, []);
 
+  const isModificationAuthorized = isVocabularyActionAuthorized(
+    vocabulary,
+    AccessLevel.WRITE,
+    "edit"
+  );
+
   const addToCollection = useCallback(() => {
-    if (!selectedCollection) {
+    if (!selectedCollection || !isModificationAuthorized) {
       return;
     }
     const dto = new SkosCollectionDto(selectedCollection);
@@ -72,6 +80,7 @@ export const TermCollectionsList: FunctionComponent<{
   }, [
     closeAddDialog,
     dispatch,
+    isModificationAuthorized,
     loadCollectionsOfTerm,
     selectedCollection,
     term.iri,
@@ -79,16 +88,18 @@ export const TermCollectionsList: FunctionComponent<{
 
   const AddButton = useCallback(
     () => (
-      <BadgeButton
-        color="outline-dark"
-        onClick={() => setShowAddDialog(true)}
-        className="ml-1 align-top"
-        title={i18n("term.metadata.collection.add.title")}
-      >
-        <FaPlus />
-      </BadgeButton>
+      <If expression={isModificationAuthorized}>
+        <BadgeButton
+          color="outline-dark"
+          onClick={() => setShowAddDialog(true)}
+          className="ml-1 align-top"
+          title={i18n("term.metadata.collection.add.title")}
+        >
+          <FaPlus />
+        </BadgeButton>
+      </If>
     ),
-    [i18n]
+    [i18n, isModificationAuthorized]
   );
 
   return (
@@ -105,22 +116,24 @@ export const TermCollectionsList: FunctionComponent<{
         </If>
         <PromiseTrackingMask area={TERM_COLLECTIONS_LIST_PROMSIE_AREA} />
       </List>
-      <ConfirmCancelDialog
-        show={showAddDialog}
-        onClose={closeAddDialog}
-        onConfirm={addToCollection}
-        id={"term-collections-list-add-to-collection-dialog"}
-        title={i18n("term.metadata.collection.add.title")}
-        confirmKey={"collection.members.add"}
-        confirmDisabled={selectedCollection == null}
-      >
-        <CollectionSelect
-          vocabulary={vocabulary}
-          value={selectedCollection}
-          setValue={setSelectedCollection}
-          exclude={collections}
-        />
-      </ConfirmCancelDialog>
+      <If expression={isModificationAuthorized}>
+        <ConfirmCancelDialog
+          show={showAddDialog}
+          onClose={closeAddDialog}
+          onConfirm={addToCollection}
+          id={"term-collections-list-add-to-collection-dialog"}
+          title={i18n("term.metadata.collection.add.title")}
+          confirmKey={"collection.members.add"}
+          confirmDisabled={selectedCollection == null}
+        >
+          <CollectionSelect
+            vocabulary={vocabulary}
+            value={selectedCollection}
+            setValue={setSelectedCollection}
+            exclude={collections}
+          />
+        </ConfirmCancelDialog>
+      </If>
     </>
   );
 };
