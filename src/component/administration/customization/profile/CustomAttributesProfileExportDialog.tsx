@@ -79,7 +79,7 @@ export const CustomAttributesProfileExportDialog = forwardRef<
       assetType: "CUSTOM_ATTRIBUTE_PROFILE",
     }).then((resp) => {
       if (shouldGenerateIri.current) {
-        setIri(resp.data);
+        setIri(resp);
       }
     });
   }, Constants.INPUT_DEBOUNCE_WAIT_TIME);
