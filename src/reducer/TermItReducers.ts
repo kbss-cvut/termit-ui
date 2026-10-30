@@ -926,7 +926,8 @@ function skosCollections(
       }
       break;
     case ActionType.CREATE_COLLECTION: // fallthrough
-    case ActionType.REMOVE_COLLECTION:
+    case ActionType.REMOVE_COLLECTION: // fallthrough
+    case ActionType.IMPORT_VOCABULARY:
       if (isAsyncSuccess(action)) {
         return null; // reset data to force refetch
       }
