@@ -1141,6 +1141,37 @@ const en = {
       "Generation of a file annotations",
     "longrunningtasks.name.restoreBackup": "Backup restoration",
     "longrunningtasks.name.migration.identifier": "Resource identifier change",
+
+    "collections.title": "Collections",
+    "collections.empty": "There are no collections in this vocabulary.",
+    "collection.create": "New collection",
+    "collection.title": "Collection",
+    "collection.description": "Description",
+    "collection.iri.help":
+      "Collection identifier in the form of Internationalized Resource Identifier (IRI). It will be " +
+      "generated automatically based on the specified title, but you can adjust it manually. " +
+      "The identifier cannot be changed for existing collections.",
+    "collection.remove.description":
+      'Are you sure you want to permanently remove collection "{label}"?',
+    "collection.remove.confirm":
+      "To confirm the deletion of the collection, enter its label",
+    "collection.ordered": "Ordered collection",
+    "collection.ordered.toggle.help":
+      "This option cannot be changed for existing collections.",
+    "collection.ordered.toggle.description":
+      "Members of an ordered collection are kept in a defined order.",
+    "collection.members": "Members",
+    "collection.members.add": "Add member",
+    "collection.members.add.title": "Add collection member",
+    "collection.members.add.description":
+      "Select a collection or term that should be added to the collection.",
+    "collection.members.empty": "There are no members in this collection.",
+    "collection.members.noMatch":
+      "There are no members matching the searched label in this collection.",
+    "collection.members.remove": "Remove member",
+    "collection.members.remove.title": "Remove member from this collection",
+    "collection.members.remove.description":
+      'Are you sure you want to remove the member "{label}" from the collection?',
   },
 };
 

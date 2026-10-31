@@ -26,6 +26,7 @@ import {
 import { saveTermsFlatListPreference } from "../util/UISettingsUtil";
 import { Language } from "../util/Constants";
 import MessageType from "../model/MessageType";
+import { ThunkDispatch } from "../util/Types";
 
 export function asyncActionRequest(
   a: Action,
@@ -215,4 +216,13 @@ export function setTermsFlatList(flatList: boolean): SetTermsFlatListAction {
     type: ActionType.SET_TERM_FLAT_LIST,
     flatList,
   };
+}
+
+export function asyncActionFailureWithMessage(
+  error: ErrorData,
+  action: Action,
+  dispatch: ThunkDispatch
+) {
+  dispatch(publishMessage(new Message(error, MessageType.ERROR)));
+  return dispatch(asyncActionFailure(action, error));
 }

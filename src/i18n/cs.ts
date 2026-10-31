@@ -1148,6 +1148,37 @@ const cs = {
       "Generování anotací dokumentu",
     "longrunningtasks.name.restoreBackup": "Obnovení zálohy",
     "longrunningtasks.name.migration.identifier": "Změna identifikátoru zdroje",
+
+    "collections.title": "Kolekce",
+    "collections.empty": "V tomto slovníku nejsou žádné kolekce.",
+    "collection.create": "Nová kolekce",
+    "collection.title": "Kolekce",
+    "collection.description": "Popis",
+    "collection.iri.help":
+      "Identifikátor kolekce ve formě Internationalized Resource Identifier (IRI). Je " +
+      "vygenerován automaticky na základě názvu, ale může být ručně upraven. " +
+      "U existujících kolekcí identifikátor nelze změnit.",
+    "collection.remove.description":
+      'Opravdu chcete trvale odstranit kolekci "{label}"?',
+    "collection.remove.confirm":
+      "Pro potvrzení odstranění kolekce zadejte její název",
+    "collection.ordered": "Seřazená kolekce",
+    "collection.ordered.toggle.help":
+      "Tuto možnost nelze u existujících kolekcí změnit.",
+    "collection.ordered.toggle.description":
+      "Členové seřazené kolekce jsou udržováni v určeném pořadí.",
+    "collection.members": "Členové",
+    "collection.members.add": "Přidat člena",
+    "collection.members.add.title": "Přidat člena kolekce",
+    "collection.members.add.description":
+      "Vyberte kolekci nebo pojem, který chcete do kolekce přidat.",
+    "collection.members.empty": "Tato kolekce nemá žádné členy.",
+    "collection.members.noMatch":
+      "V této kolekci nejsou žádní členové odpovídající hledanému názvu.",
+    "collection.members.remove": "Odebrat člena",
+    "collection.members.remove.title": "Odebrat člena z této kolekce",
+    "collection.members.remove.description":
+      'Opravdu chcete odebrat člena "{label}" z kolekce?',
   },
 };
 

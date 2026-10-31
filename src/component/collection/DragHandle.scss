@@ -1,0 +1,15 @@
+.drag-handle {
+  cursor: row-resize;
+  display: flex;
+  flex-grow: 1;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+  // prevents scrolling the page when dragging with touch
+  touch-action: none;
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}

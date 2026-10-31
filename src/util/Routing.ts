@@ -11,6 +11,7 @@ import { isLoggedIn } from "./Authorization";
 import { isUsingOidcAuth } from "./OidcUtils";
 import Document from "../model/Document";
 import { TABS } from "../component/vocabulary/VocabularyMetadata";
+import { SkosCollectionDtoData } from "../model/Collection";
 
 export class Routing {
   get history(): History {
@@ -76,6 +77,8 @@ export class Routing {
   ) => {
     return Routing.buildUrl(route, options);
   };
+
+  public getTransitionPath = Routing.getTransitionPath;
 
   /**
    * Transitions to the specified route
@@ -205,6 +208,21 @@ export class Routing {
   ) => {
     this.makeAssetTransition(asset, options);
   };
+
+  public makeCollectionDetailParams(collection: SkosCollectionDtoData) {
+    const collectionIri = VocabularyUtils.create(collection.iri);
+    const vocabularyIri = VocabularyUtils.create(collection.vocabulary.iri);
+    return {
+      params: new Map([
+        ["name", vocabularyIri.fragment],
+        ["collectionName", collectionIri.fragment],
+      ]),
+      query: new Map([
+        ["namespace", encodeURIComponent(vocabularyIri.namespace!)],
+        ["collectionNamespace", encodeURIComponent(collectionIri.namespace!)],
+      ]),
+    };
+  }
 }
 
 const INSTANCE = new Routing();

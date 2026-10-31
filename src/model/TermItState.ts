@@ -22,6 +22,8 @@ import { LongRunningTask } from "./LongRunningTask";
 import RelationshipAnnotation from "./meta/RelationshipAnnotation";
 import AnnotatedTermRelationship from "./meta/AnnotatedTermRelationship";
 import UserGroup from "./UserGroup";
+import { SkosCollectionDto } from "./Collection";
+import { ResultPage } from "./ResultPage";
 
 /**
  * This is the basic shape of the application's state managed by Redux.
@@ -40,6 +42,11 @@ export default class TermItState {
   public messages: Message[];
   public intl: IntlData;
   public selectedTerm: Term | null;
+
+  public selectedCollection: SkosCollectionDto | null;
+  // The current page of SKOS collections
+  public skosCollections: ResultPage<SkosCollectionDto> | null;
+
   public queryResults: { [key: string]: QueryResultIF };
   public searchListenerCount: number;
   public searchInProgress: boolean;
@@ -93,6 +100,10 @@ export default class TermItState {
     this.messages = [];
     this.intl = en;
     this.selectedTerm = null;
+
+    this.selectedCollection = null;
+    this.skosCollections = null;
+
     this.queryResults = {};
     this.searchListenerCount = 0;
     this.searchInProgress = false;

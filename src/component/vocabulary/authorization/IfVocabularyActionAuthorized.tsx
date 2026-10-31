@@ -20,15 +20,27 @@ const IfVocabularyActionAuthorized: React.FC<{
 }) => {
   return (
     <IfAuthorized
-      isAuthorized={
-        hasAccess(requiredAccessLevel, vocabulary.accessLevel) &&
-        (mode !== "edit" || vocabulary.isEditable())
-      }
+      isAuthorized={isVocabularyActionAuthorized(
+        vocabulary,
+        requiredAccessLevel,
+        mode
+      )}
       unauthorized={unauthorized}
     >
       {children}
     </IfAuthorized>
   );
 };
+
+export function isVocabularyActionAuthorized(
+  vocabulary: Vocabulary,
+  requiredAccessLevel: AccessLevel,
+  mode?: "edit" | "remove"
+): boolean {
+  return (
+    hasAccess(requiredAccessLevel, vocabulary.accessLevel) &&
+    (mode !== "edit" || vocabulary.isEditable())
+  );
+}
 
 export default IfVocabularyActionAuthorized;

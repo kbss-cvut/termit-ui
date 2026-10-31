@@ -1102,6 +1102,37 @@ const de = {
     "longrunningtasks.name.restoreBackup": "Wiederherstellung von Sicherung",
     "longrunningtasks.name.migration.identifier":
       "Änderung des Ressourcenidentifikators",
+
+    "collections.title": "Sammlungen",
+    "collections.empty": "In diesem Vokabular gibt es keine Sammlungen.",
+    "collection.create": "Neue Sammlung",
+    "collection.title": "Sammlung",
+    "collection.description": "Beschreibung",
+    "collection.iri.help":
+      "Sammlungsidentifikator in Form eines Internationalized Resource Identifier (IRI). Er wird " +
+      "automatisch anhand des angegebenen Titels generiert, kann aber manuell angepasst werden. " +
+      "Bei bestehenden Sammlungen kann der Identifikator nicht geändert werden.",
+    "collection.remove.description":
+      'Sind Sie sicher, dass Sie die Sammlung "{label}" dauerhaft entfernen möchten?',
+    "collection.remove.confirm":
+      "Geben Sie zur Bestätigung des Löschens der Sammlung deren Bezeichnung ein",
+    "collection.ordered": "Geordnete Sammlung",
+    "collection.ordered.toggle.help":
+      "Diese Option kann bei bestehenden Sammlungen nicht geändert werden.",
+    "collection.ordered.toggle.description":
+      "Die Mitglieder einer geordneten Sammlung werden in einer festgelegten Reihenfolge gehalten.",
+    "collection.members": "Mitglieder",
+    "collection.members.add": "Mitglied hinzufügen",
+    "collection.members.add.title": "Sammlungsmitglied hinzufügen",
+    "collection.members.add.description":
+      "Wählen Sie eine Sammlung oder einen Begriff aus, die bzw. der zur Sammlung hinzugefügt werden soll.",
+    "collection.members.empty": "Diese Sammlung hat keine Mitglieder.",
+    "collection.members.noMatch":
+      "In dieser Sammlung gibt es keine Mitglieder, die der gesuchten Bezeichnung entsprechen.",
+    "collection.members.remove": "Mitglied entfernen",
+    "collection.members.remove.title": "Mitglied aus dieser Sammlung entfernen",
+    "collection.members.remove.description":
+      'Sind Sie sicher, dass Sie das Mitglied "{label}" aus der Sammlung entfernen möchten?',
   },
 };
 

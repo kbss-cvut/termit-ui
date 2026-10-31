@@ -1,0 +1,66 @@
+@import "../styles/custom/colors";
+
+// set while a table row is dragged, keeps the cursor when the pointer leaves the drag handle
+body.table-row-dragging {
+  user-select: none;
+
+  &,
+  * {
+    cursor: row-resize !important;
+  }
+}
+
+.tanstack-table {
+  overflow: auto;
+  position: relative;
+  max-height: 500px;
+
+  table {
+    display: grid;
+
+    tr {
+      display: flex;
+      width: 100%;
+    }
+
+    thead {
+      display: grid;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+
+      th {
+        display: flex;
+      }
+    }
+
+    tbody {
+      display: grid;
+      position: relative;
+
+      tr {
+        position: absolute;
+
+        &.row-dragged {
+          opacity: 0.5;
+        }
+
+        // drop indicator of row reordering, box-shadow does not change the row height
+        &.row-drop-before > td {
+          box-shadow: inset 0 2px 0 0 $primary;
+        }
+
+        &.row-drop-after > td {
+          box-shadow: inset 0 -2px 0 0 $primary;
+        }
+      }
+
+      td {
+        display: flex;
+      }
+    }
+    tfoot {
+      color: $gray-600;
+    }
+  }
+}
