@@ -192,6 +192,7 @@ const VocabularyUtils = {
   IS_FORBIDDEN: _NS_TERMIT + "forbidden",
 
   REVERSIBLE_CHANGE: _NS_TERMIT + "reversible-change",
+  HAS_CUSTOM_ATTRIBUTE: _NS_TERMIT + "has-custom-attribute",
 
   getFragment(iri: string): string {
     return this.create(iri).fragment;

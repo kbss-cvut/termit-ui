@@ -1,4 +1,5 @@
 import * as React from "react";
+import { forwardRef, useCallback, useImperativeHandle } from "react";
 import { Col, FormGroup, FormText, Label, Row } from "reactstrap";
 import Dropzone from "react-dropzone";
 import { FaCloudUploadAlt } from "react-icons/fa";
@@ -7,6 +8,11 @@ import { useI18n } from "../../hook/useI18n";
 import { useSelector } from "react-redux";
 import TermItState from "../../../model/TermItState";
 import "./UploadFile.scss";
+import ValidationResult, {
+  Severity,
+} from "../../../model/form/ValidationResult";
+import { renderValidationMessages } from "../../misc/AbstractInput";
+import Utils from "../../../util/Utils";
 
 const BYTES_PER_UNIT = 1024;
 const UNITS = ["B", "KB", "MB", "GB", "TB"];
@@ -46,81 +52,115 @@ function limitStringToBytes(limitStr: string) {
 interface UploadFileProps {
   setFile: (file: File) => void;
   labelKey?: string;
+  accept?: string | string[];
+  validation?: ValidationResult | ValidationResult[];
 }
 
-export const UploadFile: React.FC<UploadFileProps> = ({
-  setFile,
-  labelKey = "resource.create.file.select.label",
-}) => {
-  const [currentFile, setCurrentFile] = React.useState<File | undefined>();
-  const [dragActive, setDragActive] = React.useState(false);
-  const { i18n, formatMessage } = useI18n();
-  const serverConfig = useSelector((state: TermItState) => state.configuration);
-  const onFileSelected = (files: File[]) => {
-    const file = files[0];
-    setDragActive(false);
-    setCurrentFile(file);
-    if (file && isFileSizeValid(file.size, serverConfig.maxFileUploadSize)) {
-      setFile(file);
-    }
-  };
+export interface UploadFileHandle {
+  reset: () => void;
+}
 
-  const containerClasses = classNames("create-resource-dropzone", {
-    active: dragActive,
-  });
+export const UploadFile = forwardRef<UploadFileHandle, UploadFileProps>(
+  (
+    {
+      setFile,
+      labelKey = "resource.create.file.select.label",
+      accept,
+      validation,
+    },
+    ref
+  ) => {
+    const [currentFile, setCurrentFile] = React.useState<File | undefined>();
+    const [dragActive, setDragActive] = React.useState(false);
+    const { i18n, formatMessage } = useI18n();
+    const serverConfig = useSelector(
+      (state: TermItState) => state.configuration
+    );
+    const onFileSelected = (files: File[]) => {
+      const file = files[0];
+      setDragActive(false);
+      setCurrentFile(file);
+      if (file && isFileSizeValid(file.size, serverConfig.maxFileUploadSize)) {
+        setFile(file);
+      }
+    };
 
-  return (
-    <Row>
-      <Col xs={12}>
-        <FormGroup>
-          <Dropzone
-            onDrop={onFileSelected}
-            onDragEnter={() => setDragActive(true)}
-            onDragLeave={() => setDragActive(false)}
-            multiple={false}
-          >
-            {({ getRootProps, getInputProps }) => (
-              <>
-                <div {...getRootProps()} className={containerClasses}>
-                  <input {...getInputProps()} />
-                  <div>
-                    <Label className="placeholder-text w-100 text-center">
-                      {i18n(labelKey)}
-                    </Label>
-                  </div>
-                  <div className="w-100 icon-container text-center">
-                    <FaCloudUploadAlt />
-                  </div>
-                  {currentFile && (
-                    <div className="w-100 text-center">
-                      <Label>
-                        {currentFile.name +
-                          " - " +
-                          formatBytes(currentFile.size)}
+    const containerClasses = classNames("create-resource-dropzone", {
+      active: dragActive,
+    });
+
+    const renderValidation = useCallback(() => {
+      const messages = Utils.sanitizeArray(validation).filter(
+        (result) => !!result.message || !!result.messageId
+      );
+      return renderValidationMessages(messages);
+    }, [validation]);
+
+    const isInvalid = !!Utils.sanitizeArray(validation).find(
+      (r) => r.severity === Severity.BLOCKER
+    );
+
+    useImperativeHandle(ref, () => ({
+      reset: () => {
+        setCurrentFile(undefined);
+      },
+    }));
+
+    return (
+      <Row>
+        <Col xs={12}>
+          <FormGroup className={classNames({ invalid: isInvalid })}>
+            <Dropzone
+              onDrop={onFileSelected}
+              onDragEnter={() => setDragActive(true)}
+              onDragLeave={() => setDragActive(false)}
+              multiple={false}
+              accept={accept}
+            >
+              {({ getRootProps, getInputProps }) => (
+                <>
+                  <div {...getRootProps()} className={containerClasses}>
+                    <input {...getInputProps()} />
+                    <div>
+                      <Label className="placeholder-text w-100 text-center">
+                        {i18n(labelKey)}
                       </Label>
-                      {!isFileSizeValid(
-                        currentFile.size,
-                        serverConfig.maxFileUploadSize
-                      ) && (
-                        <div className="font-italic text-danger">
-                          {i18n("file.upload.size.exceeded")}
-                        </div>
-                      )}
                     </div>
-                  )}
-                </div>
-                <FormText>
-                  {formatMessage("file.upload.hint", {
-                    maxUploadFileSize: serverConfig.maxFileUploadSize,
-                  })}
-                </FormText>
-              </>
-            )}
-          </Dropzone>
-        </FormGroup>
-      </Col>
-    </Row>
-  );
-};
+                    <div className="w-100 icon-container text-center">
+                      <FaCloudUploadAlt />
+                    </div>
+                    {currentFile && (
+                      <div className="w-100 text-center">
+                        <Label>
+                          {currentFile.name +
+                            " - " +
+                            formatBytes(currentFile.size)}
+                        </Label>
+                        {!isFileSizeValid(
+                          currentFile.size,
+                          serverConfig.maxFileUploadSize
+                        ) && (
+                          <div className="font-italic text-danger">
+                            {i18n("file.upload.size.exceeded")}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <FormText>
+                    {formatMessage("file.upload.hint", {
+                      maxUploadFileSize: serverConfig.maxFileUploadSize,
+                    })}
+                  </FormText>
+                  {renderValidation()}
+                </>
+              )}
+            </Dropzone>
+          </FormGroup>
+        </Col>
+      </Row>
+    );
+  }
+);
 
 export default UploadFile;

@@ -40,6 +40,8 @@ describe("Ajax", () => {
 
   let headers: AxiosHeaders;
 
+  const methods = ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"];
+
   beforeEach(() => {
     mock.reset();
     headers = new AxiosHeaders();
@@ -450,6 +452,51 @@ describe("Ajax", () => {
           expect(reqConfig!.params).toEqual({ namespace });
         });
     });
+  });
+
+  describe("excludeCredentials", () => {
+    const captureRequest = async (send: () => Promise<unknown>) => {
+      let captured: AxiosRequestConfig | undefined;
+      mock.onAny().reply((config: AxiosRequestConfig) => {
+        captured = config;
+        return [201, {}, headers];
+      });
+      await send();
+      return captured!;
+    };
+
+    beforeEach(() => {
+      SecurityUtils.loadToken = vi.fn().mockReturnValue(jwt);
+    });
+
+    it.each(methods)(
+      "does not set Authorization header nor withCredentials on %s when credentials are excluded",
+      async (method) => {
+        const config = await captureRequest(() =>
+          sut[method.toLowerCase()]("/path", params({}).excludeCredentials())
+        );
+
+        expect(
+          (config.headers as AxiosHeaders).getAuthorization()
+        ).toBeNullable();
+        expect(config.withCredentials).toBeFalsy();
+        expect(SecurityUtils.loadToken).not.toHaveBeenCalled();
+      }
+    );
+
+    it.each(methods)(
+      "sets Authorization header and withCredentials on %s when credentials are not excluded",
+      async (method) => {
+        const config = await captureRequest(() =>
+          sut[method.toLowerCase()]("/path", params({}))
+        );
+
+        expect((config.headers as AxiosHeaders).getAuthorization()).toContain(
+          jwt
+        );
+        expect(config.withCredentials).toBe(true);
+      }
+    );
   });
 });
 

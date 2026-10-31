@@ -13,6 +13,7 @@ class RequestConfigBuilder {
   private mHeaders: {};
   private mAbortSignal?: AbortSignal;
   private preserveAcceptHeader: boolean;
+  private mExcludeCredentials: boolean;
 
   constructor() {
     this.mHeaders = {};
@@ -21,6 +22,7 @@ class RequestConfigBuilder {
     this.mResponseType = undefined;
     this.mAbortSignal = undefined;
     this.preserveAcceptHeader = false;
+    this.mExcludeCredentials = false;
   }
 
   public content(value: any): RequestConfigBuilder {
@@ -128,6 +130,21 @@ class RequestConfigBuilder {
     this.mAbortSignal = controller.signal;
     return this;
   }
+
+  /**
+   * When applied, the request wont include credentials
+   */
+  public excludeCredentials() {
+    this.mExcludeCredentials = true;
+    return this;
+  }
+
+  /**
+   * Whether credentials should be excluded from the request
+   */
+  public shouldExcludeCredentials() {
+    return this.mExcludeCredentials;
+  }
 }
 
 export function content(value: any): RequestConfigBuilder {
@@ -204,8 +221,10 @@ export class Ajax {
       if (!reqConfig.headers) {
         reqConfig.headers = new AxiosHeaders();
       }
-      reqConfig.headers.setAuthorization(SecurityUtils.loadToken());
-      reqConfig.withCredentials = true;
+      if (reqConfig["shouldExcludeCredentials"] !== true) {
+        reqConfig.headers.setAuthorization(SecurityUtils.loadToken());
+        reqConfig.withCredentials = true;
+      }
       return reqConfig;
     });
     this.axiosInstance.interceptors.response.use(
@@ -282,6 +301,7 @@ export class Ajax {
     const conf = {
       params: config.getParams(),
       signal: config.getAbortSignal(),
+      shouldExcludeCredentials: config.shouldExcludeCredentials(),
       paramsSerializer,
     };
     return this.axiosInstance.head(path, conf);
@@ -310,6 +330,7 @@ export class Ajax {
       responseType: config.getResponseType(),
       signal: config.getAbortSignal(),
       validateStatus: Ajax.validateGetStatus,
+      shouldExcludeCredentials: config.shouldExcludeCredentials(),
       paramsSerializer,
     };
     return this.axiosInstance.get(path, conf);
@@ -333,6 +354,7 @@ export class Ajax {
     const conf = {
       headers: config.getHeaders(),
       signal: config.getAbortSignal(),
+      shouldExcludeCredentials: config.shouldExcludeCredentials(),
       paramsSerializer,
     };
     if (!config.shouldPreserveAcceptHeader()) {
@@ -362,6 +384,7 @@ export class Ajax {
       params: config.getParams(),
       headers: config.getHeaders(),
       signal: config.getAbortSignal(),
+      shouldExcludeCredentials: config.shouldExcludeCredentials(),
       paramsSerializer,
     };
     if (
@@ -378,6 +401,7 @@ export class Ajax {
       params: config.getParams(),
       headers: config.getHeaders(),
       signal: config.getAbortSignal(),
+      shouldExcludeCredentials: config.shouldExcludeCredentials(),
       paramsSerializer,
     };
     return this.axiosInstance.patch(path, config.getContent(), conf);
@@ -389,6 +413,7 @@ export class Ajax {
       conf = {
         params: config.getParams(),
         signal: config.getAbortSignal(),
+        shouldExcludeCredentials: config.shouldExcludeCredentials(),
         paramsSerializer,
       };
       if (config.getContent()) {
