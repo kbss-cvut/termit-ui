@@ -129,7 +129,7 @@ export const CustomAttributeValue: React.FC<{
     case VocabularyUtils.XSD_BOOLEAN:
       return (
         <Badge
-          color={value["@value"] ? "success" : "dark"}
+          color={strValue === "true" ? "success" : "dark"}
           pill={true}
           className="align-text-top"
         >

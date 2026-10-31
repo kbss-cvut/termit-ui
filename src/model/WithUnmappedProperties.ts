@@ -49,6 +49,8 @@ export function extractPropertyValue(
     return (value as HasIdentifier).iri;
   } else if ((value as TypedLiteral)["@value"] !== undefined) {
     return (value as TypedLiteral)["@value"] as any;
+  } else if (typeof value === "boolean") {
+    return value as boolean;
   } else {
     return value as string;
   }

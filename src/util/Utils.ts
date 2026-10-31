@@ -23,7 +23,11 @@ const Utils = {
    * @param arr Input to sanitize
    */
   sanitizeArray<T>(arr: T[] | T | undefined | null): T[] {
-    return arr ? (Array.isArray(arr) ? arr : [arr]) : [];
+    return arr !== undefined && arr !== null
+      ? Array.isArray(arr)
+        ? arr
+        : [arr]
+      : [];
   },
 
   /**
