@@ -1159,10 +1159,13 @@ const en = {
     "collection.remove.confirm":
       "To confirm the deletion of the collection, enter its label",
     "collection.ordered": "Ordered collection",
-    "collection.ordered.toggle.help":
-      "This option cannot be changed for existing collections.",
     "collection.ordered.toggle.description":
       "Members of an ordered collection are kept in a defined order.",
+    "collection.ordered.toggle.dialog.title": "Changing collection order",
+    "collection.ordered.toggle.dialog.description.toOrdered":
+      "Are you sure you want to change the type of the collection to Ordered? Members of the collection will be initially sorted by their identifier.",
+    "collection.ordered.toggle.dialog.description.toUnordered":
+      "Are you sure you want to change the type of the collection to Unordered? The current order of members will be lost!",
     "collection.members": "Members",
     "collection.members.add": "Add member",
     "collection.members.add.title": "Add collection member",

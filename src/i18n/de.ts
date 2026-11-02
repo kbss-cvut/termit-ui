@@ -1122,10 +1122,13 @@ const de = {
     "collection.remove.confirm":
       "Geben Sie zur Bestätigung des Löschens der Sammlung deren Bezeichnung ein",
     "collection.ordered": "Geordnete Sammlung",
-    "collection.ordered.toggle.help":
-      "Diese Option kann bei bestehenden Sammlungen nicht geändert werden.",
     "collection.ordered.toggle.description":
       "Die Mitglieder einer geordneten Sammlung werden in einer festgelegten Reihenfolge gehalten.",
+    "collection.ordered.toggle.dialog.title": "Reihenfolge der Sammlung ändern",
+    "collection.ordered.toggle.dialog.description.toOrdered":
+      "Sind Sie sicher, dass Sie den Typ der Sammlung auf „Geordnet“ ändern möchten? Die Mitglieder der Sammlung werden zunächst nach ihrem Identifikator sortiert.",
+    "collection.ordered.toggle.dialog.description.toUnordered":
+      "Sind Sie sicher, dass Sie den Typ der Sammlung auf „Ungeordnet“ ändern möchten? Die aktuelle Reihenfolge der Mitglieder geht verloren!",
     "collection.members": "Mitglieder",
     "collection.members.add": "Mitglied hinzufügen",
     "collection.members.add.title": "Sammlungsmitglied hinzufügen",

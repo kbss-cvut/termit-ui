@@ -1166,10 +1166,13 @@ const cs = {
     "collection.remove.confirm":
       "Pro potvrzení odstranění kolekce zadejte její název",
     "collection.ordered": "Seřazená kolekce",
-    "collection.ordered.toggle.help":
-      "Tuto možnost nelze u existujících kolekcí změnit.",
     "collection.ordered.toggle.description":
       "Členové seřazené kolekce jsou udržováni v určeném pořadí.",
+    "collection.ordered.toggle.dialog.title": "Změna řazení kolekce",
+    "collection.ordered.toggle.dialog.description.toOrdered":
+      "Opravdu chcete změnit typ kolekce na seřazenou? Členové kolekce budou nejprve seřazeni podle svého identifikátoru.",
+    "collection.ordered.toggle.dialog.description.toUnordered":
+      "Opravdu chcete změnit typ kolekce na neseřazenou? Současné pořadí členů bude ztraceno!",
     "collection.members": "Členové",
     "collection.members.add": "Přidat člena",
     "collection.members.add.title": "Přidat člena kolekce",
