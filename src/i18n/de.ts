@@ -1136,6 +1136,9 @@ const de = {
       'Sind Sie sicher, dass Sie das Mitglied "{label}" aus der Sammlung entfernen möchten?',
     "collection.snapshot.message":
       "Diese Sammlung ist ein Snapshot und schreibgeschützt. Klicken Sie, um die aktuelle Version anzuzeigen.",
+    "collection.migrate.iri.title": "Identifikator der Sammlung ändern",
+    "collection.migrate.iri.confirmLabel":
+      "Geben Sie zur Bestätigung den Namen der Sammlung ein",
   },
 };
 

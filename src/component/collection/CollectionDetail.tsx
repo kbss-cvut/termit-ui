@@ -19,7 +19,13 @@ import { getLanguages, getShortLocale } from "../../util/IntlUtil";
 import LanguageSelector from "../multilingual/LanguageSelector";
 import { OrderedCollectionIcon } from "./OrderedCollectionIcon";
 import CopyIriIcon from "../misc/CopyIriIcon";
-import { Button } from "reactstrap";
+import {
+  Button,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledButtonDropdown,
+} from "reactstrap";
 import { GoPencil } from "react-icons/go";
 import { FaTrashAlt } from "react-icons/fa";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
@@ -37,6 +43,11 @@ import { CollectionSnapshotIcon } from "./CollectionSnapshotIcon";
 import classNames from "classnames";
 import { CollectionReadOnlyIcon } from "./CollectionReadOnlyIcon";
 import { hasLabelInLanguage } from "../../model/MultilingualString";
+import {
+  CollectionIriMigrationDialog,
+  CollectionIriMigrationDialogHandle,
+} from "./CollectionIriMigrationDialog";
+import { IoMdMove } from "react-icons/io";
 
 export interface CollectionDetailProps {}
 
@@ -99,6 +110,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   }, [loadCollection]);
 
   const removeDialogRef = useRef<RemoveCollectionDialogHandle>(null);
+  const migrateIriDialogRef = useRef<CollectionIriMigrationDialogHandle>(null);
 
   const onEditOpen = useCallback(() => {
     if (collection) {
@@ -111,6 +123,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   const onRemove = useCallback(() => {
     if (collection) {
       removeDialogRef.current?.remove(collection);
+    }
+  }, [collection]);
+  const onIriMigrate = useCallback(() => {
+    if (collection) {
+      migrateIriDialogRef.current?.open(collection);
     }
   }, [collection]);
 
@@ -174,8 +191,34 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
           &nbsp;{i18n("remove")}
         </Button>
       </IfVocabularyActionAuthorized>,
+      <IfVocabularyActionAuthorized
+        key={"collection-detail-more-actions"}
+        vocabulary={vocabulary}
+        requiredAccessLevel={AccessLevel.SECURITY}
+      >
+        <UncontrolledButtonDropdown>
+          <DropdownToggle
+            size="sm"
+            caret={false}
+            color="primary"
+            style={{ borderRadius: "0.2rem" }}
+          >
+            <span className="dropdown-toggle">{i18n("moreActions")}</span>
+          </DropdownToggle>
+          <DropdownMenu right={true}>
+            <DropdownItem
+              className="btn-sm"
+              title={i18n("collection.migrate.iri.title")}
+              onClick={onIriMigrate}
+            >
+              <IoMdMove className="mr-1" />
+              {i18n("asset.migrate.iri.label")}
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledButtonDropdown>
+      </IfVocabularyActionAuthorized>,
     ];
-  }, [vocabulary, onEditOpen, onRemove, i18n]);
+  }, [vocabulary, onEditOpen, i18n, onRemove, onIriMigrate]);
 
   return (
     <>
@@ -194,6 +237,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
         shortLocale={selectedLanguage}
       />
       <RemoveCollectionDialog ref={removeDialogRef} vocabulary={vocabulary} />
+      <CollectionIriMigrationDialog ref={migrateIriDialogRef} />
       <PromiseTrackingMask area={COLLECTION_LOAD_PROMISE_AREA} />
     </>
   );

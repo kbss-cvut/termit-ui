@@ -3,6 +3,7 @@ import { Action } from "redux";
 import { ThunkDispatch } from "../util/Types";
 import { LongRunningTask } from "../model/LongRunningTask";
 import {
+  asyncActionSuccess,
   asyncActionSuccessWithPayload,
   publishMessage,
   publishSuccessMessage,
@@ -14,6 +15,7 @@ import VocabularyUtils from "../util/VocabularyUtils";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import { getCustomAttributes } from "../action/AsyncCustomizationActions";
+import ActionType from "../action/ActionType";
 
 export function updateLongRunningTasks(message: IMessage, action: Action) {
   return async (dispatch: ThunkDispatch) => {
@@ -96,6 +98,19 @@ export function onIdentifierMigrationCompleted(message: IMessage) {
       }
     } else if (payload.migrationType === IriMigrationType.CUSTOM_ATTRIBUTE) {
       promise = dispatch(getCustomAttributes());
+    } else if (payload.migrationType === IriMigrationType.SKOS_COLLECTION) {
+      dispatch(asyncActionSuccess({ type: ActionType.REMOVE_COLLECTION }));
+      if (vocabularyIri) {
+        Routing.transitionTo(
+          Routes.vocabularyCollectionDetail,
+          Routing.makeCollectionDetailParams({
+            iri: payload.iris.newIri,
+            vocabulary: { iri: vocabularyIri.toString() },
+          })
+        );
+      } else {
+        Routing.transitionToHome();
+      }
     }
 
     await Promise.all([promise]).then(() => {
