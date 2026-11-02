@@ -317,17 +317,13 @@ export function removeCollectionMember(
 
 export function loadCollectionsWithTerm(term: Term) {
   const action = { type: ActionType.LOAD_COLLECTIONS_WITH_TERM };
-  if (!term.vocabulary) {
-    throw new Error("Missing term vocabulary");
-  }
-  const vocabularyIri = VocabularyUtils.create(term.vocabulary.iri);
   const termIri = VocabularyUtils.create(term.iri);
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
 
     return Ajax.get(
-      `${Constants.API_PREFIX}/vocabularies/${vocabularyIri.fragment}/terms/${termIri.fragment}/collections`,
-      param("namespace", vocabularyIri.namespace)
+      `${Constants.API_PREFIX}/terms/${termIri.fragment}/collections`,
+      param("namespace", termIri.namespace)
     )
       .then((data) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<SkosCollectionDtoData>(
