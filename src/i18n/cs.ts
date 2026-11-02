@@ -1180,6 +1180,9 @@ const cs = {
       'Opravdu chcete odebrat člena "{label}" z kolekce?',
     "collection.snapshot.message":
       "Tato kolekce je revize a je určena pouze pro čtení. Kliknutím přejdete na aktuální verzi.",
+    "collection.migrate.iri.title": "Změnit identifikátor kolekce",
+    "collection.migrate.iri.confirmLabel":
+      "Pro potvrzení zadejte název kolekce",
   },
 };
 
