@@ -1,7 +1,7 @@
 import { createHashHistory, History, LocationState } from "history";
 import Constants from "./Constants";
 import Routes, { Route } from "./Routes";
-import Asset from "../model/Asset";
+import Asset, { HasIdentifier } from "../model/Asset";
 import Utils from "./Utils";
 import VocabularyUtils from "./VocabularyUtils";
 import Term, { TermData, TermInfo } from "../model/Term";
@@ -209,7 +209,10 @@ export class Routing {
     this.makeAssetTransition(asset, options);
   };
 
-  public makeCollectionDetailParams(collection: SkosCollectionData) {
+  public makeCollectionDetailParams(collection: {
+    iri: string;
+    vocabulary: HasIdentifier;
+  }) {
     const collectionIri = VocabularyUtils.create(collection.iri);
     const vocabularyIri = VocabularyUtils.create(collection.vocabulary.iri);
     return {
