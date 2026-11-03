@@ -36,6 +36,7 @@ import {
 import { CollectionSnapshotIcon } from "./CollectionSnapshotIcon";
 import classNames from "classnames";
 import { CollectionReadOnlyIcon } from "./CollectionReadOnlyIcon";
+import { hasLabelInLanguage } from "../../model/MultilingualString";
 
 export interface CollectionDetailProps {}
 
@@ -65,8 +66,20 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   );
 
   const [selectedLanguage, setSelectedLanguage] = useState(
-    vocabulary.primaryLanguage ?? getShortLocale(locale)
+    getShortLocale(locale)
   );
+
+  useEffect(() => {
+    if (vocabulary.primaryLanguage != null) {
+      setSelectedLanguage(vocabulary.primaryLanguage);
+    } else if (hasLabelInLanguage(collection?.title, getShortLocale(locale))) {
+      setSelectedLanguage(locale);
+    } else {
+      setSelectedLanguage(getLanguages(["title"], collection)[0]);
+    }
+    // excluding locale from hook deps to not change the selected language on UI lang change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vocabulary.primaryLanguage, collection]);
 
   useEffect(() => {
     if (vocabulary?.iri !== vocabularyUri.toString()) {
