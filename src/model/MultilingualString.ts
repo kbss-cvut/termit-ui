@@ -266,7 +266,9 @@ export function compactMultilingualCustomAttributeValues<
     return;
   }
   multilingualCustomAttributes.forEach((attribute) => {
-    asset[attribute] = compactTranslations(asset[attribute]);
+    if (asset[attribute] != null) {
+      asset[attribute] = compactTranslations(asset[attribute]);
+    }
   });
 }
 
