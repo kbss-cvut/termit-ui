@@ -14,6 +14,7 @@ import {
   AddCollectionMemberDialogHandle,
 } from "./AddCollectionMemberDialog";
 import { FaPlus } from "react-icons/fa6";
+import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
 
 export interface CollectionMetadataProps {
   collection: SkosCollection | null;
@@ -53,6 +54,10 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
               </MarkdownView>
             </Col>
           </Row>
+
+          {collection && (
+            <CustomAttributesValues asset={collection} language={shortLocale} />
+          )}
         </CardBody>
       </Card>
       <Card>

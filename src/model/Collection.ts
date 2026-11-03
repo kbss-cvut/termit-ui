@@ -105,6 +105,13 @@ export class SkosCollection
       MAPPED_PROPERTIES
     );
   }
+
+  /**
+   * Alias for {@link #title}
+   */
+  public get label(): MultilingualString {
+    return this.title;
+  }
 }
 
 export function isOrderedCollection(obj: HasTypes) {
