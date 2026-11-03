@@ -4,7 +4,10 @@ import { getLocalizedOrDefault } from "../../model/MultilingualString";
 import { FunctionComponent, useMemo, useRef, useState } from "react";
 import { SkosCollection } from "../../model/Collection";
 import { useI18n } from "../hook/useI18n";
-import { CollectionMembersList } from "./CollectionMembersList";
+import {
+  CollectionMembersList,
+  CollectionMembersListProps,
+} from "./CollectionMembersList";
 import Vocabulary from "../../model/Vocabulary";
 import AccessLevel from "../../model/acl/AccessLevel";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
@@ -37,10 +40,13 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
   shortLocale,
 }) => {
   const { i18n } = useI18n();
+  const [totalMembersCount, setTotalMembersCount] = useState<number>(0);
 
   const tabs = useMemo(
     () => ({
-      [TabKey.MEMBERS]: <MembersTab {...{ collection, vocabulary }} />,
+      [TabKey.MEMBERS]: (
+        <MembersTab {...{ collection, vocabulary, setTotalMembersCount }} />
+      ),
       [TabKey.PROPERTIES]: (
         <UnmappedProperties
           properties={collection?.unmappedProperties ?? new Map()}
@@ -86,7 +92,8 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
             changeTab={(tab) => setActiveTab(tab as TabKey)}
             tabs={tabs}
             tabBadges={{
-              "properties.edit.title":
+              [TabKey.MEMBERS]: totalMembersCount.toFixed(),
+              [TabKey.PROPERTIES]:
                 collection?.unmappedProperties.size.toFixed() ?? "0",
             }}
           />
@@ -96,10 +103,8 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
   );
 };
 
-const MembersTab: FunctionComponent<CollectionAndVocabulary> = ({
-  collection,
-  vocabulary,
-}) => {
+const MembersTab: FunctionComponent<CollectionMembersListProps> = (props) => {
+  const { collection, vocabulary } = props;
   const { i18n } = useI18n();
   const addMemberDialogRef = useRef<AddCollectionMemberDialogHandle>(null);
 
@@ -132,12 +137,7 @@ const MembersTab: FunctionComponent<CollectionAndVocabulary> = ({
         </Row>
       </IfVocabularyActionAuthorized>
 
-      <CollectionMembersList
-        {...{
-          collection,
-          vocabulary,
-        }}
-      />
+      <CollectionMembersList {...props} />
 
       <AddCollectionMemberDialog
         ref={addMemberDialogRef}
