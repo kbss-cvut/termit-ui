@@ -8,11 +8,13 @@ import {
   context,
   getLocalized,
   MultilingualString,
+  pluralContext,
 } from "./MultilingualString";
 import VocabularyUtils from "../util/VocabularyUtils";
 import Utils from "../util/Utils";
 import { TermInfo } from "./Term";
 import WithUnmappedProperties, {
+  HasUnmappedProperties,
   PropertyValuesType,
   stringifyPropertyValue,
 } from "./WithUnmappedProperties";
@@ -41,7 +43,7 @@ const MAPPED_PROPERTIES = ["@context", ...Object.keys(CONTEXT)];
 
 export class SkosCollection
   extends Asset
-  implements SkosCollectionData, HasLocalizableLabel
+  implements SkosCollectionData, HasLocalizableLabel, HasUnmappedProperties
 {
   public static readonly MULTILINGUAL_ATTRIBUTES = ["title", "description"];
   public description?: MultilingualString;
@@ -64,8 +66,15 @@ export class SkosCollection
     return getLocalized(this.title, lang);
   }
 
-  public toJsonLd(): {} {
-    return Object.assign({}, this, { "@context": this.getContext() });
+  public toJsonLd(multilingualCustomAttributes: string[]) {
+    const jsonLd = Object.assign({}, this, { "@context": this.getContext() });
+    Object.keys(jsonLd)
+      .filter((attr) => multilingualCustomAttributes.includes(attr))
+      .forEach((propName) => {
+        jsonLd["@context"][propName] = pluralContext(propName);
+        jsonLd[propName] = Utils.unwrapArray(jsonLd[propName]);
+      });
+    return jsonLd;
   }
 
   protected getContext() {

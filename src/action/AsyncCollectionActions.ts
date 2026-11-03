@@ -1,6 +1,11 @@
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType, { AsyncAction, AsyncFailureAction } from "./ActionType";
-import { PageRequest, PageRequestOptional, ThunkDispatch } from "../util/Types";
+import {
+  GetStoreState,
+  PageRequest,
+  PageRequestOptional,
+  ThunkDispatch,
+} from "../util/Types";
 import Ajax, { param, params } from "../util/Ajax";
 import Constants from "../util/Constants";
 import {
@@ -23,6 +28,8 @@ import { ErrorData } from "../model/ErrorInfo";
 import { EMPTY_PAGE, ResultPage } from "../model/ResultPage";
 import { AxiosResponse } from "axios";
 import Term from "../model/Term";
+import { selectMultilingualCustomAttributeIris } from "../store/StateSelectors";
+import { recompactMultilingualCustomAttributeValues } from "../model/MultilingualString";
 
 function path(vocabularyUri: IRI) {
   return `${Constants.API_PREFIX}/vocabularies/${vocabularyUri.fragment}/collections`;
@@ -51,14 +58,20 @@ function createPage<T>(
 
 export function loadSkosCollection(collectionUri: IRI, vocabularyUri: IRI) {
   const action = { type: ActionType.LOAD_COLLECTION };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     return Ajax.get(
       `${path(vocabularyUri)}/${collectionUri.fragment}`,
       queryParams(collectionUri, vocabularyUri)
     )
-      .then((data) => JsonLdUtils.compactAndResolveReferences(data, CONTEXT))
-      .then((data) => new SkosCollection(data as SkosCollectionData))
+      .then((data) => JsonLdUtils.compactAndResolveReferences<SkosCollectionData>(data, CONTEXT))
+      .then((data) => new SkosCollection(data))
+      .then((dto) =>
+        recompactMultilingualCustomAttributeValues(
+          dto,
+          getState().customAttributes
+        )
+      )
       .then((result) => dispatch(asyncActionSuccessWithPayload(action, result)))
       .catch((error: ErrorData) =>
         asyncActionFailureWithMessage(error, action, dispatch)
@@ -185,14 +198,16 @@ export function updateCollectionMemberPosition(
 
 export function updateSkosCollection(collection: SkosCollection) {
   const action = { type: ActionType.UPDATE_COLLECTION };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     const { vocabularyUri, collectionUri } = parseIris(collection);
 
     return Ajax.put(
       `${path(vocabularyUri)}/${collectionUri.fragment}`,
       queryParams(collectionUri, vocabularyUri)
-        .content(collection.toJsonLd())
+        .content(
+          collection.toJsonLd(selectMultilingualCustomAttributeIris(getState()))
+        )
         .contentType(Constants.JSON_LD_MIME_TYPE)
     )
       .then(() => dispatch(asyncActionSuccess(action)))
@@ -204,7 +219,7 @@ export function updateSkosCollection(collection: SkosCollection) {
 
 export function createSkosCollection(collection: SkosCollection) {
   const action = { type: ActionType.CREATE_COLLECTION };
-  return (dispatch: ThunkDispatch) => {
+  return (dispatch: ThunkDispatch, getState: GetStoreState) => {
     dispatch(asyncActionRequest(action, true));
     const { vocabularyUri, collectionUri } = parseIris(collection);
 
@@ -216,7 +231,9 @@ export function createSkosCollection(collection: SkosCollection) {
     return Ajax.post(
       endpoint,
       queryParams(collectionUri, vocabularyUri)
-        .content(collection.toJsonLd())
+        .content(
+          collection.toJsonLd(selectMultilingualCustomAttributeIris(getState()))
+        )
         .contentType(Constants.JSON_LD_MIME_TYPE)
     )
       .then(() => dispatch(asyncActionSuccess(action)))

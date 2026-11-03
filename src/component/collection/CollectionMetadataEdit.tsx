@@ -21,6 +21,7 @@ import { CONTEXT, SkosCollection } from "../../model/Collection";
 import MultilingualString, {
   getLocalizedOrDefault,
   hasNonBlankValue,
+  isLanguageBlank,
 } from "../../model/MultilingualString";
 import { useI18n } from "../hook/useI18n";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
@@ -63,6 +64,9 @@ import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
 import { PropertyValuesType } from "../../model/WithUnmappedProperties";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import If from "../misc/If";
+import { selectMultilingualCustomAttributeIris } from "../../store/StateSelectors";
+import { cloneDeep } from "lodash";
+import { getCustomAttributes } from "../../action/AsyncCustomizationActions";
 
 export interface CollectionMetadataEditProps {}
 
@@ -97,6 +101,9 @@ const CollectionMetadataEdit: FunctionComponent<
   );
 
   const vocabulary = useAppSelector((state) => state.vocabulary);
+  const multilingualCustomAttributes = useAppSelector(
+    selectMultilingualCustomAttributeIris
+  );
 
   useEffect(() => {
     if (vocabulary?.iri !== vocabularyUri.toString()) {
@@ -104,7 +111,7 @@ const CollectionMetadataEdit: FunctionComponent<
     }
   }, [dispatch, vocabulary?.iri, vocabularyUri]);
 
-  const [collection, setCollection] = useState<SkosCollection | null>(null);
+  const collection = useAppSelector((state) => state.selectedCollection);
 
   useEffect(() => {
     if (!collectionUri) {
@@ -114,11 +121,7 @@ const CollectionMetadataEdit: FunctionComponent<
     trackPromise(
       dispatch(loadSkosCollection(collectionUri, vocabularyUri)),
       COLLECTION_LOAD_PROMISE_AREA
-    ).then((result) => {
-      if (result.status === AsyncActionStatus.SUCCESS && "payload" in result) {
-        setCollection(result.payload);
-      }
-    });
+    );
   }, [collectionUri, dispatch, vocabularyUri]);
 
   const isNewCollection = collection == null;
@@ -140,11 +143,15 @@ const CollectionMetadataEdit: FunctionComponent<
         title: { ...collection.title },
         description: { ...collection.description },
         ordered: collection.isOrdered(),
-        unmappedProperties: new Map(collection.unmappedProperties),
+        unmappedProperties: cloneDeep(collection.unmappedProperties),
       });
       generateIri.current = false;
     }
   }, [collection]);
+
+  useEffect(() => {
+    dispatch(getCustomAttributes());
+  }, [dispatch]);
 
   const languages = useMemo(() => {
     if (vocabulary.primaryLanguage != null) {
@@ -206,7 +213,10 @@ const CollectionMetadataEdit: FunctionComponent<
 
   const onUnmappedPropertiesChange = useCallback(
     (properties) =>
-      setData((prev) => ({ ...prev, unmappedProperties: new Map(properties) })),
+      setData((prev) => ({
+        ...prev,
+        unmappedProperties: cloneDeep(properties),
+      })),
     []
   );
 
@@ -226,19 +236,25 @@ const CollectionMetadataEdit: FunctionComponent<
       setSelectedLanguage(selectedLanguage);
       return;
     }
-    const copy = {
-      ...data,
-      title: { ...data.title },
-      description: { ...data.description },
-    };
+    const copy = cloneDeep(data);
+
     removeTranslation(SkosCollection.MULTILINGUAL_ATTRIBUTES, copy, lang);
+    removeTranslation(
+      multilingualCustomAttributes,
+      copy.unmappedProperties,
+      lang
+    );
+
     setData(copy);
   };
 
   const titleValidation = hasNonBlankValue(data.title, selectedLanguage)
     ? []
     : [ValidationResult.BLOCKER];
-  const isInvalid = !hasNonBlankValue(data.title, vocabulary.primaryLanguage);
+  // invalid when any existing language is missing title
+  const isInvalid = [...languages, selectedLanguage].some((lang) =>
+    isLanguageBlank(lang, data.title)
+  );
 
   const onSave = () => {
     if (isInvalid) {

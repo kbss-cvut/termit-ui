@@ -49,6 +49,10 @@ export const DOMAIN_OPTIONS: SelectorOption[] = [
     labelKey: "type.vocabulary",
   },
   {
+    value: VocabularyUtils.SKOS_COLLECTION,
+    labelKey: "collection.title",
+  },
+  {
     value: VocabularyUtils.RDF_STATEMENT,
     labelKey: "type.term.relationship",
   },
