@@ -106,6 +106,14 @@ export class SkosCollection
     );
   }
 
+  public set unmappedProperties(properties: Map<string, PropertyValuesType>) {
+    WithUnmappedProperties.setUnmappedProperties(
+      this,
+      properties,
+      MAPPED_PROPERTIES
+    );
+  }
+
   /**
    * Alias for {@link #title}
    */

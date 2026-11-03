@@ -17,7 +17,7 @@ import {
   Row,
 } from "reactstrap";
 import { useDispatch } from "react-redux";
-import { SkosCollection } from "../../model/Collection";
+import { CONTEXT, SkosCollection } from "../../model/Collection";
 import MultilingualString, {
   getLocalizedOrDefault,
   hasNonBlankValue,
@@ -60,6 +60,9 @@ import { useDebouncedCallback } from "use-debounce";
 import CustomToggle from "../misc/CustomToggle";
 import HelpIcon from "../misc/HelpIcon";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
+import { PropertyValuesType } from "../../model/WithUnmappedProperties";
+import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
+import If from "../misc/If";
 
 export interface CollectionMetadataEditProps {}
 
@@ -68,9 +71,17 @@ interface CollectionMetadataEditState {
   title: MultilingualString;
   description: MultilingualString;
   ordered: boolean;
+  unmappedProperties: Map<string, PropertyValuesType>;
 }
 
 const COLLECTION_LOAD_PROMISE_AREA = "collection-metadata-edit-promise-area";
+
+const IGNORED_ADDITIONAL_PROPERTIES = [
+  ...Object.getOwnPropertyNames(CONTEXT).map((n) => CONTEXT[n]),
+  VocabularyUtils.RDF_TYPE,
+  VocabularyUtils.SKOS_MEMBER,
+  VocabularyUtils.SKOS_MEMBER_LIST,
+];
 
 const CollectionMetadataEdit: FunctionComponent<
   CollectionMetadataEditProps
@@ -119,6 +130,7 @@ const CollectionMetadataEdit: FunctionComponent<
     title: {},
     description: {},
     ordered: false,
+    unmappedProperties: new Map(),
   }));
 
   useEffect(() => {
@@ -128,6 +140,7 @@ const CollectionMetadataEdit: FunctionComponent<
         title: { ...collection.title },
         description: { ...collection.description },
         ordered: collection.isOrdered(),
+        unmappedProperties: new Map(collection.unmappedProperties),
       });
       generateIri.current = false;
     }
@@ -191,6 +204,12 @@ const CollectionMetadataEdit: FunctionComponent<
     setData((prev) => ({ ...prev, ordered: !prev.ordered }));
   };
 
+  const onUnmappedPropertiesChange = useCallback(
+    (properties) =>
+      setData((prev) => ({ ...prev, unmappedProperties: new Map(properties) })),
+    []
+  );
+
   const onRemoveTranslation = (lang: string) => {
     if (lang === vocabulary.primaryLanguage) {
       dispatch(
@@ -233,6 +252,7 @@ const CollectionMetadataEdit: FunctionComponent<
       vocabulary: { iri: vocabulary.iri },
       types: data.ordered ? [VocabularyUtils.SKOS_ORDERED_COLLECTION] : [],
     });
+    collection.unmappedProperties = data.unmappedProperties;
 
     let promise: Promise<AsyncAction | AsyncFailureAction>;
 
@@ -263,6 +283,24 @@ const CollectionMetadataEdit: FunctionComponent<
     }
   };
 
+  const IdentifierInput = useCallback(
+    () => (
+      <Row>
+        <Col xs={12}>
+          <CustomInput
+            name="edit-collection-iri"
+            label={i18n("asset.iri")}
+            help={isNewCollection ? i18n("collection.iri.help") : undefined}
+            onChange={onIriChange}
+            value={data.iri}
+            disabled={!isNewCollection}
+          />
+        </Col>
+      </Row>
+    ),
+    [data.iri, i18n, isNewCollection]
+  );
+
   return (
     <>
       <EditLanguageSelector
@@ -276,6 +314,9 @@ const CollectionMetadataEdit: FunctionComponent<
       <Card id="edit-collection">
         <CardBody>
           <Form>
+            <If expression={!isNewCollection}>
+              <IdentifierInput />
+            </If>
             <Row>
               <Col xs={12}>
                 <CustomInput
@@ -323,20 +364,23 @@ const CollectionMetadataEdit: FunctionComponent<
                 />
               </Col>
             </Row>
-            <ShowAdvancedAssetFields>
-              <Row>
-                <Col xs={12}>
-                  <CustomInput
-                    name="edit-collection-iri"
-                    label={i18n("asset.iri")}
-                    help={i18n("collection.iri.help")}
-                    onChange={onIriChange}
-                    value={data.iri}
-                    disabled={!isNewCollection}
-                  />
-                </Col>
-              </Row>
-            </ShowAdvancedAssetFields>
+            <Row>
+              <Col xs={12}>
+                <UnmappedPropertiesEdit
+                  assetType={"collection"}
+                  properties={data.unmappedProperties}
+                  onChange={onUnmappedPropertiesChange}
+                  languages={languages}
+                  language={selectedLanguage}
+                  ignoredProperties={IGNORED_ADDITIONAL_PROPERTIES}
+                />
+              </Col>
+            </Row>
+            <If expression={isNewCollection}>
+              <ShowAdvancedAssetFields>
+                <IdentifierInput />
+              </ShowAdvancedAssetFields>
+            </If>
             <Row>
               <Col xs={12}>
                 <ButtonToolbar className="d-flex justify-content-center mt-4">

@@ -7,8 +7,22 @@ import { CustomAttributeValueEdit } from "./CustomAttributeValueEdit";
 import Utils from "../../util/Utils";
 import VocabularyUtils from "../../util/VocabularyUtils";
 
+export enum CustomAttributeAssetType {
+  TERM = "term",
+  VOCABULARY = "vocabulary",
+  COLLECTION = "collection",
+}
+
+export type CustomAttributeAssetTypeValue = `${CustomAttributeAssetType}`;
+
+const ASSET_TO_DOMAIN_MAP = {
+  [CustomAttributeAssetType.TERM]: VocabularyUtils.TERM,
+  [CustomAttributeAssetType.VOCABULARY]: VocabularyUtils.VOCABULARY,
+  [CustomAttributeAssetType.COLLECTION]: VocabularyUtils.SKOS_COLLECTION,
+};
+
 export const CustomAttributesValuesEdit: React.FC<{
-  assetType: "term" | "vocabulary";
+  assetType: CustomAttributeAssetType | CustomAttributeAssetTypeValue;
   values: Map<string, PropertyValuesType>;
   onChange: (property: string, value: PropertyValuesType) => void;
   language: string;
@@ -16,8 +30,7 @@ export const CustomAttributesValuesEdit: React.FC<{
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes
   );
-  const filterDomain =
-    assetType === "term" ? VocabularyUtils.TERM : VocabularyUtils.VOCABULARY;
+  const filterDomain = ASSET_TO_DOMAIN_MAP[assetType];
   const actualAttributes = React.useMemo(
     () => customAttributes.filter((att) => att.domainIri === filterDomain),
     [customAttributes, filterDomain]
