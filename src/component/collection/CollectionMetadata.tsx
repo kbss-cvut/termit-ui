@@ -19,6 +19,7 @@ import { FaPlus } from "react-icons/fa6";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
 import Tabs from "../misc/Tabs";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
+import { useAppSelector } from "../../util/Types";
 
 interface CollectionAndVocabulary {
   collection: SkosCollection | null;
@@ -41,6 +42,17 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
 }) => {
   const { i18n } = useI18n();
   const [totalMembersCount, setTotalMembersCount] = useState<number>(0);
+  const customAttributes = useAppSelector((state) => state.customAttributes);
+
+  const unmappedPropertiesCount: number = useMemo(() => {
+    const knownAttributes = new Set<string>();
+    customAttributes.forEach((a) => knownAttributes.add(a.iri));
+    // filter known custom properties out of unmapped properties
+    const count = collection?.unmappedProperties
+      .keys()
+      .reduce((n, prop) => (knownAttributes.has(prop) ? n : n + 1), 0);
+    return count ?? 0;
+  }, [collection, customAttributes]);
 
   const tabs = useMemo(
     () => ({
@@ -93,8 +105,7 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
             tabs={tabs}
             tabBadges={{
               [TabKey.MEMBERS]: totalMembersCount.toFixed(),
-              [TabKey.PROPERTIES]:
-                collection?.unmappedProperties.size.toFixed() ?? "0",
+              [TabKey.PROPERTIES]: unmappedPropertiesCount.toString(),
             }}
           />
         </CardBody>
