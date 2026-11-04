@@ -2,7 +2,7 @@ import {
   CollectionMemberData,
   isCollection,
   isOrderedCollection,
-  SkosCollectionDto,
+  SkosCollection,
 } from "../../model/Collection";
 import Constants from "../../util/Constants";
 import { FetchOptionsFn, IntelligentTreeSelect } from "intelligent-tree-select";
@@ -20,7 +20,7 @@ import { CollectionIcon } from "./CollectionIcon";
 import { getLocalized } from "../../model/MultilingualString";
 
 export interface NewCollectionMemberSelectProps {
-  collection: SkosCollectionDto;
+  collection: SkosCollection;
   value: CollectionMemberData | null;
   setValue: (value: CollectionMemberData | null) => void;
 }

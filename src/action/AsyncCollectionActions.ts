@@ -16,8 +16,8 @@ import {
   CollectionMemberData,
   CONTEXT,
   MEMBER_CONTEXT,
-  SkosCollectionDto,
-  SkosCollectionDtoData,
+  SkosCollection,
+  SkosCollectionData,
 } from "../model/Collection";
 import { ErrorData } from "../model/ErrorInfo";
 import { EMPTY_PAGE, ResultPage } from "../model/ResultPage";
@@ -57,7 +57,7 @@ export function loadSkosCollection(collectionUri: IRI, vocabularyUri: IRI) {
       queryParams(collectionUri, vocabularyUri)
     )
       .then((data) => JsonLdUtils.compactAndResolveReferences(data, CONTEXT))
-      .then((data) => new SkosCollectionDto(data as SkosCollectionDtoData))
+      .then((data) => new SkosCollection(data as SkosCollectionData))
       .then((result) => dispatch(asyncActionSuccessWithPayload(action, result)))
       .catch((error: ErrorData) =>
         asyncActionFailureWithMessage(error, action, dispatch)
@@ -65,13 +65,13 @@ export function loadSkosCollection(collectionUri: IRI, vocabularyUri: IRI) {
   };
 }
 
-function parseIris(collection: SkosCollectionDtoData) {
+function parseIris(collection: SkosCollectionData) {
   const vocabularyUri = VocabularyUtils.create(collection.vocabulary.iri);
   const collectionUri = VocabularyUtils.create(collection.iri);
   return { vocabularyUri, collectionUri };
 }
 
-export function reloadSkosCollection(collection: SkosCollectionDtoData) {
+export function reloadSkosCollection(collection: SkosCollectionData) {
   const { collectionUri, vocabularyUri } = parseIris(collection);
   return loadSkosCollection(collectionUri, vocabularyUri);
 }
@@ -96,11 +96,11 @@ export function loadSkosCollections(
         .signal(signal)
     )
       .then((response) => {
-        return JsonLdUtils.compactAndResolveReferencesAsArray<SkosCollectionDtoData>(
+        return JsonLdUtils.compactAndResolveReferencesAsArray<SkosCollectionData>(
           response.data,
           CONTEXT
         )
-          .then((data) => data.map((d) => new SkosCollectionDto(d)))
+          .then((data) => data.map((d) => new SkosCollection(d)))
           .then((pageContent) => createPage(response, pageContent))
           .then((page) =>
             dispatch(asyncActionSuccessWithPayload(action, page))
@@ -114,7 +114,7 @@ export function loadSkosCollections(
 }
 
 export function loadCollectionMembers(
-  collection: SkosCollectionDto,
+  collection: SkosCollection,
   pageRequest: PageRequest,
   signal: AbortSignal | undefined
 ) {
@@ -150,7 +150,7 @@ export function loadCollectionMembers(
 }
 
 export function updateCollectionMemberPosition(
-  collection: SkosCollectionDto,
+  collection: SkosCollection,
   memberIri: string,
   originalPos: number,
   newPos: number
@@ -183,7 +183,7 @@ export function updateCollectionMemberPosition(
   };
 }
 
-export function updateSkosCollection(collection: SkosCollectionDto) {
+export function updateSkosCollection(collection: SkosCollection) {
   const action = { type: ActionType.UPDATE_COLLECTION };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
@@ -202,7 +202,7 @@ export function updateSkosCollection(collection: SkosCollectionDto) {
   };
 }
 
-export function createSkosCollection(collection: SkosCollectionDto) {
+export function createSkosCollection(collection: SkosCollection) {
   const action = { type: ActionType.CREATE_COLLECTION };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
@@ -226,7 +226,7 @@ export function createSkosCollection(collection: SkosCollectionDto) {
   };
 }
 
-export function removeSkosCollection(collection: SkosCollectionDto) {
+export function removeSkosCollection(collection: SkosCollection) {
   const action = { type: ActionType.REMOVE_COLLECTION };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
@@ -244,7 +244,7 @@ export function removeSkosCollection(collection: SkosCollectionDto) {
 }
 
 export function loadAddCollectionMemberOptions(
-  collection: SkosCollectionDto,
+  collection: SkosCollection,
   pageRequest: PageRequestOptional,
   searchString?: string
 ) {
@@ -276,7 +276,7 @@ export function loadAddCollectionMemberOptions(
 }
 
 export function addCollectionMember(
-  collection: SkosCollectionDto,
+  collection: SkosCollection,
   memberIri: string
 ) {
   const action = { type: ActionType.ADD_COLLECTION_MEMBER };
@@ -296,7 +296,7 @@ export function addCollectionMember(
 }
 
 export function removeCollectionMember(
-  collection: SkosCollectionDto,
+  collection: SkosCollection,
   memberIri: string
 ) {
   const action = { type: ActionType.REMOVE_COLLECTION_MEMBER };

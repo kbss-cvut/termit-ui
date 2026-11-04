@@ -1,7 +1,4 @@
-import {
-  CollectionMemberData,
-  SkosCollectionDto,
-} from "../../model/Collection";
+import { CollectionMemberData, SkosCollection } from "../../model/Collection";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
 import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
 import { NewCollectionMemberSelect } from "./NewCollectionMemberSelect";
@@ -22,7 +19,7 @@ export interface AddCollectionMemberDialogHandle {
 }
 
 export interface AddCollectionMemberDialogProps {
-  collection: SkosCollectionDto;
+  collection: SkosCollection;
 }
 
 const ADD_MEMBER_DIALOG_PROMISE_AREA = "ADD_MEMBER_DIALOG_PROMISE_AREA";

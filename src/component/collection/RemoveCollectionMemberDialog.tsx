@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
-import { CollectionMember, SkosCollectionDto } from "../../model/Collection";
+import { CollectionMember, SkosCollection } from "../../model/Collection";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
 import { useI18n } from "../hook/useI18n";
 import { Label } from "reactstrap";
@@ -15,7 +15,7 @@ export interface RemoveCollectionMemberDialogHandle {
 }
 
 export interface RemoveCollectionMemberDialogProps {
-  collection: SkosCollectionDto;
+  collection: SkosCollection;
   /**
    * Callback called after a collection member is successfully removed
    */

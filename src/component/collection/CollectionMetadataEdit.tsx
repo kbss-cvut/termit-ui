@@ -19,7 +19,7 @@ import {
 } from "reactstrap";
 import Toggle from "react-bootstrap-toggle";
 import { useDispatch } from "react-redux";
-import { SkosCollectionDto } from "../../model/Collection";
+import { SkosCollection } from "../../model/Collection";
 import MultilingualString, {
   getLocalizedOrDefault,
   hasNonBlankValue,
@@ -93,7 +93,7 @@ const CollectionMetadataEdit: FunctionComponent<
     }
   }, [dispatch, vocabulary?.iri, vocabularyUri]);
 
-  const [collection, setCollection] = useState<SkosCollectionDto | null>(null);
+  const [collection, setCollection] = useState<SkosCollection | null>(null);
 
   useEffect(() => {
     if (!collectionUri) {
@@ -137,11 +137,11 @@ const CollectionMetadataEdit: FunctionComponent<
     if (vocabulary.primaryLanguage != null) {
       return getLanguagesWithRequired(
         vocabulary.primaryLanguage,
-        SkosCollectionDto.MULTILINGUAL_ATTRIBUTES,
+        SkosCollection.MULTILINGUAL_ATTRIBUTES,
         data
       );
     }
-    return getLanguages(SkosCollectionDto.MULTILINGUAL_ATTRIBUTES, data);
+    return getLanguages(SkosCollection.MULTILINGUAL_ATTRIBUTES, data);
   }, [data, vocabulary.primaryLanguage]);
 
   const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -212,7 +212,7 @@ const CollectionMetadataEdit: FunctionComponent<
       title: { ...data.title },
       description: { ...data.description },
     };
-    removeTranslation(SkosCollectionDto.MULTILINGUAL_ATTRIBUTES, copy, lang);
+    removeTranslation(SkosCollection.MULTILINGUAL_ATTRIBUTES, copy, lang);
     setData(copy);
   };
 
@@ -226,7 +226,7 @@ const CollectionMetadataEdit: FunctionComponent<
       return;
     }
 
-    const collection = new SkosCollectionDto({
+    const collection = new SkosCollection({
       iri: data.iri,
       title: data.title,
       description: data.description,

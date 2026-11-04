@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import Vocabulary from "../../model/Vocabulary";
-import { SkosCollectionDto } from "../../model/Collection";
+import { SkosCollection } from "../../model/Collection";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -112,7 +112,7 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
     }
   }, [loadCollections, collectionsPage, debouncedSearchValue]);
 
-  const columns = useMemo<ColumnDef<SkosCollectionDto>[]>(
+  const columns = useMemo<ColumnDef<SkosCollection>[]>(
     () => [
       {
         id: "label",
@@ -155,7 +155,7 @@ export const CollectionsList: FunctionComponent<CollectionsListProps> = ({
 
   const { pageContent } = collectionsPage ?? EMPTY_PAGE;
 
-  const tableInstance = useReactTable<SkosCollectionDto>({
+  const tableInstance = useReactTable<SkosCollection>({
     columns,
     data: pageContent,
     getCoreRowModel: getCoreRowModel(),

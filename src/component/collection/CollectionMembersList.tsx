@@ -1,7 +1,7 @@
 import {
   CollectionMember,
   isOrderedCollection,
-  SkosCollectionDto,
+  SkosCollection,
 } from "../../model/Collection";
 import {
   FunctionComponent,
@@ -53,7 +53,7 @@ import { isEmpty } from "lodash";
 import { getShortLocale } from "../../util/IntlUtil";
 
 export interface CollectionMembersListProps {
-  collection: SkosCollectionDto | null;
+  collection: SkosCollection | null;
   vocabulary: Vocabulary | null;
 }
 

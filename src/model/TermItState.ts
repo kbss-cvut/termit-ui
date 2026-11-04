@@ -22,7 +22,7 @@ import { LongRunningTask } from "./LongRunningTask";
 import RelationshipAnnotation from "./meta/RelationshipAnnotation";
 import AnnotatedTermRelationship from "./meta/AnnotatedTermRelationship";
 import UserGroup from "./UserGroup";
-import { SkosCollectionDto } from "./Collection";
+import { SkosCollection } from "./Collection";
 import { ResultPage } from "./ResultPage";
 
 /**
@@ -43,9 +43,9 @@ export default class TermItState {
   public intl: IntlData;
   public selectedTerm: Term | null;
 
-  public selectedCollection: SkosCollectionDto | null;
+  public selectedCollection: SkosCollection | null;
   // The current page of SKOS collections
-  public skosCollections: ResultPage<SkosCollectionDto> | null;
+  public skosCollections: ResultPage<SkosCollection> | null;
 
   public queryResults: { [key: string]: QueryResultIF };
   public searchListenerCount: number;

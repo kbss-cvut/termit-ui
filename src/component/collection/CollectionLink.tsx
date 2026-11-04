@@ -1,12 +1,12 @@
 import { FunctionComponent } from "react";
-import { SkosCollectionDtoData } from "../../model/Collection";
+import { SkosCollectionData } from "../../model/Collection";
 import { getLocalized } from "../../model/MultilingualString";
 import Routes from "../../util/Routes";
 import Routing from "../../util/Routing";
 import AssetLink from "../misc/AssetLink";
 
 export const CollectionLink: FunctionComponent<{
-  collection: SkosCollectionDtoData;
+  collection: SkosCollectionData;
   shortLocale: string;
 }> = ({ collection, shortLocale }) => {
   const label = getLocalized(collection.title, shortLocale);
