@@ -15,7 +15,7 @@ import TermOccurrence from "../../../model/TermOccurrence";
 import { StompClient } from "../../hoc/withStompClient";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithIntl } from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import {
   SubTermRemovalStrategy,
   TermRemovalOptions,
@@ -229,18 +229,20 @@ describe("TermDetail", () => {
     expect(onUpdate).toHaveBeenCalledWith(term);
   });
 
-  it("closes term metadata edit on save success", () => {
+  it("closes term metadata edit on save success", async () => {
     const ref = React.createRef<TermDetail>();
     renderTermDetail(
       { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
       ref
     );
     act(() => ref.current!.onEdit());
-    return ref
-      .current!.onSave(term, { pendingApproval: [], pendingRemoval: [] })
-      .then(() => {
-        expect(ref.current!.state.edit).toBeFalsy();
+    await act(async () => {
+      await ref.current!.onSave(term, {
+        pendingApproval: [],
+        pendingRemoval: [],
       });
+    });
+    expect(ref.current!.state.edit).toBeFalsy();
   });
 
   it("reloads term on successful save", () => {
