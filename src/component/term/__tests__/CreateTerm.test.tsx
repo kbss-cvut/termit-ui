@@ -1,17 +1,17 @@
+import * as React from "react";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Term from "../../../model/Term";
-import { shallow } from "enzyme";
 import { CreateTerm } from "../CreateTerm";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
 import Routing from "../../../util/Routing";
 import Routes from "../../../util/Routes";
-import TermMetadataCreate from "../TermMetadataCreate";
 import { createMemoryHistory, Location } from "history";
-import { match as Match } from "react-router";
+import { match as Match, MemoryRouter } from "react-router";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import type { Mock } from "vitest";
 
 vi.mock(import("../../../util/Routing"), async (importOriginal) => {
@@ -21,6 +21,9 @@ vi.mock(import("../../../util/Routing"), async (importOriginal) => {
     default: vi.fn(),
   } as any;
 });
+vi.mock("../TermMetadataCreate", () => ({
+  default: () => <div className="term-metadata-create" />,
+}));
 
 describe("CreateTerm", () => {
   const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
@@ -70,20 +73,32 @@ describe("CreateTerm", () => {
     Routing.reload = vi.fn();
   });
 
-  it("invokes on create on create call", () => {
-    const wrapper = shallow(
-      <CreateTerm
-        createTerm={onCreate}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        loadVocabulary={loadVocabulary}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
+  function renderCreateTerm(
+    props: Partial<React.ComponentProps<typeof CreateTerm>> = {},
+    ref: React.RefObject<CreateTerm> = React.createRef()
+  ) {
+    return renderWithIntl(
+      <MemoryRouter>
+        <CreateTerm
+          ref={ref}
+          createTerm={onCreate}
+          vocabulary={vocabulary}
+          history={history}
+          location={location}
+          match={match}
+          loadVocabulary={loadVocabulary}
+          language={Constants.DEFAULT_LANGUAGE}
+          {...intlFunctions()}
+          {...props}
+        />
+      </MemoryRouter>
     );
-    (wrapper.instance() as CreateTerm).onCreate(term, false);
+  }
+
+  it("invokes on create on create call", () => {
+    const ref = React.createRef<CreateTerm>();
+    renderCreateTerm({}, ref);
+    ref.current!.onCreate(term, false);
     expect(onCreate).toHaveBeenCalledWith(
       term,
       VocabularyUtils.create(vocabulary.iri)
@@ -91,19 +106,9 @@ describe("CreateTerm", () => {
   });
 
   it("invokes transition to term detail on successful creation", () => {
-    const wrapper = shallow<CreateTerm>(
-      <CreateTerm
-        createTerm={onCreate}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        loadVocabulary={loadVocabulary}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
-    (wrapper.instance() as CreateTerm).onCreate(term, false);
+    const ref = React.createRef<CreateTerm>();
+    renderCreateTerm({}, ref);
+    ref.current!.onCreate(term, false);
     return Promise.resolve().then(() => {
       expect(Routing.transitionTo).toHaveBeenCalled();
       const mock = (Routing.transitionTo as Mock).mock;
@@ -124,19 +129,9 @@ describe("CreateTerm", () => {
   });
 
   it("invokes transition to new term on successful creation", () => {
-    const wrapper = shallow<CreateTerm>(
-      <CreateTerm
-        createTerm={onCreate}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        loadVocabulary={loadVocabulary}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
-    (wrapper.instance() as CreateTerm).onCreate(term, true);
+    const ref = React.createRef<CreateTerm>();
+    renderCreateTerm({}, ref);
+    ref.current!.onCreate(term, true);
     return Promise.resolve().then(() => {
       expect(Routing.transitionTo).toHaveBeenCalled();
       const mock = (Routing.transitionTo as Mock).mock;
@@ -154,20 +149,28 @@ describe("CreateTerm", () => {
   });
 
   it("does not render component while vocabulary is empty", () => {
-    const wrapper = shallow<CreateTerm>(
-      <CreateTerm
-        createTerm={onCreate}
-        vocabulary={EMPTY_VOCABULARY}
-        history={history}
-        location={location}
-        match={match}
-        loadVocabulary={loadVocabulary}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
+    const { container, rerender } = renderCreateTerm({
+      vocabulary: EMPTY_VOCABULARY,
+    });
+    expect(
+      container.querySelector(".term-metadata-create")
+    ).not.toBeInTheDocument();
+    rerender(
+      <MemoryRouter>
+        <CreateTerm
+          createTerm={onCreate}
+          vocabulary={vocabulary}
+          history={history}
+          location={location}
+          match={match}
+          loadVocabulary={loadVocabulary}
+          language={Constants.DEFAULT_LANGUAGE}
+          {...intlFunctions()}
+        />
+      </MemoryRouter>
     );
-    expect(wrapper.exists(TermMetadataCreate)).toBeFalsy();
-    wrapper.setProps({ vocabulary });
-    expect(wrapper.exists(TermMetadataCreate)).toBeTruthy();
+    expect(
+      container.querySelector(".term-metadata-create")
+    ).toBeInTheDocument();
   });
 });

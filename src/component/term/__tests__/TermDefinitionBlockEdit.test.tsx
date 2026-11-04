@@ -3,16 +3,20 @@ import Generator from "../../../__tests__/environment/Generator";
 import { TermDefinitionBlockEdit } from "../TermDefinitionBlockEdit";
 import { TermData } from "../../../model/Term";
 import Constants from "../../../util/Constants";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import MarkdownEditor from "../../misc/MarkdownEditor";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import type { Mock } from "vitest";
 
 vi.mock("../../misc/HelpIcon", () => ({ default: () => <span>Help</span> }));
 vi.mock("../../misc/MultilingualIcon", () => ({
   default: () => <span>Multilingual</span>,
 }));
+
+const mocks = vi.hoisted(() => ({ editorProps: {} as any }));
 vi.mock("../../misc/MarkdownEditor", () => ({
-  default: () => <div>Editor</div>,
+  default: (props: any) => {
+    mocks.editorProps = props;
+    return <div>Editor</div>;
+  },
 }));
 
 describe("TermDefinitionBlockEdit", () => {
@@ -22,12 +26,8 @@ describe("TermDefinitionBlockEdit", () => {
     onChange = vi.fn();
   });
 
-  it("merges existing definition value in a different language with edited value", () => {
-    const term = Generator.generateTerm();
-    const czechValue = "Term definition in Czech";
-    const englishValue = "Term definition in English";
-    term.definition = { cs: czechValue };
-    const wrapper = mountWithIntl(
+  function renderEdit(term: TermData) {
+    return renderWithIntl(
       <TermDefinitionBlockEdit
         term={term}
         onChange={onChange}
@@ -36,8 +36,15 @@ describe("TermDefinitionBlockEdit", () => {
         {...intlFunctions()}
       />
     );
-    const editor = wrapper.find(MarkdownEditor);
-    editor.prop("onChange")!(englishValue);
+  }
+
+  it("merges existing definition value in a different language with edited value", () => {
+    const term = Generator.generateTerm();
+    const czechValue = "Term definition in Czech";
+    const englishValue = "Term definition in English";
+    term.definition = { cs: czechValue };
+    renderEdit(term);
+    mocks.editorProps.onChange(englishValue);
     expect(onChange).toHaveBeenCalled();
     expect((onChange as Mock).mock.calls[0][0]).toEqual({
       definition: { cs: czechValue, en: englishValue },
@@ -50,17 +57,8 @@ describe("TermDefinitionBlockEdit", () => {
       en: "Building is a kind of construction",
       cs: "Budova je typem stavby",
     };
-    const wrapper = mountWithIntl(
-      <TermDefinitionBlockEdit
-        term={term}
-        onChange={onChange}
-        language={Constants.DEFAULT_LANGUAGE}
-        getValidationResults={vi.fn().mockReturnValue([])}
-        {...intlFunctions()}
-      />
-    );
-    const textarea = wrapper.find(MarkdownEditor);
-    expect(textarea.prop("value")).toEqual(
+    renderEdit(term);
+    expect(mocks.editorProps.value).toEqual(
       term.definition[Constants.DEFAULT_LANGUAGE]
     );
   });

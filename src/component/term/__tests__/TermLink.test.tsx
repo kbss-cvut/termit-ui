@@ -1,9 +1,9 @@
-import { Link, MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import Term from "../../../model/Term";
 import { TermLink } from "../TermLink";
 import {
   mockStore,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
 import Vocabulary from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
@@ -31,6 +31,20 @@ describe("TermLink", () => {
   const vocNamespace = "http://test.org/";
   let testVocabulary: Vocabulary;
 
+  function renderLink(term: Term, language?: string, intl?: any) {
+    return renderWithIntl(
+      <MemoryRouter>
+        <TermLink term={term} language={language} />
+      </MemoryRouter>,
+      undefined,
+      intl
+    );
+  }
+
+  function internalLink(container: HTMLElement) {
+    return container.querySelector('a[href^="/"]') as HTMLAnchorElement;
+  }
+
   beforeEach(() => {
     testVocabulary = new Vocabulary({
       label: langString("Test vocabulary"),
@@ -52,12 +66,8 @@ describe("TermLink", () => {
       vocabulary: testVocabulary,
     });
 
-    const link = mountWithIntl(
-      <MemoryRouter>
-        <TermLink term={term} />
-      </MemoryRouter>
-    ).find(Link);
-    expect((link.props() as any).to).toEqual(
+    const { container } = renderLink(term);
+    expect(internalLink(container).getAttribute("href")).toEqual(
       `/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${encodeURIComponent(
         vocNamespace
       )}`
@@ -69,19 +79,11 @@ describe("TermLink", () => {
       iri: Generator.generateUri(),
       label: langString("Term without vocabulary"),
     });
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <TermLink term={term} />
-      </MemoryRouter>
-    );
-    expect(wrapper.find(Link).exists()).toBeFalsy();
+    const { container } = renderLink(term);
+    expect(internalLink(container)).toBeNull();
     expect(
-      wrapper.find("a").contains(
-        <small>
-          <i className="fas fa-external-link-alt text-primary" />
-        </small>
-      )
-    ).toBeTruthy();
+      container.querySelector("a i.fas.fa-external-link-alt")
+    ).toBeInTheDocument();
   });
 
   it("links to public term view when user is not logged in", () => {
@@ -93,12 +95,8 @@ describe("TermLink", () => {
     });
     vi.spyOn(redux, "useSelector").mockReturnValue(EMPTY_USER);
 
-    const link = mountWithIntl(
-      <MemoryRouter>
-        <TermLink term={term} />
-      </MemoryRouter>
-    ).find(Link);
-    expect((link.props() as any).to).toEqual(
+    const { container } = renderLink(term);
+    expect(internalLink(container).getAttribute("href")).toEqual(
       `/public/vocabularies/${vocFragment}/terms/${termFragment}?namespace=${encodeURIComponent(
         vocNamespace
       )}`
@@ -116,11 +114,7 @@ describe("TermLink", () => {
       vocabulary: testVocabulary,
     });
 
-    mountWithIntl(
-      <MemoryRouter>
-        <TermLink term={term} />
-      </MemoryRouter>
-    ).find(Link);
+    renderLink(term);
     expect(term.label).toEqual(originalLabel);
   });
 
@@ -137,14 +131,8 @@ describe("TermLink", () => {
     (mockStore.getState() as TermItState).intl.locale =
       Constants.LANG.CS.locale;
     (mockStore.getState() as TermItState).intl.messages = cs.messages;
-    const link = mountWithIntl(
-      <MemoryRouter>
-        <TermLink term={term} />
-      </MemoryRouter>,
-      undefined,
-      cs
-    ).find(Link);
-    expect(link.text()).toEqual(term.label.cs);
+    const { container } = renderLink(term, undefined, cs);
+    expect(internalLink(container).textContent).toEqual(term.label.cs);
   });
 
   it("uses provided language to render link label instead of current locale", () => {
@@ -157,11 +145,7 @@ describe("TermLink", () => {
       vocabulary: testVocabulary,
     });
 
-    const link = mountWithIntl(
-      <MemoryRouter>
-        <TermLink term={term} language="cs" />
-      </MemoryRouter>
-    ).find(Link);
-    expect(link.text()).toEqual(term.label.cs);
+    const { container } = renderLink(term, "cs");
+    expect(internalLink(container).textContent).toEqual(term.label.cs);
   });
 });

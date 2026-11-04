@@ -1,9 +1,9 @@
+import * as React from "react";
 import Term, { TermData } from "../../../model/Term";
-import { shallow } from "enzyme";
 import { Terms } from "../Terms";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import { Location } from "history";
-import { match as Match } from "react-router";
+import { match as Match, MemoryRouter } from "react-router";
 import Routing from "../../../util/Routing";
 import Utils from "../../../util/Utils";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
@@ -13,9 +13,21 @@ import * as TermTreeSelectHelper from "../TermTreeSelectHelper";
 import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { act } from "react-dom/test-utils";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 
 vi.mock("../../../util/Routing");
+vi.mock("intelligent-tree-select", () => ({
+  IntelligentTreeSelect: class extends React.Component {
+    render() {
+      return <div className="intelligent-tree-select" />;
+    }
+  },
+}));
+vi.mock("../TermListToggle", () => ({
+  default: () => <div className="term-list-toggle" />,
+}));
 
 describe("Terms", () => {
   const vocabularyName = "test-vocabulary";
@@ -73,8 +85,9 @@ describe("Terms", () => {
 
   describe("onTermSelect", () => {
     it("transitions to selected term detail", () => {
-      const wrapper = renderShallow();
-      wrapper.instance().onTermSelect(new Term(term));
+      const ref = React.createRef<Terms>();
+      renderTerms({}, ref);
+      ref.current!.onTermSelect(new Term(term));
       const call = (Routing.transitionToAsset as Mock).mock.calls[0];
       expect(call[0].iri).toEqual(term.iri);
       expect(call[0].vocabulary).toEqual(term.vocabulary);
@@ -83,91 +96,126 @@ describe("Terms", () => {
 
     // Redmine #1349
     it("does not invoke termSelected when rendered in term detail view and no term is selected (input is cleared)", () => {
-      const wrapper = renderShallow(true);
-      wrapper.instance().onTermSelect(null);
+      const ref = React.createRef<Terms>();
+      renderTerms({ isDetailView: true }, ref);
+      ref.current!.onTermSelect(null);
       expect(selectVocabularyTerm).not.toHaveBeenCalled();
     });
   });
 
-  function renderShallow(isDetailView: boolean = false) {
-    return shallow<Terms>(
-      <Terms
-        selectedTerms={selectedTerms}
-        showTermQualityBadge={false}
-        notifications={[]}
-        consumeNotification={consumeNotification}
-        selectVocabularyTerm={selectVocabularyTerm}
-        vocabulary={vocabulary}
-        fetchTerms={fetchTerms}
-        {...intlFunctions()}
-        location={location}
-        match={match}
-        isDetailView={isDetailView}
-        configuration={DEFAULT_CONFIGURATION}
-        terminalStates={[]}
-        flatList={false}
-        setTermsFlatList={vi.fn()}
-      />
+  function renderTerms(
+    props: Partial<React.ComponentProps<typeof Terms>> = {},
+    ref: React.RefObject<Terms> = React.createRef()
+  ) {
+    return renderWithIntl(
+      <MemoryRouter>
+        <Terms
+          ref={ref}
+          selectedTerms={selectedTerms}
+          showTermQualityBadge={false}
+          notifications={[]}
+          consumeNotification={consumeNotification}
+          selectVocabularyTerm={selectVocabularyTerm}
+          vocabulary={vocabulary}
+          fetchTerms={fetchTerms}
+          {...intlFunctions()}
+          location={location}
+          match={match}
+          isDetailView={false}
+          configuration={DEFAULT_CONFIGURATION}
+          terminalStates={[]}
+          flatList={false}
+          setTermsFlatList={vi.fn()}
+          {...props}
+        />
+      </MemoryRouter>
     );
   }
 
   it("fetches terms including imported when configured to", () => {
-    const wrapper = renderShallow();
-    wrapper.setState({ includeImported: true });
-    wrapper.update();
-    wrapper.instance().fetchOptions({});
+    const ref = React.createRef<Terms>();
+    renderTerms({}, ref);
+    act(() => ref.current!.setState({ includeImported: true }));
+    ref.current!.fetchOptions({});
     expect((fetchTerms as Mock).mock.calls[0][0].includeImported).toBeTruthy();
   });
 
   it("uses term vocabulary when fetching its subterms", () => {
-    const wrapper = renderShallow();
-    wrapper.setState({ includeImported: true });
-    wrapper.update();
+    const ref = React.createRef<Terms>();
+    renderTerms({}, ref);
+    act(() => ref.current!.setState({ includeImported: true }));
     const option = new Term({
       iri: Generator.generateUri(),
       label: langString("Test term"),
       vocabulary: { iri: Generator.generateUri() },
     });
-    wrapper.instance().fetchOptions({ optionID: option.iri, option });
+    ref.current!.fetchOptions({ optionID: option.iri, option });
     expect((fetchTerms as Mock).mock.calls[0][1]).toEqual(
       VocabularyUtils.create(option.vocabulary!.iri!)
     );
   });
 
   it("marks the selected term for loading when it changes", () => {
-    const wrapper = renderShallow(true);
+    const ref = React.createRef<Terms>();
+    const { rerender } = renderTerms({ isDetailView: true }, ref);
     const resetOptions = vi.fn();
     const resetScrollState = vi.fn();
-    (wrapper.instance() as any).treeComponent.current = {
+    (ref.current as any).treeComponent.current = {
       resetOptions,
       resetScrollState,
     };
-    wrapper.setState({ selectedTermLoaded: true });
+    act(() => ref.current!.setState({ selectedTermLoaded: true }));
 
-    wrapper.setProps({ selectedTerms: new Term(term) });
+    rerender(
+      termsElement({ isDetailView: true, selectedTerms: new Term(term) }, ref)
+    );
 
-    expect(wrapper.state().selectedTermLoaded).toBeFalsy();
+    expect(ref.current!.state.selectedTermLoaded).toBeFalsy();
     expect(resetOptions).toHaveBeenCalled();
   });
 
+  function termsElement(
+    props: Partial<React.ComponentProps<typeof Terms>> = {},
+    ref?: React.RefObject<Terms>
+  ) {
+    return (
+      <MemoryRouter>
+        <Terms
+          ref={ref}
+          selectedTerms={selectedTerms}
+          showTermQualityBadge={false}
+          notifications={[]}
+          consumeNotification={consumeNotification}
+          selectVocabularyTerm={selectVocabularyTerm}
+          vocabulary={vocabulary}
+          fetchTerms={fetchTerms}
+          {...intlFunctions()}
+          location={location}
+          match={match}
+          isDetailView={false}
+          configuration={DEFAULT_CONFIGURATION}
+          terminalStates={[]}
+          flatList={false}
+          setTermsFlatList={vi.fn()}
+          {...props}
+        />
+      </MemoryRouter>
+    );
+  }
+
   it("disables include imported terms toggle when fetching terms", () => {
-    const wrapper = renderShallow();
-    expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();
+    const ref = React.createRef<Terms>();
+    const { rerender } = renderTerms({}, ref);
+    expect(ref.current!.state.disableIncludeImportedToggle).toBeFalsy();
     fetchTerms = vi.fn().mockImplementation(() => {
-      wrapper.update();
-      expect(wrapper.state().disableIncludeImportedToggle).toBeTruthy();
+      expect(ref.current!.state.disableIncludeImportedToggle).toBeTruthy();
       return Promise.resolve([]);
     });
-    wrapper.setProps({ fetchTerms });
-    wrapper.update();
-    return wrapper
-      .instance()
-      .fetchOptions({})
-      .then(() => {
-        expect(fetchTerms).toHaveBeenCalled();
-        wrapper.update();
-        expect(wrapper.state().disableIncludeImportedToggle).toBeFalsy();
-      });
+    rerender(termsElement({ fetchTerms }, ref));
+    return ref.current!.fetchOptions({}).then(() => {
+      expect(fetchTerms).toHaveBeenCalled();
+      expect(ref.current!.state.disableIncludeImportedToggle).toBeFalsy();
+    });
   });
 
   describe("fetchOptions", () => {
@@ -193,14 +241,12 @@ describe("Terms", () => {
         }
       }
       fetchTerms = vi.fn().mockResolvedValue(terms);
-      const wrapper = renderShallow();
-      wrapper.setState({ includeImported: true });
-      return wrapper
-        .instance()
-        .fetchOptions({})
-        .then((options) => {
-          expect(options).toEqual(matching);
-        });
+      const ref = React.createRef<Terms>();
+      renderTerms({}, ref);
+      act(() => ref.current!.setState({ includeImported: true }));
+      return ref.current!.fetchOptions({}).then((options) => {
+        expect(options).toEqual(matching);
+      });
     });
 
     it("filters out terms from different vocabularies when vocabulary has no imports", () => {
@@ -217,13 +263,11 @@ describe("Terms", () => {
         }
       }
       fetchTerms = vi.fn().mockResolvedValue(terms);
-      const wrapper = renderShallow();
-      return wrapper
-        .instance()
-        .fetchOptions({})
-        .then((options) => {
-          expect(options).toEqual(matching);
-        });
+      const ref = React.createRef<Terms>();
+      renderTerms({}, ref);
+      return ref.current!.fetchOptions({}).then((options) => {
+        expect(options).toEqual(matching);
+      });
     });
 
     it("filters out term's children which are in vocabularies outside of the vocabulary import chain", () => {
@@ -243,17 +287,15 @@ describe("Terms", () => {
       terms[0].subTerms = subTerms;
       terms[0].syncPlainSubTerms();
       fetchTerms = vi.fn().mockResolvedValue(terms);
-      const wrapper = renderShallow();
-      return wrapper
-        .instance()
-        .fetchOptions({})
-        .then((options) => {
-          expect(options.length).toEqual(1);
-          const t = options[0];
-          expect(t.subTerms!.length).toEqual(1);
-          expect(t.subTerms![0].iri).toEqual(subTerms[0].iri);
-          expect(t.plainSubTerms).toEqual([subTerms[0].iri]);
-        });
+      const ref = React.createRef<Terms>();
+      renderTerms({}, ref);
+      return ref.current!.fetchOptions({}).then((options) => {
+        expect(options.length).toEqual(1);
+        const t = options[0];
+        expect(t.subTerms!.length).toEqual(1);
+        expect(t.subTerms![0].iri).toEqual(subTerms[0].iri);
+        expect(t.plainSubTerms).toEqual([subTerms[0].iri]);
+      });
     });
 
     it("flattens loaded terms when search string was provided", () => {
@@ -269,10 +311,10 @@ describe("Terms", () => {
       parent.syncPlainSubTerms();
       grandParent.syncPlainSubTerms();
       fetchTerms = vi.fn().mockResolvedValue([child]);
-      const wrapper = renderShallow();
-      return wrapper
-        .instance()
-        .fetchOptions({ searchString: "test" })
+      const ref = React.createRef<Terms>();
+      renderTerms({}, ref);
+      return ref
+        .current!.fetchOptions({ searchString: "test" })
         .then((options) => {
           expect(options.length).toEqual(3);
           expect(options.find((t) => t.iri === child.iri)).toBeDefined();
@@ -288,10 +330,10 @@ describe("Terms", () => {
       terms[0].parentTerms = [parent];
       fetchTerms = vi.fn().mockResolvedValue(terms);
       const spy = vi.spyOn(TermTreeSelectHelper, "processTermsForTreeSelect");
-      const wrapper = renderShallow();
-      return wrapper
-        .instance()
-        .fetchOptions({ searchString: "test" })
+      const ref = React.createRef<Terms>();
+      renderTerms({}, ref);
+      return ref
+        .current!.fetchOptions({ searchString: "test" })
         .then((options) => {
           expect(options.length).toEqual(1);
           expect(options).toEqual(terms);
