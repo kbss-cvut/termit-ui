@@ -2,7 +2,7 @@ import { FunctionComponent, useCallback, useMemo } from "react";
 import { FetchOptionsFn, IntelligentTreeSelect } from "intelligent-tree-select";
 import { useDispatch } from "react-redux";
 import { loadSkosCollections } from "../../action/AsyncCollectionActions";
-import { SkosCollectionDtoData } from "../../model/Collection";
+import { SkosCollectionData } from "../../model/Collection";
 import Constants from "../../util/Constants";
 import { getShortLocale } from "../../util/IntlUtil";
 import { ThunkDispatch } from "../../util/Types";
@@ -16,10 +16,10 @@ import { getLocalized } from "../../model/MultilingualString";
 
 export interface CollectionSelectProps {
   vocabulary: Vocabulary;
-  value: SkosCollectionDtoData | null;
-  setValue: (value: SkosCollectionDtoData | null) => void;
+  value: SkosCollectionData | null;
+  setValue: (value: SkosCollectionData | null) => void;
   /// collections that will not be offered by the select
-  exclude?: SkosCollectionDtoData[];
+  exclude?: SkosCollectionData[];
   emptyText?: string;
 }
 
@@ -36,7 +36,7 @@ export const CollectionSelect: FunctionComponent<CollectionSelectProps> = ({
   const shortLocale = getShortLocale(locale);
   const dispatch: ThunkDispatch = useDispatch();
 
-  const fetchOptions: FetchOptionsFn<SkosCollectionDtoData> = useCallback(
+  const fetchOptions: FetchOptionsFn<SkosCollectionData> = useCallback(
     (options) => {
       const { page, size } = Utils.createPagingParams(
         options.offset,
@@ -73,12 +73,12 @@ export const CollectionSelect: FunctionComponent<CollectionSelectProps> = ({
   );
 
   const getOptionLabel = useCallback(
-    (option: SkosCollectionDtoData) => getLocalized(option.title, locale),
+    (option: SkosCollectionData) => getLocalized(option.title, locale),
     [locale]
   );
 
   return (
-    <IntelligentTreeSelect<SkosCollectionDtoData, false, true>
+    <IntelligentTreeSelect<SkosCollectionData, false, true>
       key={vocabulary.iri}
       onChange={setValue}
       value={value}

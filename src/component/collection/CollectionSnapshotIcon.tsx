@@ -1,8 +1,5 @@
 import { FunctionComponent } from "react";
-import {
-  SkosCollectionDto,
-  SkosCollectionDtoData,
-} from "../../model/Collection";
+import { SkosCollection, SkosCollectionData } from "../../model/Collection";
 import Vocabulary from "../../model/Vocabulary";
 import Routing from "../../util/Routing";
 import { Link } from "react-router-dom";
@@ -10,7 +7,7 @@ import SnapshotIcon from "../snapshot/SnapshotIcon";
 import Routes from "../../util/Routes";
 
 export interface CollectionIconProps {
-  collection: SkosCollectionDto | null;
+  collection: SkosCollection | null;
   vocabulary: Vocabulary | null;
 }
 
@@ -22,7 +19,7 @@ export const CollectionSnapshotIcon: FunctionComponent<CollectionIconProps> = ({
     return null;
   }
 
-  const originalCollection: SkosCollectionDtoData = {
+  const originalCollection: SkosCollectionData = {
     ...collection,
     iri: collection.snapshotOf()!,
     vocabulary: { iri: vocabulary.snapshotOf()! },

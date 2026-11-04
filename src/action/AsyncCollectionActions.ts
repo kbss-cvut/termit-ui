@@ -326,11 +326,11 @@ export function loadCollectionsWithTerm(term: Term) {
       param("namespace", termIri.namespace)
     )
       .then((data) =>
-        JsonLdUtils.compactAndResolveReferencesAsArray<SkosCollectionDtoData>(
+        JsonLdUtils.compactAndResolveReferencesAsArray<SkosCollectionData>(
           data,
           CONTEXT
         )
-          .then((dtos) => dtos.map((d) => new SkosCollectionDto(d)))
+          .then((dtos) => dtos.map((d) => new SkosCollection(d)))
           .then((result) =>
             dispatch(asyncActionSuccessWithPayload(action, result))
           )

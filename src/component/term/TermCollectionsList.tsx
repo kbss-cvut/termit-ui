@@ -2,16 +2,12 @@ import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import Term from "../../model/Term";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../util/Types";
-import {
-  SkosCollectionDto,
-  SkosCollectionDtoData,
-} from "../../model/Collection";
+import { SkosCollection, SkosCollectionData } from "../../model/Collection";
 import {
   addCollectionMember,
   loadCollectionsWithTerm,
 } from "../../action/AsyncCollectionActions";
-import { useI18n } from "../hook/useI18n";
-// @ts-ignore
+import { useI18n } from "../hook/useI18n"; // @ts-ignore
 import { List } from "reactstrap";
 import { CollectionLink } from "../collection/CollectionLink";
 import BadgeButton from "../misc/BadgeButton";
@@ -34,11 +30,11 @@ export const TermCollectionsList: FunctionComponent<{
 }> = ({ term, vocabulary }) => {
   const dispatch: ThunkDispatch = useDispatch();
   const { i18n, locale } = useI18n();
-  const [collections, setCollections] = useState<SkosCollectionDto[]>([]);
+  const [collections, setCollections] = useState<SkosCollection[]>([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
   // selected collection to which the term should be added
   const [selectedCollection, setSelectedCollection] =
-    useState<SkosCollectionDtoData | null>(null);
+    useState<SkosCollectionData | null>(null);
 
   const loadCollectionsOfTerm = useCallback(() => {
     trackPromise(
@@ -70,8 +66,8 @@ export const TermCollectionsList: FunctionComponent<{
     if (!selectedCollection || !isModificationAuthorized) {
       return;
     }
-    const dto = new SkosCollectionDto(selectedCollection);
-    dispatch(addCollectionMember(dto, term.iri)).then((action) => {
+    const collection = new SkosCollection(selectedCollection);
+    dispatch(addCollectionMember(collection, term.iri)).then((action) => {
       if (action.status === AsyncActionStatus.SUCCESS) {
         loadCollectionsOfTerm();
         closeAddDialog();
