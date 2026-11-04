@@ -43,55 +43,44 @@ General testing utilities should be put in `src/__tests__/environment`.
 
 ### Internationalization in Tests
 
-Since most of the components are localized, they expect intl-related functions like `i18n`, `formatMessage` (specified
-in `HasI18n`). To be able to render such components in tests, there are two things that need to be done:
+Components are tested with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+(RTL). Since most of the components are localized, they expect intl-related functions like `i18n`, `formatMessage`
+(specified in `HasI18n`). To be able to render such components in tests, there are two things that need to be done:
 
-1. Render the component using `mountWithIntl` instead of Enzyme's default `mount`. This wraps the component in an
-   `IntlProvider`, which sets up the intl context.
+1. Render the component using `renderWithIntl` instead of RTL's default `render`. This wraps the component in an
+   `IntlProvider`, which sets up the intl context. `renderWithIntl` also provides a default Redux store mock
+   (`mockStore`) which is required by connected components.
 2. Pass the intl-related functions to the component. This can be done by invoking the `intlFunctions` function, which
    returns an object with all the necessary functions/objects.
 
-So mounting the component in tests can look for example as follows:
+So rendering a component in tests can look for example as follows:
 
 ```jsx harmony
-const wrapper = mountWithIntl(
-  <CreateVocabulary onCreate={onCreate} {...intlFunctions()} />
+const { container } = renderWithIntl(
+  <MemoryRouter>
+    <CreateVocabulary onCreate={onCreate} {...intlFunctions()} />
+  </MemoryRouter>
 );
 ```
 
-Note that this means that `wrapper` is not the actual tested component but an instance of `IntlProvider` wrapping the
-component. `mountWithIntl` also provides a default Redux store
-mock which is required by some components.
+Note that `container` is the rendered DOM subtree; use DOM queries (`container.querySelector`, `screen` queries)
+and `fireEvent` for assertions and interactions instead of accessing component instances directly.
 
-If shallow rendering is used, use the regular Enzyme `shallow` method to mount the component and set up the intl context
-using the `intlFunctions` function.
-
-For example:
-
-```jsx harmony
-const wrapper = shallow(<CreateVocabulary onCreate={onCreate} {...intlFunctions()}/>;
-```
-
-Do not forget to import the core component into tests, not the wrapped component!
+Do not forget to import the core component into tests, not the wrapped component! If a class component's instance
+methods or state need to be tested, pass a React ref via `React.createRef` and wrap state updates in `act`.
 
 If a functional component using the `useI18n` hook is tested, there is a corresponding test environment function called
-`mockUseI18n` that should be called before the test to
-mock the `useI18n` hook.
+`mockUseI18n` that should be called before the test to mock the `useI18n` hook.
 
 ### React Hooks in Tests
 
-Testing functional components that use [React Hooks](https://reactjs.org/docs/hooks-intro.htm) is a bit more
-complicated. The easiest way is to use full-blown mounting instead
-of shallow rendering. Even then, there are some quirks regarding Promise-based methods. See
+Functional components using [React Hooks](https://reactjs.org/docs/hooks-intro.htm) work out of the box with RTL,
+since it performs full DOM rendering. For components performing asynchronous work in effects, await the asynchronous
+operations inside `act` (the `flushPromises` helper in `src/__tests__/environment` can be used). See
 `VocabularyManagement.test.tsx` for example working setup.
 
-Getting shallow rendering to work with hooks is even more complicated, because the `useEffect` hook is not called by
-default by the shallow renderer. There is a library
-that fixes this issue ([vitest-react-hooks-shallow](https://github.com/ecmarsh/vitest-react-hooks-shallow), however, it
-introduces another problem with mount-based tests.
-To fix this, the library is disabled by default (see its setup in `setupShallowHooks.ts`) and has to be enabled per
-test/suite. See `TermOccurrenceAnnotation.test.tsx` for
-example setup.
+When a child component's props need to be inspected or invoked (e.g., a selector's `onChange` prop), mock the child
+component and capture its props via `vi.hoisted`. See `VocabulariesReferenceListEdit.test.tsx` for an example.
 
 ## Developer Notes
 
@@ -109,7 +98,7 @@ example setup.
   - _Update_ - use the instance to be updated as parameter. It should contain all the necessary data.
   - _Remove_ - use the instance to be removed as parameter.
 - Action naming conventions for CRUD operations:
-  - _load${ASSET(S)}_ for loading assets from the server, e.g. `loadVocabulary`
+  - _load${ASSET (S)}_ for loading assets from the server, e.g. `loadVocabulary`
   - _create${ASSET}_ for creating an asset, e.g. `createVocabulary`
   - _update${ASSET}_ for updating an asset, e.g. `updateVocabulary`
   - _remove${ASSET}_ for removing an asset, e.g. `removeVocabulary`
@@ -124,8 +113,8 @@ example setup.
   separately and then specified in generic arguments to `connect`. An example of this technique can be found in
   `TermAssignments`.
   Also, this means that intl props need to be explicitly passed to the component in `connect`. Otherwise,
-  internationalization would not work properly
-  (language switching would have no effect). See `TermAssignments` again for a showcase how to do this.
+  internationalization would not work properly (language switching would have no effect). See `TermAssignments` again
+  for a showcase how to do this.
 - Marker CSS classes should be used to denote important elements. These classes help in testing. Marker classes should
   be prefixed with `m-` and no styling should be applied based on them.
 - Element IDs should be used as much as possible to make testing easier.
