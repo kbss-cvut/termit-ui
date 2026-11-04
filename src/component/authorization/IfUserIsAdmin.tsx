@@ -8,6 +8,7 @@ import VocabularyUtils from "../../util/VocabularyUtils";
 interface IfUserIsAdminProps {
   renderUnauthorizedAlert?: boolean;
   unauthorized?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const IfUserIsAdmin: React.FC<IfUserIsAdminProps> = ({

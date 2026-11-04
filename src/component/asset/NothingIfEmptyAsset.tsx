@@ -13,10 +13,10 @@ import Constants from "../../util/Constants";
  * @param children Children to render
  * @constructor
  */
-const NothingIfEmptyAsset: React.FC<{ asset: AssetData }> = ({
-  asset,
-  children,
-}) => {
+const NothingIfEmptyAsset: React.FC<{
+  asset: AssetData;
+  children?: React.ReactNode;
+}> = ({ asset, children }) => {
   return asset.iri === Constants.EMPTY_ASSET_IRI ? null : <>{children}</>;
 };
 

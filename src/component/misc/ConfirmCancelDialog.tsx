@@ -24,6 +24,7 @@ interface ConfirmCancelDialogProps {
   cancelColor?: string;
   size?: "lg" | "sm";
   className?: string;
+  children?: React.ReactNode;
 }
 
 /**

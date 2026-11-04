@@ -5,6 +5,7 @@ import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { MemoryRouter } from "react-router";
 
 vi.mock("../VocabularyIriLink", () => ({
+  // eslint-disable-next-line jsx-a11y/anchor-is-valid, jsx-a11y/anchor-has-content
   default: () => <a className="vocabulary-iri-link" />,
 }));
 

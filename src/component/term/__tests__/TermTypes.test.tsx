@@ -15,6 +15,7 @@ vi.mock("react-redux", async (importOriginal) => {
 
 vi.mock("../../misc/OutgoingLink", () => ({
   default: (props: { iri: string }) => (
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid, jsx-a11y/anchor-has-content
     <a className="outgoing-link" data-iri={props.iri} />
   ),
 }));

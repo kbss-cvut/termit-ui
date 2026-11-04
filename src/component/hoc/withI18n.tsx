@@ -79,11 +79,9 @@ export default function withI18n<P extends HasI18n = HasI18n>(
   }
 
   if (forwardRef) {
-    return React.forwardRef<React.ComponentType<P>, P & { intl: IntlShape }>(
-      (props: P & { intl: IntlShape }, ref: any) => (
-        <Wrapper {...props} forwardedRef={ref} />
-      )
-    ) as any;
+    return React.forwardRef<any, P & { intl: IntlShape }>((props, ref) => (
+      <Wrapper {...(props as P & { intl: IntlShape })} forwardedRef={ref} />
+    )) as any;
   }
   return Wrapper as any;
 }
