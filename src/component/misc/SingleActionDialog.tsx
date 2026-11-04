@@ -20,6 +20,7 @@ interface SingleActionDialogProps {
   actionDisabled?: boolean;
   size?: "lg" | "sm";
   className?: string;
+  children?: React.ReactNode;
 }
 
 /**

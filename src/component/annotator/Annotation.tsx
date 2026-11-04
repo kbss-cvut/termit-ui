@@ -40,6 +40,7 @@ interface AnnotationProps extends AnnotationSpanProps {
   highlight?: boolean;
   filter: AnnotatorLegendFilter;
   language?: string;
+  children?: React.ReactNode;
 }
 
 interface AnnotationState {

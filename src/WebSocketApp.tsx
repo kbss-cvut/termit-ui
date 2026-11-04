@@ -87,6 +87,7 @@ export type StompSessionProviderType = (
 export const WebSocketWrapper: React.FC<{
   Provider?: StompSessionProviderType;
   loadDispatchers?: boolean;
+  children?: ReactNode;
 }> = ({
   children,
   Provider = StompSessionProvider,

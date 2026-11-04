@@ -11,6 +11,7 @@ interface BreadcrumbsProps {
   hidden?: boolean;
   separator: React.ReactNode;
   wrapper?: React.ComponentType<any>;
+  children?: React.ReactNode;
 }
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({

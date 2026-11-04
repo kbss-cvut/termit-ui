@@ -10,6 +10,7 @@ import FTSMatch from "./../FTSMatch";
 import TermBadge from "../../../badge/TermBadge";
 import { getTermPath } from "../../../term/TermLink";
 import { EMPTY_USER } from "../../../../model/User";
+import { getLocalized } from "../../../../model/MultilingualString";
 
 interface TermResultItemProps extends HasI18n {
   result: SearchResultItem;
@@ -26,7 +27,9 @@ export class TermResultItem extends React.Component<TermResultItemProps> {
       iri: this.props.result.iri,
       label: (
         <>
-          <span className="search-result-title">{this.props.result.label}</span>
+          <span className="search-result-title">
+            {getLocalized(this.props.result.label)}
+          </span>
           &nbsp;
           {this.props.result.vocabulary ? (
             <>

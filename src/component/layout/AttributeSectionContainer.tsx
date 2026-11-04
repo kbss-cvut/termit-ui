@@ -3,6 +3,7 @@ import "./AttributeSectionContainer.scss";
 
 interface AttributeSectionContainerProps {
   label: string;
+  children?: React.ReactNode;
 }
 
 /**

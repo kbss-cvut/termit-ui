@@ -8,6 +8,7 @@ import { Breadcrumb as BreadcrumItem } from "../../model/Breadcrumb";
 interface BreadcrumbProps {
   data: BreadcrumItem;
   hidden?: boolean;
+  children?: React.ReactNode;
 }
 
 const Breadcrumb: React.FC<BreadcrumbProps> = ({

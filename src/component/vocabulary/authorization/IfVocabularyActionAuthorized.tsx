@@ -11,6 +11,7 @@ const IfVocabularyActionAuthorized: React.FC<{
   requiredAccessLevel: AccessLevel;
   unauthorized?: React.ReactNode | null;
   mode?: "edit" | "remove";
+  children?: React.ReactNode;
 }> = ({
   vocabulary,
   requiredAccessLevel,
