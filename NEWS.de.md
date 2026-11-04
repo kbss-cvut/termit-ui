@@ -1,3 +1,11 @@
+#### Version 5.2.0
+
+- Unterstützung für symmetrische benutzerdefinierte Attribute hinzugefügt
+- Unterstützung für die Sortierung von Begriffen im Vokabelblatt‑Ansicht hinzugefügt (nach Bezeichnung, Notation)
+- Unterstützung für die Migration von Begriff‑ und Vokabel identifikatoren hinzugefügt
+- Unterstützung für mehrsprachige Zeichenkettenwerte benutzerdefinierter Attribute hinzugefügt
+- Automatisches Erzeugen des bevorzugten Namensraums des Vokabulars hinzugefügt
+
 #### Version 5.1.0
 
 - Unterstützung für das Zurücksetzen von Asset-Änderungen hinzugefügt

@@ -114,6 +114,7 @@ export default class AbstractInput<
   }
 
   protected inputProps() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { help, labelClass, validation, ...p } = this
       .props as AbstractInputProps;
     return p;

@@ -29,7 +29,7 @@ const TermStateFacet: React.FC<TermStateFacetProps> = ({ value, onChange }) => {
         label: getLocalized(e[1].label, locale),
       })),
     ],
-    [states, locale]
+    [states, locale, i18n]
   );
   return (
     <MultiSelectFacet

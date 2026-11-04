@@ -50,9 +50,7 @@ function generateIri(
   if (!shouldGenerate || label.trim().length === 0) {
     return;
   }
-  loadIdentifier({ name: label, assetType: "VOCABULARY" }).then((resp) =>
-    handler(resp.data)
-  );
+  loadIdentifier({ name: label, assetType: "VOCABULARY" }).then(handler);
 }
 
 const CreateVocabularyForm: React.FC<CreateVocabularyFormProps> = ({

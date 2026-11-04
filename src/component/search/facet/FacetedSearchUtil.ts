@@ -51,6 +51,7 @@ export function createSearchParam(
         matchType: matchType || MatchType.EXACT_MATCH,
         value: [],
       };
+    case VocabularyUtils.RDF_LANGSTRING:
     case VocabularyUtils.XSD_STRING:
       return {
         property: att.iri,

@@ -65,6 +65,7 @@ const TermList: React.FC<TermListProps> = ({
                   predicateLabel: label,
                   object: item,
                 }}
+                language={language}
               />
             </li>
           ))}

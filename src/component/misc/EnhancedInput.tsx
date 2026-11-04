@@ -18,6 +18,7 @@ export default class EnhancedInput extends AbstractInput<EnhancedInputProps> {
   protected input: any;
 
   public render() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { labelWidth, inputWidth, labelDirection, help, ...rest } =
       this.props;
 

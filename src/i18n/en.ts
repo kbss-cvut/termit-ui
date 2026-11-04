@@ -265,6 +265,15 @@ const en = {
       "If you decide not to remove the usages, the attribute value will remain in the data (available and editable in 'Other properties').",
     "administration.customization.customAttributes.removal.confirm":
       "To confirm the deletion of the custom attribute and all its uses, enter the attribute name",
+    "administration.customization.customAttributes.migrate.iri.title":
+      "Change identifier of a custom attribute",
+    "administration.customization.customAttributes.migrate.iri.confirmLabel":
+      "To confirm, enter the name of the custom attribute",
+    "administration.customization.customAttributes.symmetric": "Symmetric",
+    "administration.customization.customAttributes.symmetric.tooltip":
+      "Attribute is symmetric",
+    "administration.customization.customAttributes.symmetric.help":
+      "In a symmetric relationship, setting it in one direction automatically applies it in the opposite direction.",
     "asset.link.tooltip": "View detail of this asset",
     "asset.iri": "Identifier",
     "asset.create.iri.help":
@@ -282,6 +291,22 @@ const en = {
     "asset.modify.dialog.title": 'Modify {type} "{label}"',
     "asset.remove.dialog.text":
       'Are you sure you want to remove {type} "{label}"?',
+
+    "asset.migrate.iri.label": "Change Identifier",
+    "asset.migrate.iri.dangerZone.label": "Danger Zone",
+    "asset.migrate.iri.dangerZone.description":
+      "Identifiers should be unique and immutable. Changing them will break external links from resources and clients outside TermIt!",
+    "asset.migrate.iri.originalIri": "Original identifier",
+    "asset.migrate.iri.newIri": "New identifier",
+    "asset.migrate.iri.error.sameAsOriginal":
+      "The new identifier must not be the same as the original identifier",
+    "asset.migrate.iri.error.preferredNamespace":
+      "The new identifier must use the vocabulary namespace: {namespace}",
+    "asset.migrate.iri.error.invalidIri": "Invalid identifier",
+    "asset.migrate.iri.error.failure": "Identifier migration failed",
+    "asset.migrate.iri.started":
+      "The identifier change will be performed in the background. Please do not make any further changes until it is finished.",
+    "asset.migrate.iri.completed": "Identifier change completed",
 
     "term.remove.description":
       'Are you sure you want to permanently remove the term "{label}"? Choose how to handle dependent data.',
@@ -322,6 +347,10 @@ const en = {
     "vocabulary.vocabularies.select.placeholder":
       "Start typing to filter vocabularies by name",
     "vocabulary.title": "Title",
+    "vocabulary.migrate.iri.title": "Change identifier of the vocabulary",
+    "vocabulary.migrate.iri.confirmLabel":
+      "To confirm, enter the name of the vocabulary",
+
     "vocabulary.primaryLanguage": "Primary vocabulary language",
     "vocabulary.preferredNamespaceUri": "Preferred namespace URI",
     "vocabulary.preferredNamespaceUri.editReadonly":
@@ -556,7 +585,7 @@ const en = {
       "Term identifier in the form of Internationalized Resource Identifier (IRI). It will be " +
       "generated automatically based on the specified label, but you can adjust it manually. The identifier " +
       'can contain just alphanumerical characters and dashes ("-"). Slashes ("/") are used to separate ' +
-      "hierarchical components of identifiers.",
+      "hierarchical components of identifiers. It must belong to the vocabulary namespace.",
     "term.label.help":
       "(Required) text uniquely describing the given concept/meaning within the current vocabulary." +
       "Abbreviations are not allowed ('Value added tax' instead of 'VAT'). The whole label text " +
@@ -620,6 +649,8 @@ const en = {
     "term.metadata.status": "State",
     "term.updated.message": "Term successfully updated.",
     "term.updated.error.message": "Failed to update term.",
+    "term.created.error.iriNotInVocabularyNamespace":
+      'The provided identifier does not belong to the vocabulary namespace: "{namespace}"',
     "term.metadata.labelExists.message":
       'Term with label "{label}" already exists in this vocabulary',
     "term.metadata.multipleSources.message":
@@ -676,6 +707,8 @@ const en = {
       "Attribute has more than {threshold} values. Click here to show them.",
     "term.largeValueList.open":
       "Attribute has more than {threshold} values. Click here to hide them.",
+    "term.migrate.iri.title": "Change identifier of the term",
+    "term.migrate.iri.confirmLabel": "To confirm, enter the name of the term",
 
     "glossary.title": "Terms",
     "glossary.termCount.tooltip":
@@ -968,7 +1001,8 @@ const en = {
     "type.user": "User",
     "type.usergroup": "User group",
     "type.userrole": "User role",
-    "datatype.string": "String",
+    "datatype.string": "String (without language)",
+    "datatype.langString": "Multilingual string",
     "datatype.integer": "Integer",
     "datatype.resource": "Resource (IRI/URI/URL)",
 
@@ -1019,6 +1053,7 @@ const en = {
     "history.type.persist": "Creation",
     "history.type.update": "Update",
     "history.type.delete": "Deletion",
+    "history.type.identifierChange": "Identifier change",
     "history.changedAttribute": "Attribute",
     "history.originalValue": "Original value",
     "history.newValue": "New value",
@@ -1101,6 +1136,7 @@ const en = {
     "longrunningtasks.name.documentAnnotationGeneration":
       "Generation of a file annotations",
     "longrunningtasks.name.restoreBackup": "Backup restoration",
+    "longrunningtasks.name.migration.identifier": "Resource identifier change",
   },
 };
 

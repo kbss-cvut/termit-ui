@@ -1,13 +1,14 @@
 import Generator from "../../__tests__/environment/Generator";
 import RdfsResource, { CONTEXT, RdfsResourceData } from "../RdfsResource";
 import VocabularyUtils from "../../util/VocabularyUtils";
+import { langString } from "../MultilingualString";
 
 describe("RdfsResource", () => {
   it("constructor is symmetrical to toJsonLd", () => {
     const data: RdfsResourceData = {
       iri: Generator.generateUri(),
-      label: "Test",
-      comment: "Description",
+      label: langString("Test"),
+      comment: langString("Description"),
       types: [VocabularyUtils.RDFS_RESOURCE],
     };
     Object.assign(data, { "@context": CONTEXT });
@@ -18,8 +19,8 @@ describe("RdfsResource", () => {
   it("constructor adds rdfs:Resource to types if it is not present", () => {
     const data: RdfsResourceData = {
       iri: Generator.generateUri(),
-      label: "Test",
-      comment: "Description",
+      label: langString("Test"),
+      comment: langString("Description"),
     };
     Object.assign(data, { "@context": CONTEXT });
     const resource = new RdfsResource(data);
@@ -31,8 +32,8 @@ describe("RdfsResource", () => {
   it("constructor does not add rdfs:Resource to types when it is already present", () => {
     const data: RdfsResourceData = {
       iri: Generator.generateUri(),
-      label: "Test",
-      comment: "Description",
+      label: langString("Test"),
+      comment: langString("Description"),
       types: [VocabularyUtils.RDFS_RESOURCE],
     };
     Object.assign(data, { "@context": CONTEXT });

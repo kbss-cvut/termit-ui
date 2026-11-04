@@ -30,7 +30,6 @@ import { getCustomAttributes } from "../../action/AsyncCustomizationActions";
 import { mergeDuplicates } from "./label/SearchUtil";
 import { createTermNonTerminalStateMatcher } from "../term/TermTreeSelectHelper";
 import "./label/Search.scss";
-import "../misc/CustomToggle.scss";
 import AdvancedSearchInputCard from "./AdvancedSearchInputCard";
 import AdvancedSearchFacets, {
   FACET_KEYS,
@@ -270,6 +269,8 @@ const AdvancedSearch: React.FC = () => {
       dispatch(updateSearchFilter({ facetParams: nextParams }));
     }
   }, [
+    dispatch,
+    facetParams,
     visibleFacets,
     debouncedSearch,
     runSearch,

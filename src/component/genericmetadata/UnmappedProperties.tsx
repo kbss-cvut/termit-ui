@@ -6,16 +6,17 @@ import Utils from "../../util/Utils";
 import { useI18n } from "../hook/useI18n";
 import "./UnmappedProperties.scss";
 import {
-  PropertyValueType,
+  PropertyValuesType,
   stringifyPropertyValue,
 } from "../../model/WithUnmappedProperties";
 import { useSelector } from "react-redux";
 import TermItState from "../../model/TermItState";
 import { FaTrashAlt } from "react-icons/fa";
 import BadgeButton from "../misc/BadgeButton";
+import { PluralMultilingualString } from "../../model/MultilingualString";
 
 interface UnmappedPropertiesProps {
-  properties: Map<string, PropertyValueType[]>;
+  properties: Map<string, PropertyValuesType>;
   showInfoOnEmpty?: boolean;
   onRemove?: (property: string, value: string) => void;
 }
@@ -42,10 +43,17 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = ({
   const result: React.JSX.Element[] = [];
   actualProperties.forEach((k) => {
     const values = properties.get(k)!;
-    if (values.length === 0) {
-      return;
+    let sortedItems: string[];
+    if (Array.isArray(values)) {
+      if (values.length === 0) {
+        return;
+      }
+      sortedItems = values.map((v) => stringifyPropertyValue(v));
+    } else {
+      sortedItems = Object.keys(values as PluralMultilingualString).flatMap(
+        (lang) => (values as PluralMultilingualString)[lang]
+      );
     }
-    const sortedItems = values.map((v) => stringifyPropertyValue(v));
     sortedItems.sort(Utils.localeComparator);
     const items = (
       <ul>

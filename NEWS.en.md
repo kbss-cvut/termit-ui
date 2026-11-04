@@ -1,3 +1,11 @@
+#### Version 5.2.0
+
+- Added support for symmetric custom attributes
+- Added support for term sorting in the vocabulary sheet view (by label, notation)
+- Added support for term and vocabulary identifier migration
+- Added support for multilingual string values of custom attributes
+- Automatically generate vocabulary preferred namespace
+
 #### Version 5.1.0
 
 - Added support for asset change rollback

@@ -17,9 +17,17 @@ import TermItState from "../../../model/TermItState";
 import { multilingualTextContainsFilterFactory } from "../../misc/table/TextBasedFilter";
 import { getShortLocale } from "../../../util/IntlUtil";
 import { getLocalized } from "../../../model/MultilingualString";
-import { Button } from "reactstrap";
+import {
+  Button,
+  ButtonToolbar,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledButtonDropdown,
+} from "reactstrap";
 import Table from "../../misc/table/Table";
 import { GoPlus } from "react-icons/go";
+import { IoMdMove } from "react-icons/io";
 import { Link } from "react-router-dom";
 import {
   DOMAIN_OPTIONS,
@@ -31,6 +39,43 @@ import Routes from "../../../util/Routes";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import CopyIriIcon from "../../misc/CopyIriIcon";
 import CustomAttributeRemoveDialog from "./CustomAttributeRemoveDialog";
+import CustomAttributeIriMigrationDialog from "./CustomAttributeIriMigrationDialog";
+import "./CustomAttributes.scss";
+import { FaArrowsLeftRight } from "react-icons/fa6";
+
+interface MoreActionsProps {
+  onMigrateIriClick: () => void;
+}
+
+const MoreActionsDropdown: React.FunctionComponent<MoreActionsProps> = ({
+  onMigrateIriClick,
+}) => {
+  const { i18n } = useI18n();
+  return (
+    <UncontrolledButtonDropdown>
+      <DropdownToggle
+        size="sm"
+        caret={false}
+        color="primary"
+        style={{ borderRadius: "0.2rem" }}
+      >
+        <span className="dropdown-toggle">{i18n("moreActions")}</span>
+      </DropdownToggle>
+      <DropdownMenu className="custom-attributes-actions-menu" right={true}>
+        <DropdownItem
+          className="btn-sm"
+          title={i18n(
+            "administration.customization.customAttributes.migrate.iri.title"
+          )}
+          onClick={onMigrateIriClick}
+        >
+          <IoMdMove className="mr-1" />
+          {i18n("asset.migrate.iri.label")}
+        </DropdownItem>
+      </DropdownMenu>
+    </UncontrolledButtonDropdown>
+  );
+};
 
 export const CustomAttributes: React.FC = () => {
   const { i18n, locale } = useI18n();
@@ -44,6 +89,11 @@ export const CustomAttributes: React.FC = () => {
    */
   const [customAttributeForRemoval, setCustomAttributeForRemoval] =
     useState<CustomAttribute | null>(null);
+
+  /**
+   * Whether the identifier migration dialog is displayed.
+   */
+  const [showIriMigrationDialog, setShowIriMigrationDialog] = useState(false);
 
   const fetchAttributes = React.useCallback(() => {
     dispatch(getCustomAttributes());
@@ -90,6 +140,22 @@ export const CustomAttributes: React.FC = () => {
     setCustomAttributeForRemoval(null);
   }, []);
 
+  /**
+   * Executed when the change identifier action is clicked.
+   * Makes the identifier migration dialog visible.
+   */
+  const onMigrateIriClick = React.useCallback(() => {
+    setShowIriMigrationDialog(true);
+  }, []);
+
+  /**
+   * Executed when the identifier migration dialog is canceled or the migration is started.
+   * Hides the identifier migration dialog.
+   */
+  const onIriMigrationClosed = React.useCallback(() => {
+    setShowIriMigrationDialog(false);
+  }, []);
+
   const lang = getShortLocale(locale);
   const columns: ColumnDef<CustomAttribute>[] = React.useMemo(
     () => [
@@ -100,6 +166,14 @@ export const CustomAttributes: React.FC = () => {
         cell: ({ row }) => (
           <>
             {row.original.getLabel(lang)}
+            {CustomAttribute.isSymmetric(row.original) && (
+              <FaArrowsLeftRight
+                className="ml-1"
+                title={i18n(
+                  "administration.customization.customAttributes.symmetric.tooltip"
+                )}
+              />
+            )}
             <CopyIriIcon url={row.original.iri} />
           </>
         ),
@@ -196,15 +270,18 @@ export const CustomAttributes: React.FC = () => {
     <PanelWithActions
       title={i18n("administration.customization.customAttributes.title")}
       actions={
-        <Link
-          id="custom-attributes-create"
-          to={Routes.createCustomAttribute.path}
-          className="btn btn-primary btn-sm users-action-button"
-        >
-          <GoPlus />
-          &nbsp;
-          {i18n("administration.customization.customAttributes.add")}
-        </Link>
+        <ButtonToolbar>
+          <Link
+            id="custom-attributes-create"
+            to={Routes.createCustomAttribute.path}
+            className="btn btn-primary btn-sm users-action-button"
+          >
+            <GoPlus />
+            &nbsp;
+            {i18n("administration.customization.customAttributes.add")}
+          </Link>
+          <MoreActionsDropdown onMigrateIriClick={onMigrateIriClick} />
+        </ButtonToolbar>
       }
     >
       <Table instance={tableInstance} />
@@ -212,6 +289,10 @@ export const CustomAttributes: React.FC = () => {
         customAttribute={customAttributeForRemoval}
         onDelete={onRemoveConfirmed}
         onCancel={onRemoveCanceled}
+      />
+      <CustomAttributeIriMigrationDialog
+        isVisible={showIriMigrationDialog}
+        onClose={onIriMigrationClosed}
       />
     </PanelWithActions>
   );

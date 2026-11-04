@@ -277,6 +277,15 @@ const cs = {
       "Pokud se rozhodnete použití zachovat, zůstanou v datech hodnoty atributu (dostupné a editovatelné v části 'Ostatní atributy').",
     "administration.customization.customAttributes.removal.confirm":
       "Pro potvrzení odstranění vlastního atributu a všech jeho použití zadejte název atributu",
+    "administration.customization.customAttributes.migrate.iri.title":
+      "Změnit identifikátor vlastního atributu",
+    "administration.customization.customAttributes.migrate.iri.confirmLabel":
+      "Pro potvrzení zadejte název vlastního atributu",
+    "administration.customization.customAttributes.symmetric": "Symetrický",
+    "administration.customization.customAttributes.symmetric.tooltip":
+      "Atribut je symetrický",
+    "administration.customization.customAttributes.symmetric.help":
+      "Pro symetrický vztah platí, že pokud jej nastavíte v jednom směru, automaticky se vytvoří i ve směru opačném.",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -293,6 +302,22 @@ const cs = {
     "asset.remove.dialog.title": 'Odstranit {type} "{label}"?',
     "asset.modify.dialog.title": 'Upravit {type} "{label}"',
     "asset.remove.dialog.text": 'Určitě chcete odstranit {type} "{label}"?',
+
+    "asset.migrate.iri.label": "Změnit identifikátor",
+    "asset.migrate.iri.dangerZone.label": "Nebezpečná zóna",
+    "asset.migrate.iri.dangerZone.description":
+      "Identifikátory by měly být unikátní a neměnné. Jejich změna naruší externí vazby zdrojů a klientů mimo TermIt!",
+    "asset.migrate.iri.originalIri": "Původní identifikátor",
+    "asset.migrate.iri.newIri": "Nový identifikátor",
+    "asset.migrate.iri.error.sameAsOriginal":
+      "Nový identifikátor nesmí být stejný jako původní identifikátor",
+    "asset.migrate.iri.error.preferredNamespace":
+      "Nový identifikátor musí používat jmenný prostor slovníku: {namespace}",
+    "asset.migrate.iri.error.invalidIri": "Neplatný identifikátor",
+    "asset.migrate.iri.error.failure": "Migrace identifikátoru selhala",
+    "asset.migrate.iri.started":
+      "Změna identifikátoru bude provedena na pozadí. Dokud nebude dokončena, neprovádějte další změny.",
+    "asset.migrate.iri.completed": "Změna identifikátoru dokončena",
 
     "term.remove.description":
       'Opravdu chcete trvale odstranit pojem "{label}"? Vyberte, jak se má naložit se závislými daty.',
@@ -520,6 +545,10 @@ const cs = {
     "vocabulary.remove.dialog.input.label":
       "Pro ověření, zadejte název slovníku",
 
+    "vocabulary.migrate.iri.title": "Změnit identifikátor slovníku",
+    "vocabulary.migrate.iri.confirmLabel":
+      "Pro potvrzení zadejte název slovníku",
+
     "resource.created.message": "Zdroj úspěšně vytvořen.",
     "resource.updated.message": "Zdroj úspěšně uložen.",
     "resource.removed.message": "Zdroj by odstraněn.",
@@ -564,7 +593,7 @@ const cs = {
       " vygenerován automaticky na základě názvu, ale může být ručně upraven. Jedná se o možnost pro pokročilé uživatele." +
       "Identifikátor může obsahovat pouze " +
       'alfanumerické znaky a pomlčky ("-"). Lomítka ("/") se používají pouze k oddělení hierarchických komponent ' +
-      "identifikátoru.",
+      "identifikátoru. Musí náležet do jmenného prostoru slovníku.",
     "term.label.help":
       "(Povinné) označení, které daný pojem/význam jednoznačně v rámci slovníku identifikuje. " +
       "Jako názvy pojmů se nepoužívají zkratky ('daň z přidané hodnoty' místo 'DPH'). Celý název pojmu " +
@@ -630,6 +659,8 @@ const cs = {
       "pojem s názvem 'Kopaná' může mít vyhledávací text 'fočus'. ",
     "term.updated.message": "Pojem úspěšně aktualizován.",
     "term.updated.error.message": "Pojem se nepodařilo aktualizovat.",
+    "term.created.error.iriNotInVocabularyNamespace":
+      'Zvolený identifikátor nenáleží jmennému prostoru slovníku: "{namespace}"',
     "term.metadata.labelExists.message":
       'Pojem s názvem "{label}" již v tomto slovníku existuje',
     "term.metadata.multipleSources.message":
@@ -684,6 +715,8 @@ const cs = {
       "Atribut má více než {threshold} hodnot. Klikněte pro jejich zobrazení.",
     "term.largeValueList.open":
       "Atribut má více než {threshold} hodnot. Klikněte pro jejich skrytí.",
+    "term.migrate.iri.title": "Změnit identifikátor pojmu",
+    "term.migrate.iri.confirmLabel": "Pro potvrzení zadejte název pojmu",
 
     "glossary.title": "Pojmy",
     "glossary.termCount.tooltip":
@@ -974,7 +1007,8 @@ const cs = {
     "type.user": "Uživatel",
     "type.usergroup": "Uživatelská skupina",
     "type.userrole": "Uživatelská role",
-    "datatype.string": "Textový řetězec",
+    "datatype.string": "Textový řetězec (bez jazyka)",
+    "datatype.langString": "Vícejazyčný textový řetězec",
     "datatype.integer": "Celé číslo",
     "datatype.resource": "Obecný zdroj (IRI/URI/URL)",
 
@@ -1025,6 +1059,7 @@ const cs = {
     "history.type.persist": "Vytvoření",
     "history.type.update": "Změna",
     "history.type.delete": "Smazání",
+    "history.type.identifierChange": "Změna identifikátoru",
     "history.changedAttribute": "Atribut",
     "history.originalValue": "Původní hodnota",
     "history.newValue": "Nová hodnota",
@@ -1108,6 +1143,7 @@ const cs = {
     "longrunningtasks.name.documentAnnotationGeneration":
       "Generování anotací dokumentu",
     "longrunningtasks.name.restoreBackup": "Obnovení zálohy",
+    "longrunningtasks.name.migration.identifier": "Změna identifikátoru zdroje",
   },
 };
 

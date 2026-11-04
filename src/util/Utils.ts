@@ -23,7 +23,11 @@ const Utils = {
    * @param arr Input to sanitize
    */
   sanitizeArray<T>(arr: T[] | T | undefined | null): T[] {
-    return arr ? (Array.isArray(arr) ? arr : [arr]) : [];
+    return arr !== undefined && arr !== null
+      ? Array.isArray(arr)
+        ? arr
+        : [arr]
+      : [];
   },
 
   /**
@@ -42,6 +46,19 @@ const Utils = {
    */
   mapToArray<T>(map: { [key: string]: T }): T[] {
     return Object.keys(map).map((k) => map[k]);
+  },
+
+  /**
+   * Unwraps the specified argument if it is an array.
+   *
+   * That is, if the argument is an array, it returns its first element. Otherwise, returns the argument itself.
+   * @param arr
+   */
+  unwrapArray<T>(arr: T[] | T): T {
+    if (Array.isArray(arr)) {
+      return arr[0];
+    }
+    return arr;
   },
 
   /**
@@ -72,7 +89,7 @@ const Utils = {
         uri.scheme !== undefined &&
         (Utils.notBlank(uri.host) || uri.scheme === "urn")
       );
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   },

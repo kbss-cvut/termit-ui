@@ -131,13 +131,14 @@ describe("JsonLdUtils", () => {
           uri: "http://onto.fel.cvut.cz/ontologies/application/termit/published-term",
         },
       };
-      return JsonLdUtils.compactAndResolveReferences(input, TERM_CONTEXT).then(
-        (result: TermData) => {
-          expect(result[VocabularyUtils.SKOS_ALT_LABEL]).not.toBeDefined();
-          expect(result[VocabularyUtils.SKOS_HIDDEN_LABEL]).not.toBeDefined();
-          expect(result[VocabularyUtils.SKOS_EXAMPLE]).not.toBeDefined();
-        }
-      );
+      return JsonLdUtils.compactAndResolveReferences<TermData>(
+        input,
+        TERM_CONTEXT
+      ).then((result) => {
+        expect(result[VocabularyUtils.SKOS_ALT_LABEL]).not.toBeDefined();
+        expect(result[VocabularyUtils.SKOS_HIDDEN_LABEL]).not.toBeDefined();
+        expect(result[VocabularyUtils.SKOS_EXAMPLE]).not.toBeDefined();
+      });
     });
   });
 

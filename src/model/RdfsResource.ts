@@ -1,4 +1,4 @@
-import { AssetData, HasLabel } from "./Asset";
+import { AssetData, HasLocalizableLabel } from "./Asset";
 import Utils from "../util/Utils";
 import VocabularyUtils from "../util/VocabularyUtils";
 import MultilingualString, {
@@ -35,7 +35,9 @@ export interface CustomAttributeData extends RdfPropertyData {
 /**
  * Represents a generic RDFS resource.
  */
-export default class RdfsResource implements RdfsResourceData, HasLabel {
+export default class RdfsResource
+  implements RdfsResourceData, HasLocalizableLabel
+{
   public iri: string;
   public label?: MultilingualString;
   public comment?: MultilingualString;
@@ -91,5 +93,11 @@ export class CustomAttribute extends RdfProperty {
   constructor(data: CustomAttributeData) {
     super(data);
     this.annotatedRelationships = data.annotatedRelationships;
+  }
+
+  public static isSymmetric(att: CustomAttribute): boolean {
+    return Utils.sanitizeArray(att.types).includes(
+      VocabularyUtils.OWL_SYMMETRIC_PROPERTY
+    );
   }
 }

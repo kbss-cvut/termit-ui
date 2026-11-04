@@ -48,7 +48,7 @@ export const ExpandableTextCell: React.FC<ExpandableTextCellProps> = ({
     }
 
     return () => resizeObserver.disconnect();
-  }, []);
+  }, [isExpanded]);
 
   if (!text && !children) {
     return null;

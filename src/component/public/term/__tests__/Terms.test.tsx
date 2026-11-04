@@ -71,7 +71,7 @@ describe("Terms", () => {
 
   it("transitions to term detail on term select", () => {
     const wrapper = renderShallow();
-    wrapper.instance().onTermSelect(term);
+    wrapper.instance().onTermSelect(new Term(term));
     const call = (Routing.transitionToPublicAsset as Mock).mock.calls[0];
     expect(call[0].iri).toEqual(term.iri);
     expect(call[0].vocabulary).toEqual(term.vocabulary);
@@ -95,7 +95,7 @@ describe("Terms", () => {
 
   it("transitions to selected term detail", () => {
     const wrapper = renderShallow();
-    wrapper.instance().onTermSelect(term);
+    wrapper.instance().onTermSelect(new Term(term));
     const call = (Routing.transitionToPublicAsset as Mock).mock.calls[0];
     expect(call[0].iri).toEqual(term.iri);
     expect(call[0].vocabulary).toEqual(term.vocabulary);

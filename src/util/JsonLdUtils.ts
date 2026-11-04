@@ -92,7 +92,7 @@ export default class JsonLdUtils {
     }
     return compacted.hasOwnProperty("@graph")
       ? Object.keys(compacted["@graph"]).map((k) => compacted["@graph"][k])
-      : [compacted];
+      : [compacted as T];
   }
 
   /**

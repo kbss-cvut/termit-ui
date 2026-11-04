@@ -429,7 +429,7 @@ describe("Ajax", () => {
           expect(resp.headers).toEqual(headers);
         })
         .catch(() => {
-          fail("Should not have been called.");
+          expect.fail("Should not have been called.");
         });
     });
   });
@@ -447,7 +447,7 @@ describe("Ajax", () => {
           expect(spy.mock.calls.length).toEqual(1);
           const reqConfig = spy.mock.calls[0][1];
           expect(reqConfig).toBeDefined();
-          expect(reqConfig!.params.namespace).toEqual(namespace);
+          expect(reqConfig!.params).toEqual({ namespace });
         });
     });
   });

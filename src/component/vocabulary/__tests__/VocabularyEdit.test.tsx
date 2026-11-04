@@ -10,6 +10,12 @@ import Document from "../../../model/Document";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import type { Mock } from "vitest";
+import { selectVocabularyLanguages } from "../../../store/StateSelectors";
+
+vi.mock("../../../store/StateSelectors", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../../store/StateSelectors")>()),
+  selectVocabularyLanguages: vi.fn(),
+}));
 
 vi.mock("../../misc/MarkdownEditor", () => ({
   default: () => <div>Editor</div>,
@@ -26,6 +32,9 @@ describe("VocabularyEdit", () => {
   let vocabulary: Vocabulary;
 
   beforeEach(() => {
+    (selectVocabularyLanguages as Mock).mockReturnValue([
+      Constants.DEFAULT_LANGUAGE,
+    ]);
     onSave = vi.fn();
     onDocumentSave = vi.fn();
     onCancel = vi.fn();
@@ -46,6 +55,7 @@ describe("VocabularyEdit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={vi.fn()}
         publishMessage={vi.fn()}
+        customAttributes={[]}
         {...intlFunctions()}
       />
     );
@@ -73,6 +83,7 @@ describe("VocabularyEdit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={vi.fn()}
         publishMessage={vi.fn()}
+        customAttributes={[]}
         {...intlFunctions()}
       />
     );
@@ -92,6 +103,7 @@ describe("VocabularyEdit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={vi.fn()}
         publishMessage={vi.fn()}
+        customAttributes={[]}
         {...intlFunctions()}
       />
     );
@@ -114,6 +126,7 @@ describe("VocabularyEdit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={vi.fn()}
         publishMessage={vi.fn()}
+        customAttributes={[]}
         {...intlFunctions()}
       />
     );
@@ -137,6 +150,7 @@ describe("VocabularyEdit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={vi.fn()}
         publishMessage={vi.fn()}
+        customAttributes={[]}
         {...intlFunctions()}
       />
     );
@@ -166,6 +180,7 @@ describe("VocabularyEdit", () => {
         language={Constants.DEFAULT_LANGUAGE}
         selectLanguage={vi.fn()}
         publishMessage={vi.fn()}
+        customAttributes={[]}
         {...intlFunctions()}
       />
     );

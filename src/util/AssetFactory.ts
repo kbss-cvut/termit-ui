@@ -26,6 +26,7 @@ import {
 import DeleteRecord, {
   DeleteRecordData,
 } from "../model/changetracking/DeleteRecord";
+import IdentifierChangeRecord from "../model/changetracking/IdentifierChangeRecord";
 
 const AssetFactory = {
   /**
@@ -118,6 +119,10 @@ const AssetFactory = {
   createChangeRecord(data: ChangeRecordData): ChangeRecord {
     if (data.types.indexOf(VocabularyUtils.PERSIST_EVENT) !== -1) {
       return new PersistRecord(data);
+    } else if (
+      data.types.indexOf(VocabularyUtils.REPLACEMENT_OF_ENTITY) !== -1
+    ) {
+      return new IdentifierChangeRecord(data as IdentifierChangeRecord);
     } else if (data.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1) {
       return new UpdateRecord(data as UpdateRecordData);
     } else if (data.types.indexOf(VocabularyUtils.DELETE_EVENT) !== -1) {

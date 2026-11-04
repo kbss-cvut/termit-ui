@@ -18,11 +18,15 @@ export interface ResourceRelationship {
 
 interface RelationshipAnnotationButtonProps {
   relationship: ResourceRelationship;
+  /**
+   * The language in which multilingual custom attribute values should be displayed and modified
+   */
+  language: string;
 }
 
 export const RelationshipAnnotationButton: React.FC<
   RelationshipAnnotationButtonProps
-> = ({ relationship }) => {
+> = ({ relationship, language }) => {
   const { i18n } = useI18n();
   const [showDialog, setShowDialog] = React.useState(false);
   const customAttributes = useSelector(
@@ -51,6 +55,7 @@ export const RelationshipAnnotationButton: React.FC<
         relationship={relationship}
         show={showDialog}
         onClose={() => setShowDialog(false)}
+        language={language}
       />
     </>
   );

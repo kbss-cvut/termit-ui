@@ -126,7 +126,7 @@ export class TermMetadataCreateForm extends React.Component<
         name: label,
         contextIri: vocabularyIri,
         assetType: "TERM",
-      }).then((response) => this.setIdentifier(response.data));
+      }).then(this.setIdentifier);
     }
   };
 

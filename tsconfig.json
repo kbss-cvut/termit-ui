@@ -23,8 +23,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "strict": true,
-    "typeRoots": ["node_modules/@types", "src/@types"],
-    "types": ["node", "jest", "vite/client", "vitest/globals"],
+    "types": ["node", "vite/client", "vitest/globals"],
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],

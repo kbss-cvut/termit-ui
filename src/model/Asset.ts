@@ -6,6 +6,10 @@ export interface HasLabel {
   getLabel: () => string;
 }
 
+export interface HasLocalizableLabel extends HasLabel {
+  getLabel: (lang?: string) => string;
+}
+
 export interface HasIdentifier {
   iri: string;
 }
@@ -22,7 +26,7 @@ export const ASSET_CONTEXT = {
   types: "@type",
 };
 
-export interface SupportsJsonLd<T extends any> {
+export interface SupportsJsonLd<T> {
   toJsonLd(): T;
 }
 
@@ -30,7 +34,7 @@ export interface Editable {
   isEditable(): boolean;
 }
 
-export default abstract class Asset implements AssetData, HasLabel {
+export default abstract class Asset implements AssetData, HasLocalizableLabel {
   public iri: string;
   public types?: string[];
 
@@ -53,7 +57,7 @@ export default abstract class Asset implements AssetData, HasLabel {
 
   public abstract getLabel(lang?: string): string;
 
-  public abstract toJsonLd(): {};
+  public abstract toJsonLd(multilingualCustomAttributes?: string[]): {};
 
   public static equals(a?: Asset | null, b?: Asset | null) {
     if (!a && !b) {

@@ -32,7 +32,7 @@ const TermTypeFacet: React.FC<TermTypeFacetProps> = ({ value, onChange }) => {
         parent: r.parent,
       })),
     ],
-    [types, locale]
+    [types, locale, i18n]
   );
   return (
     <MultiSelectFacet

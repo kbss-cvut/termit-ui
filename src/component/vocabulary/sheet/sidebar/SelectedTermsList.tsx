@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Collapse, Label } from "reactstrap";
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaMinus, FaPlus } from "react-icons/fa";
 import { useI18n } from "../../../hook/useI18n";
 import Term from "../../../../model/Term";
 import { getLocalizedInLanguage } from "../../../../model/MultilingualString";
@@ -108,19 +108,32 @@ export const SelectedTermsList: React.FC<SelectedTermsListProps> = ({
             if (!isExpandable) return;
             setExpandedTermIris((prev) => {
               const next = new Set(prev);
-              next.has(term.iri!)
-                ? next.delete(term.iri!)
-                : next.add(term.iri!);
+              if (next.has(term.iri!)) {
+                next.delete(term.iri!);
+              } else {
+                next.add(term.iri!);
+              }
               return next;
             });
+          };
+
+          const handleKeyDown = (
+            event: React.KeyboardEvent<HTMLDivElement>
+          ) => {
+            if (isExpandable && (event.key === "Enter" || event.key === " ")) {
+              event.preventDefault();
+              toggleExpand();
+            }
           };
 
           return (
             <li key={term.iri} className="py-2 border-bottom">
               <div
                 role={isExpandable ? "button" : undefined}
+                tabIndex={isExpandable ? 0 : undefined}
                 className="d-flex justify-content-between align-items-center"
                 onClick={isExpandable ? toggleExpand : undefined}
+                onKeyDown={isExpandable ? handleKeyDown : undefined}
                 style={{ cursor: isExpandable ? "pointer" : "default" }}
               >
                 <span className="mb-0">

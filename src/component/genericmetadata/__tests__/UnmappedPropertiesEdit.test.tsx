@@ -7,7 +7,7 @@ import RdfsResource from "../../../model/RdfsResource";
 import BadgeButton from "../../misc/BadgeButton";
 import Utils from "../../../util/Utils";
 import { langString } from "../../../model/MultilingualString";
-import { PropertyValueType } from "../../../model/WithUnmappedProperties";
+import { PropertyValuesType } from "../../../model/WithUnmappedProperties";
 import Constants from "../../../util/Constants";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import * as Redux from "react-redux";
@@ -25,7 +25,7 @@ vi.mock("react-redux", async (importOriginal) => {
 });
 
 describe("UnmappedPropertiesEdit", () => {
-  let onChange: (update: Map<string, PropertyValueType[]>) => void;
+  let onChange: (update: Map<string, PropertyValuesType>) => void;
 
   beforeEach(() => {
     onChange = vi.fn();
@@ -49,7 +49,7 @@ describe("UnmappedPropertiesEdit", () => {
     expect(value.text()).toContain(existing.get(property)![0]);
   });
 
-  function render(existing: Map<string, PropertyValueType[]>) {
+  function render(existing: Map<string, PropertyValuesType>) {
     return mountWithIntl(
       <UnmappedPropertiesEdit
         assetType="term"

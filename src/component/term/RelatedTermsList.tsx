@@ -69,6 +69,7 @@ const RelatedTermsList: React.FC<RelatedTermsListProps> = (props) => {
                   predicateLabel: i18n("term.metadata.related.title"),
                   object: item,
                 }}
+                language={language}
               />
             </li>
           ))}

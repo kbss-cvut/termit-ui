@@ -20,10 +20,11 @@ interface FetchVocabularyTermsPageParams {
   apiPrefix: string;
   vocabularyIri: IRI;
   searchString: string;
-  language: string;
+  sortLang: string;
   pageParam: number;
   searchParams?: SearchParam[];
   signal?: AbortSignal;
+  sort?: string;
 }
 
 function resolveTotalCount(headers: unknown): number | undefined {
@@ -53,23 +54,25 @@ export async function fetchVocabularyTermsPage({
   apiPrefix,
   vocabularyIri,
   searchString,
-  language,
+  sortLang,
   pageParam,
   searchParams = [],
   signal,
+  sort,
 }: FetchVocabularyTermsPageParams): Promise<VocabularyTermsPage> {
   const requestParams: {
     full?: boolean;
     flat: boolean;
     namespace?: string;
     searchString?: string;
-    language?: string;
+    sortLang?: string;
     page: number;
     size: number;
+    sort?: string;
   } = {
     full: true,
     flat: true,
-    language,
+    sortLang,
     page: pageParam,
     size: VOCABULARY_TERMS_PAGE_SIZE,
   };
@@ -79,6 +82,9 @@ export async function fetchVocabularyTermsPage({
   }
   if (vocabularyIri.namespace) {
     requestParams.namespace = vocabularyIri.namespace;
+  }
+  if (sort) {
+    requestParams.sort = sort;
   }
 
   const endpoint = `${apiPrefix}/vocabularies/${vocabularyIri.fragment}/terms`;
@@ -126,44 +132,7 @@ export async function fetchVocabularyTermsPage({
       TERM_CONTEXT
     );
   const terms = compacted.map((data) => new Term(data));
-  let totalCount = resolveTotalCount(response.headers);
-
-  if (totalCount === undefined && pageParam === 0) {
-    const countParams: {
-      full?: boolean;
-      flat?: boolean;
-      namespace?: string;
-      searchString?: string;
-      language?: string;
-    } = {
-      full: true,
-      flat: true,
-      language,
-    };
-
-    if (searchString.length > 0) {
-      countParams.searchString = searchString;
-    }
-    if (vocabularyIri.namespace) {
-      countParams.namespace = vocabularyIri.namespace;
-    }
-
-    try {
-      const countResponse =
-        searchParams.length > 0
-          ? await Ajax.post(
-              searchEndpoint,
-              content(finalSearchParams)
-                .contentType(Constants.JSON_MIME_TYPE)
-                .preserveAcceptHeaderInPost()
-                .params(countParams)
-            )
-          : await Ajax.head(endpoint, params(countParams));
-      totalCount = resolveTotalCount(countResponse.headers);
-    } catch {
-      // Ignore fallback count errors and keep unknown total behavior.
-    }
-  }
+  const totalCount = resolveTotalCount(response.headers);
 
   const hasMore =
     totalCount !== undefined
@@ -182,8 +151,9 @@ interface UseVocabularyTermsParams {
   apiPrefix: string;
   vocabularyIri: IRI;
   searchString: string;
-  language: string;
+  sortLang: string;
   searchParams?: SearchParam[];
+  sort?: string;
 }
 
 function normalizeLanguageTag(language: string): string {
@@ -197,11 +167,12 @@ export function useVocabularyTerms({
   apiPrefix,
   vocabularyIri,
   searchString,
-  language,
+  sortLang,
   searchParams = [],
+  sort,
 }: UseVocabularyTermsParams) {
   const normalizedSearchString = searchString.trim();
-  const normalizedLanguage = normalizeLanguageTag(language);
+  const normalizedLanguage = normalizeLanguageTag(sortLang);
 
   const baseQueryKey = queryKeys.terms.list({
     apiPrefix,
@@ -215,16 +186,18 @@ export function useVocabularyTerms({
     queryKey: [
       ...(Array.isArray(baseQueryKey) ? baseQueryKey : [baseQueryKey]),
       searchParams,
+      sort,
     ],
     queryFn: ({ pageParam = 0, signal }) =>
       fetchVocabularyTermsPage({
         apiPrefix,
         vocabularyIri,
         searchString: normalizedSearchString,
-        language: normalizedLanguage,
+        sortLang: normalizedLanguage,
         pageParam: Number(pageParam),
         searchParams,
         signal,
+        sort,
       }),
     getNextPageParam: (lastPage) =>
       lastPage.hasMore ? lastPage.pageIndex + 1 : undefined,

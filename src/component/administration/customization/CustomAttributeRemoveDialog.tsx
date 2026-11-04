@@ -218,7 +218,13 @@ const CustomAttributeRemoveDialog: React.FC<
         onCancel();
       }
     });
-  }, [dispatch, attributeIri, pagination.pageSize, pagination.pageIndex]);
+  }, [
+    dispatch,
+    attributeIri,
+    pagination.pageSize,
+    pagination.pageIndex,
+    onCancel,
+  ]);
 
   const columns = useMemo(
     () => defineColumns(i18n, customAttribute),

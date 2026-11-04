@@ -106,6 +106,7 @@ export class RegistrationForm extends React.Component<
   }
 
   public onRegister = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordConfirm, usernameExists, error, ...userData } = this.state;
     this.props.register(userData).then((result) => {
       const asyncResult = result as AsyncFailureAction;

@@ -74,6 +74,12 @@ import {
 } from "../model/filter/VocabularyContentChangeFilterData";
 import ResourceSaveReason from "../component/annotator/ResourceSaveReason";
 import { TermRemovalOptions } from "../model/TermRemovalOptions";
+import { selectMultilingualCustomAttributeIris } from "../store/StateSelectors";
+import {
+  IriMigrationPair,
+  IriMigrationType,
+  MigrationParams,
+} from "../model/IriMigrationType";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -433,7 +439,7 @@ export function removeVocabulary(vocabulary: Vocabulary) {
  * @param removalOptions handling of sub-terms, occurrences, and relationships
  */
 export function removeTerm(term: Term, removalOptions?: TermRemovalOptions) {
-  const vocabularyIri = VocabularyUtils.create(term.vocabulary?.iri!);
+  const vocabularyIri = VocabularyUtils.create(term.vocabulary!.iri!);
   const additionalParams = removalOptions
     ? new Map([
         ["subTermsStrategy", removalOptions.subTermsStrategy],
@@ -947,7 +953,9 @@ export function updateTerm(term: Term) {
     // Vocabulary namespace defines also term namespace
     return Ajax.put(
       reqUrl,
-      content(term.toJsonLd()).params({
+      content(
+        term.toJsonLd(selectMultilingualCustomAttributeIris(getState()))
+      ).params({
         namespace: vocabularyIri.namespace,
       })
     )
@@ -1024,7 +1032,9 @@ export function updateVocabulary(vocabulary: Vocabulary) {
       Constants.API_PREFIX + "/vocabularies/" + vocabularyIri.fragment;
     return Ajax.put(
       reqUrl,
-      content(vocabulary.toJsonLd()).params({
+      content(
+        vocabulary.toJsonLd(selectMultilingualCustomAttributeIris(getState()))
+      ).params({
         namespace: vocabularyIri.namespace,
       })
     )
@@ -1218,7 +1228,7 @@ export function loadHistory(
       for (const [key, value] of Object.entries(filterData)) {
         params = params.param(key, value);
       }
-      params = params.param("type", getChangeTypeUri(filterData));
+      params = params.param("changeType", getChangeTypeUri(filterData));
     }
     return Ajax.get(historyConf.url, params)
       .then((data) =>
@@ -1459,6 +1469,37 @@ export function rollbackChange(changeRecord: ChangeRecord) {
           )
         );
         return false;
+      });
+  };
+}
+
+export function migrateIdentifier(
+  iris: IriMigrationPair,
+  type: IriMigrationType,
+  params?: MigrationParams
+) {
+  const action = { type: ActionType.MIGRATE_IDENTIFIER };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/migration/identifier`,
+      param("originalIri", iris.originalIri)
+        .param("newIri", iris.newIri)
+        .param("type", type)
+        .param("preferredNamespace", params?.newPreferredNamespaceUri)
+    )
+      .then(() => {
+        return dispatch(asyncActionSuccess(action));
+      })
+      .catch((error: ErrorData) => {
+        let messageData = {
+          ...error,
+        };
+        if (!messageData.message && !messageData.messageId) {
+          messageData.messageId = "asset.migrate.iri.error.failure";
+        }
+        dispatch(publishMessage(new Message(messageData, MessageType.ERROR)));
+        return dispatch(asyncActionFailure(action, error));
       });
   };
 }

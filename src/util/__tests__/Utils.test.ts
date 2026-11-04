@@ -29,6 +29,10 @@ describe("Utils", () => {
     it("returns empty array for null argument", () => {
       expect(Utils.sanitizeArray(null)).toEqual([]);
     });
+
+    it("returns array with one element when argument is false", () => {
+      expect(Utils.sanitizeArray(false)).toEqual([false]);
+    });
   });
 
   describe("extractQueryParam", () => {

@@ -5,13 +5,13 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
+  Input,
   Spinner,
   UncontrolledDropdown,
-  Input,
 } from "reactstrap";
 import { MdFormatSize } from "react-icons/md";
 import { useDebouncedCallback } from "use-debounce";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Term, { TermInfo } from "../../../../model/Term";
 import Vocabulary from "../../../../model/Vocabulary";
 import TermItState from "../../../../model/TermItState";
@@ -34,9 +34,9 @@ import { useUpdateTerm } from "../../../../query/hook/useUpdateTerm";
 import "./VocabularySheetViewTable.scss";
 import {
   previewValues,
-  resolveTypeLabels,
-  resolveGridColumnWidth,
   resolveAvailableTermLanguages,
+  resolveGridColumnWidth,
+  resolveTypeLabels,
   TermsTableColumn,
 } from "./VocabularySheetViewTableUtils";
 import { ExpandableTextCell } from "./cell/ExpandableTextCell";
@@ -46,7 +46,6 @@ import ContainerMask from "../../../misc/ContainerMask";
 import {
   getLocalizedInLanguage,
   getLocalizedPluralInLanguage,
-  hasLabelInLanguage,
 } from "../../../../model/MultilingualString";
 import TermLink from "../../../term/TermLink";
 import { HoverEditWrapper } from "./cell/HoverEditWrapper";
@@ -55,13 +54,17 @@ import { useBatchEditTerms } from "../../../../query/hook/useBatchEditTerms";
 import { TermBatchEditDto } from "../../../../model/TermBatchEditDto";
 import SearchParam from "../../../../model/search/SearchParam";
 import { aggregateSearchParams } from "../../../search/facet/FacetedSearchUtil";
-import { FaFilter } from "react-icons/fa";
+import {
+  FaFilter,
+  FaSortAlphaDown,
+  FaSortAlphaUp,
+  FaSort,
+} from "react-icons/fa";
 import { FilterPanel } from "./filter/FilterPanel";
 
 interface VocabularySheetViewTableProps {
   vocabulary: Vocabulary;
   selectedTermIri: string | null;
-  onTermSelect: (term: Term) => void;
 }
 
 const DEFAULT_COLUMN_VISIBILITY: Record<TermsTableColumn["id"], boolean> = {
@@ -90,7 +93,7 @@ type TableFontSize = (typeof FONT_SIZE_OPTIONS)[number];
 
 export const VocabularySheetViewTable: React.FC<
   VocabularySheetViewTableProps
-> = ({ vocabulary, selectedTermIri, onTermSelect }) => {
+> = ({ vocabulary, selectedTermIri }) => {
   const dispatch: ThunkDispatch = useDispatch();
   const { i18n, formatMessage, locale } = useI18n();
   const shortLocale = getShortLocale(locale);
@@ -125,6 +128,12 @@ export const VocabularySheetViewTable: React.FC<
   const [appliedFacetParams, setAppliedFacetParams] = React.useState<{
     [key: string]: SearchParam;
   }>({});
+  const [sortColumn, setSortColumn] = React.useState<"label" | "notation">(
+    "label"
+  );
+  const [sortDirection, setSortDirection] = React.useState<"asc" | "desc">(
+    "asc"
+  );
 
   const debouncedApplyFilters = useDebouncedCallback(
     (params: { [key: string]: SearchParam }) => {
@@ -188,7 +197,7 @@ export const VocabularySheetViewTable: React.FC<
           ...parsed,
           label: true,
         };
-      } catch (e) {
+      } catch (_) {
         // Fallback to default
       }
     }
@@ -212,8 +221,9 @@ export const VocabularySheetViewTable: React.FC<
     apiPrefix,
     vocabularyIri,
     searchString: "",
-    language: shortLocale,
+    sortLang: tableLanguage,
     searchParams: activeSearchParams,
+    sort: `${sortColumn},${sortDirection}`,
   });
 
   const loadedTerms = React.useMemo(
@@ -284,14 +294,17 @@ export const VocabularySheetViewTable: React.FC<
 
   const displayLanguage = React.useMemo(() => {
     const normalizedCurrent = normalizeLanguageTag(tableLanguage);
-    if (availableTermLanguages.includes(normalizedCurrent)) {
+    if (
+      loadedTerms.length === 0 ||
+      availableTermLanguages.includes(normalizedCurrent)
+    ) {
       return normalizedCurrent;
     }
     if (availableTermLanguages.length > 0) {
       return availableTermLanguages[0];
     }
     return shortLocale;
-  }, [availableTermLanguages, shortLocale, tableLanguage]);
+  }, [availableTermLanguages, loadedTerms.length, shortLocale, tableLanguage]);
 
   React.useEffect(() => {
     if (tableLanguage !== displayLanguage) {
@@ -299,13 +312,7 @@ export const VocabularySheetViewTable: React.FC<
     }
   }, [displayLanguage, tableLanguage]);
 
-  const displayedTerms = React.useMemo(
-    () =>
-      loadedTerms.filter((term) =>
-        hasLabelInLanguage(term.label, displayLanguage)
-      ),
-    [displayLanguage, loadedTerms]
-  );
+  const displayedTerms = loadedTerms;
 
   const resolvedTotalCount = termsQuery.data?.pages.find(
     (page) => page.totalCount !== undefined
@@ -400,7 +407,6 @@ export const VocabularySheetViewTable: React.FC<
       getCellKey,
       vocabulary.iri,
       handleEditClick,
-      i18n,
     ]
   );
 
@@ -560,7 +566,10 @@ export const VocabularySheetViewTable: React.FC<
         growFr: 1,
         hideable: true,
         render: (term, rowIndex) => {
-          const text = previewValues(Utils.sanitizeArray(term.notations));
+          const sortedNotations = [...Utils.sanitizeArray(term.notations)].sort(
+            (a, b) => a.localeCompare(b, displayLanguage, { numeric: true })
+          );
+          const text = previewValues(sortedNotations);
           return (
             <HoverEditWrapper
               onEdit={() => handleEditClick(term.iri, "notation")}
@@ -719,8 +728,10 @@ export const VocabularySheetViewTable: React.FC<
     ],
     [
       displayLanguage,
+      expandedCellKey,
+      getCellKey,
+      handleEditClick,
       i18n,
-      onTermSelect,
       renderExpandableTermListCell,
       typeOptions,
     ]
@@ -761,6 +772,8 @@ export const VocabularySheetViewTable: React.FC<
 
   const virtualRows = rowVirtualizer.getVirtualItems();
 
+  const { fetchNextPage, hasNextPage, isFetchingNextPage } = termsQuery;
+
   React.useEffect(() => {
     const lastVirtualRow = virtualRows[virtualRows.length - 1];
 
@@ -770,17 +783,17 @@ export const VocabularySheetViewTable: React.FC<
 
     if (
       lastVirtualRow.index >= displayedTerms.length - LOAD_MORE_THRESHOLD &&
-      termsQuery.hasNextPage &&
-      !termsQuery.isFetchingNextPage
+      hasNextPage &&
+      !isFetchingNextPage
     ) {
-      termsQuery.fetchNextPage();
+      fetchNextPage();
     }
   }, [
     displayedTerms.length,
     loadedTerms.length,
-    termsQuery.fetchNextPage,
-    termsQuery.hasNextPage,
-    termsQuery.isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     virtualRows,
   ]);
 
@@ -978,11 +991,60 @@ export const VocabularySheetViewTable: React.FC<
               onChange={toggleAllBatchSelection}
             />
           </div>
-          {visibleColumns.map((column) => (
-            <div key={column.id} className="vocabulary-sheet-view-header-cell">
-              {column.title}
-            </div>
-          ))}
+          {visibleColumns.map((column) => {
+            const isSortable =
+              (column.id === "label" || column.id === "notation") &&
+              activeSearchParams.length === 0;
+
+            const toggleSort = () => {
+              if (sortColumn === column.id) {
+                setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+              } else {
+                setSortColumn(column.id as "label" | "notation");
+                setSortDirection("asc");
+              }
+            };
+
+            return (
+              <div
+                key={column.id}
+                role={isSortable ? "button" : undefined}
+                tabIndex={isSortable ? 0 : undefined}
+                className={classNames(
+                  "vocabulary-sheet-view-header-cell d-flex align-items-center",
+                  {
+                    "sortable-column-header": isSortable,
+                  }
+                )}
+                onClick={isSortable ? toggleSort : undefined}
+                onKeyDown={
+                  isSortable
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          toggleSort();
+                        }
+                      }
+                    : undefined
+                }
+              >
+                <span>{column.title}</span>
+                {isSortable && (
+                  <span className="ml-2 text-muted">
+                    {sortColumn === column.id ? (
+                      sortDirection === "asc" ? (
+                        <FaSortAlphaDown size={14} />
+                      ) : (
+                        <FaSortAlphaUp size={14} />
+                      )
+                    ) : (
+                      <FaSort size={14} />
+                    )}
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <div

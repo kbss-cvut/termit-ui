@@ -140,6 +140,7 @@ const UsersTable: React.FC<UsersTableProps> = (props) => {
       changeRole,
       currentUser,
       readOnly,
+      userGroups,
     ]
   );
 

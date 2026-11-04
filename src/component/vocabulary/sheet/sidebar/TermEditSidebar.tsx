@@ -57,10 +57,25 @@ export const TermEditSidebar: React.FC<TermEditSidebarProps> = ({
   selectedTermIris,
   onBatchSave,
 }) => {
+  const handleBackdropKeyDown = (
+    event: React.KeyboardEvent<HTMLDivElement>
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClose();
+    }
+  };
+
   return (
     <>
       {isOpen && (
-        <div className="term-edit-sidebar-backdrop" onClick={onClose} />
+        <div
+          className="term-edit-sidebar-backdrop"
+          role="button"
+          tabIndex={0}
+          onClick={onClose}
+          onKeyDown={handleBackdropKeyDown}
+        />
       )}
 
       <div className={`term-edit-sidebar ${isOpen ? "open" : ""}`}>

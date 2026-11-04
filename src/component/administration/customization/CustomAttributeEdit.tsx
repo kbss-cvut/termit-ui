@@ -50,6 +50,8 @@ import {
   ungroupAnnotatedRelationships,
 } from "./AnnotatedRelationshipsSelector";
 import Utils from "../../../util/Utils";
+import CustomToggle from "../../misc/CustomToggle";
+import HelpIcon from "../../misc/HelpIcon";
 
 function propertyWithLabelExists(
   label: string,
@@ -76,6 +78,9 @@ export const CustomAttributeEdit: React.FC = () => {
   const [range, setRange] = React.useState<string>(VocabularyUtils.XSD_STRING);
   const [language, setLanguage] = React.useState(getShortLocale(locale));
   const [iri, setIri] = React.useState("");
+  const canBeSymmetric =
+    domain === VocabularyUtils.TERM && range === VocabularyUtils.TERM;
+  const [symmetric, setSymmetric] = React.useState(canBeSymmetric);
   const [shouldGenerateIri, setShouldGenerateIri] = React.useState(true);
   const [annotatedRelationships, setAnnotatedRelationships] = React.useState<
     string[]
@@ -108,6 +113,7 @@ export const CustomAttributeEdit: React.FC = () => {
         setComment(editedAttribute.comment || {});
         setDomain(editedAttribute.domainIri || "");
         setRange(editedAttribute.rangeIri || "");
+        setSymmetric(CustomAttribute.isSymmetric(editedAttribute));
 
         const grouped = groupAnnotatedRelationships(
           Utils.sanitizeArray(editedAttribute.annotatedRelationships)
@@ -140,7 +146,7 @@ export const CustomAttributeEdit: React.FC = () => {
       loadIdentifier({
         name: e.target.value.trim(),
         assetType: "CUSTOM_ATTRIBUTE",
-      }).then((resp) => setIri(resp.data));
+      }).then(setIri);
     }
   };
   const labelValidation =
@@ -165,6 +171,10 @@ export const CustomAttributeEdit: React.FC = () => {
     const newComment = { ...comment };
     newComment[language] = e.target.value;
     setComment(newComment);
+  };
+  const onRangeChange = (newRange: string) => {
+    setRange(newRange);
+    setSymmetric(false);
   };
   const goToAdministration = () => {
     Routing.transitionTo(Routes.administration, {
@@ -194,8 +204,21 @@ export const CustomAttributeEdit: React.FC = () => {
         range,
         annotatedRelationships: annotatedRelationshipsData,
       });
+      if (symmetric) {
+        if (!data.types.includes(VocabularyUtils.OWL_SYMMETRIC_PROPERTY)) {
+          data.types.push(VocabularyUtils.OWL_SYMMETRIC_PROPERTY);
+        }
+      } else {
+        data.types = data.types.filter(
+          (t) => t !== VocabularyUtils.OWL_SYMMETRIC_PROPERTY
+        );
+      }
       promise = dispatch(updateCustomAttribute(data));
     } else {
+      const types = [VocabularyUtils.NS_TERMIT + "custom-attribute"];
+      if (symmetric) {
+        types.push(VocabularyUtils.OWL_SYMMETRIC_PROPERTY);
+      }
       promise = dispatch(
         createCustomAttribute(
           new CustomAttribute({
@@ -205,7 +228,7 @@ export const CustomAttributeEdit: React.FC = () => {
             domain,
             range,
             annotatedRelationships: annotatedRelationshipsData,
-            types: [VocabularyUtils.NS_TERMIT + "custom-attribute"],
+            types,
           })
         )
       );
@@ -291,7 +314,7 @@ export const CustomAttributeEdit: React.FC = () => {
             <Row>
               <Col xs={12}>
                 <CustomAttributeSelector
-                  onChange={setRange}
+                  onChange={onRangeChange}
                   value={range}
                   options={RANGE_OPTIONS}
                   labelKey="administration.customization.customAttributes.range"
@@ -322,6 +345,28 @@ export const CustomAttributeEdit: React.FC = () => {
                     value={iri}
                     help={i18n("asset.create.iri.help")}
                     disabled={editingMode}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <CustomToggle
+                    id="custom-attribute-symmetric"
+                    on={i18n(
+                      "administration.customization.customAttributes.symmetric"
+                    )}
+                    off={i18n(
+                      "administration.customization.customAttributes.symmetric"
+                    )}
+                    disabled={!canBeSymmetric}
+                    onClick={() => setSymmetric(!symmetric)}
+                    active={symmetric}
+                  />
+                  <HelpIcon
+                    id="custom-attribute-symmetric-help"
+                    text={i18n(
+                      "administration.customization.customAttributes.symmetric.help"
+                    )}
                   />
                 </Col>
               </Row>
