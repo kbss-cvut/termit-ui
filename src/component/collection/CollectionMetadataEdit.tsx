@@ -14,10 +14,8 @@ import {
   Col,
   Form,
   FormText,
-  Label,
   Row,
 } from "reactstrap";
-import Toggle from "react-bootstrap-toggle";
 import { useDispatch } from "react-redux";
 import { SkosCollection } from "../../model/Collection";
 import MultilingualString, {
@@ -42,7 +40,6 @@ import MessageType from "../../model/MessageType";
 import { publishMessage } from "../../action/SyncActions";
 import { ThunkDispatch, useAppSelector } from "../../util/Types";
 import "../misc/CustomToggle.scss";
-import { TOGGLE_STYLE } from "../term/TermListToggle";
 import ShowAdvancedAssetFields from "../asset/ShowAdvancedAssetFields";
 import { loadIdentifier } from "../asset/CreateAssetUtils";
 import {
@@ -60,6 +57,8 @@ import { AsyncAction, AsyncFailureAction } from "../../action/ActionType";
 import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { useDebouncedCallback } from "use-debounce";
+import CustomToggle from "../misc/CustomToggle";
+import HelpIcon from "../misc/HelpIcon";
 
 export interface CollectionMetadataEditProps {}
 
@@ -314,25 +313,19 @@ const CollectionMetadataEdit: FunctionComponent<
               </Col>
             </Row>
             <Row className={"mb-3"}>
-              <Col xs={12} className={"d-flex flex-column"}>
-                <Label className={"attribute-label mb-1"}>
-                  {i18n("collection.ordered.toggle.description")}
-                </Label>
-                <Toggle
+              <Col xs={12}>
+                <CustomToggle
                   id="edit-collection-ordered"
-                  onClick={onOrderedToggle}
                   on={i18n("collection.ordered")}
                   off={i18n("collection.ordered")}
-                  onstyle="primary"
-                  offstyle="secondary"
-                  size="sm"
-                  onClassName="toggle-custom"
-                  offClassName="toggle-custom"
-                  handleClassName="toggle-handle-custom"
-                  style={TOGGLE_STYLE}
-                  active={data.ordered}
-                  recalculateOnResize={true}
                   disabled={!isNewCollection}
+                  onClick={onOrderedToggle}
+                  active={data.ordered}
+                />
+                <HelpIcon
+                  id="edit-collection-ordered-help"
+                  text={i18n("collection.ordered.toggle.description")}
+                  placement={"right"}
                 />
                 <FormText>{i18n("collection.ordered.toggle.help")}</FormText>
               </Col>
