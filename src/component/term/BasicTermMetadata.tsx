@@ -46,7 +46,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
   term,
   vocabulary,
   language,
-  withDefinitionSource,
+  withDefinitionSource = false,
 }) => {
   const { i18n } = useI18n();
 
@@ -161,10 +161,6 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
       </Row>
     </>
   );
-};
-
-BasicTermMetadata.defaultProps = {
-  withDefinitionSource: false,
 };
 
 export default BasicTermMetadata;

@@ -23,7 +23,7 @@ interface UnmappedPropertiesProps {
 
 const UnmappedProperties: React.FC<UnmappedPropertiesProps> = ({
   properties,
-  showInfoOnEmpty,
+  showInfoOnEmpty = false,
   onRemove,
 }) => {
   const { i18n } = useI18n();
@@ -103,10 +103,6 @@ const UnmappedProperties: React.FC<UnmappedPropertiesProps> = ({
       <tbody>{result}</tbody>
     </Table>
   );
-};
-
-UnmappedProperties.defaultProps = {
-  showInfoOnEmpty: false,
 };
 
 export default UnmappedProperties;

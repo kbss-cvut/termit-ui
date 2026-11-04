@@ -23,9 +23,4 @@ const ContainerMask: React.FC<MaskProps> = (props) => {
   );
 };
 
-ContainerMask.defaultProps = {
-  classes: "mask-container",
-  withoutText: false,
-};
-
 export default ContainerMask;

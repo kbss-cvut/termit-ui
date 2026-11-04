@@ -7,17 +7,15 @@ interface WindowTitleProps {
   appendAppName?: boolean; // Whether to append application name to the specified title. Defaults to true
 }
 
-const WindowTitle: React.FC<WindowTitleProps> = (props) => (
+const WindowTitle: React.FC<WindowTitleProps> = ({
+  title = "",
+  appendAppName = true,
+}) => (
   <Helmet>
-    <title>{`${props.title}${
-      props.appendAppName ? " | " + Constants.APP_NAME : ""
+    <title>{`${title}${
+      appendAppName ? " | " + Constants.APP_NAME : ""
     }`}</title>
   </Helmet>
 );
-
-WindowTitle.defaultProps = {
-  title: "",
-  appendAppName: true,
-};
 
 export default WindowTitle;
