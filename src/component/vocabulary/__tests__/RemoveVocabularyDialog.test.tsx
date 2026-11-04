@@ -6,7 +6,7 @@ import {
   getVocabularyTermsRelations,
 } from "../../../action/AsyncVocabularyActions";
 import RdfIriStatement from "../../../model/RdfStatement";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import { MemoryRouter } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import Ajax from "../../../util/Ajax";

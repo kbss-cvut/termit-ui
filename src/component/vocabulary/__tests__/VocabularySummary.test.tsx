@@ -14,7 +14,7 @@ import { langString } from "../../../model/MultilingualString";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
 import { StompClient } from "../../hoc/withStompClient";
 import { fireEvent } from "@testing-library/react";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -160,7 +160,7 @@ describe("VocabularySummary", () => {
   it("invokes remove action and closes remove confirmation dialog on remove", () => {
     const ref = React.createRef<VocabularySummary>();
     renderSummary({ vocabulary }, ref);
-    ref.current!.onRemove();
+    act(() => ref.current!.onRemove());
     expect(removeVocabulary).toHaveBeenCalledWith(vocabulary);
     expect(ref.current!.state.showRemoveDialog).toBeFalsy();
   });
@@ -182,42 +182,42 @@ describe("VocabularySummary", () => {
   it("invokes vocabulary update action on save", () => {
     const ref = React.createRef<VocabularySummary>();
     renderSummary({ vocabulary }, ref);
-    ref.current!.onEdit();
+    act(() => ref.current!.onEdit());
     const update = new Vocabulary({
       iri: vocabulary.iri,
       label: langString("Updated label"),
     });
-    ref.current!.onSave(update);
+    act(() => ref.current!.onSave(update));
     expect(onUpdate).toHaveBeenCalledWith(update);
   });
 
-  it("closes edit after successful update", () => {
+  it("closes edit after successful update", async () => {
     const ref = React.createRef<VocabularySummary>();
     renderSummary({ vocabulary }, ref);
-    ref.current!.onEdit();
-    ref.current!.onSave(vocabulary);
-    return Promise.resolve().then(() => {
-      expect(ref.current!.state.edit).toBeFalsy();
+    act(() => ref.current!.onEdit());
+    await act(async () => {
+      ref.current!.onSave(vocabulary);
+      await Promise.resolve();
     });
+    expect(ref.current!.state.edit).toBeFalsy();
   });
 
-  it("reloads vocabulary after successful update", () => {
+  it("reloads vocabulary after successful update", async () => {
     location.search = "?namespace=" + namespace;
     const ref = React.createRef<VocabularySummary>();
     renderSummary({ vocabulary }, ref);
-    ref.current!.onEdit();
-    ref.current!.onSave(vocabulary);
-    return Promise.resolve().then(() => {
-      expect(onLoad).toHaveBeenCalledWith(
-        VocabularyUtils.create(vocabulary.iri)
-      );
+    act(() => ref.current!.onEdit());
+    await act(async () => {
+      ref.current!.onSave(vocabulary);
+      await Promise.resolve();
     });
+    expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
   });
 
   it("reloads Vocabulary when File was added into the Vocabulary's Document", () => {
     const ref = React.createRef<VocabularySummary>();
     renderSummary({}, ref);
-    ref.current!.loadVocabulary();
+    act(() => ref.current!.loadVocabulary());
     expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
   });
 

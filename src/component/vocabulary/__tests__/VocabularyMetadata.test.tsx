@@ -8,7 +8,7 @@ import {
   flushPromises,
   renderWithIntl,
 } from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import { Location } from "history";
 import { match as Match, MemoryRouter } from "react-router";
 import { langString } from "../../../model/MultilingualString";

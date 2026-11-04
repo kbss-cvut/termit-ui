@@ -13,7 +13,7 @@ import { TermFetchParams } from "../../../util/Types";
 import noop from "lodash/noop";
 import { MemoryRouter } from "react-router";
 import { renderWithIntl } from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import type { Mock } from "vitest";
 
 vi.mock("intelligent-tree-select", () => ({
@@ -341,7 +341,7 @@ describe("ParentTermSelector", () => {
     ).toBeInTheDocument();
   });
 
-  it("disables include imported terms toggle when fetching terms", () => {
+  it("disables include imported terms toggle when fetching terms", async () => {
     const ref = React.createRef<ParentTermSelector>();
     const { rerender } = renderSelector(
       {
@@ -352,20 +352,23 @@ describe("ParentTermSelector", () => {
       ref
     );
     expect(ref.current!.state.disableIncludeImportedToggle).toBeFalsy();
-    loadTerms = vi.fn().mockImplementation(() => {
-      expect(ref.current!.state.disableIncludeImportedToggle).toBeTruthy();
-      return Promise.resolve([]);
-    });
+    loadTerms = vi.fn().mockImplementation(() => Promise.resolve([]));
     rerender(
       selectorElement(
         { termIri: Generator.generateUri(), vocabularyIri, parentTerms: [] },
         ref
       )
     );
-    return ref.current!.fetchOptions({}).then(() => {
-      expect(loadTerms).toHaveBeenCalled();
-      expect(ref.current!.state.disableIncludeImportedToggle).toBeFalsy();
+    let promise!: Promise<unknown>;
+    act(() => {
+      promise = ref.current!.fetchOptions({});
     });
+    expect(loadTerms).toHaveBeenCalled();
+    expect(ref.current!.state.disableIncludeImportedToggle).toBeTruthy();
+    await act(async () => {
+      await promise;
+    });
+    expect(ref.current!.state.disableIncludeImportedToggle).toBeFalsy();
   });
 
   function selectorElement(

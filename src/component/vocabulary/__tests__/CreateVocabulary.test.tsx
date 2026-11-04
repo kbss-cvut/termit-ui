@@ -14,7 +14,7 @@ import Document from "../../../model/Document";
 import * as Redux from "react-redux";
 import * as AsyncActions from "../../../action/AsyncActions";
 import { langString } from "../../../model/MultilingualString";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import { fireEvent } from "@testing-library/react";
 import { Mock, vi } from "vitest";
 
@@ -163,6 +163,8 @@ describe("Create vocabulary view", () => {
         { target: { value: label } }
       );
       await flushPromises();
+    });
+    await act(async () => {
       fireEvent.click(container.querySelector("#create-vocabulary-submit")!);
       await flushPromises();
     });

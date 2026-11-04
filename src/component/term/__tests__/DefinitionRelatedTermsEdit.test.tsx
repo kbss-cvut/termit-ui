@@ -15,7 +15,7 @@ import {
   flushPromises,
   renderWithIntl,
 } from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import type { Mock } from "vitest";
 
 vi.mock("../../vocabulary/VocabularyNameBadgeButton", () => ({

@@ -11,7 +11,7 @@ import RelatedTermsList from "../RelatedTermsList";
 import Constants from "../../../util/Constants";
 import { MemoryRouter } from "react-router";
 import { i18n } from "../../../__tests__/environment/IntlUtil";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import type { Mock } from "vitest";
 

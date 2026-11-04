@@ -2,7 +2,7 @@ import {
   flushPromises,
   renderWithIntl,
 } from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import { VocabularyManagement } from "../VocabularyManagement";
 import { MemoryRouter } from "react-router";
 import Generator from "../../../__tests__/environment/Generator";

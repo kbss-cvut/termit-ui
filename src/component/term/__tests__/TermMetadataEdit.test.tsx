@@ -17,7 +17,7 @@ import Vocabulary from "../../../model/Vocabulary";
 import { MemoryRouter } from "react-router";
 import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { fireEvent } from "@testing-library/react";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import type { Mock } from "vitest";
 
 vi.mock("../ParentTermSelector", () => ({
@@ -190,15 +190,16 @@ describe("Term edit", () => {
     expect(Ajax.head).not.toHaveBeenCalled();
   });
 
-  it("disables save button when duplicate label is set", () => {
+  it("disables save button when duplicate label is set", async () => {
     const { container } = renderEdit();
     Ajax.head = vi.fn().mockResolvedValue({ status: 200 });
     fireEvent.change(labelInput(container), {
       target: { name: "edit-term-label", value: "New label" },
     });
-    return Promise.resolve().then(() => {
-      expect(saveButton(container).disabled).toBeTruthy();
+    await act(async () => {
+      await Promise.resolve();
     });
+    expect(saveButton(container).disabled).toBeTruthy();
   });
 
   it("correctly sets unmapped properties on save", () => {
@@ -208,7 +209,7 @@ describe("Term edit", () => {
     renderEdit({}, ref);
     const updatedProperties = new Map([[property, ["test1", "test2"]]]);
     act(() => ref.current!.setState({ unmappedProperties: updatedProperties }));
-    ref.current!.onSave();
+    act(() => ref.current!.onSave());
     const result: Term = (onSave as Mock).mock.calls[0][0];
     expect(result.unmappedProperties).toEqual(updatedProperties);
     expect(result[property]).toBeDefined();
@@ -255,7 +256,7 @@ describe("Term edit", () => {
     const ref = React.createRef<TermMetadataEdit>();
     renderEdit({ language: "cs" }, ref);
     const list = ["budova", "stavba"];
-    ref.current!.onAltLabelsChange(list);
+    act(() => ref.current!.onAltLabelsChange(list));
     expect(ref.current!.state.altLabels).toEqual(pluralLangString(list, "cs"));
   });
 
@@ -263,7 +264,7 @@ describe("Term edit", () => {
     const ref = React.createRef<TermMetadataEdit>();
     renderEdit({ language: "de" }, ref);
     const list = ["bau", "gebäude"];
-    ref.current!.onHiddenLabelsChange(list);
+    act(() => ref.current!.onHiddenLabelsChange(list));
     expect(ref.current!.state.hiddenLabels).toEqual(
       pluralLangString(list, "de")
     );
@@ -298,7 +299,7 @@ describe("Term edit", () => {
       const relatedMatch = [Generator.generateTerm(Generator.generateUri())];
       const ref = React.createRef<TermMetadataEdit>();
       renderEdit({ language: "en" }, ref);
-      ref.current!.onRelatedChange([...related, ...relatedMatch]);
+      act(() => ref.current!.onRelatedChange([...related, ...relatedMatch]));
       expect(ref.current!.state.relatedTerms).toEqual(
         related.map((t) => Term.toTermInfo(t))
       );
@@ -315,7 +316,7 @@ describe("Term edit", () => {
       change[0].parentTerms[0].subTerms = [change[0] as TermInfo];
       const ref = React.createRef<TermMetadataEdit>();
       renderEdit({ language: "en" }, ref);
-      ref.current!.onExactMatchesChange(change);
+      act(() => ref.current!.onExactMatchesChange(change));
       ref.current!.state.exactMatchTerms!.forEach((et) =>
         expect(et).toEqual(
           expect.not.objectContaining({ parentTerms: expect.any(Array) })

@@ -10,7 +10,7 @@ import {
   mockStore,
   renderWithIntl,
 } from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import { MemoryRouter } from "react-router";
 import { fireEvent } from "@testing-library/react";
 import { langString } from "../../../model/MultilingualString";
