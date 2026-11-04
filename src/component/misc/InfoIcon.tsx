@@ -12,20 +12,19 @@ export interface InfoIconProps {
   className?: string;
 }
 
-const InfoIcon: React.FC<InfoIconProps> = (props) => {
+const InfoIcon: React.FC<InfoIconProps> = ({
+  placement = "right",
+  ...props
+}) => {
   const cls = classNames("info-icon", props.className);
   return (
     <>
       <FaInfoCircle id={props.id} className={cls} />
-      <UncontrolledTooltip target={props.id} placement={props.placement}>
+      <UncontrolledTooltip target={props.id} placement={placement}>
         {props.text}
       </UncontrolledTooltip>
     </>
   );
-};
-
-InfoIcon.defaultProps = {
-  placement: "right",
 };
 
 export default InfoIcon;

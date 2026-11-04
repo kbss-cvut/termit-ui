@@ -5,15 +5,13 @@ import {
   AccessHolderType,
 } from "../../../../model/acl/AccessControlList";
 import * as Redux from "react-redux";
-import { shallow } from "enzyme";
-import { IntelligentTreeSelect } from "intelligent-tree-select";
 import AccessControlRecordForm from "../AccessControlRecordForm";
 import User from "../../../../model/User";
 import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
 import RdfsResource from "../../../../model/RdfsResource";
-import AccessControlHolderSelector from "../AccessControlHolderSelector";
 import UserRole from "../../../../model/UserRole";
 import { langString } from "../../../../model/MultilingualString";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -22,6 +20,23 @@ vi.mock("react-redux", async (importOriginal) => {
     useSelector: vi.fn(),
   };
 });
+
+const mocks = vi.hoisted(() => ({
+  selectProps: {} as any,
+  holderSelectorProps: {} as any,
+}));
+vi.mock("intelligent-tree-select", () => ({
+  IntelligentTreeSelect: (props: any) => {
+    mocks.selectProps = props;
+    return <div data-testid="tree-select" />;
+  },
+}));
+vi.mock("../AccessControlHolderSelector", () => ({
+  default: (props: any) => {
+    mocks.holderSelectorProps = props;
+    return <div data-testid="holder-selector" />;
+  },
+}));
 
 const ACCESS_LEVELS = [
   {
@@ -61,7 +76,7 @@ describe("AccessControlRecordForm", () => {
 
   it("offers Security access level for regular full user", () => {
     const holder = Generator.generateUser();
-    const wrapper = shallow(
+    renderWithIntl(
       <AccessControlRecordForm
         record={
           {
@@ -72,10 +87,7 @@ describe("AccessControlRecordForm", () => {
         onChange={onChange}
       />
     );
-    const levelSelector = wrapper.find(IntelligentTreeSelect);
-    expect(levelSelector.prop("options") as RdfsResource[]).toEqual(
-      ACCESS_LEVELS
-    );
+    expect(mocks.selectProps.options as RdfsResource[]).toEqual(ACCESS_LEVELS);
   });
 
   function generateRestrictedUser() {
@@ -98,7 +110,7 @@ describe("AccessControlRecordForm", () => {
   ])(
     "does not offer Security access level for holder %s",
     (holder: AccessHolderType, recordType: string) => {
-      const wrapper = shallow(
+      renderWithIntl(
         <AccessControlRecordForm
           record={
             {
@@ -109,8 +121,7 @@ describe("AccessControlRecordForm", () => {
           onChange={onChange}
         />
       );
-      const levelSelector = wrapper.find(IntelligentTreeSelect);
-      expect(levelSelector.prop("options")).not.toContain(
+      expect(mocks.selectProps.options).not.toContain(
         ACCESS_LEVELS[ACCESS_LEVELS.length - 1]
       );
     }
@@ -118,7 +129,7 @@ describe("AccessControlRecordForm", () => {
 
   it("resets accessLevel when level is Security and holder changes to restricted user", () => {
     const holder = Generator.generateUser();
-    const wrapper = shallow(
+    renderWithIntl(
       <AccessControlRecordForm
         record={
           {
@@ -132,9 +143,7 @@ describe("AccessControlRecordForm", () => {
     );
     const restrictedHolder = Generator.generateUser();
     restrictedHolder.types.push(VocabularyUtils.USER_RESTRICTED);
-    wrapper.find(AccessControlHolderSelector).prop("onChange")(
-      restrictedHolder
-    );
+    mocks.holderSelectorProps.onChange(restrictedHolder);
     expect(onChange).toHaveBeenCalledWith({
       holder: restrictedHolder,
       types: [VocabularyUtils.USER],

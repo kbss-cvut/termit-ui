@@ -7,6 +7,7 @@ interface PanelWithActionsProps {
   actions?: React.ReactNode[] | React.ReactNode;
   className?: string;
   id?: string;
+  children?: React.ReactNode;
 }
 
 const PanelWithActions: React.FC<PanelWithActionsProps> = ({

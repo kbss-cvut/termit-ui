@@ -9,7 +9,9 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
  *
  * It wraps components that are shown in advanced regime only.
  */
-export const ShowAdvancedAssetFields: React.FC = ({ children }) => {
+export const ShowAdvancedAssetFields: React.FC<{
+  children?: React.ReactNode;
+}> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
   const { i18n } = useI18n();

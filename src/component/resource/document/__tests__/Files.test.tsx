@@ -1,5 +1,6 @@
-import { shallow } from "enzyme";
-import { mockUseI18n } from "../../../../__tests__/environment/IntlUtil";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
+import { screen } from "@testing-library/react";
+import { i18n } from "../../../../__tests__/environment/IntlUtil";
 import TermItFile from "../../../../model/File";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
 import Document from "../../../../model/Document";
@@ -21,17 +22,18 @@ describe("DocumentFiles", () => {
     });
     actions = [];
     itemActions = () => [];
-    mockUseI18n();
   });
 
   it("renders notice when no Files exist", () => {
-    const wrapper = shallow(
+    renderWithIntl(
       <Files
         files={document.files}
         actions={actions}
         itemActions={itemActions}
       />
     );
-    expect(wrapper.exists("#file-list-empty")).toBeTruthy();
+    expect(
+      screen.getByText(i18n("resource.metadata.document.files.empty"))
+    ).toBeInTheDocument();
   });
 });

@@ -1,14 +1,8 @@
 import { UserDropdown } from "../UserDropdown";
 import User from "../../../model/User";
-import {
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledDropdown,
-} from "reactstrap";
 import * as Redux from "react-redux";
 import {
-  mountWithIntl,
+  renderWithIntl,
   withWebSocket,
 } from "../../../__tests__/environment/Environment";
 import * as actions from "../../../action/ComplexActions";
@@ -36,24 +30,23 @@ describe("UserDropdown", () => {
   });
 
   it("renders correct structure of component", () => {
-    const wrapper = mountWithIntl(withWebSocket(<UserDropdown dark={true} />));
-
-    expect(
-      wrapper
-        .find(UncontrolledDropdown)
-        .find(DropdownToggle)
-        .contains(
-          <>
-            <i className="fas fa-user-circle user-icon align-middle" />
-            &nbsp;
-            <span className="user-dropdown">{user.abbreviatedName}</span>
-          </>
-        )
+    const { container } = renderWithIntl(
+      withWebSocket(<UserDropdown dark={true} />)
     );
 
     expect(
-      wrapper.find(UncontrolledDropdown).find(DropdownMenu).find(DropdownItem)
-        .length
-    ).toBe(3);
+      container.querySelector("i.fas.fa-user-circle.user-icon")
+    ).toBeInTheDocument();
+    expect(container.querySelector(".user-dropdown")).toHaveTextContent(
+      user.abbreviatedName!
+    );
+
+    // Two menu items and a divider
+    expect(
+      container.querySelectorAll(".dropdown-menu .dropdown-item").length
+    ).toBe(2);
+    expect(
+      container.querySelectorAll(".dropdown-menu .dropdown-divider").length
+    ).toBe(1);
   });
 });

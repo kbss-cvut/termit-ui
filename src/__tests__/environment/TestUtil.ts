@@ -1,8 +1,6 @@
 import { AssetData } from "../../model/Asset";
 import { createMemoryHistory, Location } from "history";
 import { match as MatchType, RouteComponentProps } from "react-router";
-import { ReactWrapper } from "enzyme";
-import { HTMLAttributes } from "react";
 
 /**
  * Verifies that the actual assets are correspond to the expected JSON-LD data.
@@ -56,21 +54,4 @@ export function routingProps(): RouteComponentProps<any> {
     match: match(),
     history: createMemoryHistory(),
   };
-}
-
-/**
- * Changes value attribute of inputElement and simulates change event on it, should be executed in "act"!
- * @param inputElement
- * @param value
- */
-export function changeInputValue<T>(
-  inputElement: ReactWrapper<
-    HTMLAttributes<T>,
-    any,
-    React.Component<{}, {}, any>
-  >,
-  value: string
-) {
-  (inputElement.getDOMNode() as HTMLInputElement).value = value;
-  inputElement.simulate("change", inputElement);
 }

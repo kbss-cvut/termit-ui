@@ -13,7 +13,7 @@ interface AssetReadOnlyIconProps {
 const AssetReadOnlyIcon: React.FC<AssetReadOnlyIconProps> = ({
   className,
   explanationId,
-  explanationValues,
+  explanationValues = {},
   id,
 }) => {
   const { formatMessage } = useI18n();
@@ -25,10 +25,6 @@ const AssetReadOnlyIcon: React.FC<AssetReadOnlyIconProps> = ({
       </UncontrolledTooltip>
     </>
   );
-};
-
-AssetReadOnlyIcon.defaultProps = {
-  explanationValues: {},
 };
 
 export default AssetReadOnlyIcon;

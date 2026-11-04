@@ -1,10 +1,8 @@
+import * as React from "react";
 import { createMemoryHistory, Location } from "history";
-import { match as Match } from "react-router";
-import { shallow } from "enzyme";
+import { match as Match, MemoryRouter } from "react-router";
 import { TermDetail } from "../TermDetail";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import TermMetadata from "../TermMetadata";
-import TermMetadataEdit from "../TermMetadataEdit";
 import Term from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import AppNotification from "../../../model/AppNotification";
@@ -16,6 +14,8 @@ import Constants from "../../../util/Constants";
 import TermOccurrence from "../../../model/TermOccurrence";
 import { StompClient } from "../../hoc/withStompClient";
 import { describe, expect, it, vi } from "vitest";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { act } from "react";
 import {
   SubTermRemovalStrategy,
   TermRemovalOptions,
@@ -32,6 +32,16 @@ vi.mock("../../misc/AssetLabel", () => ({
 }));
 vi.mock("../../changetracking/AssetHistory", () => ({
   default: () => <div>Asset history</div>,
+}));
+vi.mock("../TermMetadata", () => ({
+  default: (props: { language: string }) => (
+    <div className="term-metadata" data-language={props.language} />
+  ),
+}));
+vi.mock("../TermMetadataEdit", () => ({
+  default: (props: { language: string }) => (
+    <div className="term-metadata-edit" data-language={props.language} />
+  ),
 }));
 
 describe("TermDetail", () => {
@@ -111,18 +121,50 @@ describe("TermDetail", () => {
     });
   });
 
-  it("loads term on mount", () => {
-    shallow(
-      <TermDetail
-        term={null}
-        {...handlers}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
+  function renderTermDetail(
+    props: Partial<React.ComponentProps<typeof TermDetail>> = {},
+    ref: React.RefObject<TermDetail> = React.createRef()
+  ) {
+    return renderWithIntl(
+      <MemoryRouter>
+        <TermDetail
+          ref={ref}
+          term={null}
+          {...handlers}
+          vocabulary={vocabulary}
+          history={history}
+          location={location}
+          match={match}
+          {...intlFunctions()}
+          {...props}
+        />
+      </MemoryRouter>
     );
+  }
+
+  function termDetailElement(
+    props: Partial<React.ComponentProps<typeof TermDetail>> = {},
+    ref?: React.RefObject<TermDetail>
+  ) {
+    return (
+      <MemoryRouter>
+        <TermDetail
+          ref={ref}
+          term={null}
+          {...handlers}
+          vocabulary={vocabulary}
+          history={history}
+          location={location}
+          match={match}
+          {...intlFunctions()}
+          {...props}
+        />
+      </MemoryRouter>
+    );
+  }
+
+  it("loads term on mount", () => {
+    renderTermDetail();
     expect(onLoad).toHaveBeenCalledWith(
       normalizedTermName,
       {
@@ -135,17 +177,7 @@ describe("TermDetail", () => {
   it("loads term snapshot on mount with correct IRI", () => {
     const timestamp = "20220731T100000Z";
     match.params.timestamp = timestamp;
-    shallow(
-      <TermDetail
-        term={null}
-        {...handlers}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
+    renderTermDetail();
     expect(onLoad).toHaveBeenCalledWith(
       normalizedTermName,
       {
@@ -158,18 +190,7 @@ describe("TermDetail", () => {
   it("provides namespace to term loading when specified in url", () => {
     const namespace = "http://onto.fel.cvut.cz/ontologies/termit/vocabularies/";
     location.search = "?namespace=" + namespace;
-    shallow(
-      <TermDetail
-        term={null}
-        {...handlers}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        history={history}
-        location={location}
-        match={match}
-        vocabulary={vocabulary}
-        {...intlFunctions()}
-      />
-    );
+    renderTermDetail({ configuredLanguage: Constants.DEFAULT_LANGUAGE });
     expect(onLoad).toHaveBeenCalledWith(
       normalizedTermName,
       {
@@ -181,96 +202,57 @@ describe("TermDetail", () => {
   });
 
   it("renders term metadata by default", () => {
-    const wrapper = shallow(
-      <TermDetail
-        term={term}
-        {...handlers}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.exists(TermMetadata)).toBeTruthy();
+    const { container } = renderTermDetail({
+      term,
+      configuredLanguage: Constants.DEFAULT_LANGUAGE,
+    });
+    expect(container.querySelector(".term-metadata")).toBeInTheDocument();
   });
 
   it("renders term editor after clicking edit button", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        {...handlers}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
+    const ref = React.createRef<TermDetail>();
+    const { container } = renderTermDetail(
+      { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
+      ref
     );
-    wrapper.instance().onEdit();
-    expect(wrapper.find(TermMetadataEdit).exists()).toBeTruthy();
+    act(() => ref.current!.onEdit());
+    expect(container.querySelector(".term-metadata-edit")).toBeInTheDocument();
   });
 
   it("invokes termUpdate action on save", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        {...handlers}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
+    const ref = React.createRef<TermDetail>();
+    renderTermDetail(
+      { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
+      ref
     );
-    wrapper
-      .instance()
-      .onSave(term, { pendingApproval: [], pendingRemoval: [] });
+    ref.current!.onSave(term, { pendingApproval: [], pendingRemoval: [] });
     expect(onUpdate).toHaveBeenCalledWith(term);
   });
 
-  it("closes term metadata edit on save success", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        {...handlers}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        history={history}
-        location={location}
-        match={match}
-        vocabulary={vocabulary}
-        {...intlFunctions()}
-      />
+  it("closes term metadata edit on save success", async () => {
+    const ref = React.createRef<TermDetail>();
+    renderTermDetail(
+      { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
+      ref
     );
-    wrapper.instance().onEdit();
-    return wrapper
-      .instance()
-      .onSave(term, { pendingApproval: [], pendingRemoval: [] })
-      .then(() => {
-        wrapper.update();
-        expect(wrapper.state().edit).toBeFalsy();
+    act(() => ref.current!.onEdit());
+    await act(async () => {
+      await ref.current!.onSave(term, {
+        pendingApproval: [],
+        pendingRemoval: [],
       });
+    });
+    expect(ref.current!.state.edit).toBeFalsy();
   });
 
   it("reloads term on successful save", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        {...handlers}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
+    const ref = React.createRef<TermDetail>();
+    renderTermDetail(
+      { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
+      ref
     );
-    wrapper
-      .instance()
-      .onSave(term, { pendingApproval: [], pendingRemoval: [] })
+    return ref
+      .current!.onSave(term, { pendingApproval: [], pendingRemoval: [] })
       .then(() => {
         expect(onLoad).toHaveBeenCalledWith(
           normalizedTermName,
@@ -283,21 +265,13 @@ describe("TermDetail", () => {
   });
 
   it("closes edit when different term is selected", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        {...handlers}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
+    const ref = React.createRef<TermDetail>();
+    const { rerender } = renderTermDetail(
+      { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
+      ref
     );
-    wrapper.instance().onEdit();
-    wrapper.update();
-    expect(wrapper.state().edit).toBeTruthy();
+    act(() => ref.current!.onEdit());
+    expect(ref.current!.state.edit).toBeTruthy();
     const newMatch = {
       params: {
         name: normalizedVocabName,
@@ -307,42 +281,36 @@ describe("TermDetail", () => {
       isExact: true,
       url: "http://localhost:3000/different",
     };
-    wrapper.setProps({ match: newMatch });
-    wrapper.update();
-    expect(wrapper.state().edit).toBeFalsy();
+    rerender(
+      termDetailElement(
+        {
+          term,
+          configuredLanguage: Constants.DEFAULT_LANGUAGE,
+          match: newMatch,
+        },
+        ref
+      )
+    );
+    expect(ref.current!.state.edit).toBeFalsy();
   });
 
   it("does not render edit button when editing", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        {...handlers}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
+    const ref = React.createRef<TermDetail>();
+    renderTermDetail(
+      { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
+      ref
     );
-    const buttons = wrapper.instance().getActions();
+    const buttons = ref.current!.getActions();
     expect(buttons.some((b) => b.key === "term-detail-edit"));
-    wrapper.instance().onEdit();
+    act(() => ref.current!.onEdit());
     expect(buttons.every((b) => b.key !== "term-detail-edit"));
   });
 
   it("publishes term update notification when parent term changes", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        {...handlers}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
+    const ref = React.createRef<TermDetail>();
+    renderTermDetail(
+      { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
+      ref
     );
     const update = new Term(Object.assign({}, term));
     const newParent = Generator.generateUri();
@@ -352,9 +320,8 @@ describe("TermDetail", () => {
         label: langString("New parent"),
       }),
     ];
-    return wrapper
-      .instance()
-      .onSave(update, { pendingApproval: [], pendingRemoval: [] })
+    return ref
+      .current!.onSave(update, { pendingApproval: [], pendingRemoval: [] })
       .then(() => {
         expect(onPublishNotification).toHaveBeenCalledWith({
           source: { type: NotificationType.TERM_HIERARCHY_UPDATED },
@@ -363,127 +330,77 @@ describe("TermDetail", () => {
   });
 
   it("invokes remove action and closes remove confirmation dialog on remove", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        configuredLanguage={Constants.DEFAULT_LANGUAGE}
-        {...handlers}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
+    const ref = React.createRef<TermDetail>();
+    renderTermDetail(
+      { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
+      ref
     );
     const removalOptions: TermRemovalOptions = {
       removeOccurrences: false,
       removeRelationships: false,
       subTermsStrategy: SubTermRemovalStrategy.FAIL,
     };
-    wrapper.instance().onRemove(removalOptions);
+    ref.current!.onRemove(removalOptions);
     expect(removeTerm).toHaveBeenCalledWith(term, removalOptions);
-    expect(wrapper.state("showRemoveDialog")).toBeFalsy();
+    expect(ref.current!.state.showRemoveDialog).toBeFalsy();
   });
 
   it("renders term initially in language corresponding to UI", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        configuredLanguage="cs"
-        {...handlers}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.find(TermMetadata).prop("language")).toEqual(
-      Constants.DEFAULT_LANGUAGE
-    );
+    const { container } = renderTermDetail({ term, configuredLanguage: "cs" });
+    expect(
+      container.querySelector(".term-metadata")!.getAttribute("data-language")
+    ).toEqual(Constants.DEFAULT_LANGUAGE);
   });
 
   it("renders term in configured language when UI language is not supported", () => {
     const lang = "cs";
     term.label = langString("Pouze česky", lang);
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        configuredLanguage={lang}
-        {...handlers}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.find(TermMetadata).prop("language")).toEqual(lang);
+    const { container } = renderTermDetail({ term, configuredLanguage: lang });
+    expect(
+      container.querySelector(".term-metadata")!.getAttribute("data-language")
+    ).toEqual(lang);
   });
 
   it("postpones language resolution until term is loaded", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={null}
-        configuredLanguage="cs"
-        {...handlers}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
+    const ref = React.createRef<TermDetail>();
+    const { container, rerender } = renderTermDetail(
+      { configuredLanguage: "cs" },
+      ref
     );
-    wrapper.setProps({ term });
-    wrapper.update();
-    expect(wrapper.find(TermMetadata).prop("language")).toEqual(
-      Constants.DEFAULT_LANGUAGE
-    );
+    rerender(termDetailElement({ term, configuredLanguage: "cs" }, ref));
+    expect(
+      container.querySelector(".term-metadata")!.getAttribute("data-language")
+    ).toEqual(Constants.DEFAULT_LANGUAGE);
   });
 
   // Bug #1591, situations when term label is the same but it is in a different vocabulary -> different namespace
   it("reloads term and vocabulary when namespace query parameter changes indicating different term", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={null}
-        configuredLanguage="cs"
-        {...handlers}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
+    const ref = React.createRef<TermDetail>();
+    const { rerender } = renderTermDetail({ configuredLanguage: "cs" }, ref);
     vi.clearAllMocks();
     const newLocation = Object.assign({}, location);
     newLocation.search = `&namespace=${VocabularyUtils.NS_TERMIT}`;
-    wrapper.setProps({ location: newLocation });
-    wrapper.update();
+    rerender(
+      termDetailElement(
+        { configuredLanguage: "cs", location: newLocation },
+        ref
+      )
+    );
     expect(onLoad).toHaveBeenCalled();
     expect(loadVocabulary).toHaveBeenCalled();
   });
 
   it("approves pending definitional occurrences on save", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        configuredLanguage="cs"
-        {...handlers}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
+    const ref = React.createRef<TermDetail>();
+    renderTermDetail({ term, configuredLanguage: "cs" }, ref);
     const occurrences = [
       Generator.generateOccurrenceOf(term),
       Generator.generateOccurrenceOf(term),
     ];
-    wrapper
-      .instance()
-      .onSave(term, { pendingApproval: occurrences, pendingRemoval: [] });
+    ref.current!.onSave(term, {
+      pendingApproval: occurrences,
+      pendingRemoval: [],
+    });
     return Promise.resolve().then(() => {
       occurrences.forEach((o) =>
         expect(approveOccurrence).toHaveBeenCalledWith(o)
@@ -493,25 +410,17 @@ describe("TermDetail", () => {
   });
 
   it("removes pending definitional occurrences on save", () => {
-    const wrapper = shallow<TermDetail>(
-      <TermDetail
-        term={term}
-        configuredLanguage="cs"
-        {...handlers}
-        vocabulary={vocabulary}
-        history={history}
-        location={location}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
+    const ref = React.createRef<TermDetail>();
+    renderTermDetail({ term, configuredLanguage: "cs" }, ref);
     const occurrences = [
       Generator.generateOccurrenceOf(term),
       Generator.generateOccurrenceOf(term),
     ];
-    return wrapper
-      .instance()
-      .onSave(term, { pendingApproval: [], pendingRemoval: occurrences })
+    return ref
+      .current!.onSave(term, {
+        pendingApproval: [],
+        pendingRemoval: occurrences,
+      })
       .then(() => {
         occurrences.forEach((o) =>
           expect(removeOccurrence).toHaveBeenCalledWith(o)

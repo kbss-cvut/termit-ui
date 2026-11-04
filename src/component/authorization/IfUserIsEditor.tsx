@@ -8,6 +8,7 @@ import { isEditor } from "../../util/Authorization";
 interface IfUserIsEditorProps {
   renderUnauthorizedAlert?: boolean; // Whether an alert should be rendered if user is not authorized. Defaults to false
   unauthorized?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /**

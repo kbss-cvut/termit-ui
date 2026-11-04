@@ -5,16 +5,13 @@ import * as redux from "react-redux";
 import { DefinitionallyRelatedTerms } from "../../../model/TermItState";
 import {
   flushPromises,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
 import RelatedTermsList from "../RelatedTermsList";
 import Constants from "../../../util/Constants";
-import TermLink from "../TermLink";
 import { MemoryRouter } from "react-router";
-import { Badge } from "reactstrap";
-import { ReactWrapper } from "enzyme";
 import { i18n } from "../../../__tests__/environment/IntlUtil";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import type { Mock } from "vitest";
 
@@ -36,6 +33,12 @@ vi.mock("../relationship-annotation/RelationshipAnnotationButton", () => ({
 describe("RelatedTermsList", () => {
   let term: Term;
 
+  function definitionBadges(container: HTMLElement) {
+    return Array.from(container.querySelectorAll(".badge")).filter(
+      (b) => b.textContent!.indexOf(i18n("term.metadata.definition")) !== -1
+    );
+  }
+
   beforeEach(() => {
     term = Generator.generateTerm(Generator.generateUri());
   });
@@ -56,20 +59,14 @@ describe("RelatedTermsList", () => {
     const fakeDispatch = vi.fn().mockResolvedValue(relatedTerm);
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
 
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <MemoryRouter>
         <RelatedTermsList term={term} language={Constants.DEFAULT_LANGUAGE} />
       </MemoryRouter>
     );
-    const links = wrapper.find(TermLink);
+    const links = container.querySelectorAll("#term-metadata-related li");
     expect(links.length).toEqual(2);
-    const badges = wrapper.find(Badge);
-    expect(
-      badges.filterWhere(
-        (b: ReactWrapper) =>
-          b.text().indexOf(i18n("term.metadata.definition")) !== -1
-      ).length
-    ).toEqual(1);
+    expect(definitionBadges(container).length).toEqual(1);
   });
 
   it("renders only definition related terms targeting current term", async () => {
@@ -83,22 +80,15 @@ describe("RelatedTermsList", () => {
     const fakeDispatch = vi.fn().mockResolvedValue(defRelatedTerm);
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
 
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <MemoryRouter>
         <RelatedTermsList term={term} language={Constants.DEFAULT_LANGUAGE} />
       </MemoryRouter>
     );
     await act(async () => flushPromises());
-    wrapper.update();
-    const links = wrapper.find(TermLink);
+    const links = container.querySelectorAll("#term-metadata-related li");
     expect(links.length).toEqual(1);
-    const badges = wrapper.find(Badge);
-    expect(
-      badges.filterWhere(
-        (b: ReactWrapper) =>
-          b.text().indexOf(i18n("term.metadata.definition")) !== -1
-      ).length
-    ).toEqual(1);
+    expect(definitionBadges(container).length).toEqual(1);
   });
 
   it("renders only confirmed definition related terms targeting current term", async () => {
@@ -115,13 +105,14 @@ describe("RelatedTermsList", () => {
     const fakeDispatch = vi.fn().mockResolvedValue(defRelatedTerm);
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
 
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <MemoryRouter>
         <RelatedTermsList term={term} language={Constants.DEFAULT_LANGUAGE} />
       </MemoryRouter>
     );
     await act(async () => flushPromises());
-    wrapper.update();
-    expect(wrapper.exists(TermLink)).toBeFalsy();
+    expect(
+      container.querySelectorAll("#term-metadata-related li").length
+    ).toEqual(0);
   });
 });

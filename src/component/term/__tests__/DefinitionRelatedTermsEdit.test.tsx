@@ -1,16 +1,26 @@
+import * as React from "react";
 import Term, { TermInfo } from "../../../model/Term";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Generator from "../../../__tests__/environment/Generator";
 import {
-  DefinitionalTermOccurrence,
   DefinitionRelatedChanges,
   DefinitionRelatedTermsEdit,
 } from "../DefinitionRelatedTermsEdit";
-import { shallow } from "enzyme";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import TermOccurrence from "../../../model/TermOccurrence";
 import Constants from "../../../util/Constants";
+import { MemoryRouter } from "react-router";
+import { RenderResult } from "@testing-library/react";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
+import { act } from "react";
 import type { Mock } from "vitest";
+
+vi.mock("../../vocabulary/VocabularyNameBadgeButton", () => ({
+  default: () => <span>vocabulary-name</span>,
+}));
 
 describe("DefinitionRelatedTermsEdit", () => {
   let term: Term;
@@ -37,34 +47,40 @@ describe("DefinitionRelatedTermsEdit", () => {
       o.types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE)
     );
     (loadTermByIri as Mock).mockResolvedValue(t);
-    const wrapper = render(occurrences);
+    const { container } = render(occurrences);
 
-    expect(wrapper.find(DefinitionalTermOccurrence).length).toEqual(1);
+    expect(container.querySelectorAll("tbody tr").length).toEqual(1);
   });
 
-  function render(occurrences: TermOccurrence[]) {
-    return shallow<DefinitionRelatedTermsEdit>(
-      <DefinitionRelatedTermsEdit
-        term={term}
-        language={Constants.DEFAULT_LANGUAGE}
-        loadTermInfoByIri={loadTermByIri}
-        pending={pending}
-        onChange={onChange}
-        definitionRelatedTerms={{
-          of: [],
-          targeting: occurrences,
-        }}
-        {...intlFunctions()}
-      />
+  function render(
+    occurrences: TermOccurrence[],
+    ref: React.RefObject<DefinitionRelatedTermsEdit> = React.createRef()
+  ): RenderResult {
+    return renderWithIntl(
+      <MemoryRouter>
+        <DefinitionRelatedTermsEdit
+          ref={ref}
+          term={term}
+          language={Constants.DEFAULT_LANGUAGE}
+          loadTermInfoByIri={loadTermByIri}
+          pending={pending}
+          onChange={onChange}
+          definitionRelatedTerms={{
+            of: [],
+            targeting: occurrences,
+          }}
+          {...intlFunctions()}
+        />
+      </MemoryRouter>
     );
   }
 
   it("renders nothing when there are no definitional occurrences targeting current term", () => {
-    const wrapper = render([]);
-    expect(wrapper.type()).toEqual(null);
+    const { container } = render([]);
+    expect(container.firstChild).toBeNull();
   });
 
-  it("renders both suggested and approved occurrences", () => {
+  it("renders both suggested and approved occurrences", async () => {
     const t1 = Generator.generateTerm();
     const t2 = Generator.generateTerm();
     const occurrences = [
@@ -73,15 +89,15 @@ describe("DefinitionRelatedTermsEdit", () => {
     ];
     occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
     (loadTermByIri as Mock).mockResolvedValueOnce(t1).mockResolvedValueOnce(t2);
-    const wrapper = render(occurrences);
+    const { container } = render(occurrences);
 
-    return Promise.resolve().then(() => {
-      const rows = wrapper.find(DefinitionalTermOccurrence);
-      expect(rows.length).toEqual(occurrences.length);
-    });
+    await act(async () => flushPromises());
+    expect(container.querySelectorAll("tbody tr").length).toEqual(
+      occurrences.length
+    );
   });
 
-  it("renders approved terms before suggested ones", () => {
+  it("renders approved terms before suggested ones", async () => {
     const t1 = Generator.generateTerm();
     const t2 = Generator.generateTerm();
     const occurrences = [
@@ -90,14 +106,15 @@ describe("DefinitionRelatedTermsEdit", () => {
     ];
     occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
     (loadTermByIri as Mock).mockResolvedValueOnce(t1).mockResolvedValueOnce(t2);
-    const wrapper = render(occurrences);
+    const { container } = render(occurrences);
 
-    return Promise.resolve().then(() => {
-      const rows = wrapper.find(DefinitionalTermOccurrence);
-      expect(rows.length).toEqual(occurrences.length);
-      expect(rows.get(0).props.occurrence.iri).toEqual(occurrences[1].iri);
-      expect(rows.get(1).props.occurrence.iri).toEqual(occurrences[0].iri);
-    });
+    await act(async () => flushPromises());
+    const rows = container.querySelectorAll("tbody tr");
+    expect(rows.length).toEqual(occurrences.length);
+    // Suggested occurrences are rendered in italics, so the first row (approved)
+    // must not be italics while the second one (suggested) is
+    expect(rows[0].querySelector("td.italics")).toBeNull();
+    expect(rows[1].querySelector("td.italics")).not.toBeNull();
   });
 
   it("does not render terms pending removal", () => {
@@ -106,11 +123,9 @@ describe("DefinitionRelatedTermsEdit", () => {
     occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
     pending.pendingRemoval = [occurrences[0]];
     (loadTermByIri as Mock).mockResolvedValueOnce(t1);
-    const wrapper = render(occurrences);
+    const { container } = render(occurrences);
 
-    return Promise.resolve().then(() => {
-      expect(wrapper.exists(DefinitionalTermOccurrence)).toBeFalsy();
-    });
+    expect(container.firstChild).toBeNull();
   });
 
   describe("onApprove", () => {
@@ -122,9 +137,10 @@ describe("DefinitionRelatedTermsEdit", () => {
         Generator.generateOccurrenceOf(t),
       ];
       (loadTermByIri as Mock).mockResolvedValue(t);
-      const wrapper = render(occurrences);
+      const ref = React.createRef<DefinitionRelatedTermsEdit>();
+      render(occurrences, ref);
 
-      wrapper.instance().onApprove(occurrences[0]);
+      ref.current!.onApprove(occurrences[0]);
       expect(onChange).toHaveBeenCalled();
       expect((onChange as Mock).mock.calls[0][0].pendingApproval).toEqual(
         occurrences
@@ -141,9 +157,10 @@ describe("DefinitionRelatedTermsEdit", () => {
         Generator.generateOccurrenceOf(t),
       ];
       (loadTermByIri as Mock).mockResolvedValue(t);
-      const wrapper = render(occurrences);
+      const ref = React.createRef<DefinitionRelatedTermsEdit>();
+      render(occurrences, ref);
 
-      wrapper.instance().onRemove(occurrences[0]);
+      ref.current!.onRemove(occurrences[0]);
       expect(onChange).toHaveBeenCalled();
       expect((onChange as Mock).mock.calls[0][0].pendingRemoval).toEqual(
         occurrences

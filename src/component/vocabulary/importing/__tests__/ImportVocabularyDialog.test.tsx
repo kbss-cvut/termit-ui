@@ -1,4 +1,4 @@
-import { mountWithIntl } from "../../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
 import ImportVocabularyDialog from "../ImportVocabularyDialog";
 
 describe("ImportVocabularyDialog", () => {
@@ -12,7 +12,7 @@ describe("ImportVocabularyDialog", () => {
 
   describe("allowRename", () => {
     it("renders rename checkbox when allowRename is true", () => {
-      const wrapper = mountWithIntl(
+      const { container } = renderWithIntl(
         <ImportVocabularyDialog
           propKeyPrefix="vocabulary.import"
           onCreate={onCreate}
@@ -21,12 +21,12 @@ describe("ImportVocabularyDialog", () => {
         />
       );
       expect(
-        wrapper.exists("input[name='vocabulary-import-rename']")
-      ).toBeTruthy();
+        container.querySelector("input[name='vocabulary-import-rename']")
+      ).toBeInTheDocument();
     });
 
     it("does not render rename checkbox when allowRename is false", () => {
-      const wrapper = mountWithIntl(
+      const { container } = renderWithIntl(
         <ImportVocabularyDialog
           propKeyPrefix="vocabulary.summary.import"
           onCreate={onCreate}
@@ -35,8 +35,8 @@ describe("ImportVocabularyDialog", () => {
         />
       );
       expect(
-        wrapper.exists("input[name='vocabulary-import-rename']")
-      ).toBeFalsy();
+        container.querySelector("input[name='vocabulary-import-rename']")
+      ).not.toBeInTheDocument();
     });
   });
 });

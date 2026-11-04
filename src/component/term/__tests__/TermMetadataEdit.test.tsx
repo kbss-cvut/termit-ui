@@ -1,22 +1,23 @@
+import * as React from "react";
 import Term, { CONTEXT, TermInfo } from "../../../model/Term";
 import Generator from "../../../__tests__/environment/Generator";
 import { TermMetadataEdit } from "../TermMetadataEdit";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import Ajax from "../../../util/Ajax";
-import { shallow } from "enzyme";
-import UnmappedPropertiesEdit from "../../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import CustomInput from "../../misc/CustomInput";
 import {
   getLocalized,
   langString,
   pluralLangString,
 } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import StringListEdit from "../../misc/ValueListEdit";
 import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 import Vocabulary from "../../../model/Vocabulary";
+import { MemoryRouter } from "react-router";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { fireEvent } from "@testing-library/react";
+import { act } from "react";
 import type { Mock } from "vitest";
 
 vi.mock("../ParentTermSelector", () => ({
@@ -33,6 +34,22 @@ vi.mock("../TermTypesEdit", () => ({
 }));
 vi.mock("../../misc/AssetLabel", () => ({
   default: () => <span>AssetLabel</span>,
+}));
+vi.mock("../../misc/ValueListEdit", () => ({
+  default: (props: { list?: string[] }) => (
+    <div className="string-list-edit" data-list={JSON.stringify(props.list)} />
+  ),
+}));
+vi.mock("../../misc/MarkdownEditor", () => ({
+  default: () => <div className="markdown-editor" />,
+}));
+vi.mock("../../genericmetadata/UnmappedPropertiesEdit", () => ({
+  default: (props: { ignoredProperties?: string[] }) => (
+    <div
+      className="unmapped-properties-edit"
+      data-ignored={JSON.stringify(props.ignoredProperties)}
+    />
+  ),
 }));
 
 describe("Term edit", () => {
@@ -61,63 +78,59 @@ describe("Term edit", () => {
     Ajax.head = vi.fn().mockResolvedValue({});
   });
 
-  it("disables save button when label field is empty", () => {
-    const wrapper = shallow<TermMetadataEdit>(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
+  function renderEdit(
+    props: Partial<React.ComponentProps<typeof TermMetadataEdit>> = {},
+    ref: React.RefObject<TermMetadataEdit> = React.createRef()
+  ) {
+    return renderWithIntl(
+      <MemoryRouter>
+        <TermMetadataEdit
+          ref={ref}
+          save={onSave}
+          term={term}
+          cancel={onCancel}
+          language={Constants.DEFAULT_LANGUAGE}
+          selectLanguage={selectLanguage}
+          validationResults={validationResults}
+          publishMessage={vi.fn()}
+          vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
+          {...intlFunctions()}
+          {...props}
+        />
+      </MemoryRouter>
     );
+  }
+
+  function labelInput(container: HTMLElement) {
+    return container.querySelector(
+      'input[name="edit-term-label"]'
+    ) as HTMLInputElement;
+  }
+
+  function saveButton(container: HTMLElement) {
+    return container.querySelector("#edit-term-submit") as HTMLButtonElement;
+  }
+
+  it("disables save button when label field is empty", () => {
+    const { container } = renderEdit();
     return Promise.resolve().then(() => {
-      wrapper
-        .find(CustomInput)
-        .findWhere((ci) => ci.prop("name") === "edit-term-label")
-        .simulate("change", {
-          currentTarget: {
-            name: "edit-term-label",
-            value: "",
-          },
-        });
-      const saveButton = wrapper.find("#edit-term-submit");
-      expect(saveButton.prop("disabled")).toBeTruthy();
+      fireEvent.change(labelInput(container), {
+        target: { name: "edit-term-label", value: "" },
+      });
+      expect(saveButton(container).disabled).toBeTruthy();
     });
   });
 
   it("invokes save with state data when save is clicked", () => {
-    const wrapper = shallow(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
+    const { container } = renderEdit();
     // mock answer to duplicated label check: 404 meaning label does not exist and so is unique
     Ajax.head = vi.fn().mockRejectedValue({ status: 404 });
     const newLabel = "New label";
-    wrapper
-      .find(CustomInput)
-      .findWhere((ci) => ci.prop("name") === "edit-term-label")
-      .simulate("change", {
-        currentTarget: {
-          name: "edit-term-label",
-          value: newLabel,
-        },
-      });
+    fireEvent.change(labelInput(container), {
+      target: { name: "edit-term-label", value: newLabel },
+    });
     return Promise.resolve().then(() => {
-      wrapper.find("#edit-term-submit").simulate("click");
+      fireEvent.click(saveButton(container));
       expect(onSave).toHaveBeenCalled();
       const arg = (onSave as Mock).mock.calls[0][0];
       expect(arg.iri).toEqual(term.iri);
@@ -127,29 +140,11 @@ describe("Term edit", () => {
   });
 
   it("checks for label uniqueness in vocabulary on label change", () => {
-    const wrapper = shallow(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
+    const { container } = renderEdit();
     const newLabel = "New label";
-    wrapper
-      .find(CustomInput)
-      .findWhere((ci) => ci.prop("name") === "edit-term-label")
-      .simulate("change", {
-        currentTarget: {
-          name: "edit-term-label",
-          value: newLabel,
-        },
-      });
+    fireEvent.change(labelInput(container), {
+      target: { name: "edit-term-label", value: newLabel },
+    });
     return Promise.resolve().then(() => {
       expect(Ajax.head).toHaveBeenCalled();
       expect(
@@ -159,28 +154,10 @@ describe("Term edit", () => {
   });
 
   it("does not check for label uniqueness when new label is the same as original", () => {
-    const wrapper = shallow(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
-    wrapper
-      .find(CustomInput)
-      .findWhere((ci) => ci.prop("name") === "edit-term-label")
-      .simulate("change", {
-        currentTarget: {
-          name: "edit-term-label",
-          value: getLocalized(term.label),
-        },
-      });
+    const { container } = renderEdit();
+    fireEvent.change(labelInput(container), {
+      target: { name: "edit-term-label", value: getLocalized(term.label) },
+    });
     expect(Ajax.head).not.toHaveBeenCalled();
   });
 
@@ -188,111 +165,51 @@ describe("Term edit", () => {
     const czechValue = "Test in Czech";
     const englishValue = "Test in English";
     term.label.cs = czechValue;
-    const wrapper = shallow<TermMetadataEdit>(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language="en"
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
-    wrapper
-      .find(CustomInput)
-      .findWhere((ci) => ci.prop("name") === "edit-term-label")
-      .simulate("change", {
-        currentTarget: {
-          name: "edit-term-label",
-          value: englishValue,
-        },
-      });
-    wrapper.update();
-    expect(wrapper.state().label).toEqual({ cs: czechValue, en: englishValue });
+    const ref = React.createRef<TermMetadataEdit>();
+    const { container } = renderEdit({ language: "en" }, ref);
+    fireEvent.change(labelInput(container), {
+      target: { name: "edit-term-label", value: englishValue },
+    });
+    expect(ref.current!.state.label).toEqual({
+      cs: czechValue,
+      en: englishValue,
+    });
   });
 
   /**
    * Bug 1323
    */
   it("does not check for label uniqueness when new label differs only in case from original", () => {
-    const wrapper = shallow(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
-    wrapper
-      .find(CustomInput)
-      .findWhere((ci) => ci.prop("name") === "edit-term-label")
-      .simulate("change", {
-        currentTarget: {
-          name: "edit-term-label",
-          value: getLocalized(term.label).toUpperCase(),
-        },
-      });
+    const { container } = renderEdit();
+    fireEvent.change(labelInput(container), {
+      target: {
+        name: "edit-term-label",
+        value: getLocalized(term.label).toUpperCase(),
+      },
+    });
     expect(Ajax.head).not.toHaveBeenCalled();
   });
 
-  it("disables save button when duplicate label is set", () => {
-    const wrapper = shallow(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
+  it("disables save button when duplicate label is set", async () => {
+    const { container } = renderEdit();
     Ajax.head = vi.fn().mockResolvedValue({ status: 200 });
-    wrapper
-      .find(CustomInput)
-      .findWhere((ci) => ci.prop("name") === "edit-term-label")
-      .simulate("change", {
-        currentTarget: {
-          name: "edit-term-label",
-          value: "New label",
-        },
-      });
-    return Promise.resolve().then(() => {
-      wrapper.update();
-      const saveButton = wrapper.find("#edit-term-submit");
-      expect(saveButton.getElement().props.disabled).toBeTruthy();
+    fireEvent.change(labelInput(container), {
+      target: { name: "edit-term-label", value: "New label" },
     });
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(saveButton(container).disabled).toBeTruthy();
   });
 
   it("correctly sets unmapped properties on save", () => {
     const property = Generator.generateUri();
     term.unmappedProperties = new Map([[property, ["test"]]]);
-    const wrapper = shallow<TermMetadataEdit>(
-      <TermMetadataEdit
-        term={term}
-        save={onSave}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
+    const ref = React.createRef<TermMetadataEdit>();
+    renderEdit({}, ref);
     const updatedProperties = new Map([[property, ["test1", "test2"]]]);
-    wrapper.instance().setState({ unmappedProperties: updatedProperties });
-    wrapper.instance().onSave();
+    act(() => ref.current!.setState({ unmappedProperties: updatedProperties }));
+    act(() => ref.current!.onSave());
     const result: Term = (onSave as Mock).mock.calls[0][0];
     expect(result.unmappedProperties).toEqual(updatedProperties);
     expect(result[property]).toBeDefined();
@@ -300,48 +217,23 @@ describe("Term edit", () => {
   });
 
   it("passes mapped Term properties for ignoring to UnmappedPropertiesEdit", () => {
-    const wrapper = shallow<TermMetadataEdit>(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
+    const { container } = renderEdit();
+    const ignored: string[] = JSON.parse(
+      container
+        .querySelector(".unmapped-properties-edit")!
+        .getAttribute("data-ignored")!
     );
-    const ignored: string[] | undefined = wrapper
-      .find(UnmappedPropertiesEdit)
-      .prop("ignoredProperties");
     expect(ignored).toBeDefined();
-    expect(ignored!.indexOf(VocabularyUtils.RDF_TYPE)).not.toEqual(-1);
+    expect(ignored.indexOf(VocabularyUtils.RDF_TYPE)).not.toEqual(-1);
     Object.getOwnPropertyNames((n: string) =>
-      expect(ignored![CONTEXT[n]]).not.toEqual(-1)
+      expect(ignored[CONTEXT[n]]).not.toEqual(-1)
     );
   });
 
   it("passes label value in selected language to label edit input", () => {
     term.label = { en: "Building", cs: "Budova" };
-    const wrapper = shallow<TermMetadataEdit>(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={"en"}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
-    const labelInput = wrapper
-      .find(CustomInput)
-      .findWhere((ci) => ci.prop("name") === "edit-term-label");
-    expect(labelInput.prop("value")).toEqual(term.label.en);
+    const { container } = renderEdit({ language: "en" });
+    expect(labelInput(container).value).toEqual(term.label.en);
   });
 
   it("passes altLabel and hiddenLabel values in selected language to string list edit", () => {
@@ -350,84 +242,43 @@ describe("Term edit", () => {
       cs: ["budova", "stavba"],
     };
     term.hiddenLabels = { en: ["shack"], cs: ["barák", "dům"] };
-    const wrapper = shallow<TermMetadataEdit>(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={"cs"}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
+    const { container } = renderEdit({ language: "cs" });
+    const stringListEdits = container.querySelectorAll(".string-list-edit");
+    expect(JSON.parse(stringListEdits[0].getAttribute("data-list")!)).toEqual(
+      term.altLabels.cs
     );
-    const stringListEdits = wrapper.find(StringListEdit);
-    expect(stringListEdits.at(0).prop("list")).toEqual(term.altLabels.cs);
-    expect(stringListEdits.at(1).prop("list")).toEqual(term.hiddenLabels.cs);
+    expect(JSON.parse(stringListEdits[1].getAttribute("data-list")!)).toEqual(
+      term.hiddenLabels.cs
+    );
   });
 
   it("maps list of string alt labels to multilingual strings with selected language", () => {
-    const wrapper = shallow<TermMetadataEdit>(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={"cs"}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
+    const ref = React.createRef<TermMetadataEdit>();
+    renderEdit({ language: "cs" }, ref);
     const list = ["budova", "stavba"];
-    wrapper.instance().onAltLabelsChange(list);
-    wrapper.update();
-    expect(wrapper.state().altLabels).toEqual(pluralLangString(list, "cs"));
+    act(() => ref.current!.onAltLabelsChange(list));
+    expect(ref.current!.state.altLabels).toEqual(pluralLangString(list, "cs"));
   });
 
   it("maps list of string hidden labels to multilingual strings with selected language", () => {
-    const wrapper = shallow<TermMetadataEdit>(
-      <TermMetadataEdit
-        save={onSave}
-        term={term}
-        cancel={onCancel}
-        language={"de"}
-        selectLanguage={selectLanguage}
-        validationResults={validationResults}
-        publishMessage={vi.fn()}
-        vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
-    );
+    const ref = React.createRef<TermMetadataEdit>();
+    renderEdit({ language: "de" }, ref);
     const list = ["bau", "gebäude"];
-    wrapper.instance().onHiddenLabelsChange(list);
-    wrapper.update();
-    expect(wrapper.state().hiddenLabels).toEqual(pluralLangString(list, "de"));
+    act(() => ref.current!.onHiddenLabelsChange(list));
+    expect(ref.current!.state.hiddenLabels).toEqual(
+      pluralLangString(list, "de")
+    );
   });
 
   describe("removeTranslation", () => {
     it("removes translation from cloned state term data", () => {
       const langToRemove = "cs";
       term.label[langToRemove] = "český preklad";
-      const wrapper = shallow<TermMetadataEdit>(
-        <TermMetadataEdit
-          save={onSave}
-          term={term}
-          cancel={onCancel}
-          language="en"
-          selectLanguage={selectLanguage}
-          validationResults={validationResults}
-          publishMessage={vi.fn()}
-          vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-          {...intlFunctions()}
-        />
-      );
-      const originalState = wrapper.state();
-      wrapper.instance().removeTranslation(langToRemove);
-      expect(wrapper.state().label[langToRemove]).not.toBeDefined();
+      const ref = React.createRef<TermMetadataEdit>();
+      renderEdit({ language: "en" }, ref);
+      const originalState = ref.current!.state;
+      act(() => ref.current!.removeTranslation(langToRemove));
+      expect(ref.current!.state.label[langToRemove]).not.toBeDefined();
       // Original state should be unharmed
       expect(originalState.label[langToRemove]).toBeDefined();
     });
@@ -435,21 +286,10 @@ describe("Term edit", () => {
     it("handles removal of translation in server configured language", () => {
       const langToRemove = "cs";
       term.label = langString("český preklad", "cs");
-      const wrapper = shallow<TermMetadataEdit>(
-        <TermMetadataEdit
-          save={onSave}
-          term={term}
-          cancel={onCancel}
-          language="en"
-          selectLanguage={selectLanguage}
-          validationResults={validationResults}
-          publishMessage={vi.fn()}
-          vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-          {...intlFunctions()}
-        />
-      );
-      wrapper.instance().removeTranslation(langToRemove);
-      expect(wrapper.state().label[langToRemove]).not.toBeDefined();
+      const ref = React.createRef<TermMetadataEdit>();
+      renderEdit({ language: "en" }, ref);
+      act(() => ref.current!.removeTranslation(langToRemove));
+      expect(ref.current!.state.label[langToRemove]).not.toBeDefined();
     });
   });
 
@@ -457,24 +297,13 @@ describe("Term edit", () => {
     it("distributes provided value into related and relatedMatch attributes based on their membership in the current term's vocabulary", () => {
       const related = [Generator.generateTerm(term.vocabulary!.iri)];
       const relatedMatch = [Generator.generateTerm(Generator.generateUri())];
-      const wrapper = shallow<TermMetadataEdit>(
-        <TermMetadataEdit
-          save={onSave}
-          term={term}
-          cancel={onCancel}
-          language="en"
-          selectLanguage={selectLanguage}
-          validationResults={validationResults}
-          publishMessage={vi.fn()}
-          vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-          {...intlFunctions()}
-        />
-      );
-      wrapper.instance().onRelatedChange([...related, ...relatedMatch]);
-      expect(wrapper.state().relatedTerms).toEqual(
+      const ref = React.createRef<TermMetadataEdit>();
+      renderEdit({ language: "en" }, ref);
+      act(() => ref.current!.onRelatedChange([...related, ...relatedMatch]));
+      expect(ref.current!.state.relatedTerms).toEqual(
         related.map((t) => Term.toTermInfo(t))
       );
-      expect(wrapper.state().relatedMatchTerms).toEqual(
+      expect(ref.current!.state.relatedMatchTerms).toEqual(
         relatedMatch.map((t) => Term.toTermInfo(t))
       );
     });
@@ -485,27 +314,14 @@ describe("Term edit", () => {
       const change = [Generator.generateTerm()];
       change[0].parentTerms = [Generator.generateTerm()];
       change[0].parentTerms[0].subTerms = [change[0] as TermInfo];
-      const wrapper = shallow<TermMetadataEdit>(
-        <TermMetadataEdit
-          save={onSave}
-          term={term}
-          cancel={onCancel}
-          language="en"
-          selectLanguage={selectLanguage}
-          validationResults={validationResults}
-          publishMessage={vi.fn()}
-          vocabularyPrimaryLanguage={Constants.DEFAULT_LANGUAGE}
-          {...intlFunctions()}
-        />
+      const ref = React.createRef<TermMetadataEdit>();
+      renderEdit({ language: "en" }, ref);
+      act(() => ref.current!.onExactMatchesChange(change));
+      ref.current!.state.exactMatchTerms!.forEach((et) =>
+        expect(et).toEqual(
+          expect.not.objectContaining({ parentTerms: expect.any(Array) })
+        )
       );
-      wrapper.instance().onExactMatchesChange(change);
-      wrapper
-        .state()
-        .exactMatchTerms!.forEach((et) =>
-          expect(et).toEqual(
-            expect.not.objectContaining({ parentTerms: expect.any(Array) })
-          )
-        );
     });
   });
 });

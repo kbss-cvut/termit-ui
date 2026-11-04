@@ -1,8 +1,8 @@
 import {
   mockStore,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
-import { Link, MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import Generator from "../../../__tests__/environment/Generator";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import VocabularyIriLink from "../VocabularyIriLink";
@@ -15,27 +15,27 @@ describe("Vocabulary IRI Link links to correct internal asset", () => {
   const namespace = "http://example.com/";
   const iri = namespace + fragment;
 
-  it("link to an asset", () => {
-    mockStore.getState().user = Generator.generateUser();
-    const link = mountWithIntl(
+  function renderLink() {
+    return renderWithIntl(
       <MemoryRouter>
         <VocabularyIriLink iri={iri} {...intlFunctions()} />
       </MemoryRouter>
-    ).find(Link);
-    expect((link.props() as any).to).toEqual(
-      "/vocabularies/" + fragment + "?namespace=" + namespace
     );
+  }
+
+  it("link to an asset", () => {
+    mockStore.getState().user = Generator.generateUser();
+    const { container } = renderLink();
+    expect(
+      container.querySelector('a[href^="/"]')!.getAttribute("href")
+    ).toEqual("/vocabularies/" + fragment + "?namespace=" + namespace);
   });
 
   it("links to public vocabulary view when current user is empty", () => {
     mockStore.getState().user = new TermItState().user;
-    const link = mountWithIntl(
-      <MemoryRouter>
-        <VocabularyIriLink iri={iri} {...intlFunctions()} />
-      </MemoryRouter>
-    ).find(Link);
-    expect((link.props() as any).to).toEqual(
-      "/public/vocabularies/" + fragment + "?namespace=" + namespace
-    );
+    const { container } = renderLink();
+    expect(
+      container.querySelector('a[href^="/"]')!.getAttribute("href")
+    ).toEqual("/public/vocabularies/" + fragment + "?namespace=" + namespace);
   });
 });

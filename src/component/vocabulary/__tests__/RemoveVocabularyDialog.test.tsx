@@ -1,4 +1,4 @@
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import Generator from "../../../__tests__/environment/Generator";
 import RemoveVocabularyDialog from "../RemoveVocabularyDialog";
 import {
@@ -6,17 +6,12 @@ import {
   getVocabularyTermsRelations,
 } from "../../../action/AsyncVocabularyActions";
 import RdfIriStatement from "../../../model/RdfStatement";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import { MemoryRouter } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import CustomInput from "../../misc/CustomInput";
-import React from "react";
 import Ajax from "../../../util/Ajax";
-import { changeInputValue } from "../../../__tests__/environment/TestUtil";
-import ConfirmCancelDialog from "../../misc/ConfirmCancelDialog";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import { Input } from "reactstrap";
-import { ReactWrapper } from "enzyme";
+import { fireEvent } from "@testing-library/react";
 import { Mock, vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -46,8 +41,16 @@ vi.mock("../../../action/AsyncActions", async (importOriginal) => {
   };
 });
 
+const mocks = vi.hoisted(() => ({ dialogProps: {} as any }));
+vi.mock("../../misc/ConfirmCancelDialog", () => ({
+  default: (props: any) => {
+    mocks.dialogProps = props;
+    return <div data-testid="confirm-cancel-dialog">{props.children}</div>;
+  },
+}));
+
 // Temporarily disabled due to issues with mocking popper.js
-describe.skip("RemoveVocabularyDialog", () => {
+describe("RemoveVocabularyDialog", () => {
   const vocabulary = Generator.generateVocabulary();
   const locale = intlFunctions().locale;
 
@@ -85,164 +88,123 @@ describe.skip("RemoveVocabularyDialog", () => {
 
   it("Disables Remove button when a vocabulary relation exists", async () => {
     (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
-    let wrapper = await mount();
+    await render();
 
-    const cancelDialog = wrapper.find(ConfirmCancelDialog);
-    expect(cancelDialog.props()["confirmDisabled"]).toBeTruthy();
+    expect(mocks.dialogProps["confirmDisabled"]).toBeTruthy();
   });
 
   it("Disables Remove button when a vocabulary term relation exists", async () => {
     (getVocabularyTermsRelations as Mock).mockResolvedValue([rdfStatement]);
-    let wrapper = await mount();
+    await render();
 
-    const cancelDialog = wrapper.find(ConfirmCancelDialog);
-    expect(cancelDialog.props()["confirmDisabled"]).toBeTruthy();
+    expect(mocks.dialogProps["confirmDisabled"]).toBeTruthy();
   });
 
   it("Disables Remove button when a vocabulary and a term relation exists", async () => {
     (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
     (getVocabularyTermsRelations as Mock).mockResolvedValue([rdfStatement]);
-    let wrapper = await mount();
+    await render();
 
-    const cancelDialog = wrapper.find(ConfirmCancelDialog);
-    expect(cancelDialog.props()["confirmDisabled"]).toBeTruthy();
+    expect(mocks.dialogProps["confirmDisabled"]).toBeTruthy();
   });
 
   it("Disables Remove button when no relation exists and vocabulary is not empty", async () => {
-    let wrapper = await mount();
+    await render();
 
-    const cancelDialog = wrapper.find(ConfirmCancelDialog);
-    expect(cancelDialog.props()["confirmDisabled"]).toBeTruthy();
+    expect(mocks.dialogProps["confirmDisabled"]).toBeTruthy();
   });
 
   it("Enables Remove button when no relation exists and vocabulary is empty", async () => {
     vocabulary.termCount = 0;
-    let wrapper = await mount();
+    await render();
 
-    const cancelDialog = wrapper.find(ConfirmCancelDialog);
-    expect(cancelDialog.props()["confirmDisabled"]).toBeFalsy();
+    expect(mocks.dialogProps["confirmDisabled"]).toBeFalsy();
   });
 
   it("Hides input for vocabulary name when a vocabulary relation exists", async () => {
     (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
-    let wrapper = await mount();
+    const { container } = await render();
 
-    const input = wrapper.find(CustomInput);
-    expect(input.exists()).toBeFalsy();
+    expect(container.querySelector("input")).toBeNull();
   });
 
   it("Hides input for vocabulary name when a term relation exists", async () => {
     (getVocabularyTermsRelations as Mock).mockResolvedValue([rdfStatement]);
-    let wrapper = await mount();
+    const { container } = await render();
 
-    const input = wrapper.find(CustomInput);
-    expect(input.exists()).toBeFalsy();
+    expect(container.querySelector("input")).toBeNull();
   });
   it("Hides input for vocabulary name when a vocabulary and a term relation exists", async () => {
     (getVocabularyRelations as Mock).mockResolvedValue([rdfStatement]);
     (getVocabularyTermsRelations as Mock).mockResolvedValue([rdfStatement]);
-    let wrapper = await mount();
+    const { container } = await render();
 
-    const input = wrapper.find(CustomInput);
-    expect(input.exists()).toBeFalsy();
+    expect(container.querySelector("input")).toBeNull();
   });
   it("Hides input for vocabulary name when a vocabulary is empty", async () => {
     vocabulary.termCount = 0;
-    let wrapper = await mount();
+    const { container } = await render();
 
-    const input = wrapper.find(CustomInput);
-    expect(input.exists()).toBeFalsy();
+    expect(container.querySelector("input")).toBeNull();
   });
 
   it("Shows input for vocabulary name when no relation exists and vocabulary is not empty", async () => {
-    let wrapper = await mount();
+    const { container } = await render();
 
-    const input = wrapper.find(CustomInput);
-    expect(input.exists()).toBeTruthy();
+    expect(container.querySelector("input")).not.toBeNull();
   });
 
   it("Disables submit button when input is empty", async () => {
-    let wrapper = await mount();
+    const { container } = await render();
 
-    const input = wrapper.find(CustomInput).find(Input);
-    const dialog = wrapper.find(ConfirmCancelDialog);
-    act(() => changeInputValue(input, ""));
+    const input = () => container.querySelector("input") as HTMLInputElement;
+    fireEvent.change(input(), { target: { value: "" } });
 
-    update(wrapper);
-
-    expect(input.props().value).toEqual("");
-    expect(dialog.props().confirmDisabled).toBeTruthy();
+    expect(input().value).toEqual("");
+    expect(mocks.dialogProps.confirmDisabled).toBeTruthy();
   });
 
   it("Disables submit button when input has invalid vocabulary name", async () => {
-    let wrapper = await mount();
+    const { container } = await render();
     let invalidValue = vocabulary.getLabel(locale) + "invalid";
 
-    const input = () => wrapper.find(CustomInput).find(Input);
-    const dialog = () => wrapper.find(ConfirmCancelDialog);
-    act(() => changeInputValue(input(), invalidValue));
+    const input = () => container.querySelector("input") as HTMLInputElement;
+    fireEvent.change(input(), { target: { value: invalidValue } });
 
-    update(wrapper);
-
-    expect(input().props().value).toEqual(invalidValue);
-    expect(dialog().props().confirmDisabled).toBeTruthy();
+    expect(input().value).toEqual(invalidValue);
+    expect(mocks.dialogProps.confirmDisabled).toBeTruthy();
   });
 
   it("Enables submit button when input has valid vocabulary name", async () => {
-    let wrapper = await mount();
+    const { container } = await render();
 
-    const input = () => wrapper.find(CustomInput).find(Input);
-    const dialog = () => wrapper.find(ConfirmCancelDialog);
-    act(() => changeInputValue(input(), vocabulary.getLabel(locale)));
+    const input = () => container.querySelector("input") as HTMLInputElement;
+    fireEvent.change(input(), {
+      target: { value: vocabulary.getLabel(locale) },
+    });
 
-    update(wrapper);
-
-    expect(input().props().value).toEqual(vocabulary.getLabel(locale));
-    expect(dialog().props().confirmDisabled).toBeFalsy();
+    expect(input().value).toEqual(vocabulary.getLabel(locale));
+    expect(mocks.dialogProps.confirmDisabled).toBeFalsy();
   });
 
-  function update(wrapper: ReactWrapper) {
-    act(() => {
-      wrapper.update();
-    });
-  }
-
-  async function mount() {
-    let wrapper = mountWithIntl(
+  async function render() {
+    const result = renderWithIntl(
       <MemoryRouter>
         <RemoveVocabularyDialog
-          show={false}
+          show={true}
           onCancel={onCancel}
           onSubmit={onSubmit}
           vocabulary={vocabulary}
         />
       </MemoryRouter>
     );
-    await act(
-      () =>
-        new Promise((resolve): void => {
-          // because of wrappers
-          wrapper.setProps(
-            {
-              children: React.cloneElement(wrapper.props().children, {
-                show: true,
-                onCancel: onCancel,
-                onSubmit: onSubmit,
-                vocabulary,
-              }),
-            },
-            resolve
-          );
-        })
-    );
-
-    act(() => {
-      wrapper.update();
+    await act(async () => {
+      await Promise.resolve();
     });
 
-    expect(wrapper.find(RemoveVocabularyDialog).props().show).toBeTruthy();
+    expect(mocks.dialogProps.show).toBeTruthy();
     expect(getVocabularyRelations).toHaveBeenCalled();
     expect(getVocabularyTermsRelations).toHaveBeenCalled();
-    return wrapper!;
+    return result;
   }
 });

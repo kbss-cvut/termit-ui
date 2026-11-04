@@ -20,12 +20,14 @@ interface SingleActionDialogProps {
   actionDisabled?: boolean;
   size?: "lg" | "sm";
   className?: string;
+  children?: React.ReactNode;
 }
 
 /**
  * Generic dialog with a single button. Body of the dialog is specified via React children.
  */
 const SingleActionDialog: React.FC<SingleActionDialogProps> = (props) => {
+  const { actionColor = "outline-dark", actionDisabled = false } = props;
   return (
     <Modal
       id={props.id}
@@ -40,9 +42,9 @@ const SingleActionDialog: React.FC<SingleActionDialogProps> = (props) => {
         <ButtonToolbar className="float-right">
           <Button
             id={`${props.id}-submit`}
-            color={props.actionColor}
+            color={actionColor}
             size="sm"
-            disabled={props.actionDisabled}
+            disabled={actionDisabled}
             onClick={props.onAction}
           >
             {props.actionButtonText}
@@ -51,11 +53,6 @@ const SingleActionDialog: React.FC<SingleActionDialogProps> = (props) => {
       </ModalFooter>
     </Modal>
   );
-};
-
-SingleActionDialog.defaultProps = {
-  actionColor: "outline-dark",
-  actionDisabled: false,
 };
 
 export default SingleActionDialog;

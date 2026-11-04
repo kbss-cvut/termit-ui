@@ -5,14 +5,15 @@ import {
   intlFunctions,
   mockUseI18n,
 } from "../../../__tests__/environment/IntlUtil";
-import TermLink from "../TermLink";
 import BasicTermMetadata from "../BasicTermMetadata";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { MemoryRouter } from "react-router";
 
-vi.mock("../TermLink", () => ({ default: () => <span>Term link</span> }));
+vi.mock("../TermLink", () => ({
+  default: () => <span className="term-link" />,
+}));
 vi.mock("../../misc/OutgoingLink", () => ({
   default: () => <span>Outgoing link</span>,
 }));
@@ -38,6 +39,19 @@ describe("BasicTermMetadata", () => {
     mockUseI18n();
   });
 
+  function renderMetadata() {
+    return renderWithIntl(
+      <MemoryRouter>
+        <BasicTermMetadata
+          term={term}
+          vocabulary={vocabulary}
+          language={Constants.DEFAULT_LANGUAGE}
+          {...intlFunctions()}
+        />
+      </MemoryRouter>
+    );
+  }
+
   it("renders sub terms as term links", () => {
     const subTerms: TermInfo[] = [
       {
@@ -47,16 +61,10 @@ describe("BasicTermMetadata", () => {
       },
     ];
     term.subTerms = subTerms;
-    const wrapper = mountWithIntl(
-      <BasicTermMetadata
-        term={term}
-        vocabulary={vocabulary}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
+    const { container } = renderMetadata();
+    expect(container.querySelectorAll(".term-link").length).toEqual(
+      subTerms.length
     );
-    const subTermLinks = wrapper.find(TermLink);
-    expect(subTermLinks.length).toEqual(subTerms.length);
   });
 
   it("renders parent term link when parent term exists", () => {
@@ -67,18 +75,10 @@ describe("BasicTermMetadata", () => {
         vocabulary: { iri: Generator.generateUri() },
       }),
     ];
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <BasicTermMetadata
-          term={term}
-          vocabulary={vocabulary}
-          language={Constants.DEFAULT_LANGUAGE}
-          {...intlFunctions()}
-        />
-      </MemoryRouter>
+    const { container } = renderMetadata();
+    expect(container.querySelectorAll(".term-link").length).toEqual(
+      term.parentTerms.length
     );
-    const parentLinks = wrapper.find(TermLink);
-    expect(parentLinks.length).toEqual(term.parentTerms.length);
   });
 
   it("consolidates related and relatedMatch terms and renders them in one list", () => {
@@ -97,18 +97,9 @@ describe("BasicTermMetadata", () => {
       },
     ];
 
-    const wrapper = mountWithIntl(
-      <MemoryRouter>
-        <BasicTermMetadata
-          term={term}
-          vocabulary={vocabulary}
-          language={Constants.DEFAULT_LANGUAGE}
-          {...intlFunctions()}
-        />
-      </MemoryRouter>
-    );
-    const relatedList = wrapper.find("#term-metadata-related");
-    expect(relatedList.find(TermLink).length).toEqual(
+    const { container } = renderMetadata();
+    const relatedList = container.querySelector("#term-metadata-related")!;
+    expect(relatedList.querySelectorAll(".term-link").length).toEqual(
       term.relatedTerms.length + term.relatedMatchTerms.length
     );
   });

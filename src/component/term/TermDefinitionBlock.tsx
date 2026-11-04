@@ -16,7 +16,7 @@ export interface TermDefinitionBlockProps {
 export const TermDefinitionBlock: React.FC<TermDefinitionBlockProps> = (
   props
 ) => {
-  const { term, language } = props;
+  const { term, language, withDefinitionSource = false } = props;
   const { i18n } = useI18n();
   return (
     <>
@@ -38,16 +38,12 @@ export const TermDefinitionBlock: React.FC<TermDefinitionBlockProps> = (
         <TermDefinitionSource
           term={term}
           language={language}
-          withDefinitionSource={props.withDefinitionSource}
+          withDefinitionSource={withDefinitionSource}
         />
       </Row>
       <hr className="definition-separator" />
     </>
   );
-};
-
-TermDefinitionBlock.defaultProps = {
-  withDefinitionSource: false,
 };
 
 export default TermDefinitionBlock;

@@ -1,6 +1,5 @@
-import * as React from "react";
 import { ReactElement } from "react";
-import { mount, MountRendererProps } from "enzyme";
+import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import intlData from "../../i18n/en";
 import { IntlProvider } from "react-intl";
 import { Provider } from "react-redux";
@@ -20,39 +19,29 @@ export const mockStore = configureMockStore<TermItState>([thunk])(
 
 const scheduler =
   typeof setImmediate === "function" ? setImmediate : setTimeout;
-
 /**
- * Uses enzyme"s mount function, but wraps the specified component in Provider and IntlProvider, so that Redux and
- * React Intl context are set up.
+ * Wraps the specified component in Provider and IntlProvider, so that Redux and React Intl context are set up,
+ * and renders it using React Testing Library's `render` function.
+ *
  * @param node The element to render
- * @param options Optional rendering options for Enzyme
+ * @param options Optional React Testing Library render options
  * @param intl Optional intl data. If not specified, default will be used
  */
-export function mountWithIntl(
+export function renderWithIntl(
   node: ReactElement<any>,
-  options?: MountRendererProps,
+  options?: RenderOptions,
   intl: IntlData = intlData
-) {
+): RenderResult {
   // Load locales for the TimeAgo library
   TimeAgo.addLocale(require("javascript-time-ago/locale/en"));
-  // This weird workaround allows us to use setProps to set props of the component under test even though it is
-  // not the root rendered component (which setProps in Enzyme requires)
-  // See https://github.com/airbnb/enzyme/issues/1925#issuecomment-463248558
-  const ComponentUnderTest = node.type;
-  const properties = node.props;
-  return mount(
-    React.createElement(
-      (props) => (
-        <Provider store={mockStore}>
-          <IntlProvider {...intl}>
-            <ComponentUnderTest {...props} />
-          </IntlProvider>
-        </Provider>
-      ),
-      properties
+  return render(node, {
+    wrapper: ({ children }) => (
+      <Provider store={mockStore}>
+        <IntlProvider {...intl}>{children}</IntlProvider>
+      </Provider>
     ),
-    options
-  );
+    ...options,
+  });
 }
 
 /**

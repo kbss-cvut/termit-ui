@@ -24,7 +24,13 @@ interface TermDefinitionBlockEditProps {
 export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
   props
 ) => {
-  const { term, language, getValidationResults, onChange, readOnly } = props;
+  const {
+    term,
+    language,
+    getValidationResults = () => [],
+    onChange,
+    readOnly = false,
+  } = props;
   const { i18n, locale } = useI18n();
   const onDefinitionChange = (value: string) => {
     const change = {};
@@ -38,10 +44,8 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
   const source = term.sources
     ? Utils.sanitizeArray(term.sources!).join()
     : undefined;
-  const validationDefinition = getValidationResults!(
-    VocabularyUtils.DEFINITION
-  );
-  const validationSource = getValidationResults!(VocabularyUtils.DC_SOURCE);
+  const validationDefinition = getValidationResults(VocabularyUtils.DEFINITION);
+  const validationSource = getValidationResults(VocabularyUtils.DC_SOURCE);
 
   return (
     <>
@@ -109,11 +113,6 @@ export const TermDefinitionBlockEdit: React.FC<TermDefinitionBlockEditProps> = (
       </Row>
     </>
   );
-};
-
-TermDefinitionBlockEdit.defaultProps = {
-  getValidationResults: () => [],
-  readOnly: false,
 };
 
 export default TermDefinitionBlockEdit;

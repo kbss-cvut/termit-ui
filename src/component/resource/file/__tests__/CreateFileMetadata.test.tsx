@@ -1,10 +1,15 @@
+import CreateFileMetadata from "../CreateFileMetadata";
+import * as Redux from "react-redux";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
 import Resource from "../../../../model/Resource";
 import Ajax from "../../../../util/Ajax";
-import { mountWithIntl } from "../../../../__tests__/environment/Environment";
-import CreateFileMetadata from "../CreateFileMetadata";
-import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
-import UploadFile from "../UploadFile";
-import { act } from "react-dom/test-utils";
+
+vi.mock("react-redux", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("react-redux")>()),
+  useSelector: vi.fn(),
+}));
 
 vi.mock("../../../../util/Ajax", () => {
   const originalModule = vi.importActual("../../../../util/Ajax");
@@ -24,6 +29,11 @@ describe("CreateFileMetadata", () => {
   let onCancel: () => void;
 
   beforeEach(() => {
+    vi.mocked(Redux.useSelector).mockImplementation((selector) =>
+      selector({
+        configuration: { language: "en", maxFileUploadSize: "1MB" },
+      } as any)
+    );
     Ajax.post = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ data: iri }));
@@ -34,23 +44,15 @@ describe("CreateFileMetadata", () => {
     file.name = fileName;
   });
 
-  it("uses name of the selected file as label", () => {
-    const wrapper = mountWithIntl(
-      <CreateFileMetadata
-        onCreate={onCreate}
-        onCancel={onCancel}
-        {...intlFunctions()}
-      />
+  it("uses name of the selected file as label", async () => {
+    const user = userEvent.setup();
+    const { container } = renderWithIntl(
+      <CreateFileMetadata onCreate={onCreate} onCancel={onCancel} />
     );
-    act(() => {
-      wrapper
-        .find(UploadFile)
-        .props()
-        .setFile(file as File);
-    });
-    const labelInput = wrapper.find('input[name="create-resource-label"]');
-    expect((labelInput.getDOMNode() as HTMLInputElement).value).toEqual(
-      fileName
+    await user.upload(
+      container.querySelector<HTMLInputElement>('input[type="file"]')!,
+      file as File
     );
+    expect(screen.getByDisplayValue(fileName)).toHaveValue(fileName);
   });
 });
