@@ -1,11 +1,10 @@
 import { intlFunctions } from "../../../../__tests__/environment/IntlUtil";
 import ValidationResults from "../ValidationResults";
 import Generator from "../../../../__tests__/environment/Generator";
-import ValidationMessage from "../ValidationMessage";
 import Term from "../../../../model/Term";
 import {
   mockStore,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../../__tests__/environment/Environment";
 
 describe("Validation Results", () => {
@@ -26,11 +25,10 @@ describe("Validation Results", () => {
       ],
       [anotherTermIri]: [Generator.generateValidationResult(anotherTermIri)],
     };
-    const component = mountWithIntl(
+    const { container } = renderWithIntl(
       <ValidationResults term={term} {...intlFunctions()} />
     );
 
-    const rows = component.find("div").find(ValidationMessage);
-    expect(rows.length).toEqual(2);
+    expect(container.querySelectorAll(".alert").length).toEqual(2);
   });
 });

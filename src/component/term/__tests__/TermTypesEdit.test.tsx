@@ -1,8 +1,7 @@
 import Term from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import TermTypesEdit from "../TermTypesEdit";
-import { IntelligentTreeSelect } from "intelligent-tree-select";
 import Generator from "../../../__tests__/environment/Generator";
 import { langString } from "../../../model/MultilingualString";
 import * as Redux from "react-redux";
@@ -19,6 +18,14 @@ vi.mock("react-redux", async (importOriginal) => {
 });
 
 vi.mock("../../misc/HelpIcon", () => ({ default: () => <div>Help</div> }));
+
+const mocks = vi.hoisted(() => ({ selectProps: {} as any }));
+vi.mock("intelligent-tree-select", () => ({
+  IntelligentTreeSelect: (props: any) => {
+    mocks.selectProps = props;
+    return <div data-testid="tree-select" />;
+  },
+}));
 
 describe("TermTypesEdit", () => {
   let onChange: (types: string[]) => void;
@@ -38,11 +45,8 @@ describe("TermTypesEdit", () => {
     });
     vi.spyOn(Redux, "useSelector").mockReturnValue(availableTypes);
     const types = [VocabularyUtils.TERM];
-    const wrapper = mountWithIntl(
-      <TermTypesEdit termTypes={types} onChange={onChange} />
-    );
-    const selector = wrapper.find(IntelligentTreeSelect);
-    expect(selector.prop("value")).not.toBeDefined();
+    renderWithIntl(<TermTypesEdit termTypes={types} onChange={onChange} />);
+    expect(mocks.selectProps.value).not.toBeDefined();
   });
 
   it("does not render implicit term type in the selector when other another type is present as well", () => {
@@ -55,11 +59,8 @@ describe("TermTypesEdit", () => {
     availableTypes[iri] = new Term({ iri, label: langString("Other type") });
     vi.spyOn(Redux, "useSelector").mockReturnValue(availableTypes);
     const types = [VocabularyUtils.TERM, iri];
-    const wrapper = mountWithIntl(
-      <TermTypesEdit termTypes={types} onChange={onChange} />
-    );
-    const selector = wrapper.find(IntelligentTreeSelect);
-    expect(selector.prop("value")).toEqual(availableTypes[iri].iri);
+    renderWithIntl(<TermTypesEdit termTypes={types} onChange={onChange} />);
+    expect(mocks.selectProps.value).toEqual(availableTypes[iri].iri);
   });
 
   it("invokes onChange handler with selected type and the implicit Term type", () => {
@@ -68,10 +69,10 @@ describe("TermTypesEdit", () => {
       label: langString("Selected term"),
     });
     vi.spyOn(Redux, "useSelector").mockReturnValue({});
-    const wrapper = mountWithIntl(
+    renderWithIntl(
       <TermTypesEdit termTypes={[VocabularyUtils.TERM]} onChange={onChange} />
     );
-    (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(selected);
+    (mocks.selectProps.onChange as any)(selected);
     expect(onChange).toHaveBeenCalled();
     const newTypes = (onChange as Mock).mock.calls[0][0];
     expect(newTypes.length).toEqual(2);
@@ -89,10 +90,8 @@ describe("TermTypesEdit", () => {
     availableTypes[iri] = new Term({ iri, label: langString("Other type") });
     vi.spyOn(Redux, "useSelector").mockReturnValue(availableTypes);
     const types = [VocabularyUtils.TERM, iri];
-    const wrapper = mountWithIntl(
-      <TermTypesEdit termTypes={types} onChange={onChange} />
-    );
-    (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(null);
+    renderWithIntl(<TermTypesEdit termTypes={types} onChange={onChange} />);
+    (mocks.selectProps.onChange as any)(null);
     expect(onChange).toHaveBeenCalledWith([VocabularyUtils.TERM]);
   });
 });
