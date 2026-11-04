@@ -52,7 +52,7 @@ import AnnotatedTermRelationship from "../model/meta/AnnotatedTermRelationship";
 import { selectMultilingualCustomAttributeIris } from "../store/StateSelectors";
 import { compactMultilingualCustomAttributeValues } from "../model/MultilingualString";
 import { HasUnmappedProperties } from "../model/WithUnmappedProperties";
-import { SkosCollectionDto } from "../model/Collection";
+import { SkosCollection } from "../model/Collection";
 import { ResultPage } from "../model/ResultPage";
 
 function isAsyncSuccess(action: Action) {
@@ -902,8 +902,8 @@ function showTermsFlatList(
 }
 
 function selectedCollection(
-  state: SkosCollectionDto | null = null,
-  action: AsyncActionSuccess<SkosCollectionDto>
+  state: SkosCollection | null = null,
+  action: AsyncActionSuccess<SkosCollection>
 ) {
   switch (action.type) {
     case ActionType.LOAD_COLLECTION:
@@ -916,8 +916,8 @@ function selectedCollection(
 }
 
 function skosCollections(
-  state: ResultPage<SkosCollectionDto> | null = null,
-  action: AsyncActionSuccess<ResultPage<SkosCollectionDto>>
+  state: ResultPage<SkosCollection> | null = null,
+  action: AsyncActionSuccess<ResultPage<SkosCollection>>
 ) {
   switch (action.type) {
     case ActionType.LOAD_COLLECTIONS:

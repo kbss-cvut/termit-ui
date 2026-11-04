@@ -11,7 +11,7 @@ import { isLoggedIn } from "./Authorization";
 import { isUsingOidcAuth } from "./OidcUtils";
 import Document from "../model/Document";
 import { TABS } from "../component/vocabulary/VocabularyMetadata";
-import { SkosCollectionDtoData } from "../model/Collection";
+import { SkosCollectionData } from "../model/Collection";
 
 export class Routing {
   get history(): History {
@@ -209,7 +209,7 @@ export class Routing {
     this.makeAssetTransition(asset, options);
   };
 
-  public makeCollectionDetailParams(collection: SkosCollectionDtoData) {
+  public makeCollectionDetailParams(collection: SkosCollectionData) {
     const collectionIri = VocabularyUtils.create(collection.iri);
     const vocabularyIri = VocabularyUtils.create(collection.vocabulary.iri);
     return {

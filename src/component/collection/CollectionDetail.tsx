@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { SkosCollectionDto } from "../../model/Collection";
+import { SkosCollection } from "../../model/Collection";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch, useAppSelector } from "../../util/Types";
 import { loadSkosCollection } from "../../action/AsyncCollectionActions";
@@ -51,14 +51,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
     );
   }
 
-  const collectionDto = useAppSelector((state) => state.selectedCollection);
+  const collection = useAppSelector((state) => state.selectedCollection);
   const vocabulary = useAppSelector((state) => state.vocabulary);
   const languages = useMemo(
     () =>
-      collectionDto
-        ? getLanguages(SkosCollectionDto.MULTILINGUAL_ATTRIBUTES, collectionDto)
+      collection
+        ? getLanguages(SkosCollection.MULTILINGUAL_ATTRIBUTES, collection)
         : [getShortLocale(locale)],
-    [collectionDto, locale]
+    [collection, locale]
   );
 
   const [selectedLanguage, setSelectedLanguage] = useState(
@@ -85,32 +85,32 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
   const removeDialogRef = useRef<RemoveCollectionDialogHandle>(null);
 
   const onEditOpen = useCallback(() => {
-    if (collectionDto) {
+    if (collection) {
       Routing.transitionTo(
         Routes.editVocabularyCollection,
-        Routing.makeCollectionDetailParams(collectionDto)
+        Routing.makeCollectionDetailParams(collection)
       );
     }
-  }, [collectionDto]);
+  }, [collection]);
   const onRemove = useCallback(() => {
-    if (collectionDto) {
-      removeDialogRef.current?.remove(collectionDto);
+    if (collection) {
+      removeDialogRef.current?.remove(collection);
     }
-  }, [collectionDto]);
+  }, [collection]);
 
-  const label = collectionDto?.getLabel(selectedLanguage) ?? "";
+  const label = collection?.getLabel(selectedLanguage) ?? "";
 
   const TitleWithIcon = useMemo(() => {
     return (
       <>
-        {collectionDto?.isOrdered() && (
+        {collection?.isOrdered() && (
           <OrderedCollectionIcon id={"collection-header-title"} />
         )}
         {label}
-        {collectionDto && <CopyIriIcon url={collectionDto.iri} />}
+        {collection && <CopyIriIcon url={collection.iri} />}
       </>
     );
-  }, [collectionDto, label]);
+  }, [collection, label]);
 
   const actions = useMemo(() => {
     return [
@@ -161,7 +161,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = () => {
         primaryLanguage={vocabulary.primaryLanguage}
       />
       <CollectionMetadata
-        collection={collectionDto}
+        collection={collection}
         vocabulary={vocabulary}
         shortLocale={selectedLanguage}
       />

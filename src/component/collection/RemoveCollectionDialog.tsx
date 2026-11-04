@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import { SkosCollectionDto } from "../../model/Collection";
+import { SkosCollection } from "../../model/Collection";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
 import { useI18n } from "../hook/useI18n";
 import { getLocalized } from "../../model/MultilingualString";
@@ -21,7 +21,7 @@ import { useDispatch } from "react-redux";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
 
 export interface RemoveCollectionDialogHandle {
-  remove: (collection: SkosCollectionDto) => void;
+  remove: (collection: SkosCollection) => void;
 }
 
 const REMOVE_COLLECTION_PROMISE_AREA = "remove-collection-dialog-promise-area";
@@ -35,7 +35,7 @@ export const RemoveCollectionDialog = forwardRef<
   /**
    * Collection to remove, when null, the dialog is closed
    */
-  const [collection, setCollection] = useState<SkosCollectionDto | null>(null);
+  const [collection, setCollection] = useState<SkosCollection | null>(null);
   const { vocabulary } = props;
 
   const [confirmLabel, setConfirmLabel] = useState<string>("");

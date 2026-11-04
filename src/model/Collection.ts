@@ -20,11 +20,6 @@ export const CONTEXT = {
   vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
 };
 
-export const UNORDERED_CONTEXT = {
-  ...CONTEXT,
-  members: VocabularyUtils.SKOS_MEMBER,
-};
-
 export const MEMBER_CONTEXT = {
   ...ASSET_CONTEXT,
   title: context(VocabularyUtils.DC_TITLE),
@@ -32,22 +27,22 @@ export const MEMBER_CONTEXT = {
   vocabulary: VocabularyUtils.SKOS_IN_SCHEME,
 };
 
-export interface SkosCollectionDtoData extends HasIdentifier, HasTypes {
+export interface SkosCollectionData extends HasIdentifier, HasTypes {
   title: MultilingualString;
   description?: MultilingualString;
   vocabulary: HasIdentifier;
 }
 
-export class SkosCollectionDto
+export class SkosCollection
   extends Asset
-  implements SkosCollectionDtoData, HasLocalizableLabel
+  implements SkosCollectionData, HasLocalizableLabel
 {
   public static readonly MULTILINGUAL_ATTRIBUTES = ["title", "description"];
   public description?: MultilingualString;
   public title: MultilingualString;
   public vocabulary: HasIdentifier;
 
-  constructor(data: SkosCollectionDtoData) {
+  constructor(data: SkosCollectionData) {
     super(data);
     this.description = data.description;
     this.title = data.title;
@@ -83,7 +78,7 @@ export function isOrderedCollection(obj: HasTypes) {
 }
 
 export interface CollectionWithMembers<T extends Iterable<string>>
-  extends SkosCollectionDtoData {
+  extends SkosCollectionData {
   members: T;
 }
 
@@ -91,7 +86,7 @@ export interface UnorderedCollectionData
   extends CollectionWithMembers<Set<string>> {}
 
 export class UnorderedCollection
-  extends SkosCollectionDto
+  extends SkosCollection
   implements UnorderedCollectionData
 {
   public members: Set<string>;
@@ -108,7 +103,7 @@ export interface OrderedCollectionData
 }
 
 export class OrderedCollection
-  extends SkosCollectionDto
+  extends SkosCollection
   implements OrderedCollectionData
 {
   public members: Array<string>;
@@ -128,7 +123,7 @@ export interface CollectionMemberData extends HasIdentifier {
 }
 
 export class CollectionMember
-  implements CollectionMemberData, TermInfo, SkosCollectionDtoData
+  implements CollectionMemberData, TermInfo, SkosCollectionData
 {
   public readonly iri: string;
   public readonly types: string[];
