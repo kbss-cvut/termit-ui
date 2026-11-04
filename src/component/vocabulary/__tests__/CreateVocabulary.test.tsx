@@ -4,20 +4,18 @@ import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import Routes from "../../../util/Routes";
 import Ajax, { params } from "../../../util/Ajax";
 import Vocabulary from "../../../model/Vocabulary";
-import { shallow } from "enzyme";
 import {
   flushPromises,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
 import Constants from "../../../util/Constants";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Document from "../../../model/Document";
-import CreateVocabularyForm from "../CreateVocabularyForm";
 import * as Redux from "react-redux";
 import * as AsyncActions from "../../../action/AsyncActions";
 import { langString } from "../../../model/MultilingualString";
-import MarkdownEditor from "../../misc/MarkdownEditor";
 import { act } from "react-dom/test-utils";
+import { fireEvent } from "@testing-library/react";
 import { Mock, vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -39,9 +37,28 @@ vi.mock(import("../../../util/Ajax"), async (importOriginal) => {
 });
 vi.mock("../../../util/Routing");
 vi.mock("../../misc/HelpIcon", () => ({ default: () => <div>Help</div> }));
-vi.mock("../../misc/MarkdownEditor", () => ({
-  default: () => <div>Editor</div>,
+const mocks = vi.hoisted(() => ({
+  formProps: {} as any,
+  editorProps: {} as any,
 }));
+vi.mock("../../misc/MarkdownEditor", () => ({
+  default: (props: any) => {
+    mocks.editorProps = props;
+    return <div>Editor</div>;
+  },
+}));
+vi.mock("../CreateVocabularyForm", async (importOriginal) => {
+  const actual =
+    (await importOriginal()) as typeof import("../CreateVocabularyForm");
+  return {
+    __esModule: true,
+    default: (props: any) => {
+      mocks.formProps = props;
+      const Form = actual.default;
+      return <Form {...props} />;
+    },
+  };
+});
 vi.mock("../../misc/PromiseTrackingMask", () => ({
   default: () => <span>Mask</span>,
 }));
@@ -63,64 +80,65 @@ describe("Create vocabulary view", () => {
   });
 
   it("returns to Vocabulary Management on cancel", () => {
-    const wrapper = shallow(<CreateVocabulary />);
-    wrapper.find(CreateVocabularyForm).props().onCancel();
+    const { container } = renderWithIntl(<CreateVocabulary />);
+    fireEvent.click(container.querySelector("#create-vocabulary-cancel")!);
     expect(Routing.transitionTo).toHaveBeenCalledWith(Routes.vocabularies);
   });
 
   it("enables submit button only when name is not empty", async () => {
-    const wrapper = mountWithIntl(<CreateVocabulary />);
-    let submitButton = wrapper.find("#create-vocabulary-submit").first();
-    expect(submitButton.props().disabled).toBeTruthy();
+    const { container } = renderWithIntl(<CreateVocabulary />);
+    let submitButton = container.querySelector(
+      "#create-vocabulary-submit"
+    ) as HTMLButtonElement;
+    expect(submitButton.disabled).toBeTruthy();
     await act(async () => {
-      const nameInput = wrapper.find('input[name="create-vocabulary-label"]');
-      (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
-      nameInput.simulate("change", nameInput);
+      fireEvent.change(
+        container.querySelector('input[name="create-vocabulary-label"]')!,
+        { target: { value: "Metropolitan Plan" } }
+      );
       await flushPromises();
-      wrapper.update();
     });
-    submitButton = wrapper.find("#create-vocabulary-submit").first();
-    expect(submitButton.props().disabled).toBeFalsy();
+    submitButton = container.querySelector(
+      "#create-vocabulary-submit"
+    ) as HTMLButtonElement;
+    expect(submitButton.disabled).toBeFalsy();
   });
 
   it("calls onCreate on submit click", async () => {
-    const wrapper = mountWithIntl(<CreateVocabulary />);
+    const { container } = renderWithIntl(<CreateVocabulary />);
     await act(async () => {
-      const nameInput = wrapper.find('input[name="create-vocabulary-label"]');
-      (nameInput.getDOMNode() as HTMLInputElement).value = "Metropolitan Plan";
-      nameInput.simulate("change", nameInput);
+      fireEvent.change(
+        container.querySelector('input[name="create-vocabulary-label"]')!,
+        { target: { value: "Metropolitan Plan" } }
+      );
       await Ajax.post(
         Constants.API_PREFIX + "/identifiers",
         params({ name: "", assetType: "VOCABULARY" })
       );
-      const submitButton = wrapper.find("#create-vocabulary-submit").first();
-      submitButton.simulate("click");
+      fireEvent.click(container.querySelector("#create-vocabulary-submit")!);
     });
     expect(AsyncActions.createVocabulary).toHaveBeenCalled();
   });
 
   it("transitions to vocabulary summary on success", async () => {
-    const wrapper = shallow(<CreateVocabulary />);
+    renderWithIntl(<CreateVocabulary />);
 
     const label = langString("Test vocabulary");
     const comment = langString("Test vocabulary comment");
-    wrapper
-      .find(CreateVocabularyForm)
-      .props()
-      .onSave(
-        new Vocabulary({
-          iri,
-          label,
-          comment,
-          document: new Document({
-            iri: `${iri}/document`,
-            label: "Document",
-            files: [],
-          }),
+    mocks.formProps.onSave(
+      new Vocabulary({
+        iri,
+        label,
+        comment,
+        document: new Document({
+          iri: `${iri}/document`,
+          label: "Document",
+          files: [],
         }),
-        [],
-        []
-      );
+      }),
+      [],
+      []
+    );
     await flushPromises();
     expect(AsyncActions.createVocabulary).toHaveBeenCalled();
     expect(Routing.transitionTo).toHaveBeenCalled();
@@ -134,19 +152,18 @@ describe("Create vocabulary view", () => {
   });
 
   it("passes state representing new vocabulary to vocabulary creation handler on submit", async () => {
-    const wrapper = mountWithIntl(<CreateVocabulary />);
+    const { container } = renderWithIntl(<CreateVocabulary />);
     const label = "Test vocabulary";
     const comment = "Test vocabulary comment";
     const types = [VocabularyUtils.VOCABULARY];
     await act(async () => {
-      wrapper.find(MarkdownEditor).props().onChange!(comment);
-      const nameInput = wrapper.find('input[name="create-vocabulary-label"]');
-      (nameInput.getDOMNode() as HTMLInputElement).value = label;
-      nameInput.simulate("change", nameInput);
+      mocks.editorProps.onChange!(comment);
+      fireEvent.change(
+        container.querySelector('input[name="create-vocabulary-label"]')!,
+        { target: { value: label } }
+      );
       await flushPromises();
-      wrapper.update();
-      const submitButton = wrapper.find("#create-vocabulary-submit").first();
-      submitButton.simulate("click");
+      fireEvent.click(container.querySelector("#create-vocabulary-submit")!);
       await flushPromises();
     });
     const docIri = iri + "/document";
@@ -173,12 +190,13 @@ describe("Create vocabulary view", () => {
 
   describe("IRI generation", () => {
     it("requests IRI generation when name changes", async () => {
-      const wrapper = mountWithIntl(<CreateVocabulary />);
+      const { container } = renderWithIntl(<CreateVocabulary />);
       const name = "Metropolitan Plan";
       await act(async () => {
-        const nameInput = wrapper.find('input[name="create-vocabulary-label"]');
-        (nameInput.getDOMNode() as HTMLInputElement).value = name;
-        nameInput.simulate("change", nameInput);
+        fireEvent.change(
+          container.querySelector('input[name="create-vocabulary-label"]')!,
+          { target: { value: name } }
+        );
         await flushPromises();
       });
       expect(Ajax.post).toHaveBeenCalledWith(
@@ -191,17 +209,18 @@ describe("Create vocabulary view", () => {
     });
 
     it("does not request IRI generation when IRI value had been changed manually before", () => {
-      const wrapper = mountWithIntl(<CreateVocabulary />);
+      const { container } = renderWithIntl(<CreateVocabulary />);
       act(() => {
-        const iriInput = wrapper.find('input[name="create-vocabulary-iri"]');
-        (iriInput.getDOMNode() as HTMLInputElement).value = "http://test";
-        iriInput.simulate("change", iriInput);
+        fireEvent.change(
+          container.querySelector('input[name="create-vocabulary-iri"]')!,
+          { target: { value: "http://test" } }
+        );
       });
       act(() => {
-        const nameInput = wrapper.find('input[name="create-vocabulary-label"]');
-        (nameInput.getDOMNode() as HTMLInputElement).value =
-          "Metropolitan Plan";
-        nameInput.simulate("change", nameInput);
+        fireEvent.change(
+          container.querySelector('input[name="create-vocabulary-label"]')!,
+          { target: { value: "Metropolitan Plan" } }
+        );
       });
       expect(Ajax.post).not.toHaveBeenCalledWith(
         Constants.API_PREFIX + "/identifiers",
@@ -210,16 +229,18 @@ describe("Create vocabulary view", () => {
     });
 
     it("displays IRI generated and returned by the server", async () => {
-      const wrapper = mountWithIntl(<CreateVocabulary />);
+      const { container } = renderWithIntl(<CreateVocabulary />);
       await act(async () => {
-        const nameInput = wrapper.find('input[name="create-vocabulary-label"]');
-        (nameInput.getDOMNode() as HTMLInputElement).value =
-          "Metropolitan Plan";
-        nameInput.simulate("change", nameInput);
+        fireEvent.change(
+          container.querySelector('input[name="create-vocabulary-label"]')!,
+          { target: { value: "Metropolitan Plan" } }
+        );
         await flushPromises();
       });
-      const iriInput = wrapper.find('input[name="create-vocabulary-iri"]');
-      expect((iriInput.getDOMNode() as HTMLInputElement).value).toEqual(iri);
+      const iriInput = container.querySelector(
+        'input[name="create-vocabulary-iri"]'
+      ) as HTMLInputElement;
+      expect(iriInput.value).toEqual(iri);
     });
   });
 });

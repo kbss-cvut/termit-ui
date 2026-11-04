@@ -1,21 +1,20 @@
+import React from "react";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import Vocabulary, { EMPTY_VOCABULARY } from "../../../model/Vocabulary";
 import { createMemoryHistory, Location } from "history";
-import { match as Match } from "react-router";
-import { shallow } from "enzyme";
+import { match as Match, MemoryRouter } from "react-router";
 import { VocabularySummary } from "../VocabularySummary";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
-import { VocabularyEdit } from "../VocabularyEdit";
-import { Button } from "reactstrap";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import * as redux from "react-redux";
 import Generator from "../../../__tests__/environment/Generator";
-import { mountWithIntlAttached } from "../../annotator/__tests__/AnnotationUtil";
 import TermItState from "../../../model/TermItState";
 import AccessLevel from "../../../model/acl/AccessLevel";
 import { langString } from "../../../model/MultilingualString";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
 import { StompClient } from "../../hoc/withStompClient";
+import { fireEvent } from "@testing-library/react";
+import { act } from "react-dom/test-utils";
 import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -31,6 +30,10 @@ vi.mock("../../changetracking/AssetHistory", () => ({
 vi.mock("../../term/Terms", () => ({ default: () => <div>Terms</div> }));
 vi.mock("../TermChangeFrequency", () => ({
   default: () => <div>Term frequency</div>,
+}));
+vi.mock("../VocabularyEdit", () => ({
+  VocabularyEdit: () => <div className="vocabulary-edit" />,
+  default: () => <div className="vocabulary-edit" />,
 }));
 
 describe("VocabularySummary", () => {
@@ -98,21 +101,40 @@ describe("VocabularySummary", () => {
     );
   });
 
-  it("loads vocabulary on mount", () => {
-    shallow(
-      <VocabularySummary
-        vocabulary={EMPTY_VOCABULARY}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        {...exportFunctions}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />
+  function summaryElement(
+    props: Partial<React.ComponentProps<typeof VocabularySummary>> = {},
+    ref?: React.RefObject<VocabularySummary>
+  ) {
+    return (
+      <MemoryRouter>
+        <VocabularySummary
+          ref={ref}
+          vocabulary={EMPTY_VOCABULARY}
+          updateVocabulary={onUpdate}
+          loadVocabulary={onLoad}
+          removeVocabulary={removeVocabulary}
+          history={history}
+          location={location}
+          configuration={DEFAULT_CONFIGURATION}
+          {...exportFunctions}
+          requestVocabularyValidation={requestVocabularyValidation}
+          match={match}
+          {...intlFunctions()}
+          {...props}
+        />
+      </MemoryRouter>
     );
+  }
+
+  function renderSummary(
+    props: Partial<React.ComponentProps<typeof VocabularySummary>> = {},
+    ref: React.RefObject<VocabularySummary> = React.createRef()
+  ) {
+    return renderWithIntl(summaryElement(props, ref));
+  }
+
+  it("loads vocabulary on mount", () => {
+    renderSummary();
     expect(onLoad).toHaveBeenCalledWith({
       fragment: normalizedName,
       namespace,
@@ -121,20 +143,7 @@ describe("VocabularySummary", () => {
 
   it("passes namespace to vocabulary loading when specified", () => {
     location.search = "?namespace=" + namespace;
-    shallow(
-      <VocabularySummary
-        vocabulary={EMPTY_VOCABULARY}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        {...exportFunctions}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
+    renderSummary();
     expect(onLoad).toHaveBeenCalledWith({
       fragment: normalizedName,
       namespace,
@@ -142,164 +151,62 @@ describe("VocabularySummary", () => {
   });
 
   it("does not attempt to reload vocabulary when namespace is missing in location and fragment is identical", () => {
-    const wrapper = shallow<VocabularySummary>(
-      <VocabularySummary
-        vocabulary={EMPTY_VOCABULARY}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        {...exportFunctions}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.setProps({ vocabulary });
-    wrapper.update();
+    const ref = React.createRef<VocabularySummary>();
+    const { rerender } = renderSummary({}, ref);
+    rerender(summaryElement({ vocabulary }, ref));
     expect(onLoad).toHaveBeenCalledTimes(1);
   });
 
   it("invokes remove action and closes remove confirmation dialog on remove", () => {
-    const wrapper = shallow<VocabularySummary>(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        removeVocabulary={removeVocabulary}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().onRemove();
+    const ref = React.createRef<VocabularySummary>();
+    renderSummary({ vocabulary }, ref);
+    ref.current!.onRemove();
     expect(removeVocabulary).toHaveBeenCalledWith(vocabulary);
-    expect(wrapper.state("showRemoveDialog")).toBeFalsy();
+    expect(ref.current!.state.showRemoveDialog).toBeFalsy();
   });
 
   it("opens edit view on edit button click", () => {
-    const div = document.createElement("div");
-    document.body.appendChild(div);
-
-    const wrapper = mountWithIntl(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />,
-      { attachTo: div }
-    );
-    expect(wrapper.find(VocabularyEdit).exists()).toBeFalsy();
-    const editButton = wrapper
-      .find(Button)
-      .findWhere((b) => b.key() === "vocabulary.summary.edit");
-    editButton.simulate("click");
-    expect(wrapper.find(VocabularyEdit).exists()).toBeTruthy();
+    const { container } = renderSummary({ vocabulary });
+    expect(container.querySelector(".vocabulary-edit")).toBeNull();
+    fireEvent.click(container.querySelector("#vocabulary-summary-edit")!);
+    expect(container.querySelector(".vocabulary-edit")).toBeInTheDocument();
   });
 
   it("hides edit button on on edit", () => {
-    const div = document.createElement("div");
-    document.body.appendChild(div);
-
-    const wrapper = mountWithIntl(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />,
-      { attachTo: div }
-    );
-    (wrapper.find(VocabularySummary).instance() as VocabularySummary).onEdit();
-    wrapper.update();
-    const editButton = wrapper
-      .find(Button)
-      .findWhere((b) => b.key() === "vocabulary.summary.edit");
-    expect(editButton.exists()).toBeFalsy();
+    const ref = React.createRef<VocabularySummary>();
+    const { container } = renderSummary({ vocabulary }, ref);
+    act(() => ref.current!.onEdit());
+    expect(container.querySelector("#vocabulary-summary-edit")).toBeNull();
   });
 
   it("invokes vocabulary update action on save", () => {
-    const wrapper = shallow<VocabularySummary>(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().onEdit();
+    const ref = React.createRef<VocabularySummary>();
+    renderSummary({ vocabulary }, ref);
+    ref.current!.onEdit();
     const update = new Vocabulary({
       iri: vocabulary.iri,
       label: langString("Updated label"),
     });
-    wrapper.instance().onSave(update);
+    ref.current!.onSave(update);
     expect(onUpdate).toHaveBeenCalledWith(update);
   });
 
   it("closes edit after successful update", () => {
-    const wrapper = shallow<VocabularySummary>(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().onEdit();
-    wrapper.instance().onSave(vocabulary);
+    const ref = React.createRef<VocabularySummary>();
+    renderSummary({ vocabulary }, ref);
+    ref.current!.onEdit();
+    ref.current!.onSave(vocabulary);
     return Promise.resolve().then(() => {
-      expect(wrapper.instance().state.edit).toBeFalsy();
+      expect(ref.current!.state.edit).toBeFalsy();
     });
   });
 
   it("reloads vocabulary after successful update", () => {
     location.search = "?namespace=" + namespace;
-    const wrapper = shallow<VocabularySummary>(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().onEdit();
-    wrapper.instance().onSave(vocabulary);
+    const ref = React.createRef<VocabularySummary>();
+    renderSummary({ vocabulary }, ref);
+    ref.current!.onEdit();
+    ref.current!.onSave(vocabulary);
     return Promise.resolve().then(() => {
       expect(onLoad).toHaveBeenCalledWith(
         VocabularyUtils.create(vocabulary.iri)
@@ -308,41 +215,20 @@ describe("VocabularySummary", () => {
   });
 
   it("reloads Vocabulary when File was added into the Vocabulary's Document", () => {
-    const wrapper = shallow<VocabularySummary>(
-      <VocabularySummary
-        vocabulary={EMPTY_VOCABULARY}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().loadVocabulary();
+    const ref = React.createRef<VocabularySummary>();
+    renderSummary({}, ref);
+    ref.current!.loadVocabulary();
     expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
   });
 
   it("does not render modification buttons for user with read access", () => {
     vocabulary.accessLevel = AccessLevel.READ;
-    const wrapper = mountWithIntlAttached(
-      <VocabularySummary
-        vocabulary={vocabulary}
-        updateVocabulary={onUpdate}
-        loadVocabulary={onLoad}
-        {...exportFunctions}
-        history={history}
-        location={location}
-        configuration={DEFAULT_CONFIGURATION}
-        requestVocabularyValidation={requestVocabularyValidation}
-        match={match}
-        {...intlFunctions()}
-      />
-    );
-    expect(wrapper.exists("#vocabulary-summary-edit")).toBeFalsy();
-    expect(wrapper.exists("#vocabulary-summary-remove")).toBeFalsy();
+    const { container } = renderSummary({ vocabulary });
+    expect(
+      container.querySelector("#vocabulary-summary-edit")
+    ).not.toBeInTheDocument();
+    expect(
+      container.querySelector("#vocabulary-summary-remove")
+    ).not.toBeInTheDocument();
   });
 });

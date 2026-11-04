@@ -1,6 +1,6 @@
 import {
   flushPromises,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
 import { act } from "react-dom/test-utils";
 import { VocabularyManagement } from "../VocabularyManagement";
@@ -35,7 +35,7 @@ describe("VocabularyList", () => {
   it("loads vocabularies on mount", async () => {
     vi.spyOn(AsyncActions, "loadVocabularies");
     (redux.useSelector as Mock).mockReturnValue(Generator.generateUser());
-    mountWithIntl(
+    renderWithIntl(
       <MemoryRouter>
         <VocabularyManagement />
       </MemoryRouter>
@@ -51,7 +51,7 @@ describe("VocabularyList", () => {
     const user = Generator.generateUser();
     user.types.push(VocabularyUtils.USER_RESTRICTED);
     (redux.useSelector as Mock).mockReturnValue(user);
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <MemoryRouter>
         <VocabularyManagement />
       </MemoryRouter>
@@ -59,6 +59,8 @@ describe("VocabularyList", () => {
     await act(async () => {
       await flushPromises();
     });
-    expect(wrapper.exists("#vocabularies-create")).toBeFalsy();
+    expect(
+      container.querySelector("#vocabularies-create")
+    ).not.toBeInTheDocument();
   });
 });

@@ -1,14 +1,16 @@
+import React from "react";
 import { VocabularyEdit } from "../VocabularyEdit";
 import Vocabulary, { CONTEXT } from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import { shallow } from "enzyme";
-import UnmappedPropertiesEdit from "../../genericmetadata/UnmappedPropertiesEdit";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import Document from "../../../model/Document";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
+import { fireEvent } from "@testing-library/react";
+import { act } from "react-dom/test-utils";
+import { MemoryRouter } from "react-router";
 import type { Mock } from "vitest";
 import { selectVocabularyLanguages } from "../../../store/StateSelectors";
 
@@ -23,6 +25,15 @@ vi.mock("../../misc/MarkdownEditor", () => ({
 
 vi.mock("../../misc/HelpIcon", () => ({
   default: () => <span>Help</span>,
+}));
+
+vi.mock("../../genericmetadata/UnmappedPropertiesEdit", () => ({
+  default: (props: { ignoredProperties?: string[] }) => (
+    <div
+      className="unmapped-properties-edit"
+      data-ignored={JSON.stringify(props.ignoredProperties)}
+    />
+  ),
 }));
 
 describe("VocabularyEdit", () => {
@@ -45,27 +56,37 @@ describe("VocabularyEdit", () => {
     });
   });
 
-  it("passes updated vocabulary to onSave", () => {
-    const wrapper = shallow<VocabularyEdit>(
-      <VocabularyEdit
-        vocabulary={vocabulary}
-        save={onSave}
-        saveDocument={onDocumentSave}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={vi.fn()}
-        publishMessage={vi.fn()}
-        customAttributes={[]}
-        {...intlFunctions()}
-      />
+  function renderEdit(
+    ref: React.RefObject<VocabularyEdit> = React.createRef()
+  ) {
+    return renderWithIntl(
+      <MemoryRouter>
+        <VocabularyEdit
+          ref={ref}
+          vocabulary={vocabulary}
+          save={onSave}
+          saveDocument={onDocumentSave}
+          cancel={onCancel}
+          language={Constants.DEFAULT_LANGUAGE}
+          selectLanguage={vi.fn()}
+          publishMessage={vi.fn()}
+          customAttributes={[]}
+          {...intlFunctions()}
+        />
+      </MemoryRouter>
     );
-    const newName = wrapper.instance().state.label;
+  }
+
+  it("passes updated vocabulary to onSave", () => {
+    const ref = React.createRef<VocabularyEdit>();
+    renderEdit(ref);
+    const newName = Object.assign({}, ref.current!.state.label);
     newName[Constants.DEFAULT_LANGUAGE] = "Metropolitan plan";
-    const newDescription = wrapper.instance().state.label;
+    const newDescription = Object.assign({}, ref.current!.state.label);
     newDescription[Constants.DEFAULT_LANGUAGE] = "Vocabulary description text";
-    wrapper.instance().onChange({ label: newName });
-    wrapper.instance().onChange({ comment: newDescription });
-    wrapper.instance().onSave();
+    ref.current!.onChange({ label: newName });
+    ref.current!.onChange({ comment: newDescription });
+    ref.current!.onSave();
     expect(onSave).toHaveBeenCalled();
     const arg = (onSave as Mock).mock.calls[0][0];
     expect(arg).not.toEqual(vocabulary);
@@ -74,42 +95,19 @@ describe("VocabularyEdit", () => {
   });
 
   it("closes editing view on when clicking on cancel", () => {
-    const wrapper = mountWithIntl(
-      <VocabularyEdit
-        vocabulary={vocabulary}
-        save={onSave}
-        saveDocument={onDocumentSave}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={vi.fn()}
-        publishMessage={vi.fn()}
-        customAttributes={[]}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.find("button#edit-vocabulary-cancel").simulate("click");
+    const { container } = renderEdit();
+    fireEvent.click(container.querySelector("button#edit-vocabulary-cancel")!);
     expect(onCancel).toHaveBeenCalled();
   });
 
   it("correctly sets unmapped properties on save", () => {
     const property = Generator.generateUri();
     vocabulary.unmappedProperties = new Map([[property, ["test"]]]);
-    const wrapper = shallow<VocabularyEdit>(
-      <VocabularyEdit
-        vocabulary={vocabulary}
-        save={onSave}
-        saveDocument={onDocumentSave}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={vi.fn()}
-        publishMessage={vi.fn()}
-        customAttributes={[]}
-        {...intlFunctions()}
-      />
-    );
+    const ref = React.createRef<VocabularyEdit>();
+    renderEdit(ref);
     const updatedProperties = new Map([[property, ["test1", "test2"]]]);
-    wrapper.instance().setState({ unmappedProperties: updatedProperties });
-    wrapper.instance().onSave();
+    act(() => ref.current!.setState({ unmappedProperties: updatedProperties }));
+    ref.current!.onSave();
     const result: Vocabulary = (onSave as Mock).mock.calls[0][0];
     expect(result.unmappedProperties).toEqual(updatedProperties);
     expect(result[property]).toBeDefined();
@@ -117,47 +115,25 @@ describe("VocabularyEdit", () => {
   });
 
   it("passes mapped Term properties for ignoring to UnmappedPropertiesEdit", () => {
-    const wrapper = mountWithIntl(
-      <VocabularyEdit
-        vocabulary={vocabulary}
-        save={onSave}
-        saveDocument={onDocumentSave}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={vi.fn()}
-        publishMessage={vi.fn()}
-        customAttributes={[]}
-        {...intlFunctions()}
-      />
+    const { container } = renderEdit();
+    const ignored: string[] = JSON.parse(
+      container
+        .querySelector(".unmapped-properties-edit")!
+        .getAttribute("data-ignored")!
     );
-    const ignored = wrapper
-      .find(UnmappedPropertiesEdit)
-      .prop("ignoredProperties");
     expect(ignored).toBeDefined();
-    expect(ignored!.indexOf(VocabularyUtils.RDF_TYPE)).not.toEqual(-1);
+    expect(ignored.indexOf(VocabularyUtils.RDF_TYPE)).not.toEqual(-1);
     Object.getOwnPropertyNames((n: string) =>
-      expect(ignored![CONTEXT[n]]).not.toEqual(-1)
+      expect(ignored[CONTEXT[n]]).not.toEqual(-1)
     );
   });
 
   it("onChange updates component state", () => {
-    const wrapper = shallow<VocabularyEdit>(
-      <VocabularyEdit
-        vocabulary={vocabulary}
-        save={onSave}
-        saveDocument={onDocumentSave}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={vi.fn()}
-        publishMessage={vi.fn()}
-        customAttributes={[]}
-        {...intlFunctions()}
-      />
-    );
+    const ref = React.createRef<VocabularyEdit>();
+    renderEdit(ref);
     const importedVocabularies = [{ iri: Generator.generateUri() }];
-    wrapper.instance().onChange({ importedVocabularies });
-    wrapper.update();
-    expect(wrapper.instance().state.importedVocabularies).toEqual(
+    ref.current!.onChange({ importedVocabularies });
+    expect(ref.current!.state.importedVocabularies).toEqual(
       importedVocabularies
     );
   });
@@ -171,22 +147,12 @@ describe("VocabularyEdit", () => {
         cs: "Popis testovacího slovník",
       },
     });
-    const wrapper = shallow<VocabularyEdit>(
-      <VocabularyEdit
-        vocabulary={vocabulary}
-        save={onSave}
-        saveDocument={onDocumentSave}
-        cancel={onCancel}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={vi.fn()}
-        publishMessage={vi.fn()}
-        customAttributes={[]}
-        {...intlFunctions()}
-      />
-    );
-    wrapper.instance().removeTranslation("cs");
-    wrapper.update();
-    expect(wrapper.state().label).toEqual({ en: vocabulary.label.en });
-    expect(wrapper.state().comment).toEqual({ en: vocabulary.comment!.en });
+    const ref = React.createRef<VocabularyEdit>();
+    renderEdit(ref);
+    act(() => ref.current!.removeTranslation("cs"));
+    expect(ref.current!.state.label).toEqual({ en: vocabulary.label.en });
+    expect(ref.current!.state.comment).toEqual({
+      en: vocabulary.comment!.en,
+    });
   });
 });
