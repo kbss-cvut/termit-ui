@@ -11,7 +11,6 @@ import { isLoggedIn } from "./Authorization";
 import { isUsingOidcAuth } from "./OidcUtils";
 import Document from "../model/Document";
 import { TABS } from "../component/vocabulary/VocabularyMetadata";
-import { SkosCollectionData } from "../model/Collection";
 
 export class Routing {
   get history(): History {
