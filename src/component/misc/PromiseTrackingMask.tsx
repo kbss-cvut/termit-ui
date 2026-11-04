@@ -13,7 +13,7 @@ interface PromiseTrackingMaskProps {
 const PromiseTrackingMask: React.FC<PromiseTrackingMaskProps> = ({
   area,
   text,
-  coverViewport,
+  coverViewport = false,
   withoutText,
 }) => {
   const { promiseInProgress } = usePromiseTracker({ area });
@@ -28,10 +28,6 @@ const PromiseTrackingMask: React.FC<PromiseTrackingMaskProps> = ({
         ))}
     </>
   );
-};
-
-PromiseTrackingMask.defaultProps = {
-  coverViewport: false,
 };
 
 export default PromiseTrackingMask;

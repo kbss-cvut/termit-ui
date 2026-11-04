@@ -28,9 +28,4 @@ const Mask: React.FC<MaskProps> = (props) => {
   );
 };
 
-Mask.defaultProps = {
-  classes: "mask",
-  withoutText: false,
-};
-
 export default Mask;

@@ -32,6 +32,12 @@ interface ConfirmCancelDialogProps {
  */
 const ConfirmCancelDialog: React.FC<ConfirmCancelDialogProps> = (props) => {
   const { i18n } = useI18n();
+  const {
+    confirmColor = "primary",
+    confirmDisabled = false,
+    cancelKey = "cancel",
+    cancelColor = "outline-dark",
+  } = props;
 
   return (
     <Modal
@@ -47,32 +53,25 @@ const ConfirmCancelDialog: React.FC<ConfirmCancelDialogProps> = (props) => {
         <ButtonToolbar className="float-right">
           <Button
             id={`${props.id}-submit`}
-            color={props.confirmColor}
+            color={confirmColor}
             size="sm"
-            disabled={props.confirmDisabled}
+            disabled={confirmDisabled}
             onClick={props.onConfirm}
           >
             {i18n(props.confirmKey)}
           </Button>
           <Button
             id={`${props.id}-cancel`}
-            color={props.cancelColor}
+            color={cancelColor}
             size="sm"
             onClick={props.onClose}
           >
-            {i18n(props.cancelKey)}
+            {i18n(cancelKey)}
           </Button>
         </ButtonToolbar>
       </ModalFooter>
     </Modal>
   );
-};
-
-ConfirmCancelDialog.defaultProps = {
-  confirmColor: "primary",
-  confirmDisabled: false,
-  cancelKey: "cancel",
-  cancelColor: "outline-dark",
 };
 
 export default ConfirmCancelDialog;

@@ -12,21 +12,20 @@ export interface MultilingualIconProps {
   className?: string;
 }
 
-const MultilingualIcon: React.FC<MultilingualIconProps> = (props) => {
+const MultilingualIcon: React.FC<MultilingualIconProps> = ({
+  placement = "right",
+  ...props
+}) => {
   const { i18n } = useI18n();
   const cls = classNames("info-icon", props.className);
   return (
     <>
       <HiTranslate id={props.id} className={cls} />
-      <UncontrolledTooltip target={props.id} placement={props.placement}>
+      <UncontrolledTooltip target={props.id} placement={placement}>
         {i18n("multilingual.title")}
       </UncontrolledTooltip>
     </>
   );
-};
-
-MultilingualIcon.defaultProps = {
-  placement: "right",
 };
 
 export default MultilingualIcon;

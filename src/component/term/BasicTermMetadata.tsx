@@ -52,7 +52,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
   term,
   vocabulary,
   language,
-  withDefinitionSource,
+  withDefinitionSource = false,
 }) => {
   const { i18n } = useI18n();
 
@@ -205,10 +205,6 @@ const CollectionListLink: FunctionComponent<{ vocabulary: Vocabulary }> = ({
       <FaLayerGroup size={15} />
     </Link>
   );
-};
-
-BasicTermMetadata.defaultProps = {
-  withDefinitionSource: false,
 };
 
 export default BasicTermMetadata;
