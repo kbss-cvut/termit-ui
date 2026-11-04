@@ -3,13 +3,12 @@ import Generator from "../../../__tests__/environment/Generator";
 import { langString } from "../../../model/MultilingualString";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { TermOccurrenceData } from "../../../model/TermOccurrence";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import TermDefinitionSource from "../TermDefinitionSource";
 import Constants from "../../../util/Constants";
-import TermDefinitionSourceLink from "../TermDefinitionSourceLink";
 
 vi.mock("../TermDefinitionSourceLink", () => ({
-  default: () => <span>Go to source</span>,
+  default: () => <span className="definition-source-link">Go to source</span>,
 }));
 
 describe("TermDefinitionSource", () => {
@@ -19,19 +18,25 @@ describe("TermDefinitionSource", () => {
     definition: langString("Definition of a term test"),
   };
 
+  function renderSource(term: Term, withDefinitionSource: boolean) {
+    return renderWithIntl(
+      <TermDefinitionSource
+        term={term}
+        language={Constants.DEFAULT_LANGUAGE}
+        withDefinitionSource={withDefinitionSource}
+      />
+    );
+  }
+
   // Bug #1562
   it("renders definition source link even when term has no source", () => {
     const definitionSource = generateDefinitionSource();
     const term = new Term(Object.assign({}, termData, { definitionSource }));
 
-    const wrapper = mountWithIntl(
-      <TermDefinitionSource
-        term={term}
-        language={Constants.DEFAULT_LANGUAGE}
-        withDefinitionSource={true}
-      />
-    );
-    expect(wrapper.exists(TermDefinitionSourceLink)).toBeTruthy();
+    const { container } = renderSource(term, true);
+    expect(
+      container.querySelector(".definition-source-link")
+    ).toBeInTheDocument();
   });
   function generateDefinitionSource(): TermOccurrenceData {
     return {
@@ -55,14 +60,10 @@ describe("TermDefinitionSource", () => {
   it("does not attempt to render definition source link when term has no definition source", () => {
     const term = new Term(termData);
 
-    const wrapper = mountWithIntl(
-      <TermDefinitionSource
-        term={term}
-        language={Constants.DEFAULT_LANGUAGE}
-        withDefinitionSource={true}
-      />
-    );
-    expect(wrapper.exists(TermDefinitionSourceLink)).toBeFalsy();
+    const { container } = renderSource(term, true);
+    expect(
+      container.querySelector(".definition-source-link")
+    ).not.toBeInTheDocument();
   });
 
   it("renders definition source link even when term has no definition text", () => {
@@ -71,14 +72,10 @@ describe("TermDefinitionSource", () => {
     const definitionSource: TermOccurrenceData = generateDefinitionSource();
     const term = new Term(Object.assign({}, termData, { definitionSource }));
 
-    const wrapper = mountWithIntl(
-      <TermDefinitionSource
-        term={term}
-        language={Constants.DEFAULT_LANGUAGE}
-        withDefinitionSource={true}
-      />
-    );
-    expect(wrapper.exists(TermDefinitionSourceLink)).toBeTruthy();
+    const { container } = renderSource(term, true);
+    expect(
+      container.querySelector(".definition-source-link")
+    ).toBeInTheDocument();
   });
 
   it("does not render definition source link when configured not to", () => {
@@ -89,13 +86,9 @@ describe("TermDefinitionSource", () => {
       })
     );
 
-    const wrapper = mountWithIntl(
-      <TermDefinitionSource
-        term={term}
-        language={Constants.DEFAULT_LANGUAGE}
-        withDefinitionSource={false}
-      />
-    );
-    expect(wrapper.exists(TermDefinitionSourceLink)).toBeFalsy();
+    const { container } = renderSource(term, false);
+    expect(
+      container.querySelector(".definition-source-link")
+    ).not.toBeInTheDocument();
   });
 });

@@ -1,12 +1,11 @@
 import Generator from "../../../../__tests__/environment/Generator";
 import * as redux from "react-redux";
-import { mountWithIntl } from "../../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../../__tests__/environment/Environment";
 import AccessLevel from "../../../../model/acl/AccessLevel";
-import BadgeButton from "../../../misc/BadgeButton";
 import JsonLdUtils from "../../../../util/JsonLdUtils";
 import RdfsResource, { CONTEXT } from "../../../../model/RdfsResource";
 import Utils from "../../../../util/Utils";
-import TermState, { TermStateDisplay } from "../TermState";
+import TermState from "../TermState";
 import { getLocalized } from "../../../../model/MultilingualString";
 import Constants from "../../../../util/Constants";
 import type { Mock } from "vitest";
@@ -35,10 +34,10 @@ describe("TermState", () => {
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
     const term = Generator.generateTerm(vocabulary.iri);
     term.state = { iri: states[0].iri };
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <TermState term={term} vocabulary={vocabulary} />
     );
-    expect(wrapper.exists(BadgeButton)).toBeFalsy();
+    expect(container.querySelectorAll("button").length).toEqual(0);
   });
 
   it("maps state IRI to label based on state options stored in Redux store", async () => {
@@ -55,12 +54,11 @@ describe("TermState", () => {
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
     const term = Generator.generateTerm(vocabulary.iri);
     term.state = { iri: states[1].iri };
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <TermState term={term} vocabulary={vocabulary} />
     );
     return Promise.resolve().then(() => {
-      const display = wrapper.find(TermStateDisplay);
-      expect(display.text()).toContain(
+      expect(container.textContent).toContain(
         getLocalized(states[1].label, Constants.DEFAULT_LANGUAGE)
       );
     });

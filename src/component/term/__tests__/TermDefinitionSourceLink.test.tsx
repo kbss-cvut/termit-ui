@@ -8,10 +8,11 @@ import { TermDefinitionSourceLink } from "../TermDefinitionSourceLink";
 import {
   flushPromises,
   mockStore,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
 import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router";
+import { fireEvent } from "@testing-library/react";
 import { langString } from "../../../model/MultilingualString";
 import ActionType from "../../../action/ActionType";
 import * as Actions from "../../../action/AsyncResourceActions";
@@ -57,7 +58,7 @@ describe("TermDefinitionSourceLink", () => {
       types: [VocabularyUtils.TEXT_QUOTE_SELECTOR],
     };
     term.definitionSource!.target!.selectors = [selector];
-    const wrapper = mountWithIntl(
+    const { container } = renderWithIntl(
       <MemoryRouter>
         <TermDefinitionSourceLink term={term} />
       </MemoryRouter>
@@ -65,9 +66,9 @@ describe("TermDefinitionSourceLink", () => {
     await act(async () => {
       await flushPromises();
     });
-    wrapper
-      .find("button#term-metadata-definitionSource-goto")
-      .simulate("click");
+    fireEvent.click(
+      container.querySelector("button#term-metadata-definitionSource-goto")!
+    );
     const action = mockStore
       .getActions()
       .find((a) => a.type === ActionType.PUSH_ROUTING_PAYLOAD);
@@ -78,7 +79,7 @@ describe("TermDefinitionSourceLink", () => {
 
   it("loads file metadata on mount", async () => {
     vi.spyOn(Actions, "loadFileMetadata");
-    mountWithIntl(
+    renderWithIntl(
       <MemoryRouter>
         <TermDefinitionSourceLink term={term} />
       </MemoryRouter>
