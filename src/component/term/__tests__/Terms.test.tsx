@@ -14,7 +14,7 @@ import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
 import { DEFAULT_CONFIGURATION } from "../../../model/Configuration";
 import { renderWithIntl } from "../../../__tests__/environment/Environment";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 
 vi.mock("../../../util/Routing");
@@ -203,19 +203,22 @@ describe("Terms", () => {
     );
   }
 
-  it("disables include imported terms toggle when fetching terms", () => {
+  it("disables include imported terms toggle when fetching terms", async () => {
     const ref = React.createRef<Terms>();
     const { rerender } = renderTerms({}, ref);
     expect(ref.current!.state.disableIncludeImportedToggle).toBeFalsy();
-    fetchTerms = vi.fn().mockImplementation(() => {
-      expect(ref.current!.state.disableIncludeImportedToggle).toBeTruthy();
-      return Promise.resolve([]);
-    });
+    fetchTerms = vi.fn().mockImplementation(() => Promise.resolve([]));
     rerender(termsElement({ fetchTerms }, ref));
-    return ref.current!.fetchOptions({}).then(() => {
-      expect(fetchTerms).toHaveBeenCalled();
-      expect(ref.current!.state.disableIncludeImportedToggle).toBeFalsy();
+    let promise!: Promise<unknown>;
+    act(() => {
+      promise = ref.current!.fetchOptions({});
     });
+    expect(fetchTerms).toHaveBeenCalled();
+    expect(ref.current!.state.disableIncludeImportedToggle).toBeTruthy();
+    await act(async () => {
+      await promise;
+    });
+    expect(ref.current!.state.disableIncludeImportedToggle).toBeFalsy();
   });
 
   describe("fetchOptions", () => {

@@ -9,7 +9,7 @@ import Document from "../../../model/Document";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import { fireEvent } from "@testing-library/react";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import { MemoryRouter } from "react-router";
 import type { Mock } from "vitest";
 import { selectVocabularyLanguages } from "../../../store/StateSelectors";
@@ -84,9 +84,11 @@ describe("VocabularyEdit", () => {
     newName[Constants.DEFAULT_LANGUAGE] = "Metropolitan plan";
     const newDescription = Object.assign({}, ref.current!.state.label);
     newDescription[Constants.DEFAULT_LANGUAGE] = "Vocabulary description text";
-    ref.current!.onChange({ label: newName });
-    ref.current!.onChange({ comment: newDescription });
-    ref.current!.onSave();
+    act(() => {
+      ref.current!.onChange({ label: newName });
+      ref.current!.onChange({ comment: newDescription });
+    });
+    act(() => ref.current!.onSave());
     expect(onSave).toHaveBeenCalled();
     const arg = (onSave as Mock).mock.calls[0][0];
     expect(arg).not.toEqual(vocabulary);
@@ -107,7 +109,7 @@ describe("VocabularyEdit", () => {
     renderEdit(ref);
     const updatedProperties = new Map([[property, ["test1", "test2"]]]);
     act(() => ref.current!.setState({ unmappedProperties: updatedProperties }));
-    ref.current!.onSave();
+    act(() => ref.current!.onSave());
     const result: Vocabulary = (onSave as Mock).mock.calls[0][0];
     expect(result.unmappedProperties).toEqual(updatedProperties);
     expect(result[property]).toBeDefined();
@@ -132,7 +134,7 @@ describe("VocabularyEdit", () => {
     const ref = React.createRef<VocabularyEdit>();
     renderEdit(ref);
     const importedVocabularies = [{ iri: Generator.generateUri() }];
-    ref.current!.onChange({ importedVocabularies });
+    act(() => ref.current!.onChange({ importedVocabularies }));
     expect(ref.current!.state.importedVocabularies).toEqual(
       importedVocabularies
     );

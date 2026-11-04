@@ -57,6 +57,8 @@ window.getComputedStyle = (elt: Element, pseudoElt?: string | null) =>
 
 enableHooks(vi, { dontMockByDefault: true });
 
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
 import.meta.env.VITE_VERSION = "0.0.1";
 import.meta.env.VITE_SERVER_URL = "http://localhost:8080/termit";
 import.meta.env.VITE_DEPLOYMENT_NAME = "";
