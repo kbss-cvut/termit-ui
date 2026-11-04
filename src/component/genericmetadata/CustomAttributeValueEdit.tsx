@@ -37,9 +37,9 @@ export const CustomAttributeValueEdit: React.FC<{
   };
 
   if (attribute.rangeIri === VocabularyUtils.XSD_BOOLEAN) {
+    const valuesArr = Utils.sanitizeArray(values as PropertyValueType[]);
     const checked =
-      Utils.sanitizeArray(values as PropertyValueType[]).length > 0 &&
-      Boolean(extractPropertyValue(values[0]));
+      valuesArr.length > 0 && Boolean(extractPropertyValue(valuesArr[0]));
     return (
       <div className="form-group">
         <CustomCheckBoxInput

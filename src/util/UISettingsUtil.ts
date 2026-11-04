@@ -18,7 +18,11 @@ export function getInitialPageSize() {
   const savedSize = Number(
     BrowserStorage.get(Constants.STORAGE_TABLE_PAGE_SIZE_KEY)
   );
-  if (savedSize && Number.isFinite(savedSize)) {
+  if (
+    savedSize &&
+    Number.isFinite(savedSize) &&
+    savedSize <= Constants.MAX_PAGE_SIZE
+  ) {
     return savedSize;
   }
   return PAGE_SIZES[Math.round(PAGE_SIZES.length / 2)];

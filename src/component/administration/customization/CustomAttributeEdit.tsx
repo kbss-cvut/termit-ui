@@ -52,7 +52,6 @@ import {
 import Utils from "../../../util/Utils";
 import CustomToggle from "../../misc/CustomToggle";
 import HelpIcon from "../../misc/HelpIcon";
-import { FaInfoCircle } from "react-icons/fa";
 
 function propertyWithLabelExists(
   label: string,
@@ -369,22 +368,6 @@ export const CustomAttributeEdit: React.FC = () => {
                       "administration.customization.customAttributes.symmetric.help"
                     )}
                   />
-                  {editingMode &&
-                    editedAttribute &&
-                    symmetric !==
-                      CustomAttribute.isSymmetric(editedAttribute) && (
-                      <div
-                        id="custom-attribute-symmetric-change-note"
-                        className="form-text text-muted"
-                      >
-                        <FaInfoCircle className="mr-1 info-icon" />
-                        {i18n(
-                          symmetric
-                            ? "administration.customization.customAttributes.symmetric.enable.help"
-                            : "administration.customization.customAttributes.symmetric.disable.help"
-                        )}
-                      </div>
-                    )}
                 </Col>
               </Row>
             </ShowAdvancedAssetFields>
