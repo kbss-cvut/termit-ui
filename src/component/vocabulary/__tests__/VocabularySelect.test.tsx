@@ -3,13 +3,11 @@ import {
   EMPTY_VOCABULARY,
 } from "../../../model/Vocabulary";
 import VocabularySelect from "../VocabularySelect";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
-import { DropdownItem, DropdownToggle } from "reactstrap";
 import * as redux from "react-redux";
-import { withHooks } from "vitest-react-hooks-shallow";
-import { shallow } from "enzyme";
 import * as Actions from "../../../action/AsyncActions";
+import { fireEvent } from "@testing-library/react";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -41,26 +39,24 @@ describe("VocabularySelect", () => {
     vi.spyOn(Actions, "loadVocabulariesIfNotLoaded").mockReturnValue(
       loadAction
     );
-    withHooks(() => {
-      mockUseI18n();
-      shallow(
-        <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
-      );
-      expect(Actions.loadVocabulariesIfNotLoaded).toHaveBeenCalled();
-      expect(fakeDispatch).toHaveBeenCalledWith(loadAction);
-    });
+    mockUseI18n();
+    renderWithIntl(
+      <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
+    );
+    expect(Actions.loadVocabulariesIfNotLoaded).toHaveBeenCalled();
+    expect(fakeDispatch).toHaveBeenCalledWith(loadAction);
   });
 
   it("VocabularySelect Selection calls the callback", () => {
     (redux.useSelector as Mock).mockReturnValue(vocabularies);
-    withHooks(() => {
-      mockUseI18n();
-      const wrapper = mountWithIntl(
-        <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
-      );
-      wrapper.find(DropdownToggle).simulate("click");
-      wrapper.find(DropdownItem).simulate("click");
-      expect(onVocabularySet).toHaveBeenCalled();
-    });
+    const fakeDispatch = vi.fn();
+    (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
+    mockUseI18n();
+    const { container } = renderWithIntl(
+      <VocabularySelect vocabulary={voc} onVocabularySet={onVocabularySet} />
+    );
+    fireEvent.click(container.querySelector(".dropdown-toggle")!);
+    fireEvent.click(container.querySelector(".m-vocabulary-select-item")!);
+    expect(onVocabularySet).toHaveBeenCalled();
   });
 });

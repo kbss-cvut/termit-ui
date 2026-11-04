@@ -3,22 +3,20 @@ import Document from "../../../model/Document";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { VocabularyMetadata } from "../VocabularyMetadata";
-import { shallow } from "enzyme";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import {
   flushPromises,
-  mountWithIntl,
+  renderWithIntl,
 } from "../../../__tests__/environment/Environment";
 import { act } from "react-dom/test-utils";
 import { Location } from "history";
-import { match as Match } from "react-router";
+import { match as Match, MemoryRouter } from "react-router";
 import { langString } from "../../../model/MultilingualString";
 import Constants from "../../../util/Constants";
 import * as redux from "react-redux";
 import * as SyncActions from "../../../action/SyncActions";
 import { ThunkDispatch, useAppSelector } from "../../../util/Types";
 import type { Mock } from "vitest";
-import Tabs from "../../misc/Tabs";
 import { selectVocabularyLanguages } from "../../../store/StateSelectors";
 
 vi.mock("../../../util/Types", async (importOriginal) => ({
@@ -33,7 +31,9 @@ vi.mock("react-redux", async (importOriginal) => {
   };
 });
 vi.mock("../../misc/Tabs", () => ({
-  default: () => <div className="tabs" />,
+  default: (props: { activeTabLabelKey?: string }) => (
+    <div className="tabs" data-active-tab={props.activeTabLabelKey} />
+  ),
 }));
 vi.mock("../../../store/StateSelectors", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../../store/StateSelectors")>()),
@@ -84,6 +84,21 @@ describe("VocabularyMetadata", () => {
     };
   });
 
+  function renderMetadata() {
+    return renderWithIntl(
+      <MemoryRouter>
+        <VocabularyMetadata
+          vocabulary={vocabulary}
+          location={location}
+          match={match}
+          language={Constants.DEFAULT_LANGUAGE}
+          selectLanguage={vi.fn()}
+          onChange={onChange}
+        />
+      </MemoryRouter>
+    );
+  }
+
   it("sets selected tab to terms tab on mount", () => {
     vocabulary.document = new Document({
       iri: Generator.generateUri(),
@@ -91,19 +106,10 @@ describe("VocabularyMetadata", () => {
       files: [],
       types: [VocabularyUtils.RESOURCE, VocabularyUtils.DOCUMENT],
     });
-    const wrapper = shallow(
-      <VocabularyMetadata
-        vocabulary={vocabulary}
-        location={location}
-        match={match}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={vi.fn()}
-        onChange={onChange}
-      />
-    );
-    expect(wrapper.find(Tabs).prop("activeTabLabelKey")).toEqual(
-      "glossary.title"
-    );
+    const { container } = renderMetadata();
+    expect(
+      container.querySelector(".tabs")!.getAttribute("data-active-tab")
+    ).toEqual("glossary.title");
   });
 
   it("resets selected term on mount", async () => {
@@ -114,16 +120,7 @@ describe("VocabularyMetadata", () => {
       files: [],
       types: [VocabularyUtils.RESOURCE, VocabularyUtils.DOCUMENT],
     });
-    mountWithIntl(
-      <VocabularyMetadata
-        vocabulary={vocabulary}
-        location={location}
-        match={match}
-        language={Constants.DEFAULT_LANGUAGE}
-        selectLanguage={vi.fn()}
-        onChange={onChange}
-      />
-    );
+    renderMetadata();
     await act(async () => {
       await flushPromises();
     });
