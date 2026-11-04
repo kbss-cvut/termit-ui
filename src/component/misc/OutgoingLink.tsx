@@ -11,9 +11,10 @@ interface OutgoingLinkProps {
   id?: string;
 }
 
-export const OutgoingLink: React.FC<OutgoingLinkProps> = (
-  props: OutgoingLinkProps
-) => {
+export const OutgoingLink: React.FC<OutgoingLinkProps> = ({
+  showLink = true,
+  ...props
+}) => {
   const { formatMessage } = useI18n();
   return (
     <span>
@@ -27,7 +28,7 @@ export const OutgoingLink: React.FC<OutgoingLinkProps> = (
         rel="noopener noreferrer"
         title={formatMessage("link.external.title", { url: props.iri })}
       >
-        <span className={props.showLink ? "" : "hidden"}>
+        <span className={showLink ? "" : "hidden"}>
           &nbsp;
           <small>
             <i className="fas fa-external-link-alt text-primary" />
@@ -36,10 +37,6 @@ export const OutgoingLink: React.FC<OutgoingLinkProps> = (
       </a>
     </span>
   );
-};
-
-OutgoingLink.defaultProps = {
-  showLink: true,
 };
 
 export default OutgoingLink;
