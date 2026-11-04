@@ -1,7 +1,7 @@
-import { Link, MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import Vocabulary from "../../../model/Vocabulary";
 import VocabularyLink from "../VocabularyLink";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
 import Generator from "../../../__tests__/environment/Generator";
 import TermItStore from "../../../store/TermItStore";
@@ -22,15 +22,21 @@ describe("Vocabulary Link links to correct internal asset", () => {
       iri: namespace + fragment,
     });
 
-  it("links to vocabulary view", () => {
-    const vocabulary = vocGen(namespace);
-    TermItStore.getState().user = Generator.generateUser();
-    const link = mountWithIntl(
+  function renderLink(vocabulary: Vocabulary) {
+    return renderWithIntl(
       <MemoryRouter>
         <VocabularyLink vocabulary={vocabulary} {...intlFunctions()} />
       </MemoryRouter>
-    ).find(Link);
-    expect((link.props() as any).to).toEqual(
+    );
+  }
+
+  it("links to vocabulary view", () => {
+    const vocabulary = vocGen(namespace);
+    TermItStore.getState().user = Generator.generateUser();
+    const { container } = renderLink(vocabulary);
+    expect(
+      container.querySelector('a[href^="/"]')!.getAttribute("href")
+    ).toEqual(
       "/vocabularies/" +
         fragment +
         "?namespace=" +
@@ -40,12 +46,10 @@ describe("Vocabulary Link links to correct internal asset", () => {
 
   it("links to public vocabulary view when current user is empty", () => {
     const vocabulary = vocGen(namespace);
-    const link = mountWithIntl(
-      <MemoryRouter>
-        <VocabularyLink vocabulary={vocabulary} {...intlFunctions()} />
-      </MemoryRouter>
-    ).find(Link);
-    expect((link.props() as any).to).toEqual(
+    const { container } = renderLink(vocabulary);
+    expect(
+      container.querySelector('a[href^="/"]')!.getAttribute("href")
+    ).toEqual(
       "/public/vocabularies/" +
         fragment +
         "?namespace=" +

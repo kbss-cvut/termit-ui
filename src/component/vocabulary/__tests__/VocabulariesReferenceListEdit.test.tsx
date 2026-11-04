@@ -1,15 +1,13 @@
 import Vocabulary from "../../../model/Vocabulary";
 import Generator from "../../../__tests__/environment/Generator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import { shallow } from "enzyme";
 import VocabulariesReferenceListEdit from "../VocabulariesReferenceListEdit";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
-import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { langString } from "../../../model/MultilingualString";
 import * as Redux from "react-redux";
 import { ThunkDispatch } from "src/util/Types";
 import * as AsyncActions from "../../../action/AsyncActions";
-import { mountWithIntl } from "../../../__tests__/environment/Environment";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../../misc/HelpIcon", () => ({
@@ -24,6 +22,14 @@ vi.mock("react-redux", async (importOriginal) => {
     useDispatch: vi.fn(),
   };
 });
+
+const mocks = vi.hoisted(() => ({ selectProps: {} as any }));
+vi.mock("intelligent-tree-select", () => ({
+  IntelligentTreeSelect: (props: any) => {
+    mocks.selectProps = props;
+    return <div data-testid="tree-select" />;
+  },
+}));
 
 describe("VocabulariesReferenceListEdit", () => {
   let vocabularies: { [key: string]: Vocabulary };
@@ -63,7 +69,7 @@ describe("VocabulariesReferenceListEdit", () => {
 
   it("loads vocabularies after mount when they are not loaded yet", () => {
     vi.spyOn(Redux, "useSelector").mockReturnValue({});
-    mountWithIntl(
+    renderWithIntl(
       <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
         onChange={onChange}
@@ -77,7 +83,8 @@ describe("VocabulariesReferenceListEdit", () => {
   });
 
   it("renders select without any value when no imported vocabularies are specified", () => {
-    const wrapper = shallow(
+    vi.spyOn(Redux, "useSelector").mockReturnValue(vocabularies);
+    renderWithIntl(
       <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
         onChange={onChange}
@@ -86,7 +93,7 @@ describe("VocabulariesReferenceListEdit", () => {
         helpKey="vocabulary.importedVocabularies.help"
       />
     );
-    expect(wrapper.find(IntelligentTreeSelect).prop("value")).toEqual([]);
+    expect(mocks.selectProps.value).toEqual([]);
   });
 
   it("calls onChange with selected vocabularies IRIs on vocabulary selection", () => {
@@ -94,7 +101,7 @@ describe("VocabulariesReferenceListEdit", () => {
     const vocabularyArray = Object.keys(vocabularies).map(
       (v) => vocabularies[v]
     );
-    const wrapper = shallow(
+    renderWithIntl(
       <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
         onChange={onChange}
@@ -103,9 +110,7 @@ describe("VocabulariesReferenceListEdit", () => {
         helpKey="vocabulary.importedVocabularies.help"
       />
     );
-    (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)(
-      vocabularyArray
-    );
+    (mocks.selectProps.onChange as any)(vocabularyArray);
     expect(onChange).toHaveBeenCalledWith({
       importedVocabularies: vocabularyArray.map((v) => ({ iri: v.iri })),
     });
@@ -113,7 +118,8 @@ describe("VocabulariesReferenceListEdit", () => {
 
   it("calls onChange with empty array when vocabulary selector is reset", () => {
     const selected = Object.keys(vocabularies).map((k) => ({ iri: k }));
-    const wrapper = shallow(
+    vi.spyOn(Redux, "useSelector").mockReturnValue(vocabularies);
+    renderWithIntl(
       <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
         selectedVocabularies={selected}
@@ -123,12 +129,13 @@ describe("VocabulariesReferenceListEdit", () => {
         helpKey="vocabulary.importedVocabularies.help"
       />
     );
-    (wrapper.find(IntelligentTreeSelect).prop("onChange") as any)([]);
+    (mocks.selectProps.onChange as any)([]);
     expect(onChange).toHaveBeenCalledWith({ importedVocabularies: [] });
   });
 
   it("does not offer the vocabulary itself for importing", () => {
-    const wrapper = shallow(
+    vi.spyOn(Redux, "useSelector").mockReturnValue(vocabularies);
+    renderWithIntl(
       <VocabulariesReferenceListEdit
         vocabulary={vocabulary}
         onChange={onChange}
@@ -137,9 +144,7 @@ describe("VocabulariesReferenceListEdit", () => {
         helpKey="vocabulary.importedVocabularies.help"
       />
     );
-    const options: Vocabulary[] = wrapper
-      .find(IntelligentTreeSelect)
-      .prop("options");
+    const options: Vocabulary[] = mocks.selectProps.options;
     expect(options.find((v) => v.iri === vocabulary.iri)).not.toBeDefined();
   });
 });

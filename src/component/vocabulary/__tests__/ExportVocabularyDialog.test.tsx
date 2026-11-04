@@ -8,7 +8,8 @@ import ExportConfig, {
   ExportType,
 } from "../../../model/local/ExportConfig";
 import type { Mock } from "vitest";
-import { mountWithIntlAttached } from "../../annotator/__tests__/AnnotationUtil";
+import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import { fireEvent } from "@testing-library/react";
 
 vi.mock("react-redux", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -18,7 +19,7 @@ vi.mock("react-redux", async (importOriginal) => {
   };
 });
 
-describe.skip("ExportVocabularyDialog", () => {
+describe("ExportVocabularyDialog", () => {
   const vocabulary = Generator.generateVocabulary();
 
   let onClose: () => void;
@@ -27,6 +28,10 @@ describe.skip("ExportVocabularyDialog", () => {
     onClose = vi.fn();
     vi.clearAllMocks();
   });
+
+  function changeInput(name: string) {
+    fireEvent.click(document.querySelector(`input[name='${name}']`)!);
+  }
 
   it.each([
     [ExportType.SKOS, ExportFormat.Excel],
@@ -37,10 +42,12 @@ describe.skip("ExportVocabularyDialog", () => {
   ])(
     "exports %p in format %p when selected",
     (type: ExportType, format: ExportFormat) => {
-      const wrapper = mockActionAndRender();
-      wrapper.find("input").find({ name: type }).simulate("change");
-      wrapper.find("input").find({ name: format.mimeType }).simulate("change");
-      wrapper.find("button#vocabulary-export-submit").simulate("click");
+      mockActionAndRender();
+      changeInput(type);
+      changeInput(format.mimeType);
+      fireEvent.click(
+        document.querySelector("button#vocabulary-export-submit")!
+      );
       expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalledWith(
         VocabularyUtils.create(vocabulary.iri),
         new ExportConfig(type, format)
@@ -53,7 +60,7 @@ describe.skip("ExportVocabularyDialog", () => {
     (redux.useDispatch as Mock).mockReturnValue(fakeDispatch);
     vi.spyOn(AsyncVocabularyActions, "exportGlossary");
 
-    return mountWithIntlAttached(
+    return renderWithIntl(
       <ExportVocabularyDialog
         show={true}
         onClose={onClose}
@@ -70,10 +77,12 @@ describe.skip("ExportVocabularyDialog", () => {
   ])(
     "exports %p in format %p when selected",
     (type: ExportType, format: ExportFormat) => {
-      const wrapper = mockActionAndRender();
-      wrapper.find("input").find({ name: type }).simulate("change");
-      wrapper.find("input").find({ name: format.mimeType }).simulate("change");
-      wrapper.find("button#vocabulary-export-submit").simulate("click");
+      mockActionAndRender();
+      changeInput(type);
+      changeInput(format.mimeType);
+      fireEvent.click(
+        document.querySelector("button#vocabulary-export-submit")!
+      );
       const expectedConfig = new ExportConfig(type, format);
       expectedConfig.referenceProperties = [VocabularyUtils.SKOS_EXACT_MATCH];
       expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalledWith(
@@ -90,10 +99,12 @@ describe.skip("ExportVocabularyDialog", () => {
   ])(
     "switches to from invalid export type %p to correct export type when format %p is selected",
     (type: ExportType, format: ExportFormat) => {
-      const wrapper = mockActionAndRender();
-      wrapper.find("input").find({ name: format.mimeType }).simulate("change");
-      wrapper.find("input").find({ name: type }).simulate("change");
-      wrapper.find("button#vocabulary-export-submit").simulate("click");
+      mockActionAndRender();
+      changeInput(format.mimeType);
+      changeInput(type);
+      fireEvent.click(
+        document.querySelector("button#vocabulary-export-submit")!
+      );
       expect(AsyncVocabularyActions.exportGlossary).toHaveBeenCalled();
       const exportConf = (AsyncVocabularyActions.exportGlossary as Mock).mock
         .calls[0][1];
@@ -103,12 +114,9 @@ describe.skip("ExportVocabularyDialog", () => {
   );
 
   it("closes dialog after export", () => {
-    const wrapper = mockActionAndRender();
-    wrapper
-      .find("input")
-      .find({ name: ExportFormat.RdfXml.mimeType })
-      .simulate("change");
-    wrapper.find("button#vocabulary-export-submit").simulate("click");
+    mockActionAndRender();
+    changeInput(ExportFormat.RdfXml.mimeType);
+    fireEvent.click(document.querySelector("button#vocabulary-export-submit")!);
     return Promise.resolve().then(() => {
       expect(onClose).toHaveBeenCalled();
     });
