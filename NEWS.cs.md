@@ -1,3 +1,11 @@
+#### Verze 5.2.0
+
+- Podpora pro symetrické vlastní atributy
+- Podpora řazení pojmů v tabulkovém rozhraní slovníku (dle názvu, notace)
+- Přidána podpora pro migraci identifikátoru pojmu či slovníku
+- Přidána podpora vícejazyčného textu jako hodnoty vlastního atributu
+- Automatické generování jmenného prostoru (namespace) slovníku
+
 #### Verze 5.1.0
 
 - Podpora pro rollback změn slovníků a pojmů
