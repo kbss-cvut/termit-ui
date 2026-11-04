@@ -95,7 +95,7 @@ const CollectionMetadataEdit: FunctionComponent<
 
   const [collection, setCollection] = useState<SkosCollectionDto | null>(null);
 
-  const loadCollection = useCallback(() => {
+  useEffect(() => {
     if (!collectionUri) {
       return;
     }
@@ -109,10 +109,6 @@ const CollectionMetadataEdit: FunctionComponent<
       }
     });
   }, [collectionUri, dispatch, vocabularyUri]);
-
-  useEffect(() => {
-    loadCollection();
-  }, [loadCollection]);
 
   const isNewCollection = collection == null;
   // the identifier is generated from the title until the user modifies it manually
