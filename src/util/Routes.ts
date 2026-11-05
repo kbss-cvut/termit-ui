@@ -85,6 +85,18 @@ const Routes = {
     "vocabularyTermDetail",
     "/vocabularies/:name/terms/:termName"
   ),
+  vocabularyCollectionDetail: new Route(
+    "vocabularyCollectionDetail",
+    "/vocabularies/:name/collections/:collectionName"
+  ),
+  editVocabularyCollection: new Route(
+    "editVocabularyCollection",
+    "/vocabularies/:name/collections/:collectionName/edit"
+  ),
+  createVocabularyCollection: new Route(
+    "createVocabularyCollection",
+    "/vocabularies/:name/collections/create"
+  ),
   vocabularyTermSnapshotDetail: new Route(
     "vocabularyTermSnapshotDetail",
     "/vocabularies/:name/terms/:termName/versions/:timestamp"

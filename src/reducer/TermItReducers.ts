@@ -52,6 +52,8 @@ import AnnotatedTermRelationship from "../model/meta/AnnotatedTermRelationship";
 import { selectMultilingualCustomAttributeIris } from "../store/StateSelectors";
 import { compactMultilingualCustomAttributeValues } from "../model/MultilingualString";
 import { HasUnmappedProperties } from "../model/WithUnmappedProperties";
+import { SkosCollection } from "../model/Collection";
+import { ResultPage } from "../model/ResultPage";
 
 function isAsyncSuccess(action: Action) {
   return (action as AsyncAction).status === AsyncActionStatus.SUCCESS;
@@ -899,6 +901,40 @@ function showTermsFlatList(
   return state;
 }
 
+function selectedCollection(
+  state: SkosCollection | null = null,
+  action: AsyncActionSuccess<SkosCollection>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_COLLECTION:
+      if (isAsyncSuccess(action)) {
+        return action.payload;
+      }
+      break;
+  }
+  return state;
+}
+
+function skosCollections(
+  state: ResultPage<SkosCollection> | null = null,
+  action: AsyncActionSuccess<ResultPage<SkosCollection>>
+) {
+  switch (action.type) {
+    case ActionType.LOAD_COLLECTIONS:
+      if (isAsyncSuccess(action)) {
+        return action.payload;
+      }
+      break;
+    case ActionType.CREATE_COLLECTION: // fallthrough
+    case ActionType.REMOVE_COLLECTION:
+      if (isAsyncSuccess(action)) {
+        return null; // reset data to force refetch
+      }
+      break;
+  }
+  return state;
+}
+
 const rootReducer = combineReducers<TermItState>({
   user,
   loading,
@@ -942,6 +978,8 @@ const rootReducer = combineReducers<TermItState>({
   accessLevels,
   runningTasks,
   showTermsFlatList,
+  selectedCollection,
+  skosCollections,
 });
 
 export default rootReducer;

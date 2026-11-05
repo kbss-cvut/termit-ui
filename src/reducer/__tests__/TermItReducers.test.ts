@@ -63,6 +63,8 @@ function stateToPlainObject(state: TermItState): TermItState {
     messages: state.messages,
     intl: state.intl,
     selectedTerm: state.selectedTerm,
+    selectedCollection: state.selectedCollection,
+    skosCollections: state.skosCollections,
     fileContent: state.fileContent,
     searchListenerCount: state.searchListenerCount,
     searchInProgress: state.searchInProgress,
