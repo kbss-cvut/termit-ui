@@ -80,6 +80,7 @@ import {
   IriMigrationType,
   MigrationParams,
 } from "../model/IriMigrationType";
+import { SkosCollection } from "../model/Collection";
 
 /*
  * Asynchronous actions involve requests to the backend server REST API. As per recommendations in the Redux docs, this consists
@@ -1223,7 +1224,7 @@ export function loadHistory(
   const action = { type: historyConf.actionType };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    let params = param("namespace", assetIri.namespace);
+    let params = historyConf.params;
     if (filterData) {
       for (const [key, value] of Object.entries(filterData)) {
         params = params.param(key, value);
@@ -1250,15 +1251,32 @@ export function loadHistory(
 
 function resolveHistoryLoadingParams(asset: Asset, assetIri: IRI) {
   const types = Utils.sanitizeArray(asset.types);
+  const params = param("namespace", assetIri.namespace);
   if (types.indexOf(VocabularyUtils.TERM) !== -1) {
     return {
       actionType: ActionType.LOAD_TERM_HISTORY,
       url: `${Constants.API_PREFIX}/terms/${assetIri.fragment}/history`,
+      params,
     };
   } else if (types.indexOf(VocabularyUtils.VOCABULARY) !== -1) {
     return {
       actionType: ActionType.LOAD_VOCABULARY_HISTORY,
       url: `${Constants.API_PREFIX}/vocabularies/${assetIri.fragment}/history`,
+      params,
+    };
+  } else if (
+    types.indexOf(VocabularyUtils.SKOS_COLLECTION) !== -1 &&
+    asset instanceof SkosCollection
+  ) {
+    const vocabularyUri = VocabularyUtils.create(asset.vocabulary.iri);
+    const collectionParams = param("namespace", vocabularyUri.namespace).param(
+      "collectionNamespace",
+      assetIri.namespace
+    );
+    return {
+      actionType: ActionType.LOAD_COLLECTION_HISTORY,
+      url: `${Constants.API_PREFIX}/vocabularies/${vocabularyUri.fragment}/collections/${assetIri.fragment}/history`,
+      params: collectionParams,
     };
   }
   throw new TypeError("Asset " + asset + "does not support history.");

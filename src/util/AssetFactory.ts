@@ -27,6 +27,7 @@ import DeleteRecord, {
   DeleteRecordData,
 } from "../model/changetracking/DeleteRecord";
 import IdentifierChangeRecord from "../model/changetracking/IdentifierChangeRecord";
+import { OrderedCollectionMembersUpdateChangeRecord } from "../model/changetracking/OrderedCollectionMembersUpdateChangeRecord";
 
 const AssetFactory = {
   /**
@@ -123,6 +124,14 @@ const AssetFactory = {
       data.types.indexOf(VocabularyUtils.REPLACEMENT_OF_ENTITY) !== -1
     ) {
       return new IdentifierChangeRecord(data as IdentifierChangeRecord);
+    } else if (
+      data.types.indexOf(
+        VocabularyUtils.ORDERED_COLLECTION_MEMBERS_UPDATE_EVENT
+      ) !== -1
+    ) {
+      return new OrderedCollectionMembersUpdateChangeRecord(
+        data as UpdateRecordData
+      );
     } else if (data.types.indexOf(VocabularyUtils.UPDATE_EVENT) !== -1) {
       return new UpdateRecord(data as UpdateRecordData);
     } else if (data.types.indexOf(VocabularyUtils.DELETE_EVENT) !== -1) {
