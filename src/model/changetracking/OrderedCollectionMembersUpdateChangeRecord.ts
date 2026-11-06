@@ -38,6 +38,9 @@ export class OrderedCollectionMembersUpdateChangeRecord
 }
 
 function processRdfCollection(rdfCollection: object): HasIdentifier[] {
+  if (Array.isArray(rdfCollection)) {
+    return rdfCollection;
+  }
   if (!("@list" in rdfCollection)) {
     throw new Error("Unable to process RdfCollection, no @list is present");
   }
