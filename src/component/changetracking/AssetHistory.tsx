@@ -31,6 +31,8 @@ import { trackPromise } from "react-promise-tracker";
 import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import IdentifierChangeRecord from "../../model/changetracking/IdentifierChangeRecord";
 import IdentifierChangeRow from "./IdentifierChangeRow";
+import { OrderedCollectionMembersUpdateChangeRecord } from "../../model/changetracking/OrderedCollectionMembersUpdateChangeRecord";
+import { OrderedCollectionMembersUpdateChangeRow } from "./OrderedCollectionMembersUpdateChangeRow";
 
 interface AssetHistoryProps {
   asset: Asset;
@@ -211,6 +213,14 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
             }
             if (r instanceof IdentifierChangeRecord) {
               return <IdentifierChangeRow key={r.iri} record={r} />;
+            }
+            if (r instanceof OrderedCollectionMembersUpdateChangeRecord) {
+              return (
+                <OrderedCollectionMembersUpdateChangeRow
+                  key={r.iri}
+                  record={r}
+                />
+              );
             }
             return null;
           })}

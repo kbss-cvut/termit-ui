@@ -20,9 +20,11 @@ import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValue
 import Tabs from "../misc/Tabs";
 import UnmappedProperties from "../genericmetadata/UnmappedProperties";
 import { useAppSelector } from "../../util/Types";
+import AssetHistory from "../changetracking/AssetHistory";
 
 enum TabKey {
   MEMBERS = "collection.members",
+  HISTORY = "history.label",
   PROPERTIES = "properties.edit.title",
 }
 
@@ -50,6 +52,7 @@ export const CollectionMetadata: FunctionComponent<{
       [TabKey.MEMBERS]: (
         <MembersTab {...{ collection, vocabulary, setTotalMembersCount }} />
       ),
+      [TabKey.HISTORY]: collection ? <AssetHistory asset={collection} /> : null,
       [TabKey.PROPERTIES]: (
         <UnmappedProperties
           properties={collection?.unmappedProperties ?? new Map()}
