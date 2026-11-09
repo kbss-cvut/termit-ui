@@ -9,6 +9,7 @@ import { ChangeObject, diffArrays } from "diff";
 import If from "../misc/If";
 import OutgoingLink from "../misc/OutgoingLink";
 import "./OrderedCollectionMembersUpdateChangeRow.scss";
+import classNames from "classnames";
 
 interface HasRecord {
   record: OrderedCollectionMembersUpdateChangeRecord;
@@ -24,6 +25,9 @@ interface HasMembersChange {
   change: MembersChange;
 }
 
+/**
+ * A single table row showing the difference between original and new SKOS collection members.
+ */
 export const OrderedCollectionMembersUpdateChangeRow: FunctionComponent<
   HasRecord
 > = ({ record }) => {
@@ -56,18 +60,17 @@ export const OrderedCollectionMembersUpdateChangeRow: FunctionComponent<
       <td>
         <AssetLabel iri={record.changedAttribute.iri} />
       </td>
-      <td>
-        <OriginalValue changes={changes} />
-      </td>
-      <td>
-        <NewValue changes={changes} />
-      </td>
+      <td>{renderChanges(changes, (change) => change.removed)}</td>
+      <td>{renderChanges(changes, (change) => change.added)}</td>
 
       <td></td>
     </tr>
   );
 };
 
+/**
+ * @returns true when the change represents removal or addition, false otherwise
+ */
 function isModified(change?: MembersChange) {
   return change && (change.removed || change.added);
 }
@@ -78,14 +81,11 @@ function isModified(change?: MembersChange) {
  */
 type ChangeFilter = (change: MembersChange) => boolean;
 
-interface UnchangedMembrsProps extends HasChangeObjects {
-  changeIndex: number;
-  filter: ChangeFilter;
-}
-
-const UnchangedMembers = ({ changes, changeIndex }: UnchangedMembrsProps) => {
-  const change = changes[changeIndex];
-
+/**
+ * Renders a block of unchanged members.
+ * Only the first and last members of the block are rendered collapsing the members between them if there are two or more.
+ */
+const UnchangedMembers = ({ change }: HasMembersChange) => {
   const first = change.value[0];
   const last = change.value[change.count - 1];
 
@@ -94,24 +94,37 @@ const UnchangedMembers = ({ changes, changeIndex }: UnchangedMembrsProps) => {
   }
 
   return (
-    <div>
-      {/*<If expression={changeIndex > 0}>*/}
+    <div className={"unchanged-members"}>
       <MemberIri member={first} />
-      {/*</If>*/}
       <If expression={change.count === 3}>
         <MemberIri member={change.value[1]} />
       </If>
       <If expression={change.count > 3}>...</If>
-      {/*<If expression={changeIndex < changes.length - 1}>*/}
       <MemberIri member={last} />
-      {/*</If>*/}
     </div>
   );
 };
 
-const AddedMembers = ({ change }: HasMembersChange) => {
+interface ChangedBlockOfMembersProps extends HasMembersChange {
+  // whether the change should be visually hidden
+  visible: boolean;
+  className: string;
+}
+
+/**
+ * Renders a block of changed members
+ */
+const ChangedBlockOfMembers = ({
+  change,
+  visible,
+  className,
+}: ChangedBlockOfMembersProps) => {
   return (
-    <div className={"bg-translucent-success rounded"}>
+    <div
+      className={classNames(className, "rounded", {
+        hidden: !visible,
+      })}
+    >
       {change.value.map((member, i) => (
         <MemberIri member={member} key={i} />
       ))}
@@ -119,18 +132,57 @@ const AddedMembers = ({ change }: HasMembersChange) => {
   );
 };
 
-const RemovedMembers = ({ change }: HasMembersChange) => {
+interface ChangedMembersProps extends HasChangeObjects {
+  // the starting index from which blocks of modified members should be rendered
+  startIndex: number;
+  filter: ChangeFilter;
+}
+
+/**
+ * Renders a block of changed members (merging addition and removal changes) starting from the startIndex.
+ */
+const ChangedMembers = ({
+  changes,
+  startIndex,
+  filter,
+}: ChangedMembersProps) => {
+  let finalIndex = startIndex;
+  for (let i = startIndex; i < changes.length; i++) {
+    const change = changes[i];
+    if (isModified(change)) {
+      finalIndex = i;
+    } else {
+      break;
+    }
+  }
+
   return (
-    <div className={"bg-translucent-danger rounded"}>
-      {change.value.map((member, i) => (
-        <MemberIri member={member} key={i} />
-      ))}
+    <div className={"changed-members"}>
+      {changes.slice(startIndex, finalIndex + 1).map((change, i) => {
+        if (change.added) {
+          return (
+            <ChangedBlockOfMembers
+              className={"added"}
+              change={change}
+              visible={filter(change)}
+              key={i}
+            />
+          );
+        }
+        if (change.removed) {
+          return (
+            <ChangedBlockOfMembers
+              className={"removed"}
+              change={change}
+              visible={filter(change)}
+              key={i}
+            />
+          );
+        }
+        return null;
+      })}
     </div>
   );
-};
-
-const EmptyLine = () => {
-  return <div className={"collection-member-history-entry"}>&nbsp;</div>;
 };
 
 function renderChanges(changes: MembersChange[], filter: ChangeFilter) {
@@ -139,66 +191,19 @@ function renderChanges(changes: MembersChange[], filter: ChangeFilter) {
       {changes.map((change, i) => {
         if (!isModified(change)) {
           // block of unmodified members
-          return (
-            <UnchangedMembers
-              changes={changes}
-              filter={filter}
-              changeIndex={i}
-              key={"unchanged" + i}
-            />
-          );
-        }
-
-        // block of modified members matching the filter
-        if (filter(change)) {
-          if (change.added) {
-            return <AddedMembers change={change} key={"added" + i} />;
-          } else {
-            return <RemovedMembers change={change} key={"removed" + i} />;
-          }
+          return <UnchangedMembers change={change} key={"unchanged" + i} />;
         }
 
         let prev = i - 1 >= 0 ? changes.at(i - 1) : undefined;
-        let next = changes.at(i + 1);
-
-        if (!isModified(prev)) {
-          prev = undefined;
-        }
-        if (!isModified(next)) {
-          next = undefined;
-        }
-
-        const otherCount = Math.max(prev?.count ?? 0, next?.count ?? 0);
-
-        const diffCount = change.count - otherCount;
-        // removal always comes first
-        // space will be inserted after removal and before addittion
-        if (diffCount > 0) {
-          return (
-            <div key={"multi-empty" + i}>
-              {Array(diffCount)
-                .keys()
-                .map((ii) => <EmptyLine key={"empty" + ii} />)
-                .toArray()}
-            </div>
-          );
-        }
-
-        return null;
+        return (
+          <If expression={!prev || !isModified(prev)} key={"if-prev-" + i}>
+            <ChangedMembers changes={changes} startIndex={i} filter={filter} />
+          </If>
+        );
       })}
     </>
   );
 }
-
-const isAdded = (change: MembersChange) => change.added;
-const NewValue = ({ changes }: HasChangeObjects) => {
-  return renderChanges(changes, isAdded);
-};
-
-const isRemoved = (change: MembersChange) => change.removed;
-const OriginalValue = ({ changes }: HasChangeObjects) => {
-  return renderChanges(changes, isRemoved);
-};
 
 const MemberIri = ({ member }: { member: HasIdentifier }) => {
   const iri = member.iri;
