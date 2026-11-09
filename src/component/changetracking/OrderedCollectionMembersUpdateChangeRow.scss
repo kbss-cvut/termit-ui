@@ -1,3 +1,31 @@
+@import "../../styles/custom/colors";
+
+.changed-members {
+  display: grid;
+  align-items: start;
+  justify-items: stretch;
+
+  .hidden {
+    visibility: hidden;
+    z-index: -1;
+  }
+
+  & > div {
+    grid-area: 1/1;
+  }
+
+  .added {
+    background-color: transparentize($success, 0.5);
+  }
+  .removed {
+    background-color: transparentize($danger, 0.5);
+  }
+}
+
 .collection-member-history-entry {
   padding: 3px 3px;
+}
+
+.unchanged-members div {
+  display: inline-block;
 }
