@@ -1,4 +1,5 @@
 import React from "react";
+import { usePromiseTracker } from "react-promise-tracker";
 import { useI18n } from "../../hook/useI18n";
 import { useAppSelector } from "../../../util/Types";
 import TermLink from "../TermLink";
@@ -6,13 +7,17 @@ import AssetLabel from "../../misc/AssetLabel";
 import AnnotatedTermRelationship from "../../../model/meta/AnnotatedTermRelationship";
 import { Col, Label, Row } from "reactstrap";
 import Utils from "../../../util/Utils";
+import PromiseTrackingMask from "../../misc/PromiseTrackingMask";
 
 export const AnnotatedRelationships: React.FC = () => {
   const { i18n } = useI18n();
   const annotatedRelationships = useAppSelector(
     (state) => state.annotatedRelationships
   );
-  if (annotatedRelationships.length === 0) {
+  const { promiseInProgress } = usePromiseTracker({
+    area: "annotated-relationships",
+  });
+  if (annotatedRelationships.length === 0 && !promiseInProgress) {
     return (
       <div className="additional-metadata-container italics">
         {i18n("term.metadata.annotatedRelationships.empty")}
@@ -33,9 +38,10 @@ export const AnnotatedRelationships: React.FC = () => {
 
   return (
     <div className="additional-metadata-container">
+      <PromiseTrackingMask area="annotated-relationships" />
       {Object.keys(groupedByAnnotationProperty).map((prop) => (
-        <>
-          <Row key={prop}>
+        <React.Fragment key={prop}>
+          <Row>
             <Col>
               <Label className="attribute-label ml-3 mb-3">
                 <AssetLabel iri={prop} />
@@ -60,7 +66,7 @@ export const AnnotatedRelationships: React.FC = () => {
               </Col>
             </Row>
           ))}
-        </>
+        </React.Fragment>
       ))}
     </div>
   );

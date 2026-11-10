@@ -15,7 +15,6 @@ import { UpdateRecord } from "../../model/changetracking/UpdateRecord";
 import UpdateRow from "./UpdateRow";
 import PersistRow from "./PersistRow";
 import PersistRecord from "../../model/changetracking/PersistRecord";
-import ContainerMask from "../misc/ContainerMask";
 import Constants from "../../util/Constants";
 import { useI18n } from "../hook/useI18n";
 import Vocabulary from "../../model/Vocabulary";
@@ -42,7 +41,7 @@ const PROMISE_AREA = "ASSET_HISTORY_PROMISE_AREA";
 export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
   const { i18n } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
-  const [records, setRecords] = React.useState<null | ChangeRecord[]>(null);
+  const [records, setRecords] = React.useState<ChangeRecord[]>([]);
   const [filterAuthor, setFilterAuthor] = useState("");
   const [filterType, setFilterType] = useState("");
   const [filterAttribute, setFilterAttribute] = useState("");
@@ -56,7 +55,11 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
         asset: Asset,
         filterData: VocabularyContentChangeFilterData,
         cb: (records?: ChangeRecord[]) => void
-      ) => dispatch(loadHistoryAction(asset, filterData)).then(cb),
+      ) =>
+        trackPromise(
+          dispatch(loadHistoryAction(asset, filterData)),
+          PROMISE_AREA
+        ).then(cb),
       Constants.INPUT_DEBOUNCE_WAIT_TIME
     )
   );
@@ -140,13 +143,9 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
     setPage(0);
   }, [asset, filterAuthor, filterType, filterAttribute]);
 
-  if (!records) {
-    return <ContainerMask text={i18n("history.loading")} />;
-  }
-
   const start = page * pageSize;
   const end = start + pageSize;
-  const pageRecords = records.slice(start, end);
+  const pageRecords = records.length > 0 ? records.slice(start, end) : records;
 
   return (
     <div className="additional-metadata-container">
@@ -225,7 +224,7 @@ export const AssetHistory: React.FC<AssetHistoryProps> = ({ asset }) => {
           itemCount={pageRecords.length}
         />
       ) : null}
-      <PromiseTrackingMask area={PROMISE_AREA} />
+      <PromiseTrackingMask area={PROMISE_AREA} text={i18n("history.loading")} />
     </div>
   );
 };

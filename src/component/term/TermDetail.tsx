@@ -71,6 +71,7 @@ import { TermRemovalOptions } from "../../model/TermRemovalOptions";
 import React from "react";
 import { IoMdMove } from "react-icons/io";
 import TermIriMigrationDialog from "./TermIriMigrationDialog";
+import { trackPromise } from "react-promise-tracker";
 
 const USER_VOCABULARIES_VALIDATION_ENDPOINT =
   "/user" + Constants.WEBSOCKET_ENDPOINT.VOCABULARIES_VALIDATION;
@@ -104,8 +105,8 @@ interface TermDetailProps
   removeOccurrence: (occurrence: TermOccurrence) => Promise<any>;
   publishNotification: (notification: AppNotification) => void;
   loadCustomAttributes: () => void;
-  loadTermRelationshipAnnotations: (termIri: IRI) => void;
-  loadTermRelationshipsAnnotatedBy: (termIri: IRI) => void;
+  loadTermRelationshipAnnotations: (termIri: IRI) => Promise<any>;
+  loadTermRelationshipsAnnotatedBy: (termIri: IRI) => Promise<any>;
 }
 
 export interface TermDetailState extends EditableComponentState {
@@ -169,8 +170,14 @@ export class TermDetail extends EditableComponent<
       .then(() => {
         if (this.props.term) {
           const termIri = VocabularyUtils.create(this.props.term.iri!);
-          this.props.loadTermRelationshipAnnotations(termIri);
-          this.props.loadTermRelationshipsAnnotatedBy(termIri);
+          trackPromise(
+            this.props.loadTermRelationshipAnnotations(termIri),
+            "relationship-annotations"
+          );
+          trackPromise(
+            this.props.loadTermRelationshipsAnnotatedBy(termIri),
+            "annotated-relationships"
+          );
         }
       });
   }
