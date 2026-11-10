@@ -72,6 +72,7 @@ export const NewCollectionMemberSelect: FunctionComponent<
       menuIsFloating={true}
       getOptionLabel={getOptionLabel}
       valueKey={"iri"}
+      placeholder={""}
     />
   );
 };
