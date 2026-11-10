@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, useImperativeHandle, useState } from "react";
+import { FunctionComponent, ReactNode, useEffect, useState } from "react";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
 import { useI18n } from "../hook/useI18n";
 import Utils from "../../util/Utils";
@@ -19,11 +19,6 @@ import { trackPromise } from "react-promise-tracker";
 import { publishMessage } from "../../action/SyncActions";
 import Message from "../../model/Message";
 import AsyncActionStatus from "../../action/AsyncActionStatus";
-
-export interface ResetHandle {
-  /// Clears the form input values in the migration dialog
-  resetForm: () => void;
-}
 
 export type AssetForMigration = HasLocalizableLabel & HasIdentifier;
 
@@ -64,115 +59,121 @@ const IRI_MIGRATION_DIALOG_PROMISE_AREA = "IRI_MIGRATION_DIALOG_PROMISE_AREA";
  *
  * @template A the type fot the asset whose identifier should be migrated
  */
-const IriMigrationDialog = forwardRef<ResetHandle, IriMigrationDialogProps>(
-  (props, ref) => {
-    const { i18n, locale } = useI18n();
-    const { asset } = props;
-    /// The value of the input where user is required to enter the label of the asset
-    const [confirmationLabelValue, setConfirmationLabelValue] = useState("");
-    const [newIri, setNewIri] = useState("");
-    const dispatch: ThunkDispatch = useDispatch();
+const IriMigrationDialog: FunctionComponent<IriMigrationDialogProps> = (
+  props
+) => {
+  const { i18n, locale } = useI18n();
+  const { asset } = props;
+  /// The value of the input where user is required to enter the label of the asset
+  const [confirmationLabelValue, setConfirmationLabelValue] = useState("");
+  const [newIri, setNewIri] = useState("");
+  const dispatch: ThunkDispatch = useDispatch();
 
-    const resetForm = () => {
-      setNewIri("");
-      setConfirmationLabelValue("");
+  const resetForm = () => {
+    setNewIri("");
+    setConfirmationLabelValue("");
+  };
+
+  const onSubmit = () => {
+    if (!asset?.iri) {
+      return;
+    }
+    const iris: IriMigrationPair = {
+      originalIri: asset.iri,
+      newIri,
     };
 
-    const onSubmit = () => {
-      if (!asset?.iri) {
-        return;
-      }
-      const iris: IriMigrationPair = {
-        originalIri: asset.iri,
-        newIri,
-      };
+    trackPromise(
+      dispatch(
+        migrateIdentifier(iris, props.migrationType, props.requestParams)
+      )
+        .then((action) => {
+          if (action.status === AsyncActionStatus.SUCCESS) {
+            dispatch(
+              publishMessage(
+                new Message({
+                  messageId: "asset.migrate.iri.started",
+                })
+              )
+            );
+          }
+          return action;
+        })
+        .then(props.onMigrated)
+        .then(resetForm),
+      IRI_MIGRATION_DIALOG_PROMISE_AREA
+    );
+  };
 
-      trackPromise(
-        dispatch(
-          migrateIdentifier(iris, props.migrationType, props.requestParams)
-        )
-          .then((action) => {
-            if (action.status === AsyncActionStatus.SUCCESS) {
-              dispatch(
-                publishMessage(
-                  new Message({
-                    messageId: "asset.migrate.iri.started",
-                  })
-                )
-              );
-            }
-            return action;
-          })
-          .then(props.onMigrated),
-        IRI_MIGRATION_DIALOG_PROMISE_AREA
-      );
-    };
+  const onClose = () => {
+    resetForm();
+    props.onClose();
+  };
 
-    useImperativeHandle(ref, () => ({
-      resetForm,
-    }));
+  useEffect(() => {
+    resetForm();
+  }, [asset]);
 
-    const isLabelConfirmed =
-      asset != null && asset.getLabel(locale) === confirmationLabelValue;
+  const isLabelConfirmed =
+    asset != null && asset.getLabel(locale) === confirmationLabelValue;
 
-    let newIriValidationResult = props.newIriValidator(newIri);
+  let newIriValidationResult = props.newIriValidator(newIri);
 
-    if (!newIri || !Utils.isUri(newIri)) {
-      newIriValidationResult = ValidationResult.blocker(
-        i18n("asset.migrate.iri.error.invalidIri")
-      );
-    }
-    if (newIri === asset?.iri) {
-      newIriValidationResult = ValidationResult.blocker(
-        i18n("asset.migrate.iri.error.sameAsOriginal")
-      );
-    }
-
-    const isNewIriValid = newIriValidationResult === ValidationResult.VALID;
-
-    return (
-      <ConfirmCancelDialog
-        show={props.isVisible}
-        onConfirm={onSubmit}
-        onClose={props.onClose}
-        title={props.title ?? i18n("asset.migrate.iri.label")}
-        confirmKey={"asset.migrate.iri.label"}
-        id={"asset-migrate-iri-dialog"}
-        size={"lg"}
-        confirmColor={"red"}
-        confirmDisabled={!isNewIriValid || !isLabelConfirmed}
-      >
-        <PromiseTrackingMask area={IRI_MIGRATION_DIALOG_PROMISE_AREA} />
-        <h1 className={"text-danger"}>
-          {i18n("asset.migrate.iri.dangerZone.label")}
-        </h1>
-        <label>{i18n("asset.migrate.iri.dangerZone.description")}</label>
-        {props.children({
-          iriInputs: (
-            <>
-              <CustomInput
-                value={asset?.iri ?? ""}
-                disabled={true}
-                label={i18n("asset.migrate.iri.originalIri")}
-              />
-              <CustomInput
-                value={newIri}
-                onInput={(e) => setNewIri(e.currentTarget.value)}
-                label={i18n("asset.migrate.iri.newIri")}
-                validation={newIriValidationResult}
-              />
-            </>
-          ),
-        })}
-        <CustomInput
-          label={props.confirmationInputLabel}
-          validation={ValidationResult.fromBoolean(isLabelConfirmed)}
-          value={confirmationLabelValue}
-          onInput={(e) => setConfirmationLabelValue(e.currentTarget.value)}
-        />
-      </ConfirmCancelDialog>
+  if (!newIri || !Utils.isUri(newIri)) {
+    newIriValidationResult = ValidationResult.blocker(
+      i18n("asset.migrate.iri.error.invalidIri")
     );
   }
-);
+  if (newIri === asset?.iri) {
+    newIriValidationResult = ValidationResult.blocker(
+      i18n("asset.migrate.iri.error.sameAsOriginal")
+    );
+  }
+
+  const isNewIriValid = newIriValidationResult === ValidationResult.VALID;
+
+  return (
+    <ConfirmCancelDialog
+      show={props.isVisible}
+      onConfirm={onSubmit}
+      onClose={onClose}
+      title={props.title ?? i18n("asset.migrate.iri.label")}
+      confirmKey={"asset.migrate.iri.label"}
+      id={"asset-migrate-iri-dialog"}
+      size={"lg"}
+      confirmColor={"red"}
+      confirmDisabled={!isNewIriValid || !isLabelConfirmed}
+    >
+      <PromiseTrackingMask area={IRI_MIGRATION_DIALOG_PROMISE_AREA} />
+      <h1 className={"text-danger"}>
+        {i18n("asset.migrate.iri.dangerZone.label")}
+      </h1>
+      <label>{i18n("asset.migrate.iri.dangerZone.description")}</label>
+      {props.children({
+        iriInputs: (
+          <>
+            <CustomInput
+              value={asset?.iri ?? ""}
+              disabled={true}
+              label={i18n("asset.migrate.iri.originalIri")}
+            />
+            <CustomInput
+              value={newIri}
+              onInput={(e) => setNewIri(e.currentTarget.value)}
+              label={i18n("asset.migrate.iri.newIri")}
+              validation={newIriValidationResult}
+            />
+          </>
+        ),
+      })}
+      <CustomInput
+        label={props.confirmationInputLabel}
+        validation={ValidationResult.fromBoolean(isLabelConfirmed)}
+        value={confirmationLabelValue}
+        onInput={(e) => setConfirmationLabelValue(e.currentTarget.value)}
+      />
+    </ConfirmCancelDialog>
+  );
+};
 
 export default IriMigrationDialog;
