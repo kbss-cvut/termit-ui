@@ -91,6 +91,7 @@ export const CollectionSelect: FunctionComponent<CollectionSelectProps> = ({
       isClearable={true}
       renderAsTree={false}
       menuIsFloating={true}
+      placeholder={""}
       optionRenderer={(props) => (
         <CollectionMemberSelectOption
           {...props}
