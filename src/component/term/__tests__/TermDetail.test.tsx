@@ -54,8 +54,8 @@ describe("TermDetail", () => {
   let onPublishNotification: (notification: AppNotification) => void;
   let requestVocabularyValidation: (iri: IRI, stompClient: StompClient) => void;
   let loadCustomAttributes: () => void;
-  let loadTermRelationshipAnnotations: (termIri: IRI) => void;
-  let loadTermRelationshipsAnnotatedBy: (termIri: IRI) => void;
+  let loadTermRelationshipAnnotations: (termIri: IRI) => Promise<any>;
+  let loadTermRelationshipsAnnotatedBy: (termIri: IRI) => Promise<any>;
 
   let handlers: any;
 
@@ -88,8 +88,8 @@ describe("TermDetail", () => {
     onPublishNotification = vi.fn();
     requestVocabularyValidation = vi.fn();
     loadCustomAttributes = vi.fn();
-    loadTermRelationshipAnnotations = vi.fn();
-    loadTermRelationshipsAnnotatedBy = vi.fn();
+    loadTermRelationshipAnnotations = vi.fn().mockResolvedValue([]);
+    loadTermRelationshipsAnnotatedBy = vi.fn().mockResolvedValue([]);
     handlers = {
       loadTerm: onLoad,
       loadVocabulary,
