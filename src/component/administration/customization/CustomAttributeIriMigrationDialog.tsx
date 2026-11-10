@@ -1,9 +1,8 @@
 import IriMigrationDialog, {
   IriMigrationDialogControlProps,
-  ResetHandle,
 } from "../../asset/IriMigrationDialog";
 import { CustomAttribute } from "../../../model/RdfsResource";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { FormGroup, Label } from "reactstrap";
 import { IntelligentTreeSelect } from "intelligent-tree-select";
 import { useSelector } from "react-redux";
@@ -21,7 +20,6 @@ const CustomAttributeIriMigrationDialog = ({
   isVisible,
 }: IriMigrationDialogControlProps) => {
   const { i18n, locale } = useI18n();
-  const dialogRef = useRef<ResetHandle | null>(null);
   const customAttributes = useSelector(
     (state: TermItState) => state.customAttributes
   );
@@ -30,10 +28,6 @@ const CustomAttributeIriMigrationDialog = ({
   // so the selected attribute is resolved from the loaded attributes
   const selectedAttribute =
     customAttributes.find((attribute) => attribute.iri === selectedIri) ?? null;
-
-  useEffect(() => {
-    dialogRef.current?.resetForm();
-  }, [selectedIri]);
 
   const onMigrated = (action: AsyncAction | AsyncFailureAction) => {
     if (action.status === AsyncActionStatus.SUCCESS) {
@@ -44,7 +38,6 @@ const CustomAttributeIriMigrationDialog = ({
 
   return (
     <IriMigrationDialog
-      ref={dialogRef}
       title={i18n(
         "administration.customization.customAttributes.migrate.iri.title"
       )}
