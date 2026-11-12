@@ -161,7 +161,7 @@ export class TermMetadata extends React.Component<
             </Row>
           </Col>
           {this.state.displayTerms && (
-            <Col>
+            <Col lg={3}>
               <Card>
                 <Terms
                   vocabulary={this.props.vocabulary}
