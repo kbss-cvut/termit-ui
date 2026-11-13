@@ -7,7 +7,8 @@ import {
   addCollectionMember,
   loadCollectionsWithTerm,
 } from "../../action/AsyncCollectionActions";
-import { useI18n } from "../hook/useI18n"; // @ts-ignore
+import { useI18n } from "../hook/useI18n";
+// @ts-ignore
 import { List } from "reactstrap";
 import { CollectionLink } from "../collection/CollectionLink";
 import BadgeButton from "../misc/BadgeButton";

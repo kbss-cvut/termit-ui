@@ -284,6 +284,10 @@ const de = {
       "Das Attribut ist symmetrisch.",
     "administration.customization.customAttributes.symmetric.help":
       "Für ein symmetrisches Attribut gilt, dass wenn Sie sie in eine Richtung setzen, sie automatisch in die Gegensrichtung angewendet wird.",
+    "administration.customization.customAttributes.symmetric.enable.help":
+      "Wenn ein bestehendes benutzerdefiniertes Attribut als symmetrisch markiert wird, werden die entsprechenden Beziehungen automatisch erstellt.",
+    "administration.customization.customAttributes.symmetric.disable.help":
+      "Wenn ein bestehendes benutzerdefiniertes Attribut als nicht symmetrisch markiert wird, werden keine Beziehungen automatisch entfernt.",
     "asset.link.tooltip": "Details zu diesem Asset anzeigen",
     "asset.iri": "Kennung",
     "asset.create.iri.help":
@@ -1118,10 +1122,13 @@ const de = {
     "collection.remove.confirm":
       "Geben Sie zur Bestätigung des Löschens der Sammlung deren Bezeichnung ein",
     "collection.ordered": "Geordnete Sammlung",
-    "collection.ordered.toggle.help":
-      "Diese Option kann bei bestehenden Sammlungen nicht geändert werden.",
     "collection.ordered.toggle.description":
       "Die Mitglieder einer geordneten Sammlung werden in einer festgelegten Reihenfolge gehalten.",
+    "collection.ordered.toggle.dialog.title": "Reihenfolge der Sammlung ändern",
+    "collection.ordered.toggle.dialog.description.toOrdered":
+      "Sind Sie sicher, dass Sie den Typ der Sammlung auf „Geordnet“ ändern möchten? Die Mitglieder der Sammlung werden zunächst nach ihrem Identifikator sortiert.",
+    "collection.ordered.toggle.dialog.description.toUnordered":
+      "Sind Sie sicher, dass Sie den Typ der Sammlung auf „Ungeordnet“ ändern möchten? Die aktuelle Reihenfolge der Mitglieder geht verloren!",
     "collection.members": "Mitglieder",
     "collection.members.add": "Mitglied hinzufügen",
     "collection.members.add.title": "Sammlungsmitglied hinzufügen",

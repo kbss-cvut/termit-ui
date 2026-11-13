@@ -286,6 +286,10 @@ const cs = {
       "Atribut je symetrický",
     "administration.customization.customAttributes.symmetric.help":
       "Pro symetrický vztah platí, že pokud jej nastavíte v jednom směru, automaticky se vytvoří i ve směru opačném.",
+    "administration.customization.customAttributes.symmetric.enable.help":
+      "Označení existujícího vlastního atributu za symetrický povede k automatickému vygenerování relevantních vztahů.",
+    "administration.customization.customAttributes.symmetric.disable.help":
+      "Zrušení symetričnosti existujícího vlastního atributu nepovede k automatickému odstranění již existujících vztahů.",
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -1162,10 +1166,13 @@ const cs = {
     "collection.remove.confirm":
       "Pro potvrzení odstranění kolekce zadejte její název",
     "collection.ordered": "Seřazená kolekce",
-    "collection.ordered.toggle.help":
-      "Tuto možnost nelze u existujících kolekcí změnit.",
     "collection.ordered.toggle.description":
       "Členové seřazené kolekce jsou udržováni v určeném pořadí.",
+    "collection.ordered.toggle.dialog.title": "Změna řazení kolekce",
+    "collection.ordered.toggle.dialog.description.toOrdered":
+      "Opravdu chcete změnit typ kolekce na seřazenou? Členové kolekce budou nejprve seřazeni podle svého identifikátoru.",
+    "collection.ordered.toggle.dialog.description.toUnordered":
+      "Opravdu chcete změnit typ kolekce na neseřazenou? Současné pořadí členů bude ztraceno!",
     "collection.members": "Členové",
     "collection.members.add": "Přidat člena",
     "collection.members.add.title": "Přidat člena kolekce",

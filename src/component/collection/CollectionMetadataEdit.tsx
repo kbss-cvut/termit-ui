@@ -13,7 +13,7 @@ import {
   CardBody,
   Col,
   Form,
-  FormText,
+  Label,
   Row,
 } from "reactstrap";
 import { useDispatch } from "react-redux";
@@ -59,6 +59,7 @@ import PromiseTrackingMask from "../misc/PromiseTrackingMask";
 import { useDebouncedCallback } from "use-debounce";
 import CustomToggle from "../misc/CustomToggle";
 import HelpIcon from "../misc/HelpIcon";
+import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
 
 export interface CollectionMetadataEditProps {}
 
@@ -314,20 +315,12 @@ const CollectionMetadataEdit: FunctionComponent<
             </Row>
             <Row className={"mb-3"}>
               <Col xs={12}>
-                <CustomToggle
-                  id="edit-collection-ordered"
-                  on={i18n("collection.ordered")}
-                  off={i18n("collection.ordered")}
-                  disabled={!isNewCollection}
-                  onClick={onOrderedToggle}
-                  active={data.ordered}
+                <CollectionTypeToggle
+                  originalValue={collection?.isOrdered() ?? false}
+                  value={data.ordered}
+                  onToggle={onOrderedToggle}
+                  isNewCollection={isNewCollection}
                 />
-                <HelpIcon
-                  id="edit-collection-ordered-help"
-                  text={i18n("collection.ordered.toggle.description")}
-                  placement={"right"}
-                />
-                <FormText>{i18n("collection.ordered.toggle.help")}</FormText>
               </Col>
             </Row>
             <ShowAdvancedAssetFields>
@@ -371,6 +364,68 @@ const CollectionMetadataEdit: FunctionComponent<
         </CardBody>
       </Card>
       <PromiseTrackingMask area={COLLECTION_LOAD_PROMISE_AREA} />
+    </>
+  );
+};
+
+interface CollectionTypeToggleProps {
+  originalValue: boolean;
+  value: boolean;
+  onToggle: () => void;
+  isNewCollection: boolean;
+}
+
+const CollectionTypeToggle: FunctionComponent<CollectionTypeToggleProps> = ({
+  originalValue,
+  value,
+  onToggle,
+  isNewCollection,
+}) => {
+  const { i18n } = useI18n();
+  const [pendingConfirm, setPendingConfirm] = useState<boolean>(false);
+
+  const onConfirmChange = () => {
+    setPendingConfirm(false);
+    onToggle();
+  };
+
+  const onChangeAttempt = () => {
+    if (isNewCollection || originalValue === !value) {
+      // new collection or changing back to original value
+      onToggle();
+      return;
+    }
+    setPendingConfirm(true);
+  };
+
+  const descriptionKey = value
+    ? "collection.ordered.toggle.dialog.description.toUnordered"
+    : "collection.ordered.toggle.dialog.description.toOrdered";
+
+  return (
+    <>
+      <CustomToggle
+        id="edit-collection-ordered"
+        on={i18n("collection.ordered")}
+        off={i18n("collection.ordered")}
+        onClick={onChangeAttempt}
+        active={value}
+      />
+      <HelpIcon
+        id="edit-collection-ordered-help"
+        text={i18n("collection.ordered.toggle.description")}
+        placement={"right"}
+      />
+      <ConfirmCancelDialog
+        show={pendingConfirm}
+        onClose={() => setPendingConfirm(false)}
+        onConfirm={onConfirmChange}
+        id={"skos-collection-metadata-edit-order-toggle-confirm-dialog"}
+        title={i18n("collection.ordered.toggle.dialog.title")}
+        confirmKey={"submit"}
+      >
+        <Label>{i18n(descriptionKey)}</Label>
+      </ConfirmCancelDialog>
     </>
   );
 };
