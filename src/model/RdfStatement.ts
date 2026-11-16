@@ -1,4 +1,4 @@
-import VocabularyUtils, { IRIImpl } from "../util/VocabularyUtils";
+import VocabularyUtils from "../util/VocabularyUtils";
 import { HasIdentifier } from "./Asset";
 
 export const RDFSTATEMENT_CONTEXT = {
@@ -33,7 +33,6 @@ export enum RdfValueType {
  */
 export interface RdfValue {
   type: RdfValueType;
-  stringValue: string;
 }
 
 /**
@@ -55,7 +54,7 @@ export interface RdfLiteral extends RdfValue {
   /**
    * Datatype IRI
    */
-  coreDatatype: string;
+  datatype: string;
 }
 
 /**
@@ -66,8 +65,7 @@ export interface RdfResource extends RdfValue {}
 export interface RdfIRI extends RdfResource {
   type: RdfValueType.IRI;
 
-  localName: string;
-  namespace: string;
+  value: string;
 }
 
 export interface RdfTriple extends RdfResource {
@@ -86,10 +84,7 @@ export interface RdfStatement {
 }
 
 export function toIRIImpl(rdfIri: RdfIRI) {
-  return IRIImpl.create({
-    namespace: rdfIri.namespace,
-    fragment: rdfIri.localName,
-  });
+  return VocabularyUtils.create(rdfIri.value);
 }
 
 export default RdfIriStatement;
