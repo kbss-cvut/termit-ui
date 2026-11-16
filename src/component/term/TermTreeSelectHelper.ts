@@ -10,6 +10,15 @@ import unionBy from "lodash/unionBy";
 import removeMd from "remove-markdown";
 
 /**
+ * If the term label is longer than this, it is likely to not fit in term selector menu in places such as term detail view.
+ *
+ * In that case, the label should be displayed in full in the option tooltip.
+ *
+ * This number is rather arbitrary, taken from testing on a 22" FullHD display
+ */
+const TERM_LABEL_LENGTH_THRESHOLD = 30;
+
+/**
  * Common properties for a tree selector containing terms
  * @param intl I18n data
  */
@@ -18,8 +27,19 @@ export function commonTermTreeSelectProps(intl: HasI18n) {
     valueKey: "iri",
     getOptionLabel: (option: Term | TermData) =>
       getLocalized(option.label, getShortLocale(intl.locale)),
-    getOptionTitle: (option: Term | TermData) =>
-      removeMd(getLocalized(option.definition, getShortLocale(intl.locale))),
+    getOptionTitle: (option: Term | TermData) => {
+      const label = getLocalized(option.label, getShortLocale(intl.locale));
+      const definition = removeMd(
+        getLocalized(option.definition, getShortLocale(intl.locale))
+      );
+      // If the label is too long, it will not fit in some places where term
+      // selector is displayed, so show it in the tooltip
+      if (label.length > TERM_LABEL_LENGTH_THRESHOLD) {
+        return `${label}: ${definition}`;
+      } else {
+        return definition;
+      }
+    },
     childrenKey: "plainSubTerms",
     renderAsTree: true,
     simpleTreeData: true,
