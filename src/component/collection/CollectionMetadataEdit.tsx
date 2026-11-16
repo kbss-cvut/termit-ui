@@ -87,6 +87,14 @@ const IGNORED_ADDITIONAL_PROPERTIES = [
   VocabularyUtils.SKOS_MEMBER_LIST,
 ];
 
+const DEFAULT_STATE: CollectionMetadataEditState = Object.freeze({
+  iri: "",
+  title: Object.freeze({}),
+  description: Object.freeze({}),
+  ordered: false,
+  unmappedProperties: Object.freeze(new Map()),
+});
+
 const CollectionMetadataEdit: FunctionComponent<
   CollectionMetadataEditProps
 > = () => {
@@ -111,7 +119,12 @@ const CollectionMetadataEdit: FunctionComponent<
     }
   }, [dispatch, vocabulary?.iri, vocabularyUri]);
 
-  const collection = useAppSelector((state) => state.selectedCollection);
+  const collection = useAppSelector((state) => {
+    if (collectionUri?.toString() === state.selectedCollection?.iri) {
+      return state.selectedCollection;
+    }
+    return null;
+  });
 
   useEffect(() => {
     if (!collectionUri) {
@@ -128,13 +141,9 @@ const CollectionMetadataEdit: FunctionComponent<
   // the identifier is generated from the title until the user modifies it manually
   const generateIri = useRef(isNewCollection);
 
-  const [data, setData] = useState<CollectionMetadataEditState>(() => ({
-    iri: "",
-    title: {},
-    description: {},
-    ordered: false,
-    unmappedProperties: new Map(),
-  }));
+  const [data, setData] = useState<CollectionMetadataEditState>(() =>
+    cloneDeep(DEFAULT_STATE)
+  );
 
   useEffect(() => {
     if (collection) {
@@ -146,6 +155,9 @@ const CollectionMetadataEdit: FunctionComponent<
         unmappedProperties: cloneDeep(collection.unmappedProperties),
       });
       generateIri.current = false;
+    } else {
+      setData(cloneDeep(DEFAULT_STATE));
+      generateIri.current = true;
     }
   }, [collection]);
 
