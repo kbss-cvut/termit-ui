@@ -82,22 +82,19 @@ const RdfIRINode: React.FC<{ iri: RdfIRI; type: IriType }> = ({
  * Renders literal value as a simple inline code block
  */
 const RdfLiteralNode: React.FC<{ literal: RdfLiteral }> = ({ literal }) => {
-  let labelText;
+  let language;
 
-  switch (literal.coreDatatype) {
-    case VocabularyUtils.XSD_STRING:
-      labelText = literal.label;
-      if (literal.language) {
-        labelText += "@" + literal.language;
-      }
-      break;
-    default:
-      labelText = literal.label;
+  if (
+    literal.datatype === VocabularyUtils.RDF_LANGSTRING &&
+    literal.language != null
+  ) {
+    language = "@" + literal.language;
   }
 
   return (
     <>
-      &quot;<code>{labelText}</code>&quot;
+      &quot;<code>{literal.label}</code>&quot;
+      {language}
     </>
   );
 };
