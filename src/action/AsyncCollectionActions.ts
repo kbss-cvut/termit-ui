@@ -64,7 +64,12 @@ export function loadSkosCollection(collectionUri: IRI, vocabularyUri: IRI) {
       `${path(vocabularyUri)}/${collectionUri.fragment}`,
       queryParams(collectionUri, vocabularyUri)
     )
-      .then((data) => JsonLdUtils.compactAndResolveReferences<SkosCollectionData>(data, CONTEXT))
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferences<SkosCollectionData>(
+          data,
+          CONTEXT
+        )
+      )
       .then((data) => new SkosCollection(data))
       .then((dto) =>
         recompactMultilingualCustomAttributeValues(
