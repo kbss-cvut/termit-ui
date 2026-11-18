@@ -1,4 +1,4 @@
-import { RdfIriStatement, RDFSTATEMENT_CONTEXT } from "../RdfStatement";
+import { RDF_IRI_STATEMENT_CONTEXT, RdfIriStatement } from "../RdfStatement";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { ASSET_CONTEXT, HasIdentifier } from "../Asset";
 import { PropertyValuesType } from "../WithUnmappedProperties";
@@ -6,7 +6,7 @@ import { PropertyValuesType } from "../WithUnmappedProperties";
 const ctx = {
   relationship: {
     "@id": VocabularyUtils.RDF_SUBJECT,
-    "@context": RDFSTATEMENT_CONTEXT,
+    "@context": RDF_IRI_STATEMENT_CONTEXT,
   },
   attribute: VocabularyUtils.RDF_PREDICATE,
   value: VocabularyUtils.RDF_OBJECT,

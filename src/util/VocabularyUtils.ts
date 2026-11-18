@@ -134,6 +134,9 @@ const VocabularyUtils = {
   RDF_SUBJECT: _NS_RDF + "subject",
   RDF_PREDICATE: _NS_RDF + "predicate",
   RDF_NIL: _NS_RDF + "nil",
+  RDF_VALUE: _NS_RDF + "value",
+  RDF_LANGUAGE: _NS_RDF + "language",
+  RDF_COMPOUND_LITERAL: _NS_RDF + "CompoundLiteral",
   OWL_SYMMETRIC_PROPERTY: _NS_OWL + "SymmetricProperty",
   PREFIX_DC: _NS_DC,
   DC_TITLE: _NS_DC + "title",
@@ -146,6 +149,7 @@ const VocabularyUtils = {
   DC_IDENTIFIER: _NS_DC + "identifier",
   DC_SUBJECT: _NS_DC + "subject",
   DC_RELATION: _NS_DC + "relation",
+  DC_TYPE: _NS_DC + "type",
   AS_RELATIONSHIP: _NS_ACTIVITY_STREAMS + "relationship",
   VANN_PREFERRED_NAMESPACE_URI:
     "http://purl.org/vocab/vann/preferredNamespaceUri",

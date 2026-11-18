@@ -26,7 +26,9 @@ import { getApiPrefix } from "./ActionUtils";
 import SnapshotData, { CONTEXT as SNAPSHOT_CONTEXT } from "../model/Snapshot";
 import NotificationType from "../model/NotificationType";
 import ExportConfig from "../model/local/ExportConfig";
-import RdfIriStatement, { RDFSTATEMENT_CONTEXT } from "../model/RdfStatement";
+import RdfIriStatement, {
+  RDF_IRI_STATEMENT_CONTEXT,
+} from "../model/RdfStatement";
 import ChangeRecord, {
   CONTEXT as CHANGE_RECORD_CONTEXT,
 } from "../model/changetracking/ChangeRecord";
@@ -295,7 +297,7 @@ export function getVocabularyRelations(
       .then((data) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<RdfIriStatement>(
           data,
-          RDFSTATEMENT_CONTEXT
+          RDF_IRI_STATEMENT_CONTEXT
         )
       )
       .then((statements: RdfIriStatement[]) => {
@@ -323,7 +325,7 @@ export function getVocabularyTermsRelations(
       .then((data) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<RdfIriStatement>(
           data,
-          RDFSTATEMENT_CONTEXT
+          RDF_IRI_STATEMENT_CONTEXT
         )
       )
       .then((statements: RdfIriStatement[]) => {
