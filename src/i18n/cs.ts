@@ -15,7 +15,7 @@ const cs = {
     optional: "Nepovinné",
     actions: "Akce",
     description: "Popis",
-    submit: "Předložit",
+    submit: "Odeslat",
     approve: "Schválit",
     backups: "Zálohy",
     date: "Datum",
