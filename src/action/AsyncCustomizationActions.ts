@@ -10,11 +10,12 @@ import Ajax, { content, param } from "../util/Ajax";
 import { ErrorData } from "../model/ErrorInfo";
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
-import { RdfStatement } from "../model/RdfStatement";
+import { RDF_STATEMENT_CONTEXT, RdfStatement } from "../model/RdfStatement";
 import { CustomAttribute, CustomAttributeData } from "../model/RdfsResource";
 import { createPropertyImpl, getPropertiesImpl } from "./AsyncActions";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
+import JsonLdUtils from "../util/JsonLdUtils";
 
 export function getCustomAttributes() {
   return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
@@ -73,15 +74,19 @@ export function loadCustomAttributeUsage(
       param("namespace", attributeIri.namespace)
         .param("size", pageRequest.size.toString())
         .param("page", pageRequest.page.toString())
-        .accept(Constants.JSON_MIME_TYPE)
     )
-      .then((res) => {
-        dispatch(asyncActionSuccess(action));
-        return {
-          data: res.data as RdfStatement[],
-          totalStatements: res?.headers[Constants.Headers.X_TOTAL_COUNT] || 0,
-        };
-      })
+      .then((res) =>
+        JsonLdUtils.compactAndResolveReferencesAsArray<RdfStatement>(
+          res.data,
+          RDF_STATEMENT_CONTEXT
+        ).then((data) => {
+          dispatch(asyncActionSuccess(action));
+          return {
+            data,
+            totalStatements: res?.headers[Constants.Headers.X_TOTAL_COUNT] || 0,
+          };
+        })
+      )
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
   };
 }

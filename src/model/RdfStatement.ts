@@ -1,12 +1,28 @@
 import VocabularyUtils from "../util/VocabularyUtils";
-import { HasIdentifier } from "./Asset";
+import { HasIdentifier, HasTypes } from "./Asset";
 
-export const RDFSTATEMENT_CONTEXT = {
+export const RDF_IRI_STATEMENT_CONTEXT = {
   iri: "@id",
   types: "@type",
   subject: VocabularyUtils.RDF_SUBJECT,
   relation: VocabularyUtils.RDF_PREDICATE,
   value: VocabularyUtils.RDF_OBJECT,
+};
+
+const RDF_LITERAL_CONTEXT = {
+  label: VocabularyUtils.RDF_VALUE,
+  language: VocabularyUtils.RDF_LANGUAGE,
+  datatype: VocabularyUtils.DC_TYPE,
+};
+
+export const RDF_STATEMENT_CONTEXT = {
+  iri: "@id",
+  types: "@type",
+  subject: VocabularyUtils.RDF_SUBJECT,
+  predicate: VocabularyUtils.RDF_PREDICATE,
+  object: VocabularyUtils.RDF_OBJECT,
+  context: VocabularyUtils.DC_SOURCE,
+  ...RDF_LITERAL_CONTEXT,
 };
 
 /**
@@ -18,29 +34,12 @@ export type RdfIriStatement = {
   value: HasIdentifier;
 };
 
-/**
- * Type of {@link RdfValue}
- */
-export enum RdfValueType {
-  IRI = "IRI",
-  BNode = "BNode",
-  Literal = "Literal",
-  Triple = "Triple",
-}
-
-/**
- * RDF Value representing one of {@link RdfValueType}s
- */
-export interface RdfValue {
-  type: RdfValueType;
-}
+export interface RdfValue extends HasTypes {}
 
 /**
  * Literal value
  */
 export interface RdfLiteral extends RdfValue {
-  type: RdfValueType.Literal;
-
   /**
    * String representation of the literal value
    */
@@ -54,7 +53,7 @@ export interface RdfLiteral extends RdfValue {
   /**
    * Datatype IRI
    */
-  datatype: string;
+  datatype: HasIdentifier;
 }
 
 /**
@@ -62,15 +61,9 @@ export interface RdfLiteral extends RdfValue {
  */
 export interface RdfResource extends RdfValue {}
 
-export interface RdfIRI extends RdfResource {
-  type: RdfValueType.IRI;
-
-  value: string;
-}
+export interface RdfIRI extends RdfResource, HasIdentifier {}
 
 export interface RdfTriple extends RdfResource {
-  type: RdfValueType.Triple;
-
   subject: RdfResource;
   predicate: RdfIRI;
   object: RdfValue;
@@ -80,11 +73,11 @@ export interface RdfStatement {
   subject: RdfResource;
   predicate: RdfIRI;
   object: RdfValue;
-  context: RdfResource;
+  context: RdfIRI;
 }
 
 export function toIRIImpl(rdfIri: RdfIRI) {
-  return VocabularyUtils.create(rdfIri.value);
+  return VocabularyUtils.create(rdfIri.iri);
 }
 
 export default RdfIriStatement;
