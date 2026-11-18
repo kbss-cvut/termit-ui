@@ -3,7 +3,6 @@ import {
   RdfLiteral,
   RdfTriple,
   RdfValue,
-  RdfValueType,
   toIRIImpl,
 } from "../../model/RdfStatement";
 import * as React from "react";
@@ -89,7 +88,7 @@ const RdfLiteralNode: React.FC<{ literal: RdfLiteral }> = ({ literal }) => {
   let language;
 
   if (
-    literal.datatype === VocabularyUtils.RDF_LANGSTRING &&
+    literal.datatype.iri === VocabularyUtils.RDF_LANGSTRING &&
     literal.language != null
   ) {
     language = "@" + literal.language;
@@ -132,17 +131,15 @@ const RdfValueNode: React.FC<RdfValueNodeProps> = ({
   value,
   type = IriType.UNKNOWN,
 }) => {
-  switch (value.type) {
-    case RdfValueType.IRI:
-      if (type != null) {
-        return <RdfIRINode iri={value as RdfIRI} type={type} />;
-      }
-      break;
-
-    case RdfValueType.Literal:
-      return <RdfLiteralNode literal={value as RdfLiteral} />;
-    case RdfValueType.Triple:
-      return <RdfTripleNode triple={value as RdfTriple} />;
+  const types = Utils.sanitizeArray(value.types);
+  if (types.includes(VocabularyUtils.RDF_STATEMENT)) {
+    return <RdfTripleNode triple={value as RdfTriple} />;
+  }
+  if (types.includes(VocabularyUtils.RDF_COMPOUND_LITERAL)) {
+    return <RdfLiteralNode literal={value as RdfLiteral} />;
+  }
+  if (types.includes(VocabularyUtils.RDFS_RESOURCE) && type != null) {
+    return <RdfIRINode iri={value as RdfIRI} type={type} />;
   }
   return null;
 };
