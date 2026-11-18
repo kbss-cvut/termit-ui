@@ -1,12 +1,14 @@
 import { Button, Card, CardBody, Col, Label, Row } from "reactstrap";
 import MarkdownView from "../misc/MarkdownView";
 import { getLocalizedOrDefault } from "../../model/MultilingualString";
-import { FunctionComponent, useRef } from "react";
+import { FunctionComponent, useMemo, useRef, useState } from "react";
 import { SkosCollection } from "../../model/Collection";
 import { useI18n } from "../hook/useI18n";
-import { CollectionMembersList } from "./CollectionMembersList";
+import {
+  CollectionMembersList,
+  CollectionMembersListProps,
+} from "./CollectionMembersList";
 import Vocabulary from "../../model/Vocabulary";
-import { FormattedMessage } from "react-intl";
 import AccessLevel from "../../model/acl/AccessLevel";
 import IfVocabularyActionAuthorized from "../vocabulary/authorization/IfVocabularyActionAuthorized";
 import {
@@ -14,24 +16,51 @@ import {
   AddCollectionMemberDialogHandle,
 } from "./AddCollectionMemberDialog";
 import { FaPlus } from "react-icons/fa6";
+import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
+import Tabs from "../misc/Tabs";
+import UnmappedProperties from "../genericmetadata/UnmappedProperties";
+import { useAppSelector } from "../../util/Types";
 
-export interface CollectionMetadataProps {
+enum TabKey {
+  MEMBERS = "collection.members",
+  PROPERTIES = "properties.edit.title",
+}
+
+export const CollectionMetadata: FunctionComponent<{
   collection: SkosCollection | null;
   vocabulary: Vocabulary | null;
   shortLocale: string;
-}
-
-export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
-  collection,
-  vocabulary,
-  shortLocale,
-}) => {
+}> = ({ collection, vocabulary, shortLocale }) => {
   const { i18n } = useI18n();
-  const addMemberDialogRef = useRef<AddCollectionMemberDialogHandle>(null);
+  const [totalMembersCount, setTotalMembersCount] = useState<number>(0);
+  const customAttributes = useAppSelector((state) => state.customAttributes);
 
-  const onAddMember = () => {
-    addMemberDialogRef.current?.open();
-  };
+  const unmappedPropertiesCount: number = useMemo(() => {
+    const knownAttributes = new Set<string>();
+    customAttributes.forEach((a) => knownAttributes.add(a.iri));
+    // filter known custom properties out of unmapped properties
+    const count = collection?.unmappedProperties
+      .keys()
+      .reduce((n, prop) => (knownAttributes.has(prop) ? n : n + 1), 0);
+    return count ?? 0;
+  }, [collection, customAttributes]);
+
+  const tabs = useMemo(
+    () => ({
+      [TabKey.MEMBERS]: (
+        <MembersTab {...{ collection, vocabulary, setTotalMembersCount }} />
+      ),
+      [TabKey.PROPERTIES]: (
+        <UnmappedProperties
+          properties={collection?.unmappedProperties ?? new Map()}
+          showInfoOnEmpty={true}
+        />
+      ),
+    }),
+    [collection, vocabulary]
+  );
+
+  const [activeTab, setActiveTab] = useState<TabKey>(TabKey.MEMBERS);
 
   return (
     <>
@@ -53,46 +82,69 @@ export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
               </MarkdownView>
             </Col>
           </Row>
+
+          {collection && (
+            <CustomAttributesValues asset={collection} language={shortLocale} />
+          )}
         </CardBody>
       </Card>
       <Card>
         <CardBody>
-          {vocabulary != null && (
-            <IfVocabularyActionAuthorized
-              key="collection-detail-remove"
-              vocabulary={vocabulary}
-              requiredAccessLevel={AccessLevel.WRITE}
-            >
-              <Row className={"justify-content-between mb-3 mx-0"}>
-                <FormattedMessage tagName={"h3"} id={"collection.members"} />
-                <Button
-                  color="success"
-                  size="sm"
-                  style={{ float: "right" }}
-                  onClick={onAddMember}
-                >
-                  <FaPlus />
-                  &nbsp;
-                  {i18n("collection.members.add")}
-                </Button>
-              </Row>
-            </IfVocabularyActionAuthorized>
-          )}
-
-          <CollectionMembersList
-            {...{
-              collection,
-              vocabulary,
+          <Tabs
+            activeTabLabelKey={activeTab}
+            changeTab={(tab) => setActiveTab(tab as TabKey)}
+            tabs={tabs}
+            tabBadges={{
+              [TabKey.MEMBERS]: totalMembersCount.toFixed(),
+              [TabKey.PROPERTIES]: unmappedPropertiesCount.toString(),
             }}
           />
-          {collection && vocabulary && (
-            <AddCollectionMemberDialog
-              ref={addMemberDialogRef}
-              collection={collection}
-            />
-          )}
         </CardBody>
       </Card>
+    </>
+  );
+};
+
+const MembersTab: FunctionComponent<CollectionMembersListProps> = (props) => {
+  const { collection, vocabulary } = props;
+  const { i18n } = useI18n();
+  const addMemberDialogRef = useRef<AddCollectionMemberDialogHandle>(null);
+
+  const onAddMember = () => {
+    addMemberDialogRef.current?.open();
+  };
+
+  if (!collection || !vocabulary) {
+    return null;
+  }
+
+  return (
+    <>
+      <IfVocabularyActionAuthorized
+        key="collection-detail-remove"
+        vocabulary={vocabulary}
+        requiredAccessLevel={AccessLevel.WRITE}
+      >
+        <Row className={"justify-content-end my-2 mx-0"}>
+          <Button
+            color="success"
+            size="sm"
+            style={{ float: "right" }}
+            onClick={onAddMember}
+          >
+            <FaPlus />
+            &nbsp;
+            {i18n("collection.members.add")}
+          </Button>
+        </Row>
+      </IfVocabularyActionAuthorized>
+
+      <CollectionMembersList {...props} />
+
+      <AddCollectionMemberDialog
+        ref={addMemberDialogRef}
+        collection={collection}
+      />
     </>
   );
 };

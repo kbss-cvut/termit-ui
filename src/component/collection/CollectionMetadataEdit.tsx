@@ -17,10 +17,11 @@ import {
   Row,
 } from "reactstrap";
 import { useDispatch } from "react-redux";
-import { SkosCollection } from "../../model/Collection";
+import { CONTEXT, SkosCollection } from "../../model/Collection";
 import MultilingualString, {
   getLocalizedOrDefault,
   hasNonBlankValue,
+  isLanguageBlank,
 } from "../../model/MultilingualString";
 import { useI18n } from "../hook/useI18n";
 import EditLanguageSelector from "../multilingual/EditLanguageSelector";
@@ -60,6 +61,12 @@ import { useDebouncedCallback } from "use-debounce";
 import CustomToggle from "../misc/CustomToggle";
 import HelpIcon from "../misc/HelpIcon";
 import ConfirmCancelDialog from "../misc/ConfirmCancelDialog";
+import { PropertyValuesType } from "../../model/WithUnmappedProperties";
+import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
+import If from "../misc/If";
+import { selectMultilingualCustomAttributeIris } from "../../store/StateSelectors";
+import { cloneDeep } from "lodash";
+import { getCustomAttributes } from "../../action/AsyncCustomizationActions";
 
 export interface CollectionMetadataEditProps {}
 
@@ -68,9 +75,25 @@ interface CollectionMetadataEditState {
   title: MultilingualString;
   description: MultilingualString;
   ordered: boolean;
+  unmappedProperties: Map<string, PropertyValuesType>;
 }
 
 const COLLECTION_LOAD_PROMISE_AREA = "collection-metadata-edit-promise-area";
+
+const IGNORED_ADDITIONAL_PROPERTIES = [
+  ...Object.getOwnPropertyNames(CONTEXT).map((n) => CONTEXT[n]),
+  VocabularyUtils.RDF_TYPE,
+  VocabularyUtils.SKOS_MEMBER,
+  VocabularyUtils.SKOS_MEMBER_LIST,
+];
+
+const DEFAULT_STATE: CollectionMetadataEditState = Object.freeze({
+  iri: "",
+  title: Object.freeze({}),
+  description: Object.freeze({}),
+  ordered: false,
+  unmappedProperties: Object.freeze(new Map()),
+});
 
 const CollectionMetadataEdit: FunctionComponent<
   CollectionMetadataEditProps
@@ -86,6 +109,9 @@ const CollectionMetadataEdit: FunctionComponent<
   );
 
   const vocabulary = useAppSelector((state) => state.vocabulary);
+  const multilingualCustomAttributes = useAppSelector(
+    selectMultilingualCustomAttributeIris
+  );
 
   useEffect(() => {
     if (vocabulary?.iri !== vocabularyUri.toString()) {
@@ -93,7 +119,12 @@ const CollectionMetadataEdit: FunctionComponent<
     }
   }, [dispatch, vocabulary?.iri, vocabularyUri]);
 
-  const [collection, setCollection] = useState<SkosCollection | null>(null);
+  const collection = useAppSelector((state) => {
+    if (collectionUri?.toString() === state.selectedCollection?.iri) {
+      return state.selectedCollection;
+    }
+    return null;
+  });
 
   useEffect(() => {
     if (!collectionUri) {
@@ -103,23 +134,16 @@ const CollectionMetadataEdit: FunctionComponent<
     trackPromise(
       dispatch(loadSkosCollection(collectionUri, vocabularyUri)),
       COLLECTION_LOAD_PROMISE_AREA
-    ).then((result) => {
-      if (result.status === AsyncActionStatus.SUCCESS && "payload" in result) {
-        setCollection(result.payload);
-      }
-    });
+    );
   }, [collectionUri, dispatch, vocabularyUri]);
 
   const isNewCollection = collection == null;
   // the identifier is generated from the title until the user modifies it manually
   const generateIri = useRef(isNewCollection);
 
-  const [data, setData] = useState<CollectionMetadataEditState>(() => ({
-    iri: "",
-    title: {},
-    description: {},
-    ordered: false,
-  }));
+  const [data, setData] = useState<CollectionMetadataEditState>(() =>
+    cloneDeep(DEFAULT_STATE)
+  );
 
   useEffect(() => {
     if (collection) {
@@ -128,10 +152,18 @@ const CollectionMetadataEdit: FunctionComponent<
         title: { ...collection.title },
         description: { ...collection.description },
         ordered: collection.isOrdered(),
+        unmappedProperties: cloneDeep(collection.unmappedProperties),
       });
       generateIri.current = false;
+    } else {
+      setData(cloneDeep(DEFAULT_STATE));
+      generateIri.current = true;
     }
   }, [collection]);
+
+  useEffect(() => {
+    dispatch(getCustomAttributes());
+  }, [dispatch]);
 
   const languages = useMemo(() => {
     if (vocabulary.primaryLanguage != null) {
@@ -191,6 +223,15 @@ const CollectionMetadataEdit: FunctionComponent<
     setData((prev) => ({ ...prev, ordered: !prev.ordered }));
   };
 
+  const onUnmappedPropertiesChange = useCallback(
+    (properties) =>
+      setData((prev) => ({
+        ...prev,
+        unmappedProperties: cloneDeep(properties),
+      })),
+    []
+  );
+
   const onRemoveTranslation = (lang: string) => {
     if (lang === vocabulary.primaryLanguage) {
       dispatch(
@@ -207,19 +248,25 @@ const CollectionMetadataEdit: FunctionComponent<
       setSelectedLanguage(selectedLanguage);
       return;
     }
-    const copy = {
-      ...data,
-      title: { ...data.title },
-      description: { ...data.description },
-    };
+    const copy = cloneDeep(data);
+
     removeTranslation(SkosCollection.MULTILINGUAL_ATTRIBUTES, copy, lang);
+    removeTranslation(
+      multilingualCustomAttributes,
+      copy.unmappedProperties,
+      lang
+    );
+
     setData(copy);
   };
 
   const titleValidation = hasNonBlankValue(data.title, selectedLanguage)
     ? []
     : [ValidationResult.BLOCKER];
-  const isInvalid = !hasNonBlankValue(data.title, vocabulary.primaryLanguage);
+  // invalid when any existing language is missing title
+  const isInvalid = [...languages, selectedLanguage].some((lang) =>
+    isLanguageBlank(lang, data.title)
+  );
 
   const onSave = () => {
     if (isInvalid) {
@@ -233,6 +280,7 @@ const CollectionMetadataEdit: FunctionComponent<
       vocabulary: { iri: vocabulary.iri },
       types: data.ordered ? [VocabularyUtils.SKOS_ORDERED_COLLECTION] : [],
     });
+    collection.unmappedProperties = data.unmappedProperties;
 
     let promise: Promise<AsyncAction | AsyncFailureAction>;
 
@@ -263,6 +311,24 @@ const CollectionMetadataEdit: FunctionComponent<
     }
   };
 
+  const IdentifierInput = useCallback(
+    () => (
+      <Row>
+        <Col xs={12}>
+          <CustomInput
+            name="edit-collection-iri"
+            label={i18n("asset.iri")}
+            help={isNewCollection ? i18n("collection.iri.help") : undefined}
+            onChange={onIriChange}
+            value={data.iri}
+            disabled={!isNewCollection}
+          />
+        </Col>
+      </Row>
+    ),
+    [data.iri, i18n, isNewCollection]
+  );
+
   return (
     <>
       <EditLanguageSelector
@@ -276,6 +342,9 @@ const CollectionMetadataEdit: FunctionComponent<
       <Card id="edit-collection">
         <CardBody>
           <Form>
+            <If expression={!isNewCollection}>
+              <IdentifierInput />
+            </If>
             <Row>
               <Col xs={12}>
                 <CustomInput
@@ -323,20 +392,23 @@ const CollectionMetadataEdit: FunctionComponent<
                 />
               </Col>
             </Row>
-            <ShowAdvancedAssetFields>
-              <Row>
-                <Col xs={12}>
-                  <CustomInput
-                    name="edit-collection-iri"
-                    label={i18n("asset.iri")}
-                    help={i18n("collection.iri.help")}
-                    onChange={onIriChange}
-                    value={data.iri}
-                    disabled={!isNewCollection}
-                  />
-                </Col>
-              </Row>
-            </ShowAdvancedAssetFields>
+            <Row>
+              <Col xs={12}>
+                <UnmappedPropertiesEdit
+                  assetType={"collection"}
+                  properties={data.unmappedProperties}
+                  onChange={onUnmappedPropertiesChange}
+                  languages={languages}
+                  language={selectedLanguage}
+                  ignoredProperties={IGNORED_ADDITIONAL_PROPERTIES}
+                />
+              </Col>
+            </Row>
+            <If expression={isNewCollection}>
+              <ShowAdvancedAssetFields>
+                <IdentifierInput />
+              </ShowAdvancedAssetFields>
+            </If>
             <Row>
               <Col xs={12}>
                 <ButtonToolbar className="d-flex justify-content-center mt-4">

@@ -21,6 +21,7 @@ export enum IriType {
   UNKNOWN = "UNKNOWN",
   TERM = "TERM",
   VOCABULARY = "VOCABULARY",
+  COLLECTION = "COLLECTION",
 }
 
 /**
@@ -34,6 +35,8 @@ export function getIriType(typeIri?: string) {
       return IriType.TERM;
     case VocabularyUtils.VOCABULARY:
       return IriType.VOCABULARY;
+    case VocabularyUtils.SKOS_COLLECTION:
+      return IriType.COLLECTION;
     default:
       return IriType.UNKNOWN;
   }
@@ -53,6 +56,7 @@ const RdfIRINode: React.FC<{ iri: RdfIRI; type: IriType }> = ({
       return <TermIriLink iri={iriString} />;
     case IriType.VOCABULARY:
       return <VocabularyIriLink iri={iriString} />;
+    case IriType.COLLECTION:
     default:
       const linkId = "outgoing-link-" + Utils.hashCode(iriString);
       return (

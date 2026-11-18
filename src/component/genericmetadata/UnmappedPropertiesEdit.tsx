@@ -10,14 +10,18 @@ import {
   PropertyValueType,
   stringifyPropertyValue,
 } from "../../model/WithUnmappedProperties";
-import { CustomAttributesValuesEdit } from "./CustomAttributesValuesEdit";
+import {
+  CustomAttributeAssetType,
+  CustomAttributeAssetTypeValue,
+  CustomAttributesValuesEdit,
+} from "./CustomAttributesValuesEdit";
 import { UnmappedPropertyValueEdit } from "./UnmappedPropertyValueEdit";
 import UnmappedProperties from "./UnmappedProperties";
 import { useI18n } from "../hook/useI18n";
 import { PluralMultilingualString } from "../../model/MultilingualString";
 
 interface UnmappedPropertiesEditProps {
-  assetType: "term" | "vocabulary";
+  assetType: CustomAttributeAssetType | CustomAttributeAssetTypeValue;
   properties: Map<string, PropertyValuesType>;
   ignoredProperties?: string[]; // Properties that should not be offered in the editor
   onChange: (properties: Map<string, PropertyValuesType>) => void;

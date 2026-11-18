@@ -2,6 +2,8 @@ import Constants from "../util/Constants";
 import Utils from "../util/Utils";
 import { getShortLocale, normalizeLanguageTag } from "../util/IntlUtil";
 import { HasUnmappedProperties } from "./WithUnmappedProperties";
+import { CustomAttribute } from "./RdfsResource";
+import { selectMultilingualCustomAttributeIris } from "../store/StateSelectors";
 
 export function context(propertyIri: string) {
   return {
@@ -236,6 +238,24 @@ export function hasLabelInLanguage(
   language: string
 ): boolean {
   return getLocalizedInLanguage(label, language).length > 0;
+}
+
+/**
+ * Compacts multilingual custom attribute values.
+ *
+ * This has to be done because it may happen that custom attributes are not loaded
+ * when compacting the asset (e.g., a Vocabulary) and are retrieved later.
+ * @param asset The asset to recompact
+ * @param customAttributes All custom attributes
+ */
+export function recompactMultilingualCustomAttributeValues<
+  T extends HasUnmappedProperties
+>(asset: T, customAttributes: CustomAttribute[]): T {
+  const multilingualCustomAttributes = selectMultilingualCustomAttributeIris({
+    customAttributes,
+  });
+  compactMultilingualCustomAttributeValues(asset, multilingualCustomAttributes);
+  return asset;
 }
 
 /**

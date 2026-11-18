@@ -74,6 +74,7 @@ export function loadCustomAttributeUsage(
       param("namespace", attributeIri.namespace)
         .param("size", pageRequest.size.toString())
         .param("page", pageRequest.page.toString())
+        .accept(Constants.JSON_MIME_TYPE)
     )
       .then((res) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<RdfStatement>(

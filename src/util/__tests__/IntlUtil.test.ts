@@ -12,6 +12,7 @@ import { TERM_MULTILINGUAL_ATTRIBUTES } from "../../model/Term";
 import { VOCABULARY_MULTILINGUAL_ATTRIBUTES } from "../../model/Vocabulary";
 import type { Mock } from "vitest";
 import VocabularyUtils from "../VocabularyUtils";
+import { pluralLangString } from "../../model/MultilingualString";
 
 vi.mock("../BrowserStorage");
 
@@ -126,6 +127,37 @@ describe("IntlUtil", () => {
       VOCABULARY_MULTILINGUAL_ATTRIBUTES.filter(
         (att) => voc[att] !== undefined
       ).forEach((att) => expect(voc[att]["cs"]).not.toBeDefined());
+    });
+
+    it("removes values in specified language from plural attribute", () => {
+      const cs = Object.freeze(["první", "druhý"]);
+      const de = Object.freeze(["erste"]);
+      const en = Object.freeze(["first", "second"]);
+      const object = {
+        attribute: pluralLangString([...en], "en"),
+      };
+      object.attribute["cs"] = [...cs];
+      object.attribute["de"] = [...de];
+
+      expect(object.attribute["en"]).toEqual(en);
+
+      removeTranslation(["attribute"], object, "en");
+
+      expect(object.attribute["en"]).toBeNullable();
+      expect(object.attribute["cs"]).toEqual(cs);
+      expect(object.attribute["de"]).toEqual(de);
+    });
+
+    it("removes values in specified language from Map of attributes", () => {
+      const map = new Map();
+      const value = Object.freeze({ cs: "hodnota", en: "value" });
+      map.set("attribute1", { ...value });
+      map.set("attribute2", { ...value });
+
+      removeTranslation(["attribute1"], map, "en");
+
+      expect(map.get("attribute2")).toEqual(value);
+      expect(map.get("attribute1")).toEqual({ cs: "hodnota" });
     });
   });
 });

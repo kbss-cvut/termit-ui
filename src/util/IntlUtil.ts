@@ -126,9 +126,11 @@ export function removeTranslation(
   language: string
 ) {
   multilingualAttributes.forEach((att) => {
-    if (object[att]) {
-      delete object[att][language];
-    }
+    const attributeValue =
+      object instanceof Map ? object.get(att) : object[att];
+    Utils.sanitizeArray(attributeValue).forEach((multilingual) => {
+      delete multilingual[language];
+    });
   });
 }
 

@@ -55,6 +55,7 @@ import { getShortLocale } from "../../util/IntlUtil";
 export interface CollectionMembersListProps {
   collection: SkosCollection | null;
   vocabulary: Vocabulary | null;
+  setTotalMembersCount: (totalCount: number) => void;
 }
 
 // how long the moved row stays highlighted before it fades out, in milliseconds
@@ -90,7 +91,11 @@ const RemoveButton = ({
 
 export const CollectionMembersList: FunctionComponent<
   CollectionMembersListProps
-> = ({ collection, vocabulary }: CollectionMembersListProps) => {
+> = ({
+  collection,
+  vocabulary,
+  setTotalMembersCount,
+}: CollectionMembersListProps) => {
   const { i18n, locale } = useI18n();
   const shortLocale = getShortLocale(locale);
   const dispatch: ThunkDispatch = useDispatch();
@@ -302,11 +307,17 @@ export const CollectionMembersList: FunctionComponent<
   const queryFn: QueryFn<CollectionMember> = useCallback(
     (pageRequest, sorting, signal): Promise<ResultPage<CollectionMember>> => {
       if (collection == null) {
+        setTotalMembersCount(0);
         return Promise.resolve({ totalCount: 0, pageContent: [] });
       }
-      return dispatch(loadCollectionMembers(collection, pageRequest, signal));
+      return dispatch(
+        loadCollectionMembers(collection, pageRequest, signal)
+      ).then((page) => {
+        setTotalMembersCount(page.totalCount);
+        return page;
+      });
     },
-    [collection, dispatch]
+    [collection, dispatch, setTotalMembersCount]
   );
 
   useEffect(() => {
@@ -319,6 +330,15 @@ export const CollectionMembersList: FunctionComponent<
   useEffect(() => {
     tableInstanceRef.current?.setGlobalFilter(searchValue);
   }, [searchValue]);
+
+  useEffect(() => {
+    // update the total member count from query cache
+    const totalCount = queryClient.getQueryState(queryKey, { exact: false })
+      ?.data?.["pages"]?.[0].totalCount;
+    if (Number.isFinite(totalCount)) {
+      setTotalMembersCount(totalCount);
+    }
+  }, [queryClient, queryKey, setTotalMembersCount]);
 
   return (
     <>

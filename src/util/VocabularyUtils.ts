@@ -79,6 +79,7 @@ const VocabularyUtils = {
   SKOS_NOTATION: _NS_SKOS + "notation",
   SKOS_EXAMPLE: _NS_SKOS + "example",
   SKOS_MEMBER: _NS_SKOS + "member",
+  SKOS_MEMBER_LIST: _NS_SKOS + "memberList",
   SKOS_COLLECTION: _NS_SKOS + "Collection",
   SKOS_ORDERED_COLLECTION: _NS_SKOS + "OrderedCollection",
   IS_OCCURRENCE_OF_TERM: _NS_TERMIT + "is-assignment-of-term",
