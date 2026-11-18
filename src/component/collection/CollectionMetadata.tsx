@@ -22,26 +22,17 @@ import UnmappedProperties from "../genericmetadata/UnmappedProperties";
 import { useAppSelector } from "../../util/Types";
 import AssetHistory from "../changetracking/AssetHistory";
 
-interface CollectionAndVocabulary {
-  collection: SkosCollection | null;
-  vocabulary: Vocabulary | null;
-}
-
-export interface CollectionMetadataProps extends CollectionAndVocabulary {
-  shortLocale: string;
-}
-
 enum TabKey {
   MEMBERS = "collection.members",
   HISTORY = "history.label",
   PROPERTIES = "properties.edit.title",
 }
 
-export const CollectionMetadata: FunctionComponent<CollectionMetadataProps> = ({
-  collection,
-  vocabulary,
-  shortLocale,
-}) => {
+export const CollectionMetadata: FunctionComponent<{
+  collection: SkosCollection | null;
+  vocabulary: Vocabulary | null;
+  shortLocale: string;
+}> = ({ collection, vocabulary, shortLocale }) => {
   const { i18n } = useI18n();
   const [totalMembersCount, setTotalMembersCount] = useState<number>(0);
   const customAttributes = useAppSelector((state) => state.customAttributes);
