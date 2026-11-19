@@ -51,6 +51,8 @@ import {
 import CustomInput from "../misc/CustomInput";
 import { isEmpty } from "lodash";
 import { getShortLocale } from "../../util/IntlUtil";
+import { asyncActionSuccessWithPayload } from "../../action/SyncActions";
+import ActionType from "../../action/ActionType";
 
 export interface CollectionMembersListProps {
   collection: SkosCollection | null;
@@ -125,6 +127,17 @@ export const CollectionMembersList: FunctionComponent<
   } | null>(null);
   const pendingMove = useRef<{ id: string } | null>(null);
 
+  const setCollectionData = useCallback(() => {
+    if (collection) {
+      dispatch(
+        asyncActionSuccessWithPayload(
+          { type: ActionType.SET_COLLECTION },
+          new SkosCollection(collection)
+        )
+      );
+    }
+  }, [dispatch, collection]);
+
   useEffect(() => {
     if (!movedRow || pendingMove.current) {
       return;
@@ -183,9 +196,10 @@ export const CollectionMembersList: FunctionComponent<
         .finally(() => {
           pendingMove.current = null;
           setMovedRow({ ...newMovedRow });
+          setCollectionData();
         });
     },
-    [collection, dispatch, queryClient, queryKey]
+    [collection, dispatch, queryClient, queryKey, setCollectionData]
   );
 
   const { startDrag, getRowClassName: getDragRowClassName } = useRowDragReorder(
@@ -212,10 +226,12 @@ export const CollectionMembersList: FunctionComponent<
   );
 
   const onMemberRemoved = useCallback(() => {
-    queryClient.invalidateQueries<InfiniteData<ResultPage<CollectionMember>>>({
-      queryKey,
-    });
-  }, [queryClient, queryKey]);
+    queryClient
+      .invalidateQueries<InfiniteData<ResultPage<CollectionMember>>>({
+        queryKey,
+      })
+      .then(setCollectionData);
+  }, [queryClient, queryKey, setCollectionData]);
 
   const onRemove: RemoveCb = useCallback(
     (member) => removeMemberDialogRef.current?.open(member),

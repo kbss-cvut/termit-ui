@@ -893,17 +893,18 @@ function selectedCollection(
       }
       break;
     case ActionType.GET_CUSTOM_ATTRIBUTES:
-      if (
-        (action as AsyncAction).status === AsyncActionStatus.SUCCESS &&
-        state !== null
-      ) {
+      if (isAsyncSuccess(action) && state !== null) {
         return recompactMultilingualCustomAttributeValues(
           cloneDeep(state),
           (action as unknown as AsyncActionSuccess<CustomAttribute[]>).payload
         );
-      } else {
-        return state;
       }
+      break;
+    case ActionType.SET_COLLECTION:
+      if (isAsyncSuccess(action) && action.payload instanceof SkosCollection) {
+        return action.payload;
+      }
+      break;
   }
   return state;
 }

@@ -94,7 +94,7 @@ const UnchangedMembers = ({ change }: HasMembersChange) => {
   }
 
   return (
-    <div className={"unchanged-members"}>
+    <div className={"unchanged-memberss"}>
       <MemberIri member={first} />
       <If expression={change.count === 3}>
         <MemberIri member={change.value[1]} />
