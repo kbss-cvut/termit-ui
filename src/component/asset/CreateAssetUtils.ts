@@ -8,7 +8,8 @@ type AssetType =
   | "FILE"
   | "RESOURCE"
   | "CUSTOM_ATTRIBUTE"
-  | "CUSTOM_ATTRIBUTE_PROFILE";
+  | "CUSTOM_ATTRIBUTE_PROFILE"
+  | "COLLECTION";
 
 /**
  * Calls backend to generate a new identifier for an asset specified by the parameters.

@@ -26,7 +26,6 @@ import {
 } from "../model/CustomAttributesProfile";
 import Utils from "../util/Utils";
 import { AxiosResponse } from "axios";
-import JsonLdUtils from "../util/JsonLdUtils";
 
 export function getCustomAttributes() {
   return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
