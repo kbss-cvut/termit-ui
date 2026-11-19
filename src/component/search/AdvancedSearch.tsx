@@ -107,11 +107,6 @@ const AdvancedSearch: React.FC = () => {
     setVisibleFacets((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const resetFacet = () => {
-    setVisibleFacets({ ...EMPTY_FACETS });
-    dispatch(updateSearchFilter({ facetParams: {} }));
-  };
-
   // Build the rdf:type filter param for the given search target
   const buildTypeParam = (target: SearchTarget): SearchParam[] => {
     if (target === SearchTarget.TERMS) {
@@ -258,6 +253,16 @@ const AdvancedSearch: React.FC = () => {
     }
   };
 
+  const refreshSearch = useCallback(
+    (nextParams) => {
+      setPage(0);
+      debouncedSearch.cancel();
+      runSearch(searchString, language, target, nextParams, 0);
+      dispatch(updateSearchFilter({ facetParams: nextParams }));
+    },
+    [debouncedSearch, dispatch, language, runSearch, searchString, target]
+  );
+
   // Clear facet params when facets are toggled off
   React.useEffect(() => {
     let changed = false;
@@ -272,10 +277,7 @@ const AdvancedSearch: React.FC = () => {
       }
     });
     if (changed) {
-      setPage(0);
-      debouncedSearch.cancel();
-      runSearch(searchString, language, target, nextParams, 0);
-      dispatch(updateSearchFilter({ facetParams: nextParams }));
+      refreshSearch(nextParams);
     }
   }, [
     dispatch,
@@ -286,7 +288,13 @@ const AdvancedSearch: React.FC = () => {
     searchString,
     language,
     target,
+    refreshSearch,
   ]);
+
+  const resetFacet = () => {
+    setVisibleFacets({ ...EMPTY_FACETS });
+    refreshSearch({});
+  };
 
   const onCustomAttributeToggle = (att: RdfProperty) => {
     const current = facetParams[att.iri];
