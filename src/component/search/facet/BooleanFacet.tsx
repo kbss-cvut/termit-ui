@@ -1,11 +1,8 @@
 import React from "react";
-import { FormGroup, Label } from "reactstrap";
 import SearchParam from "../../../model/search/SearchParam";
 import Utils from "../../../util/Utils";
 import VocabularyUtils from "../../../util/VocabularyUtils";
-import { useI18n } from "../../hook/useI18n";
-import Select from "../../misc/Select";
-import If from "../../misc/If";
+import { OptionalBooleanSelect } from "../../genericmetadata/OptionalBooleanSelect";
 
 export const BooleanFacet: React.FC<{
   id: string;
@@ -13,31 +10,22 @@ export const BooleanFacet: React.FC<{
   value: SearchParam;
   onChange: (value: SearchParam) => void;
 }> = ({ id, label, value, onChange }) => {
-  const { i18n } = useI18n();
   const hasValue = Utils.sanitizeArray(value.value).length > 0;
   const checked = hasValue ? value.value[0] : "";
 
-  const handleToggle = (newValue: boolean | string) => {
+  const handleToggle = (newValue: boolean | null | string) => {
+    if (newValue == null) {
+      newValue = VocabularyUtils.RDF_NIL;
+    }
     onChange({ ...value, value: [newValue] });
   };
 
   return (
-    <FormGroup>
-      <div className="d-flex justify-content-between align-items-end mb-2">
-        <Label className="attribute-label mb-0">{label}</Label>
-      </div>
-      <Select
-        id={id}
-        value={checked}
-        onChange={(e) => handleToggle(e.currentTarget.value)}
-      >
-        <If expression={!hasValue}>
-          <option value={""}></option>
-        </If>
-        <option value={"true"}>{i18n("boolean.true")}</option>
-        <option value={"false"}>{i18n("boolean.false")}</option>
-        <option value={VocabularyUtils.RDF_NIL}>{i18n("boolean.none")}</option>
-      </Select>
-    </FormGroup>
+    <OptionalBooleanSelect
+      value={checked}
+      label={label}
+      onChange={handleToggle}
+      id={id}
+    />
   );
 };

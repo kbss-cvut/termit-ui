@@ -122,6 +122,7 @@ export const CustomAttributeValue: React.FC<{
   value: PropertyValueType | PluralMultilingualString;
   language: string;
 }> = ({ attribute, value, language }) => {
+  const { i18n } = useI18n();
   const strValue = stringifyPropertyValue(value as PropertyValueType);
   switch (attribute.rangeIri) {
     case VocabularyUtils.TERM:
@@ -133,7 +134,7 @@ export const CustomAttributeValue: React.FC<{
           pill={true}
           className="align-text-top"
         >
-          {strValue}
+          {i18n("boolean." + strValue)}
         </Badge>
       );
     case VocabularyUtils.RDF_LANGSTRING:

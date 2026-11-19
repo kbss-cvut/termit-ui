@@ -7,7 +7,6 @@ import {
 } from "../../model/WithUnmappedProperties";
 import { useI18n } from "../hook/useI18n";
 import VocabularyUtils from "../../util/VocabularyUtils";
-import CustomCheckBoxInput from "../misc/CustomCheckboxInput";
 import {
   getLocalized,
   PluralMultilingualString,
@@ -19,6 +18,7 @@ import Term from "src/model/Term";
 import { Label } from "reactstrap";
 import HelpIcon from "../misc/HelpIcon";
 import Utils from "../../util/Utils";
+import { OptionalBooleanSelect } from "./OptionalBooleanSelect";
 
 export const CustomAttributeValueEdit: React.FC<{
   attribute: RdfProperty;
@@ -39,17 +39,23 @@ export const CustomAttributeValueEdit: React.FC<{
   if (attribute.rangeIri === VocabularyUtils.XSD_BOOLEAN) {
     const valuesArr = Utils.sanitizeArray(values as PropertyValueType[]);
     const checked =
-      valuesArr.length > 0 && Boolean(extractPropertyValue(valuesArr[0]));
+      valuesArr.length > 0
+        ? Boolean(extractPropertyValue(valuesArr[0])).toString()
+        : VocabularyUtils.RDF_NIL;
     return (
-      <div className="form-group">
-        <CustomCheckBoxInput
-          checked={checked}
-          onChange={() => onChange(attribute, [!checked])}
-          label={getLocalized(attribute.label, lang)}
-          title={getLocalized(attribute.comment, lang)}
-          className="relative ml-0"
-        />
-      </div>
+      <OptionalBooleanSelect
+        value={checked}
+        label={getLocalized(attribute.label, lang)}
+        helpText={getLocalized(attribute.comment, lang)}
+        className="relative ml-0"
+        onChange={(value) => {
+          if (value == VocabularyUtils.RDF_NIL) {
+            onChange(attribute, []);
+          } else {
+            onChange(attribute, [value]);
+          }
+        }}
+      />
     );
   }
   if (attribute.rangeIri === VocabularyUtils.XSD_INT) {
