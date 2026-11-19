@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardBody, Col, Collapse, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Collapse, Row } from "reactstrap";
 import { useI18n } from "../hook/useI18n";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import SearchParam, { MatchType } from "../../model/search/SearchParam";
@@ -43,6 +43,7 @@ interface AdvancedSearchFacetsProps {
   onFacetChange: (value: SearchParam, debounce?: boolean) => void;
   toggleFacet: (key: FacetKey) => void;
   onCustomAttributeToggle: (att: RdfProperty) => void;
+  onReset: () => void;
 }
 
 const AdvancedSearchFacets: React.FC<AdvancedSearchFacetsProps> = ({
@@ -54,6 +55,7 @@ const AdvancedSearchFacets: React.FC<AdvancedSearchFacetsProps> = ({
   onFacetChange,
   toggleFacet,
   onCustomAttributeToggle,
+  onReset,
 }) => {
   const { i18n } = useI18n();
 
@@ -94,6 +96,14 @@ const AdvancedSearchFacets: React.FC<AdvancedSearchFacetsProps> = ({
                 label={i18n("search.faceted.relationshipAnnotation")}
                 onClick={() => toggleFacet("relationshipAnnotation")}
               />
+              <Button
+                color="link"
+                size="sm"
+                style={{ marginLeft: "auto" }}
+                onClick={onReset}
+              >
+                {i18n("search.advanced.reset")}
+              </Button>
               <div className="w-100" />
               {termAttributes.map((att) => {
                 const active = !!facetParams[att.iri];

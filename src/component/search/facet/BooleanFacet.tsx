@@ -5,6 +5,7 @@ import Utils from "../../../util/Utils";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { useI18n } from "../../hook/useI18n";
 import Select from "../../misc/Select";
+import If from "../../misc/If";
 
 export const BooleanFacet: React.FC<{
   id: string;
@@ -14,7 +15,7 @@ export const BooleanFacet: React.FC<{
 }> = ({ id, label, value, onChange }) => {
   const { i18n } = useI18n();
   const hasValue = Utils.sanitizeArray(value.value).length > 0;
-  const checked = hasValue ? value.value[0] : VocabularyUtils.RDF_NIL;
+  const checked = hasValue ? value.value[0] : "";
 
   const handleToggle = (newValue: boolean | string) => {
     onChange({ ...value, value: [newValue] });
@@ -30,6 +31,9 @@ export const BooleanFacet: React.FC<{
         value={checked}
         onChange={(e) => handleToggle(e.currentTarget.value)}
       >
+        <If expression={!hasValue}>
+          <option value={""}></option>
+        </If>
         <option value={"true"}>{i18n("boolean.true")}</option>
         <option value={"false"}>{i18n("boolean.false")}</option>
         <option value={VocabularyUtils.RDF_NIL}>{i18n("boolean.none")}</option>

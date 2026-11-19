@@ -359,6 +359,7 @@ function searchQuery(
 ): SearchQuery {
   switch (action.type) {
     case ActionType.UPDATE_SEARCH_FILTER:
+      console.debug("UPDATE", state, action, Object.assign({}, state, action));
       return new SearchQuery(Object.assign({}, state, action));
     case ActionType.LOGOUT:
       return new SearchQuery();
