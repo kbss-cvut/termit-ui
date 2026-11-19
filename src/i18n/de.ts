@@ -1142,6 +1142,10 @@ const de = {
     "collection.migrate.iri.title": "Identifikator der Sammlung ändern",
     "collection.migrate.iri.confirmLabel":
       "Geben Sie zur Bestätigung den Namen der Sammlung ein",
+
+    "boolean.true": "Wahr",
+    "boolean.false": "Falsch",
+    "boolean.none": "Kein Wert",
   },
 };
 
