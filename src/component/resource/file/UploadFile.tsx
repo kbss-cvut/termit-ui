@@ -85,10 +85,6 @@ export const UploadFile = forwardRef<UploadFileHandle, UploadFileProps>(
       }
     };
 
-    const containerClasses = classNames("create-resource-dropzone", {
-      active: dragActive,
-    });
-
     const renderValidation = useCallback(() => {
       const messages = Utils.sanitizeArray(validation).filter(
         (result) => !!result.message || !!result.messageId
@@ -119,7 +115,12 @@ export const UploadFile = forwardRef<UploadFileHandle, UploadFileProps>(
             >
               {({ getRootProps, getInputProps }) => (
                 <>
-                  <div {...getRootProps()} className={containerClasses}>
+                  <div
+                    {...getRootProps()}
+                    className={classNames("create-resource-dropzone", {
+                      active: dragActive,
+                    })}
+                  >
                     <input {...getInputProps()} />
                     <div>
                       <Label className="placeholder-text w-100 text-center">
