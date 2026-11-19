@@ -2,9 +2,9 @@ import React from "react";
 import { FormGroup, Label } from "reactstrap";
 import SearchParam from "../../../model/search/SearchParam";
 import Utils from "../../../util/Utils";
-import { TriStateCheckbox } from "../../misc/TriStateCheckbox";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { useI18n } from "../../hook/useI18n";
+import Select from "../../misc/Select";
 
 export const BooleanFacet: React.FC<{
   id: string;
@@ -25,13 +25,15 @@ export const BooleanFacet: React.FC<{
       <div className="d-flex justify-content-between align-items-end mb-2">
         <Label className="attribute-label mb-0">{label}</Label>
       </div>
-      <TriStateCheckbox
+      <Select
         id={id}
-        checked={checked}
-        onChange={handleToggle}
-        className="relative ml-0"
-        hint={i18n("search.no-value.checkbox.hint")}
-      />
+        value={checked}
+        onChange={(e) => handleToggle(e.currentTarget.value)}
+      >
+        <option value={"true"}>{i18n("boolean.true")}</option>
+        <option value={"false"}>{i18n("boolean.false")}</option>
+        <option value={VocabularyUtils.RDF_NIL}>{i18n("boolean.none")}</option>
+      </Select>
     </FormGroup>
   );
 };

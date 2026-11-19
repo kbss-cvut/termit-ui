@@ -1186,6 +1186,10 @@ const cs = {
     "collection.migrate.iri.title": "Změnit identifikátor kolekce",
     "collection.migrate.iri.confirmLabel":
       "Pro potvrzení zadejte název kolekce",
+
+    "boolean.true": "Pravda",
+    "boolean.false": "Nepravda",
+    "boolean.none": "Bez hodnoty",
   },
 };
 

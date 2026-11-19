@@ -1179,6 +1179,10 @@ const en = {
     "collection.migrate.iri.title": "Change identifier of the collection",
     "collection.migrate.iri.confirmLabel":
       "To confirm, enter the name of the collection",
+
+    "boolean.true": "True",
+    "boolean.false": "False",
+    "boolean.none": "No value",
   },
 };
 
