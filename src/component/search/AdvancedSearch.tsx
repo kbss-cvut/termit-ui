@@ -48,6 +48,15 @@ function mapIndexedLanguages(languages?: string[]): Language[] {
     .filter((l): l is Language => !!l);
 }
 
+const EMPTY_FACETS: Readonly<VisibleFacets> = Object.freeze({
+  vocabulary: false,
+  type: false,
+  state: false,
+  notation: false,
+  example: false,
+  relationshipAnnotation: false,
+});
+
 const AdvancedSearch: React.FC = () => {
   const { i18n, locale } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
@@ -75,12 +84,7 @@ const AdvancedSearch: React.FC = () => {
   const [results, setResults] = useState<ResultPage<SearchResult> | null>(null);
 
   const [visibleFacets, setVisibleFacets] = useState<VisibleFacets>({
-    vocabulary: true,
-    type: true,
-    state: true,
-    notation: true,
-    example: true,
-    relationshipAnnotation: true,
+    ...EMPTY_FACETS,
   });
 
   React.useEffect(() => {
@@ -101,6 +105,11 @@ const AdvancedSearch: React.FC = () => {
 
   const toggleFacet = (key: FacetKey) => {
     setVisibleFacets((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const resetFacet = () => {
+    setVisibleFacets({ ...EMPTY_FACETS });
+    dispatch(updateSearchFilter({ facetParams: {} }));
   };
 
   // Build the rdf:type filter param for the given search target
@@ -357,6 +366,7 @@ const AdvancedSearch: React.FC = () => {
           onFacetChange={onFacetChange}
           toggleFacet={toggleFacet}
           onCustomAttributeToggle={onCustomAttributeToggle}
+          onReset={resetFacet}
         />
       )}
 

@@ -860,6 +860,7 @@ const cs = {
     "search.target.vocabularies": "Slovníky",
     "search.advanced.show": "Zobrazit pokročilé filtry",
     "search.advanced.hide": "Skrýt pokročilé filtry",
+    "search.advanced.reset": "Vymazat filtry",
     "search.help": "Zadejte hledaný výraz do pole výše.",
     "search.no-value": "Bez hodnoty",
     "search.no-value.checkbox.hint":
