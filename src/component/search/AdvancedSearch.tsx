@@ -48,6 +48,15 @@ function mapIndexedLanguages(languages?: string[]): Language[] {
     .filter((l): l is Language => !!l);
 }
 
+const EMPTY_FACETS: Readonly<VisibleFacets> = Object.freeze({
+  vocabulary: false,
+  type: false,
+  state: false,
+  notation: false,
+  example: false,
+  relationshipAnnotation: false,
+});
+
 const AdvancedSearch: React.FC = () => {
   const { i18n, locale } = useI18n();
   const dispatch: ThunkDispatch = useDispatch();
@@ -75,12 +84,7 @@ const AdvancedSearch: React.FC = () => {
   const [results, setResults] = useState<ResultPage<SearchResult> | null>(null);
 
   const [visibleFacets, setVisibleFacets] = useState<VisibleFacets>({
-    vocabulary: true,
-    type: true,
-    state: true,
-    notation: true,
-    example: true,
-    relationshipAnnotation: true,
+    ...EMPTY_FACETS,
   });
 
   React.useEffect(() => {
@@ -249,6 +253,16 @@ const AdvancedSearch: React.FC = () => {
     }
   };
 
+  const refreshSearch = useCallback(
+    (nextParams) => {
+      setPage(0);
+      debouncedSearch.cancel();
+      runSearch(searchString, language, target, nextParams, 0);
+      dispatch(updateSearchFilter({ facetParams: nextParams }));
+    },
+    [debouncedSearch, dispatch, language, runSearch, searchString, target]
+  );
+
   // Clear facet params when facets are toggled off
   React.useEffect(() => {
     let changed = false;
@@ -263,10 +277,7 @@ const AdvancedSearch: React.FC = () => {
       }
     });
     if (changed) {
-      setPage(0);
-      debouncedSearch.cancel();
-      runSearch(searchString, language, target, nextParams, 0);
-      dispatch(updateSearchFilter({ facetParams: nextParams }));
+      refreshSearch(nextParams);
     }
   }, [
     dispatch,
@@ -277,7 +288,13 @@ const AdvancedSearch: React.FC = () => {
     searchString,
     language,
     target,
+    refreshSearch,
   ]);
+
+  const resetFacet = () => {
+    setVisibleFacets({ ...EMPTY_FACETS });
+    refreshSearch({});
+  };
 
   const onCustomAttributeToggle = (att: RdfProperty) => {
     const current = facetParams[att.iri];
@@ -357,6 +374,7 @@ const AdvancedSearch: React.FC = () => {
           onFacetChange={onFacetChange}
           toggleFacet={toggleFacet}
           onCustomAttributeToggle={onCustomAttributeToggle}
+          onReset={resetFacet}
         />
       )}
 

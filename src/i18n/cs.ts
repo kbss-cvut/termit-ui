@@ -898,6 +898,7 @@ const cs = {
     "search.target.vocabularies": "Slovníky",
     "search.advanced.show": "Zobrazit pokročilé filtry",
     "search.advanced.hide": "Skrýt pokročilé filtry",
+    "search.advanced.reset": "Vymazat filtry",
     "search.help": "Zadejte hledaný výraz do pole výše.",
     "search.no-value": "Bez hodnoty",
     "search.no-value.checkbox.hint":
@@ -1224,6 +1225,10 @@ const cs = {
     "collection.migrate.iri.title": "Změnit identifikátor kolekce",
     "collection.migrate.iri.confirmLabel":
       "Pro potvrzení zadejte název kolekce",
+
+    "boolean.true": "Pravda",
+    "boolean.false": "Nepravda",
+    "boolean.none": "Bez hodnoty",
   },
 };
 
