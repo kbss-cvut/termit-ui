@@ -29,6 +29,10 @@ export class Route {
   }
 }
 
+export const TabKeys = {
+  collections: "collections.title",
+};
+
 const Routes = {
   dashboard: new Route("dashboard", "/"),
   administration: new Route("administration", "/administration"),
@@ -84,6 +88,14 @@ const Routes = {
   vocabularyTermDetail: new Route(
     "vocabularyTermDetail",
     "/vocabularies/:name/terms/:termName"
+  ),
+  vocabularyCollectionsList: new Route(
+    "vocabularyCollectionsList",
+    "/vocabularies/:name/?activeTab=" + TabKeys.collections
+  ),
+  vocabularyCollectionPath: new Route(
+    "vocabularyCollectionPath",
+    "/vocabularies/:name/collections/"
   ),
   vocabularyCollectionDetail: new Route(
     "vocabularyCollectionDetail",

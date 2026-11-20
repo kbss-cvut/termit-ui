@@ -25,6 +25,9 @@ import AccessLevel from "../../model/acl/AccessLevel";
 
 const TERM_COLLECTIONS_LIST_PROMSIE_AREA = "TERM_COLLECTIONS_LIST_PROMSIE_AREA";
 
+/**
+ * A list of collections the term is member of
+ */
 export const TermCollectionsList: FunctionComponent<{
   term: Term;
   vocabulary: Vocabulary;

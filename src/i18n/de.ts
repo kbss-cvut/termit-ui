@@ -1105,6 +1105,8 @@ const de = {
       "Änderung des Ressourcenidentifikators",
 
     "collections.title": "Sammlungen",
+    "collections.navigate.to.list":
+      "Gehen Sie zur Liste aller Sammlungen im Vokabular",
     "collections.empty": "In diesem Vokabular gibt es keine Sammlungen.",
     "collection.create": "Neue Sammlung",
     "collection.title": "Sammlung",
