@@ -18,9 +18,6 @@ const ResourceFileDetail = React.lazy(
 const CollectionRoute = React.lazy(
   () => import("../collection/CollectionRoute")
 );
-const CollectionEdit = React.lazy(
-  () => import("../collection/CollectionMetadataEdit")
-);
 
 const VocabularyRoute: React.FC = () => {
   const { i18n } = useI18n();
@@ -57,14 +54,8 @@ const VocabularyRoute: React.FC = () => {
         includeSearch={true}
       />
       <BreadcrumbRoute
-        title={i18n("collection.create")}
-        component={CollectionEdit}
-        path={Routes.createVocabularyCollection.path}
-        includeSearch={true}
-      />
-      <DynamicBreadcrumbRoute
-        asset={"selectedCollection"}
-        path={Routes.vocabularyCollectionDetail.path}
+        title={i18n("collections.title")}
+        path={Routes.vocabularyCollectionPath.path}
         component={CollectionRoute}
         includeSearch={true}
       />

@@ -85,6 +85,14 @@ const Routes = {
     "vocabularyTermDetail",
     "/vocabularies/:name/terms/:termName"
   ),
+  vocabularyCollectionsList: new Route(
+    "vocabularyCollectionsList",
+    "/vocabularies/:name/?activeTab=collections.title"
+  ),
+  vocabularyCollectionPath: new Route(
+    "vocabularyCollectionPath",
+    "/vocabularies/:name/collections/"
+  ),
   vocabularyCollectionDetail: new Route(
     "vocabularyCollectionDetail",
     "/vocabularies/:name/collections/:collectionName"
