@@ -3,10 +3,11 @@ import {
   asyncActionFailure,
   asyncActionRequest,
   asyncActionSuccess,
+  asyncActionSuccessWithPayload,
   publishMessage,
 } from "./SyncActions";
 import Constants from "../util/Constants";
-import Ajax, { content, param } from "../util/Ajax";
+import Ajax, { accept, content, param } from "../util/Ajax";
 import { ErrorData } from "../model/ErrorInfo";
 import VocabularyUtils, { IRI } from "../util/VocabularyUtils";
 import ActionType from "./ActionType";
@@ -16,6 +17,12 @@ import { createPropertyImpl, getPropertiesImpl } from "./AsyncActions";
 import Message from "../model/Message";
 import MessageType from "../model/MessageType";
 import JsonLdUtils from "../util/JsonLdUtils";
+import {
+  CustomAttributesProfile,
+  CustomAttributesProfileData,
+  PROFILE_CONTEXT,
+} from "../model/CustomAttributesProfile";
+import Utils from "../util/Utils";
 
 export function getCustomAttributes() {
   return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
@@ -74,7 +81,6 @@ export function loadCustomAttributeUsage(
       param("namespace", attributeIri.namespace)
         .param("size", pageRequest.size.toString())
         .param("page", pageRequest.page.toString())
-        .accept(Constants.JSON_MIME_TYPE)
     )
       .then((res) =>
         JsonLdUtils.compactAndResolveReferencesAsArray<RdfStatement>(
@@ -108,5 +114,131 @@ export function removeCustomAttribute(
     )
       .then(() => dispatch(asyncActionSuccess(action)))
       .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+  };
+}
+
+/**
+ * Exports the specified custom attributes as a JSON-LD profile and downloads it as a file.
+ *
+ * @param profileData data for the custom attributes profile
+ */
+export function exportCustomAttributesProfile(
+  profileData: CustomAttributesProfileData
+) {
+  const action = { type: ActionType.EXPORT_CUSTOM_ATTRIBUTES_PROFILE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    const profile = new CustomAttributesProfile(profileData);
+    return new Promise((resolve) => {
+      const fragment = VocabularyUtils.getFragment(profile.iri);
+      const fileName = Utils.normalizeString(fragment) + ".jsonld";
+
+      Utils.fileDownload(
+        JSON.stringify(profile.toJsonLd(), null, 2),
+        fileName,
+        Constants.JSON_LD_MIME_TYPE
+      );
+      resolve(null);
+    }).then(() => dispatch(asyncActionSuccess(action)));
+  };
+}
+
+export function downloadProfileFromUri(
+  uri: string,
+  abortController: AbortController
+) {
+  const action = { type: ActionType.DOWNLOAD_CUSTOM_ATTRIBUTES_PROFILE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.get(
+      uri,
+      accept(Constants.JSON_LD_MIME_TYPE)
+        .signal(abortController)
+        .preserveAcceptHeaderInPost()
+        .excludeCredentials()
+    )
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferences<CustomAttributesProfileData>(
+          data,
+          PROFILE_CONTEXT
+        )
+      )
+      .then((data) => new CustomAttributesProfile(data))
+      .then((profile) =>
+        dispatch(asyncActionSuccessWithPayload(action, profile))
+      )
+      .catch((error: ErrorData | Error) => {
+        if (error instanceof Error) {
+          error = { message: error.message };
+        }
+        return dispatch(asyncActionFailure(action, error));
+      });
+  };
+}
+
+export function loadProfileFromFile(file: File) {
+  const action = { type: ActionType.LOAD_CUSTOM_ATTRIBUTES_PROFILE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return file
+      .text()
+      .then(JSON.parse)
+      .then((data) =>
+        JsonLdUtils.compactAndResolveReferences<CustomAttributesProfileData>(
+          data,
+          PROFILE_CONTEXT
+        )
+      )
+      .then((data) => new CustomAttributesProfile(data))
+      .then((profile) =>
+        dispatch(asyncActionSuccessWithPayload(action, profile))
+      )
+      .catch((error: ErrorData | Error) => {
+        if (error instanceof Error) {
+          error = { message: `${error.name}: ${error.message}` };
+        }
+        return dispatch(asyncActionFailure(action, error));
+      });
+  };
+}
+
+export function importCustomAttributesProfile(
+  profile: CustomAttributesProfile
+) {
+  const action = { type: ActionType.IMPORT_CUSTOM_ATTRIBUTES_PROFILE };
+  return (dispatch: ThunkDispatch) => {
+    dispatch(asyncActionRequest(action, true));
+    return Ajax.post(
+      `${Constants.API_PREFIX}/data/profile/custom-attributes/import`,
+      content(profile.toJsonLd())
+    )
+      .then(() => dispatch(getCustomAttributes()))
+      .then(() => {
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                messageId:
+                  "administration.customization.customAttributes.profile.import.success",
+              },
+              MessageType.SUCCESS
+            )
+          )
+        );
+        return dispatch(asyncActionSuccess(action));
+      })
+      .catch((error: ErrorData) => {
+        dispatch(
+          publishMessage(
+            new Message(
+              {
+                ...error,
+              },
+              MessageType.ERROR
+            )
+          )
+        );
+        return dispatch(asyncActionFailure(action, error));
+      });
   };
 }
