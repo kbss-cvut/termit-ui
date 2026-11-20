@@ -53,7 +53,6 @@ export interface CustomAttributesProfileImportDialogHandle {
 }
 
 const MODAL_ID = "custom-attributes-profile-import-dialog";
-const IMPORT_PROMISE_AREA = "custom-attributes-profile-import-area";
 
 export const CustomAttributesProfileImportDialog = forwardRef<
   CustomAttributesProfileImportDialogHandle,
@@ -113,7 +112,7 @@ export const CustomAttributesProfileImportDialog = forwardRef<
     }
     trackPromise(
       dispatch(importCustomAttributesProfile(loadedProfile)),
-      IMPORT_PROMISE_AREA
+      MODAL_ID
     ).then((action) => {
       if (action.status === AsyncActionStatus.SUCCESS) {
         onClose();
@@ -144,7 +143,7 @@ export const CustomAttributesProfileImportDialog = forwardRef<
           </Label>
           <Table instance={tableInstance} />
         </If>
-        <PromiseTrackingMask area={IMPORT_PROMISE_AREA} />
+        <PromiseTrackingMask area={MODAL_ID} />
       </ModalBody>
       <ModalFooter>
         <ButtonToolbar className="float-right">

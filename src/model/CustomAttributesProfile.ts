@@ -1,21 +1,17 @@
 import { context, MultilingualString } from "./MultilingualString";
 import VocabularyUtils from "../util/VocabularyUtils";
-import { HasIdentifier } from "./Asset";
 import {
   CONTEXT as CUSTOM_ATTRIBUTE_CONTEXT,
   CustomAttribute,
 } from "./RdfsResource";
 import Utils from "../util/Utils";
 import JsonLdUtils from "../util/JsonLdUtils";
+import { HasIdentifier } from "./Asset";
 
-export const PROFILE_DESCRIPTION_CONTEXT = {
+export const PROFILE_CONTEXT = {
   iri: "@id",
   title: context(VocabularyUtils.DC_TITLE),
   description: context(VocabularyUtils.DC_DESCRIPTION),
-};
-
-export const PROFILE_CONTEXT = {
-  ...PROFILE_DESCRIPTION_CONTEXT,
   customAttributes: {
     "@id": VocabularyUtils.HAS_CUSTOM_ATTRIBUTE,
     "@container": "@set",
@@ -23,13 +19,9 @@ export const PROFILE_CONTEXT = {
   },
 };
 
-export interface CustomAttributesProfileDescriptionData extends HasIdentifier {
+export interface CustomAttributesProfileData extends HasIdentifier {
   title: MultilingualString;
   description?: MultilingualString;
-}
-
-export interface CustomAttributesProfileData
-  extends CustomAttributesProfileDescriptionData {
   customAttributes: CustomAttribute[];
 }
 

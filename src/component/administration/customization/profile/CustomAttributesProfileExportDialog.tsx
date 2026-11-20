@@ -153,26 +153,26 @@ export const CustomAttributesProfileExportDialog = forwardRef<
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const selectedIris = useMemo(
-    () => new Set(Object.keys(rowSelection).filter((iri) => rowSelection[iri])),
-    [rowSelection]
-  );
+  const selectedAttributes = useMemo(() => {
+    const iris = new Set(
+      Object.keys(rowSelection).filter((iri) => rowSelection[iri])
+    );
+    return props.customAttributes.filter((attr) => iris.has(attr.iri));
+  }, [props.customAttributes, rowSelection]);
 
   const onExport = () => {
     const language = getShortLocale(locale);
     trackPromise(
       dispatch(
-        exportCustomAttributesProfile(
-          {
-            iri: iri.trim(),
-            title: langString(name.trim(), language),
-            description:
-              description.trim().length > 0
-                ? langString(description.trim(), language)
-                : undefined,
-          },
-          Array.from(selectedIris)
-        )
+        exportCustomAttributesProfile({
+          iri: iri.trim(),
+          title: langString(name.trim(), language),
+          description:
+            description.trim().length > 0
+              ? langString(description.trim(), language)
+              : undefined,
+          customAttributes: selectedAttributes,
+        })
       ),
       EXPORT_PROMISE_AREA
     ).then((result) => {
@@ -236,7 +236,7 @@ export const CustomAttributesProfileExportDialog = forwardRef<
             disabled={
               iri.trim().length === 0 ||
               name.trim().length === 0 ||
-              selectedIris.size === 0
+              selectedAttributes.length === 0
             }
             onClick={onExport}
           >
