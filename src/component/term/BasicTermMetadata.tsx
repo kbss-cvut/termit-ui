@@ -196,16 +196,14 @@ const CollectionListLink: FunctionComponent<{ vocabulary: Vocabulary }> = ({
   const id = "term-metadata-collection-list-link";
 
   return (
-    <>
-      <Link
-        id={id}
-        to={destination}
-        className={"ml-1"}
-        title={i18n("collections.navigate.to.list")}
-      >
-        <FaSearch size={15} />
-      </Link>
-    </>
+    <Link
+      id={id}
+      to={destination}
+      className={"ml-1"}
+      title={i18n("collections.navigate.to.list")}
+    >
+      <FaSearch size={15} />
+    </Link>
   );
 };
 
