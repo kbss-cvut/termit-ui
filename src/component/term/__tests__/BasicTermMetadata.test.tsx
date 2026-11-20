@@ -48,12 +48,14 @@ describe("BasicTermMetadata", () => {
     ];
     term.subTerms = subTerms;
     const wrapper = mountWithIntl(
-      <BasicTermMetadata
-        term={term}
-        vocabulary={vocabulary}
-        language={Constants.DEFAULT_LANGUAGE}
-        {...intlFunctions()}
-      />
+      <MemoryRouter>
+        <BasicTermMetadata
+          term={term}
+          vocabulary={vocabulary}
+          language={Constants.DEFAULT_LANGUAGE}
+          {...intlFunctions()}
+        />
+      </MemoryRouter>
     );
     const subTermLinks = wrapper.find(TermLink);
     expect(subTermLinks.length).toEqual(subTerms.length);
