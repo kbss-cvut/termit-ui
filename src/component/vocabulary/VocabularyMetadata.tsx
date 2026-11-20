@@ -24,6 +24,7 @@ import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValue
 import VocabulariesReferenceList from "./VocabulariesReferenceList";
 import { selectVocabularyLanguages } from "../../store/StateSelectors";
 import { CollectionsList } from "../collection/CollectionsList";
+import { TabKeys } from "../../util/Routes";
 
 interface VocabularyMetadataProps {
   vocabulary: Vocabulary;
@@ -37,7 +38,7 @@ interface VocabularyMetadataProps {
 export const TABS = {
   glossary: "glossary.title",
   document: "type.document",
-  collections: "collections.title",
+  collections: TabKeys.collections,
   history: "history.label",
   snapshots: "snapshots.title",
   changefrequency: "changefrequency.label",

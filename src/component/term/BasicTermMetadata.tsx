@@ -1,4 +1,5 @@
 import * as React from "react";
+import { FunctionComponent, useMemo } from "react";
 import Term from "../../model/Term";
 // @ts-ignore
 import { Col, Label, List, Row } from "reactstrap";
@@ -16,6 +17,10 @@ import TermState from "./state/TermState";
 import { CustomAttributesValues } from "../genericmetadata/CustomAttributesValues";
 import VocabularyUtils from "../../util/VocabularyUtils";
 import { TermCollectionsList } from "./TermCollectionsList";
+import Routing, { Vocabularies } from "../../util/Routing";
+import { TabKeys } from "../../util/Routes";
+import { Link } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
 
 interface BasicTermMetadataProps {
   term: Term;
@@ -165,6 +170,7 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
           >
             {i18n("collections.title")}
           </Label>
+          <CollectionListLink vocabulary={vocabulary} />
         </Col>
         <Col xl={10} md={8}>
           <TermCollectionsList term={term} vocabulary={vocabulary} />
@@ -173,6 +179,32 @@ const BasicTermMetadata: React.FC<BasicTermMetadataProps> = ({
       <Row>
         <TermState term={term} vocabulary={vocabulary} />
       </Row>
+    </>
+  );
+};
+
+const CollectionListLink: FunctionComponent<{ vocabulary: Vocabulary }> = ({
+  vocabulary,
+}) => {
+  const { i18n } = useI18n();
+  const destination = useMemo(() => {
+    const { route, params, query } =
+      Vocabularies.getVocabularyRoutingOptions(vocabulary);
+    query.set("activeTab", TabKeys.collections);
+    return Routing.getTransitionPath(route, { params, query });
+  }, [vocabulary]);
+  const id = "term-metadata-collection-list-link";
+
+  return (
+    <>
+      <Link
+        id={id}
+        to={destination}
+        className={"ml-1"}
+        title={i18n("collections.navigate.to.list")}
+      >
+        <FaSearch size={15} />
+      </Link>
     </>
   );
 };
