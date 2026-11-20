@@ -1187,6 +1187,8 @@ const en = {
     "longrunningtasks.name.migration.identifier": "Resource identifier change",
 
     "collections.title": "Collections",
+    "collections.navigate.to.list":
+      "Go to the list of all collections in the vocabulary",
     "collections.empty": "There are no collections in this vocabulary.",
     "collection.create": "New collection",
     "collection.title": "Collection",

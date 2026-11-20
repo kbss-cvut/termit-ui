@@ -1195,6 +1195,7 @@ const cs = {
     "longrunningtasks.name.migration.identifier": "Změna identifikátoru zdroje",
 
     "collections.title": "Kolekce",
+    "collections.navigate.to.list": "Přejít na seznam všech kolekcí slovníku",
     "collections.empty": "V tomto slovníku nejsou žádné kolekce.",
     "collection.create": "Nová kolekce",
     "collection.title": "Kolekce",
