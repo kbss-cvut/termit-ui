@@ -20,12 +20,9 @@ import JsonLdUtils from "../util/JsonLdUtils";
 import {
   CustomAttributesProfile,
   CustomAttributesProfileData,
-  CustomAttributesProfileDescriptionData,
   PROFILE_CONTEXT,
-  PROFILE_DESCRIPTION_CONTEXT,
 } from "../model/CustomAttributesProfile";
 import Utils from "../util/Utils";
-import { AxiosResponse } from "axios";
 
 export function getCustomAttributes() {
   return getPropertiesImpl<CustomAttributeData, CustomAttribute>(
@@ -123,37 +120,26 @@ export function removeCustomAttribute(
 /**
  * Exports the specified custom attributes as a JSON-LD profile and downloads it as a file.
  *
- * @param profile Description of the exported profile
- * @param customAttributeUris Identifiers of custom attributes to include in the profile
+ * @param profileData data for the custom attributes profile
  */
 export function exportCustomAttributesProfile(
-  profile: CustomAttributesProfileDescriptionData,
-  customAttributeUris: string[]
+  profileData: CustomAttributesProfileData
 ) {
   const action = { type: ActionType.EXPORT_CUSTOM_ATTRIBUTES_PROFILE };
   return (dispatch: ThunkDispatch) => {
     dispatch(asyncActionRequest(action, true));
-    return Ajax.post(
-      `${Constants.API_PREFIX}/data/profile/custom-attributes/export`,
-      content(
-        Object.assign({}, profile, { "@context": PROFILE_DESCRIPTION_CONTEXT })
-      ).param("customAttributeUris", customAttributeUris)
-    )
-      .then((resp: AxiosResponse) => {
-        const disposition = resp.headers[Constants.Headers.CONTENT_DISPOSITION];
-        const filenameMatch = disposition
-          ? disposition.match(/filename="(.+\..+)"/)
-          : null;
-        Utils.fileDownload(
-          typeof resp.data === "string"
-            ? resp.data
-            : JSON.stringify(resp.data, null, 2),
-          filenameMatch ? filenameMatch[1] : "custom-attributes-profile.jsonld",
-          Constants.JSON_LD_MIME_TYPE
-        );
-        return dispatch(asyncActionSuccess(action));
-      })
-      .catch((error: ErrorData) => dispatch(asyncActionFailure(action, error)));
+    const profile = new CustomAttributesProfile(profileData);
+    return new Promise((resolve) => {
+      const fragment = VocabularyUtils.getFragment(profile.iri);
+      const fileName = Utils.normalizeString(fragment) + ".jsonld";
+
+      Utils.fileDownload(
+        JSON.stringify(profile.toJsonLd(), null, 2),
+        fileName,
+        Constants.JSON_LD_MIME_TYPE
+      );
+      resolve(null);
+    }).then(() => dispatch(asyncActionSuccess(action)));
   };
 }
 
