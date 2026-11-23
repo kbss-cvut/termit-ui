@@ -310,6 +310,10 @@ const cs = {
       "Budou importovány následující vlastní atributy:",
     "administration.customization.customAttributes.profile.import.success":
       "Profil byl úspěšně importován.",
+    "administration.customization.customAttributes.profile.import.tabs.uri":
+      "URI",
+    "administration.customization.customAttributes.profile.import.tabs.file":
+      "Soubor",
 
     "administration.customization.customAttributes.profile.export.title":
       "Exportovat profil",

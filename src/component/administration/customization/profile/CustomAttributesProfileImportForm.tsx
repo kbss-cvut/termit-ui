@@ -4,6 +4,7 @@ import {
   forwardRef,
   useCallback,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -33,6 +34,7 @@ import ValidationResult from "../../../../model/form/ValidationResult";
 import { ErrorData } from "../../../../model/ErrorInfo";
 import AsyncActionStatus from "../../../../action/AsyncActionStatus";
 import If from "../../../misc/If";
+import Tabs from "../../../misc/Tabs";
 
 export interface CustomAttributesProfileImportFormProps {
   profile: CustomAttributesProfile | null;
@@ -126,6 +128,11 @@ function handleDownloadResult(
   );
 }
 
+const TAB_KEYS = {
+  file: "administration.customization.customAttributes.profile.import.tabs.file",
+  uri: "administration.customization.customAttributes.profile.import.tabs.uri",
+};
+
 export const CustomAttributesProfileImportForm = forwardRef<
   CustomAttributesProfileImportFormHandle,
   CustomAttributesProfileImportFormProps
@@ -142,6 +149,8 @@ export const CustomAttributesProfileImportForm = forwardRef<
     useState<OptValidationResult>(undefined);
   const [fileValidationResult, setFileValidationResult] =
     useState<OptValidationResult>(undefined);
+
+  const [activeTab, setActiveTab] = useState(TAB_KEYS.file);
 
   const downloadProfile = useDebouncedCallback((uri) => {
     trackPromise(
@@ -170,39 +179,90 @@ export const CustomAttributesProfileImportForm = forwardRef<
     abortControllerRef.current = new AbortController();
   }, [downloadProfile]);
 
+  const reset = useCallback(() => {
+    setDownloadUri("");
+    setProfile(null);
+    setUriValidationResult(undefined);
+    setFileValidationResult(undefined);
+    uploadFileRef.current?.reset();
+  }, [setProfile]);
+
   useImperativeHandle(
     ref,
     () => ({
-      reset: () => {
-        setDownloadUri("");
-        setProfile(null);
-        setUriValidationResult(undefined);
-        setFileValidationResult(undefined);
-        uploadFileRef.current?.reset();
-      },
+      reset,
     }),
-    [setProfile]
+    [reset]
   );
 
-  const onUriChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setDownloadUri(value);
-    cancelPending();
-    if (value.trim().length > 0) {
-      downloadProfile(value.trim());
-      uploadFileRef.current?.reset();
-      setFileValidationResult(undefined);
-    } else {
-      setUriValidationResult(undefined);
-    }
-  };
+  const onUriChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setDownloadUri(value);
+      cancelPending();
+      if (value.trim().length > 0) {
+        downloadProfile(value.trim());
+        uploadFileRef.current?.reset();
+        setFileValidationResult(undefined);
+      } else {
+        setUriValidationResult(undefined);
+      }
+    },
+    [cancelPending, downloadProfile]
+  );
 
-  const onFileSelected = (file: File) => {
-    cancelPending();
-    setDownloadUri("");
-    setUriValidationResult(undefined);
-    loadFile(file);
-  };
+  const onFileSelected = useCallback(
+    (file: File) => {
+      cancelPending();
+      setDownloadUri("");
+      setUriValidationResult(undefined);
+      loadFile(file);
+    },
+    [cancelPending, loadFile]
+  );
+
+  const onTabChange = useCallback(
+    (newTab: string) => {
+      setActiveTab(newTab);
+      reset();
+    },
+    [reset]
+  );
+
+  const tabs = useMemo(
+    () => ({
+      [TAB_KEYS.file]: (
+        <UploadFile
+          ref={uploadFileRef}
+          setFile={onFileSelected}
+          accept={ACCEPT}
+          validation={fileValidationResult}
+        />
+      ),
+      [TAB_KEYS.uri]: (
+        <CustomInput
+          type={"url"}
+          label={i18n(
+            "administration.customization.customAttributes.profile.import.url.label"
+          )}
+          hint={i18n(
+            "administration.customization.customAttributes.profile.import.url.hint"
+          )}
+          value={downloadUri}
+          onChange={onUriChange}
+          validation={uriValidationResult}
+        />
+      ),
+    }),
+    [
+      downloadUri,
+      fileValidationResult,
+      i18n,
+      onFileSelected,
+      onUriChange,
+      uriValidationResult,
+    ]
+  );
 
   return (
     <>
@@ -211,23 +271,11 @@ export const CustomAttributesProfileImportForm = forwardRef<
           "administration.customization.customAttributes.profile.import.description"
         )}
       </Label>
-      <CustomInput
-        type={"url"}
-        label={i18n(
-          "administration.customization.customAttributes.profile.import.url.label"
-        )}
-        hint={i18n(
-          "administration.customization.customAttributes.profile.import.url.hint"
-        )}
-        value={downloadUri}
-        onChange={onUriChange}
-        validation={uriValidationResult}
-      />
-      <UploadFile
-        ref={uploadFileRef}
-        setFile={onFileSelected}
-        accept={ACCEPT}
-        validation={fileValidationResult}
+      <Tabs
+        activeTabLabelKey={activeTab}
+        tabs={tabs}
+        changeTab={onTabChange}
+        contentClassName={"mt-2"}
       />
       <div className={"loading-wrapper"}>
         <CustomInput

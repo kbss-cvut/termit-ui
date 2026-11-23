@@ -298,6 +298,10 @@ const en = {
       "The following custom attributes will be imported:",
     "administration.customization.customAttributes.profile.import.success":
       "Profile successfully imported.",
+    "administration.customization.customAttributes.profile.import.tabs.uri":
+      "URI",
+    "administration.customization.customAttributes.profile.import.tabs.file":
+      "File",
 
     "administration.customization.customAttributes.profile.export.title":
       "Export profile",
