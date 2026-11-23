@@ -37,15 +37,11 @@ const CollectionRoute: FunctionComponent = () => {
 };
 
 const CollectionDetailRoute: FunctionComponent = () => {
-  const { i18n } = useI18n();
-
   return (
     <Switch>
-      <BreadcrumbRoute
+      <Route
         component={CollectionEdit}
-        title={i18n("edit")}
         path={Routes.editVocabularyCollection.path}
-        includeSearch={true}
       />
       <Route
         path={Routes.vocabularyCollectionDetail.path}
