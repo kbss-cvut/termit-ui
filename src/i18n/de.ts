@@ -308,6 +308,10 @@ const de = {
       "Die folgenden benutzerdefinierten Attribute werden importiert:",
     "administration.customization.customAttributes.profile.import.success":
       "Profil wurde erfolgreich importiert.",
+    "administration.customization.customAttributes.profile.import.tabs.uri":
+      "URI",
+    "administration.customization.customAttributes.profile.import.tabs.file":
+      "Datei",
 
     "administration.customization.customAttributes.profile.export.title":
       "Profil exportieren",
