@@ -24,7 +24,7 @@ export interface RdfsResourceData extends AssetData {
 }
 
 export interface RdfPropertyData extends RdfsResourceData {
-  domain?: string;
+  domain?: string | { iri: string };
   range?: string | { iri: string };
 }
 

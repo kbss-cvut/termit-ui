@@ -281,11 +281,53 @@ const cs = {
       "Změnit identifikátor vlastního atributu",
     "administration.customization.customAttributes.migrate.iri.confirmLabel":
       "Pro potvrzení zadejte název vlastního atributu",
+
     "administration.customization.customAttributes.symmetric": "Symetrický",
     "administration.customization.customAttributes.symmetric.tooltip":
       "Atribut je symetrický",
     "administration.customization.customAttributes.symmetric.help":
       "Pro symetrický vztah platí, že pokud jej nastavíte v jednom směru, automaticky se vytvoří i ve směru opačném.",
+
+    "administration.customization.customAttributes.profile.import.title":
+      "Importovat profil",
+    "administration.customization.customAttributes.profile.import.heading":
+      "Import profilu vlastních atributů",
+    "administration.customization.customAttributes.profile.import.description":
+      "Importujte profil vlastních atributů ze souboru nebo z jeho URI. Vlastní atributy obsažené v profilu budou přidány do této instance TermItu.",
+    "administration.customization.customAttributes.profile.import.url.label":
+      "URI profilu",
+    "administration.customization.customAttributes.profile.import.url.hint":
+      "Zadejte přímou URI profilu. Profil bude automaticky stažen.",
+    "administration.customization.customAttributes.profile.import.selectProfile":
+      "Není vybrán žádný profil",
+    "administration.customization.customAttributes.profile.import.downloadFailed":
+      "Profil se nepodařilo stáhnout ze zadané URI",
+    "administration.customization.customAttributes.profile.import.invalidProfile":
+      "Neplatný profil",
+    "administration.customization.customAttributes.profile.import.loading":
+      "Načítání profilu...",
+    "administration.customization.customAttributes.profile.import.attributes":
+      "Budou importovány následující vlastní atributy:",
+    "administration.customization.customAttributes.profile.import.success":
+      "Profil byl úspěšně importován.",
+    "administration.customization.customAttributes.profile.import.tabs.uri":
+      "URI",
+    "administration.customization.customAttributes.profile.import.tabs.file":
+      "Soubor",
+
+    "administration.customization.customAttributes.profile.export.title":
+      "Exportovat profil",
+    "administration.customization.customAttributes.profile.export.heading":
+      "Export profilu vlastních atributů",
+    "administration.customization.customAttributes.profile.export.description":
+      "Zadejte název a popis exportovaného profilu a vyberte vlastní atributy, které má profil obsahovat.",
+    "administration.customization.customAttributes.profile.export.description2":
+      "Název a popis profilu se administrátorům zobrazí před jeho importem. Exportovaný profil můžete sdílet jako soubor, nebo, pokud je zveřejněn online, pomocí jeho URI.",
+    "administration.customization.customAttributes.profile.name":
+      "Název profilu",
+    "administration.customization.customAttributes.profile.description":
+      "Popis profilu",
+
     "asset.link.tooltip": "Zobrazit detail záznamu",
     "asset.iri": "Identifikátor",
     "asset.create.iri.help":
@@ -1054,6 +1096,9 @@ const cs = {
       "Služba textové analýza nepodporuje jazyk obsahu souboru.",
     "error.annotation.term.unsupportedLanguage":
       "Služba textové analýza nepodporuje jazyk definice pojmu.",
+
+    "error.customAttribute.conflict":
+      "Vlastní atribut se shodným identifikátorem již existuje s {property, select, domain {odlišnou doménou} range {odlišným oborem hodnot} other {odlišnou hodnotou atributu {property}}}.",
 
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
