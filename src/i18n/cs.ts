@@ -1093,6 +1093,9 @@ const cs = {
     "error.annotation.term.unsupportedLanguage":
       "Služba textové analýza nepodporuje jazyk definice pojmu.",
 
+    "error.customAttribute.conflict":
+      "Vlastní atribut se shodným identifikátorem již existuje s {property, select, domain {odlišnou doménou} range {odlišným oborem hodnot} other {odlišnou hodnotou atributu {property}}}.",
+
     "history.label": "Historie změn",
     "history.loading": "Načítám historii...",
     "history.empty": "Zaznamenaná historie je prázdná.",

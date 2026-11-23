@@ -1086,6 +1086,9 @@ const en = {
     "error.annotation.term.unsupportedLanguage":
       "Text analysis service does not support the language of this term's definition.",
 
+    "error.customAttribute.conflict":
+      "A custom attribute with the same identifier already exists with a different {property, select, domain {domain} range {range} other {value of {property}}}.",
+
     "history.label": "Change history",
     "history.loading": "Loading history...",
     "history.empty": "The recorded history of this asset is empty.",

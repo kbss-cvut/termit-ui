@@ -1050,6 +1050,8 @@ const de = {
       "Der Textanalysedienst unterstützt die Sprache dieser Datei nicht.",
     "error.annotation.term.unsupportedLanguage":
       "Der Textanalysedienst unterstützt die Sprache der Definition dieses Begriffs nicht.",
+    "error.customAttribute.conflict":
+      "Ein benutzerdefiniertes Attribut mit demselben Bezeichner existiert bereits mit {property, select, domain {einer abweichenden Domäne} range {einem abweichenden Wertebereich} other {einem abweichenden Wert von {property}}}.",
     "history.label": "Verlauf ändern",
     "history.loading": "Verlauf wird geladen...",
     "history.empty":
