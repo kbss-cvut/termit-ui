@@ -20,7 +20,7 @@ import { TermCollectionsList } from "./TermCollectionsList";
 import Routing, { Vocabularies } from "../../util/Routing";
 import { TabKeys } from "../../util/Routes";
 import { Link } from "react-router-dom";
-import { FaSearch } from "react-icons/fa";
+import { FaLayerGroup } from "react-icons/fa6";
 
 interface BasicTermMetadataProps {
   term: Term;
@@ -202,7 +202,7 @@ const CollectionListLink: FunctionComponent<{ vocabulary: Vocabulary }> = ({
       className={"ml-1"}
       title={i18n("collections.navigate.to.list")}
     >
-      <FaSearch size={15} />
+      <FaLayerGroup size={15} />
     </Link>
   );
 };
