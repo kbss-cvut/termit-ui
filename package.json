@@ -14,7 +14,7 @@
     "axios": "1.21.0",
     "classnames": "2.5.1",
     "diff": "9.0.0",
-    "dom-serializer": "2.0.0",
+    "dom-serializer": "3.1.1",
     "domhandler": "5.0.3",
     "easymde": "2.21.0",
     "html-to-react": "1.7.0",
