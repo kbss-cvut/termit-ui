@@ -65,7 +65,7 @@ import { PropertyValuesType } from "../../model/WithUnmappedProperties";
 import UnmappedPropertiesEdit from "../genericmetadata/UnmappedPropertiesEdit";
 import If from "../misc/If";
 import { selectMultilingualCustomAttributeIris } from "../../store/StateSelectors";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 import { getCustomAttributes } from "../../action/AsyncCustomizationActions";
 
 export interface CollectionMetadataEditProps {}

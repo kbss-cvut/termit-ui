@@ -49,7 +49,7 @@ import {
   RemoveCollectionMemberDialogHandle,
 } from "./RemoveCollectionMemberDialog";
 import CustomInput from "../misc/CustomInput";
-import { isEmpty } from "lodash";
+import isEmpty from "lodash/isEmpty";
 import { getShortLocale } from "../../util/IntlUtil";
 import { asyncActionSuccessWithPayload } from "../../action/SyncActions";
 import ActionType from "../../action/ActionType";
