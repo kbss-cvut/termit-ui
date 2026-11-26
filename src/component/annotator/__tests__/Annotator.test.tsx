@@ -1,6 +1,7 @@
 import * as React from "react";
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import {
+  flushPromises,
   mockWindowSelection,
   renderWithIntl,
   withWebSocket,
@@ -476,7 +477,7 @@ describe("Annotator", () => {
       HtmlDomUtils.generateVirtualElement = originalGenerateVirtualElement;
     });
 
-    it("displays selection purpose dialog at an anchor at the beginning of the selection", () => {
+    it("displays selection purpose dialog at an anchor at the beginning of the selection", async () => {
       mockWindowSelection({
         isCollapsed: false,
         rangeCount: 1,
@@ -486,6 +487,9 @@ describe("Annotator", () => {
       });
       renderAnnotator();
       fireEvent.mouseUp(document.getElementById("annotator")!);
+      await act(async () => {
+        await flushPromises();
+      });
       expect(
         document.getElementById("annotator-selection-dialog-mark-occurrence")
       ).toBeTruthy();

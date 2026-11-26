@@ -1,6 +1,10 @@
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
 import HelpIcon from "../HelpIcon";
 import { fireEvent, waitFor } from "@testing-library/react";
+import { act } from "react";
 
 describe("HelpIcon", () => {
   function renderIcon() {
@@ -17,10 +21,13 @@ describe("HelpIcon", () => {
     return document.querySelector(".popover.show") !== null;
   }
 
-  it("shows help popover on mouse over help icon", () => {
+  it("shows help popover on mouse over help icon", async () => {
     renderIcon();
     expect(popoverOpen()).toBeFalsy();
     fireEvent.mouseOver(icon());
+    await act(async () => {
+      await flushPromises();
+    });
     expect(popoverOpen()).toBeTruthy();
   });
 
@@ -32,10 +39,13 @@ describe("HelpIcon", () => {
     await waitFor(() => expect(popoverOpen()).toBeFalsy());
   });
 
-  it("pins popover on help icon click", () => {
+  it("pins popover on help icon click", async () => {
     renderIcon();
     expect(popoverOpen()).toBeFalsy();
     fireEvent.click(icon());
+    await act(async () => {
+      await flushPromises();
+    });
     expect(popoverOpen()).toBeTruthy();
     fireEvent.mouseOut(icon());
     expect(popoverOpen()).toBeTruthy();

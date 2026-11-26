@@ -4,7 +4,11 @@ import SearchResult, {
 import Generator from "../../../../__tests__/environment/Generator";
 import Vocabulary from "../../../../util/VocabularyUtils";
 import VocabularyUtils from "../../../../util/VocabularyUtils";
-import { renderWithIntl } from "../../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../../__tests__/environment/Environment";
+import { act } from "react";
 import {
   mockUseI18n,
   formatMessage,
@@ -82,15 +86,21 @@ describe("SearchResultsOverlay", () => {
     );
   }
 
-  it("shows only first x search results, others can be viewed on dedicated search page", () => {
+  it("shows only first x search results, others can be viewed on dedicated search page", async () => {
     const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
     renderWithResults(results);
+    await act(async () => {
+      await flushPromises();
+    });
     const items = document.querySelectorAll(".search-result-link");
     expect(items.length).toEqual(MAX_RENDERED_RESULTS);
   });
 
-  it("renders info message about no results when empty results are provided", () => {
+  it("renders info message about no results when empty results are provided", async () => {
     renderWithResults([]);
+    await act(async () => {
+      await flushPromises();
+    });
     const items = document.querySelector(".search-result-link");
     expect(items).toBeNull();
     expect(
@@ -98,9 +108,12 @@ describe("SearchResultsOverlay", () => {
     ).toContain("No results found");
   });
 
-  it("renders count info when more results than displayable count are provided", () => {
+  it("renders count info when more results than displayable count are provided", async () => {
     const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
     renderWithResults(results);
+    await act(async () => {
+      await flushPromises();
+    });
     expect(document.querySelectorAll(".search-result-link").length).toEqual(
       MAX_RENDERED_RESULTS
     );
@@ -112,29 +125,38 @@ describe("SearchResultsOverlay", () => {
     );
   });
 
-  it("renders results as links leading to result details", () => {
+  it("renders results as links leading to result details", async () => {
     const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS);
     renderWithResults(results);
+    await act(async () => {
+      await flushPromises();
+    });
     const links = document.querySelectorAll(".m-asset-link");
     expect(links.length).toEqual(MAX_RENDERED_RESULTS);
   });
 
-  it("invokes search open when no results info link is clicked", () => {
+  it("invokes search open when no results info link is clicked", async () => {
     renderWithResults([]);
+    await act(async () => {
+      await flushPromises();
+    });
     const noResultsInfo = document.querySelector(".search-result-no-results")!;
     fireEvent.click(noResultsInfo);
     expect(onOpenSearch).toHaveBeenCalled();
   });
 
-  it("invokes search open when count info link is clicked", () => {
+  it("invokes search open when count info link is clicked", async () => {
     const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
     renderWithResults(results);
+    await act(async () => {
+      await flushPromises();
+    });
     const infoLink = document.querySelector(".search-result-info")!;
     fireEvent.click(infoLink);
     expect(onOpenSearch).toHaveBeenCalled();
   });
 
-  it("merges duplicate results to prevent rendering issues", () => {
+  it("merges duplicate results to prevent rendering issues", async () => {
     const iri = Generator.generateUri();
     const vocabularyIri = Generator.generateUri();
     const results = [
@@ -156,20 +178,26 @@ describe("SearchResultsOverlay", () => {
       }),
     ];
     renderWithResults(results);
+    await act(async () => {
+      await flushPromises();
+    });
     const items = document.querySelectorAll(".search-result-link");
     expect(items.length).toEqual(1);
   });
 
-  it("reports correct result count after merging duplicates", () => {
+  it("reports correct result count after merging duplicates", async () => {
     const results = generateResults(Vocabulary.TERM, MAX_RENDERED_RESULTS + 5);
     results.push(results[0].copy());
     renderWithResults(results);
+    await act(async () => {
+      await flushPromises();
+    });
     const infoLink = document.querySelector(".search-result-info")!;
     const expCount = results.length - 1;
     expect(infoLink.textContent).toContain(expCount.toString());
   });
 
-  it("sorts results correctly after merging duplicates", () => {
+  it("sorts results correctly after merging duplicates", async () => {
     const results = generateResults(VocabularyUtils.TERM);
     const newItem = new SearchResult({
       iri: results[results.length - 1].iri,
@@ -182,22 +210,28 @@ describe("SearchResultsOverlay", () => {
     });
     results.push(newItem);
     renderWithResults(results);
+    await act(async () => {
+      await flushPromises();
+    });
     const items = document.querySelectorAll(".search-result-link");
     expect(items.length).toEqual(results.length - 1);
     expect(items[0].id).toContain(newItem.iri);
   });
 
-  it("shows correct number of results when there are fewer than threshold and some are merged", () => {
+  it("shows correct number of results when there are fewer than threshold and some are merged", async () => {
     const results = generateResults(Vocabulary.TERM, 1);
     results.push(results[0].copy());
     renderWithResults(results);
+    await act(async () => {
+      await flushPromises();
+    });
     const infoLink = document.querySelector(".search-result-info");
     expect(infoLink).toBeNull();
     const items = document.querySelectorAll(".search-result-link");
     expect(items.length).toEqual(1);
   });
 
-  it("filters out results in terminal state", () => {
+  it("filters out results in terminal state", async () => {
     const states = [
       new RdfsResource({
         iri: Generator.generateUri(),
@@ -223,6 +257,9 @@ describe("SearchResultsOverlay", () => {
     (Redux.useSelector as Mock).mockReset();
     vi.spyOn(Redux, "useSelector").mockReturnValue([states[1].iri]);
     renderWithResults(results);
+    await act(async () => {
+      await flushPromises();
+    });
     const items = document.querySelector(".search-result-link");
     expect(items).toBeNull();
     expect(

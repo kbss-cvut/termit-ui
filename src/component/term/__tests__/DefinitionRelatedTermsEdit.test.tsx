@@ -36,7 +36,7 @@ describe("DefinitionRelatedTermsEdit", () => {
     loadTermByIri = vi.fn();
   });
 
-  it("renders only unique terms which occurred in the term's definition", () => {
+  it("renders only unique terms which occurred in the term's definition", async () => {
     const t = Generator.generateTerm();
     const occurrences = [
       Generator.generateOccurrenceOf(t),
@@ -49,6 +49,7 @@ describe("DefinitionRelatedTermsEdit", () => {
     (loadTermByIri as Mock).mockResolvedValue(t);
     const { container } = render(occurrences);
 
+    await act(async () => flushPromises());
     expect(container.querySelectorAll("tbody tr").length).toEqual(1);
   });
 
@@ -117,7 +118,7 @@ describe("DefinitionRelatedTermsEdit", () => {
     expect(rows[1].querySelector("td.italics")).not.toBeNull();
   });
 
-  it("does not render terms pending removal", () => {
+  it("does not render terms pending removal", async () => {
     const t1 = Generator.generateTerm();
     const occurrences = [Generator.generateOccurrenceOf(t1)];
     occurrences[0].types.push(VocabularyUtils.SUGGESTED_TERM_OCCURRENCE);
@@ -125,11 +126,12 @@ describe("DefinitionRelatedTermsEdit", () => {
     (loadTermByIri as Mock).mockResolvedValueOnce(t1);
     const { container } = render(occurrences);
 
+    await act(async () => flushPromises());
     expect(container.firstChild).toBeNull();
   });
 
   describe("onApprove", () => {
-    it("adds all occurrences of the same term to pending approvals", () => {
+    it("adds all occurrences of the same term to pending approvals", async () => {
       const t = Generator.generateTerm();
       const occurrences = [
         Generator.generateOccurrenceOf(t),
@@ -140,7 +142,8 @@ describe("DefinitionRelatedTermsEdit", () => {
       const ref = React.createRef<DefinitionRelatedTermsEdit>();
       render(occurrences, ref);
 
-      ref.current!.onApprove(occurrences[0]);
+      await act(async () => flushPromises());
+      act(() => ref.current!.onApprove(occurrences[0]));
       expect(onChange).toHaveBeenCalled();
       expect((onChange as Mock).mock.calls[0][0].pendingApproval).toEqual(
         occurrences
@@ -149,7 +152,7 @@ describe("DefinitionRelatedTermsEdit", () => {
   });
 
   describe("onRemove", () => {
-    it("adds all occurrences of the same term to pending removals", () => {
+    it("adds all occurrences of the same term to pending removals", async () => {
       const t = Generator.generateTerm();
       const occurrences = [
         Generator.generateOccurrenceOf(t),
@@ -160,7 +163,8 @@ describe("DefinitionRelatedTermsEdit", () => {
       const ref = React.createRef<DefinitionRelatedTermsEdit>();
       render(occurrences, ref);
 
-      ref.current!.onRemove(occurrences[0]);
+      await act(async () => flushPromises());
+      act(() => ref.current!.onRemove(occurrences[0]));
       expect(onChange).toHaveBeenCalled();
       expect((onChange as Mock).mock.calls[0][0].pendingRemoval).toEqual(
         occurrences

@@ -2,7 +2,11 @@ import Generator from "../../../__tests__/environment/Generator";
 import Term from "../../../model/Term";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
+import { act } from "react";
 import { TermDefinitionAnnotation } from "../TermDefinitionAnnotation";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import * as Actions from "../../../action/AsyncTermActions";
@@ -69,18 +73,24 @@ describe("TermDefinitionAnnotation", () => {
     );
   }
 
-  it("renders term definition view by default", () => {
+  it("renders term definition view by default", async () => {
     renderComponent({ term: Generator.generateTerm() });
+    await act(async () => {
+      await flushPromises();
+    });
     expect(screen.getByText("Term:")).toBeInTheDocument();
     expect(screen.queryByText("Term not selected.")).not.toBeInTheDocument();
   });
 
-  it("renders term definition edit when no term is provided", () => {
+  it("renders term definition edit when no term is provided", async () => {
     renderComponent({ term: null });
+    await act(async () => {
+      await flushPromises();
+    });
     expect(screen.getByText("Term not selected.")).toBeInTheDocument();
   });
 
-  it("switches from editing to view mode when a term is provided", () => {
+  it("switches from editing to view mode when a term is provided", async () => {
     const { rerender } = renderComponent({ term: null });
     expect(screen.getByText("Term not selected.")).toBeInTheDocument();
     const term = Generator.generateTerm();
@@ -95,6 +105,9 @@ describe("TermDefinitionAnnotation", () => {
         />
       </MemoryRouter>
     );
+    await act(async () => {
+      await flushPromises();
+    });
     expect(screen.queryByText("Term not selected.")).not.toBeInTheDocument();
     expect(screen.getByText("Term:")).toBeInTheDocument();
   });
@@ -105,6 +118,9 @@ describe("TermDefinitionAnnotation", () => {
       vi.spyOn(Actions, "removeTermDefinitionSource");
       const user = userEvent.setup();
       renderComponent({ term });
+      await act(async () => {
+        await flushPromises();
+      });
 
       await user.click(screen.getByTitle("Remove"));
 

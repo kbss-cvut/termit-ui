@@ -1,7 +1,11 @@
 import { FileContentDetail } from "../FileContentDetail";
 import VocabularyUtils, { IRI } from "../../../util/VocabularyUtils";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
+import { act } from "react";
 import Term from "../../../model/Term";
 import AppNotification from "../../../model/AppNotification";
 import { screen } from "@testing-library/react";
@@ -64,28 +68,40 @@ describe("FileDetail", () => {
     );
   }
 
-  it("loads file content on mount", () => {
+  it("loads file content on mount", async () => {
     renderFileContentDetail();
+    await act(async () => {
+      await flushPromises();
+    });
     expect(mockedFunctionLikeProps.loadFileContent).toHaveBeenCalledWith(
       fileIri
     );
   });
 
-  it("loads vocabulary on mount", () => {
+  it("loads vocabulary on mount", async () => {
     renderFileContentDetail();
+    await act(async () => {
+      await flushPromises();
+    });
     expect(mockedFunctionLikeProps.loadVocabulary).toHaveBeenCalledWith(
       vocabularyIri
     );
   });
 
-  it("renders annotator of file content", () => {
+  it("renders annotator of file content", async () => {
     renderFileContentDetail();
+    await act(async () => {
+      await flushPromises();
+    });
     expect(screen.getByTestId("annotator")).toHaveTextContent(fileContent);
   });
 
-  it("fetches all terms within initialization", () => {
+  it("fetches all terms within initialization", async () => {
     mockedFunctionLikeProps.fetchTerms = vi.fn(() => Promise.resolve([]));
     renderFileContentDetail();
+    await act(async () => {
+      await flushPromises();
+    });
     expect(mockedFunctionLikeProps.fetchTerms).toHaveBeenCalledWith(
       vocabularyIri
     );
@@ -97,8 +113,11 @@ describe("FileDetail", () => {
     expect(mockedFunctionLikeProps.clearFileContent).toHaveBeenCalled();
   });
 
-  it("shows loading mask while content is being loaded", () => {
+  it("shows loading mask while content is being loaded", async () => {
     const { rerender } = renderFileContentDetail({ fileContent: null });
+    await act(async () => {
+      await flushPromises();
+    });
     expect(
       screen.getByText(en.messages["annotator.content.loading"])
     ).toBeInTheDocument();
@@ -112,6 +131,9 @@ describe("FileDetail", () => {
         {...intlFunctions()}
       />
     );
+    await act(async () => {
+      await flushPromises();
+    });
     expect(
       screen.queryByText(en.messages["annotator.content.loading"])
     ).not.toBeInTheDocument();

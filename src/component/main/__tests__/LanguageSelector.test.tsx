@@ -2,8 +2,12 @@ import LanguageSelector from "../LanguageSelector";
 import Constants from "../../../util/Constants";
 import * as Redux from "react-redux";
 import * as SyncActions from "../../../action/SyncActions";
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
 import { fireEvent } from "@testing-library/react";
+import { act } from "react";
 import { vi } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -72,18 +76,24 @@ describe("Language selector", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("changes active language to specified value when language is selected", () => {
+  it("changes active language to specified value when language is selected", async () => {
     vi.spyOn(Redux, "useSelector").mockReturnValue(Constants.LANG.EN.locale);
     vi.spyOn(Redux, "useDispatch").mockReturnValue(vi.fn());
     renderSelector(true, true);
     fireEvent.click(dropdownItem("cs"));
+    await act(async () => {
+      await flushPromises();
+    });
     expect(SyncActions.switchLanguage).toHaveBeenCalledWith(Constants.LANG.CS);
   });
 
-  it("does not emit action when already active language selector is clicked - Czech", () => {
+  it("does not emit action when already active language selector is clicked - Czech", async () => {
     vi.spyOn(Redux, "useSelector").mockReturnValue(Constants.LANG.EN.locale);
     renderSelector(true, true);
     fireEvent.click(dropdownItem("en"));
+    await act(async () => {
+      await flushPromises();
+    });
     expect(SyncActions.switchLanguage).not.toHaveBeenCalled();
   });
 });

@@ -5,7 +5,10 @@ import { createMemoryHistory, Location } from "history";
 import { match as Match, MemoryRouter } from "react-router";
 import { VocabularySummary } from "../VocabularySummary";
 import { intlFunctions } from "../../../__tests__/environment/IntlUtil";
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
 import * as redux from "react-redux";
 import Generator from "../../../__tests__/environment/Generator";
 import TermItState from "../../../model/TermItState";
@@ -133,61 +136,88 @@ describe("VocabularySummary", () => {
     return renderWithIntl(summaryElement(props, ref));
   }
 
-  it("loads vocabulary on mount", () => {
+  it("loads vocabulary on mount", async () => {
     renderSummary();
+    await act(async () => {
+      await flushPromises();
+    });
     expect(onLoad).toHaveBeenCalledWith({
       fragment: normalizedName,
       namespace,
     });
   });
 
-  it("passes namespace to vocabulary loading when specified", () => {
+  it("passes namespace to vocabulary loading when specified", async () => {
     location.search = "?namespace=" + namespace;
     renderSummary();
+    await act(async () => {
+      await flushPromises();
+    });
     expect(onLoad).toHaveBeenCalledWith({
       fragment: normalizedName,
       namespace,
     });
   });
 
-  it("does not attempt to reload vocabulary when namespace is missing in location and fragment is identical", () => {
+  it("does not attempt to reload vocabulary when namespace is missing in location and fragment is identical", async () => {
     const ref = React.createRef<VocabularySummary>();
     const { rerender } = renderSummary({}, ref);
+    await act(async () => {
+      await flushPromises();
+    });
     rerender(summaryElement({ vocabulary }, ref));
+    await act(async () => {
+      await flushPromises();
+    });
     expect(onLoad).toHaveBeenCalledTimes(1);
   });
 
-  it("invokes remove action and closes remove confirmation dialog on remove", () => {
+  it("invokes remove action and closes remove confirmation dialog on remove", async () => {
     const ref = React.createRef<VocabularySummary>();
     renderSummary({ vocabulary }, ref);
-    act(() => ref.current!.onRemove());
+    await act(async () => {
+      ref.current!.onRemove();
+      await flushPromises();
+    });
     expect(removeVocabulary).toHaveBeenCalledWith(vocabulary);
     expect(ref.current!.state.showRemoveDialog).toBeFalsy();
   });
 
-  it("opens edit view on edit button click", () => {
+  it("opens edit view on edit button click", async () => {
     const { container } = renderSummary({ vocabulary });
+    await act(async () => {
+      await flushPromises();
+    });
     expect(container.querySelector(".vocabulary-edit")).toBeNull();
     fireEvent.click(container.querySelector("#vocabulary-summary-edit")!);
     expect(container.querySelector(".vocabulary-edit")).toBeInTheDocument();
   });
 
-  it("hides edit button on on edit", () => {
+  it("hides edit button on on edit", async () => {
     const ref = React.createRef<VocabularySummary>();
     const { container } = renderSummary({ vocabulary }, ref);
+    await act(async () => {
+      await flushPromises();
+    });
     act(() => ref.current!.onEdit());
     expect(container.querySelector("#vocabulary-summary-edit")).toBeNull();
   });
 
-  it("invokes vocabulary update action on save", () => {
+  it("invokes vocabulary update action on save", async () => {
     const ref = React.createRef<VocabularySummary>();
     renderSummary({ vocabulary }, ref);
+    await act(async () => {
+      await flushPromises();
+    });
     act(() => ref.current!.onEdit());
     const update = new Vocabulary({
       iri: vocabulary.iri,
       label: langString("Updated label"),
     });
-    act(() => ref.current!.onSave(update));
+    await act(async () => {
+      ref.current!.onSave(update);
+      await flushPromises();
+    });
     expect(onUpdate).toHaveBeenCalledWith(update);
   });
 
@@ -197,7 +227,7 @@ describe("VocabularySummary", () => {
     act(() => ref.current!.onEdit());
     await act(async () => {
       ref.current!.onSave(vocabulary);
-      await Promise.resolve();
+      await flushPromises();
     });
     expect(ref.current!.state.edit).toBeFalsy();
   });
@@ -209,21 +239,27 @@ describe("VocabularySummary", () => {
     act(() => ref.current!.onEdit());
     await act(async () => {
       ref.current!.onSave(vocabulary);
-      await Promise.resolve();
+      await flushPromises();
     });
     expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
   });
 
-  it("reloads Vocabulary when File was added into the Vocabulary's Document", () => {
+  it("reloads Vocabulary when File was added into the Vocabulary's Document", async () => {
     const ref = React.createRef<VocabularySummary>();
     renderSummary({}, ref);
-    act(() => ref.current!.loadVocabulary());
+    await act(async () => {
+      ref.current!.loadVocabulary();
+      await flushPromises();
+    });
     expect(onLoad).toHaveBeenCalledWith(VocabularyUtils.create(vocabulary.iri));
   });
 
-  it("does not render modification buttons for user with read access", () => {
+  it("does not render modification buttons for user with read access", async () => {
     vocabulary.accessLevel = AccessLevel.READ;
     const { container } = renderSummary({ vocabulary });
+    await act(async () => {
+      await flushPromises();
+    });
     expect(
       container.querySelector("#vocabulary-summary-edit")
     ).not.toBeInTheDocument();

@@ -7,6 +7,7 @@ import {
 import Constants from "../../../util/Constants";
 import ActionType from "../../../action/ActionType";
 import { fireEvent } from "@testing-library/react";
+import { act } from "react";
 
 describe("Message", () => {
   beforeEach(() => {
@@ -63,7 +64,9 @@ describe("Message", () => {
       message: "Error message",
     });
     renderWithIntl(<Message message={message} />);
-    vi.runAllTimers();
+    act(() => {
+      vi.runAllTimers();
+    });
     expect(
       mockStore.getActions().find((a) => a.type === ActionType.DISMISS_MESSAGE)
     ).toBeDefined();

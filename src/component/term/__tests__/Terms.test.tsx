@@ -132,15 +132,17 @@ describe("Terms", () => {
     );
   }
 
-  it("fetches terms including imported when configured to", () => {
+  it("fetches terms including imported when configured to", async () => {
     const ref = React.createRef<Terms>();
     renderTerms({}, ref);
     act(() => ref.current!.setState({ includeImported: true }));
-    ref.current!.fetchOptions({});
+    await act(async () => {
+      await ref.current!.fetchOptions({});
+    });
     expect((fetchTerms as Mock).mock.calls[0][0].includeImported).toBeTruthy();
   });
 
-  it("uses term vocabulary when fetching its subterms", () => {
+  it("uses term vocabulary when fetching its subterms", async () => {
     const ref = React.createRef<Terms>();
     renderTerms({}, ref);
     act(() => ref.current!.setState({ includeImported: true }));
@@ -149,7 +151,9 @@ describe("Terms", () => {
       label: langString("Test term"),
       vocabulary: { iri: Generator.generateUri() },
     });
-    ref.current!.fetchOptions({ optionID: option.iri, option });
+    await act(async () => {
+      await ref.current!.fetchOptions({ optionID: option.iri, option });
+    });
     expect((fetchTerms as Mock).mock.calls[0][1]).toEqual(
       VocabularyUtils.create(option.vocabulary!.iri!)
     );
@@ -222,7 +226,7 @@ describe("Terms", () => {
   });
 
   describe("fetchOptions", () => {
-    it("filters out terms which are not in the vocabulary import chain", () => {
+    it("filters out terms which are not in the vocabulary import chain", async () => {
       const vocabularies = [
         Generator.generateUri(),
         Generator.generateUri(),
@@ -247,12 +251,14 @@ describe("Terms", () => {
       const ref = React.createRef<Terms>();
       renderTerms({}, ref);
       act(() => ref.current!.setState({ includeImported: true }));
-      return ref.current!.fetchOptions({}).then((options) => {
-        expect(options).toEqual(matching);
+      let options: Term[] = [];
+      await act(async () => {
+        options = await ref.current!.fetchOptions({});
       });
+      expect(options).toEqual(matching);
     });
 
-    it("filters out terms from different vocabularies when vocabulary has no imports", () => {
+    it("filters out terms from different vocabularies when vocabulary has no imports", async () => {
       const terms: Term[] = [];
       const matching: Term[] = [];
       for (let i = 0; i < 5; i++) {
@@ -268,12 +274,14 @@ describe("Terms", () => {
       fetchTerms = vi.fn().mockResolvedValue(terms);
       const ref = React.createRef<Terms>();
       renderTerms({}, ref);
-      return ref.current!.fetchOptions({}).then((options) => {
-        expect(options).toEqual(matching);
+      let options: Term[] = [];
+      await act(async () => {
+        options = await ref.current!.fetchOptions({});
       });
+      expect(options).toEqual(matching);
     });
 
-    it("filters out term's children which are in vocabularies outside of the vocabulary import chain", () => {
+    it("filters out term's children which are in vocabularies outside of the vocabulary import chain", async () => {
       const terms: Term[] = [Generator.generateTerm(vocabulary.iri)];
       const subTerms = [
         {
@@ -292,16 +300,18 @@ describe("Terms", () => {
       fetchTerms = vi.fn().mockResolvedValue(terms);
       const ref = React.createRef<Terms>();
       renderTerms({}, ref);
-      return ref.current!.fetchOptions({}).then((options) => {
-        expect(options.length).toEqual(1);
-        const t = options[0];
-        expect(t.subTerms!.length).toEqual(1);
-        expect(t.subTerms![0].iri).toEqual(subTerms[0].iri);
-        expect(t.plainSubTerms).toEqual([subTerms[0].iri]);
+      let options: Term[] = [];
+      await act(async () => {
+        options = await ref.current!.fetchOptions({});
       });
+      expect(options.length).toEqual(1);
+      const t = options[0];
+      expect(t.subTerms!.length).toEqual(1);
+      expect(t.subTerms![0].iri).toEqual(subTerms[0].iri);
+      expect(t.plainSubTerms).toEqual([subTerms[0].iri]);
     });
 
-    it("flattens loaded terms when search string was provided", () => {
+    it("flattens loaded terms when search string was provided", async () => {
       const child = Generator.generateTerm(vocabulary.iri);
       const parent = Generator.generateTerm(vocabulary.iri);
       const grandParent = Generator.generateTerm(vocabulary.iri);
@@ -316,17 +326,17 @@ describe("Terms", () => {
       fetchTerms = vi.fn().mockResolvedValue([child]);
       const ref = React.createRef<Terms>();
       renderTerms({}, ref);
-      return ref
-        .current!.fetchOptions({ searchString: "test" })
-        .then((options) => {
-          expect(options.length).toEqual(3);
-          expect(options.find((t) => t.iri === child.iri)).toBeDefined();
-          expect(options.find((t) => t.iri === parent.iri)).toBeDefined();
-          expect(options.find((t) => t.iri === grandParent.iri)).toBeDefined();
-        });
+      let options: Term[] = [];
+      await act(async () => {
+        options = await ref.current!.fetchOptions({ searchString: "test" });
+      });
+      expect(options.length).toEqual(3);
+      expect(options.find((t) => t.iri === child.iri)).toBeDefined();
+      expect(options.find((t) => t.iri === parent.iri)).toBeDefined();
+      expect(options.find((t) => t.iri === grandParent.iri)).toBeDefined();
     });
 
-    it("excludes imported vocabularies when processing loaded terms when includeImported is set to false", () => {
+    it("excludes imported vocabularies when processing loaded terms when includeImported is set to false", async () => {
       const terms = [Generator.generateTerm(vocabulary.iri)];
       const parent = Generator.generateTerm(Generator.generateUri());
       vocabulary.allImportedVocabularies = [parent.vocabulary!.iri!];
@@ -335,19 +345,19 @@ describe("Terms", () => {
       const spy = vi.spyOn(TermTreeSelectHelper, "processTermsForTreeSelect");
       const ref = React.createRef<Terms>();
       renderTerms({}, ref);
-      return ref
-        .current!.fetchOptions({ searchString: "test" })
-        .then((options) => {
-          expect(options.length).toEqual(1);
-          expect(options).toEqual(terms);
-          expect(spy).toHaveBeenCalledWith(
-            terms,
-            [expect.any(Function), expect.any(Function)],
-            expect.objectContaining({
-              searchString: "test",
-            })
-          );
-        });
+      let options: Term[] = [];
+      await act(async () => {
+        options = await ref.current!.fetchOptions({ searchString: "test" });
+      });
+      expect(options.length).toEqual(1);
+      expect(options).toEqual(terms);
+      expect(spy).toHaveBeenCalledWith(
+        terms,
+        [expect.any(Function), expect.any(Function)],
+        expect.objectContaining({
+          searchString: "test",
+        })
+      );
     });
   });
 });
