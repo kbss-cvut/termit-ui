@@ -15,7 +15,10 @@ import { ConsolidatedResults } from "../../../model/ConsolidatedResults";
 import { DefinitionRelatedChanges } from "../DefinitionRelatedTermsEdit";
 import Vocabulary from "../../../model/Vocabulary";
 import { MemoryRouter } from "react-router";
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
 import { fireEvent } from "@testing-library/react";
 import { act } from "react";
 import type { Mock } from "vitest";
@@ -111,14 +114,18 @@ describe("Term edit", () => {
     return container.querySelector("#edit-term-submit") as HTMLButtonElement;
   }
 
-  it("disables save button when label field is empty", () => {
+  it("disables save button when label field is empty", async () => {
     const { container } = renderEdit();
-    return Promise.resolve().then(() => {
-      fireEvent.change(labelInput(container), {
-        target: { name: "edit-term-label", value: "" },
-      });
-      expect(saveButton(container).disabled).toBeTruthy();
+    await act(async () => {
+      await flushPromises();
     });
+    fireEvent.change(labelInput(container), {
+      target: { name: "edit-term-label", value: "" },
+    });
+    await act(async () => {
+      await flushPromises();
+    });
+    expect(saveButton(container).disabled).toBeTruthy();
   });
 
   it("invokes save with state data when save is clicked", () => {
@@ -139,18 +146,19 @@ describe("Term edit", () => {
     });
   });
 
-  it("checks for label uniqueness in vocabulary on label change", () => {
+  it("checks for label uniqueness in vocabulary on label change", async () => {
     const { container } = renderEdit();
     const newLabel = "New label";
     fireEvent.change(labelInput(container), {
       target: { name: "edit-term-label", value: newLabel },
     });
-    return Promise.resolve().then(() => {
-      expect(Ajax.head).toHaveBeenCalled();
-      expect(
-        (Ajax.head as Mock).mock.calls[0][1].getParams().prefLabel
-      ).toEqual(newLabel);
+    await act(async () => {
+      await flushPromises();
     });
+    expect(Ajax.head).toHaveBeenCalled();
+    expect((Ajax.head as Mock).mock.calls[0][1].getParams().prefLabel).toEqual(
+      newLabel
+    );
   });
 
   it("does not check for label uniqueness when new label is the same as original", () => {
@@ -161,7 +169,7 @@ describe("Term edit", () => {
     expect(Ajax.head).not.toHaveBeenCalled();
   });
 
-  it("merges existing label value in a different language with edited value", () => {
+  it("merges existing label value in a different language with edited value", async () => {
     const czechValue = "Test in Czech";
     const englishValue = "Test in English";
     term.label.cs = czechValue;
@@ -169,6 +177,9 @@ describe("Term edit", () => {
     const { container } = renderEdit({ language: "en" }, ref);
     fireEvent.change(labelInput(container), {
       target: { name: "edit-term-label", value: englishValue },
+    });
+    await act(async () => {
+      await flushPromises();
     });
     expect(ref.current!.state.label).toEqual({
       cs: czechValue,

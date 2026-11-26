@@ -1,5 +1,6 @@
 import * as React from "react";
 import { render, act } from "@testing-library/react";
+import { flushPromises } from "../../../__tests__/environment/Environment";
 import Term from "../../../model/Term";
 import VocabularyUtils from "../../../util/VocabularyUtils";
 import { CreateTermFromAnnotation } from "../CreateTermFromAnnotation";
@@ -119,7 +120,7 @@ describe("CreateTermFromAnnotation", () => {
     });
   });
 
-  it("onSave creates new term from current state and saves it", () => {
+  it("onSave creates new term from current state and saves it", async () => {
     const instance = renderComponent();
     const iri = vocabularyIri + "/term/test-term";
     const label = langString("Test label");
@@ -127,8 +128,9 @@ describe("CreateTermFromAnnotation", () => {
     act(() => {
       instance.setState({ iri, label, sources });
     });
-    act(() => {
+    await act(async () => {
       instance.onSave();
+      await flushPromises();
     });
     expect(createTerm).toHaveBeenCalled();
     const term = (createTerm as Mock).mock.calls[0][0];

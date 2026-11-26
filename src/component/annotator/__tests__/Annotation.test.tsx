@@ -2,7 +2,10 @@ import * as React from "react";
 import { screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Annotation } from "../Annotation";
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
 import Term from "../../../model/Term";
 import { AnnotationSpanProps } from "../Annotator";
 import VocabularyUtils from "../../../util/VocabularyUtils";
@@ -76,15 +79,18 @@ describe("Annotation", () => {
     );
   });
 
-  it("fetches assigned term on mount", () => {
+  it("fetches assigned term on mount", async () => {
     renderWithIntl(<Annotation {...mockedFunctions} {...assignedOccProps} />);
+    await act(async () => {
+      await flushPromises();
+    });
     expect(mockedFunctions.onFetchTerm).toHaveBeenCalledWith(
       assignedOccProps.resource,
       expect.any(AbortController)
     );
   });
 
-  it("fetches assigned term when it changes on update", () => {
+  it("fetches assigned term when it changes on update", async () => {
     const { rerender } = renderWithIntl(
       <Annotation {...mockedFunctions} {...assignedOccProps} />
     );
@@ -96,6 +102,9 @@ describe("Annotation", () => {
         resource={newResource}
       />
     );
+    await act(async () => {
+      await flushPromises();
+    });
     expect(mockedFunctions.onFetchTerm).toHaveBeenCalledWith(
       newResource,
       expect.any(AbortController)
@@ -254,20 +263,26 @@ describe("Annotation", () => {
     expect(await screen.findByTitle("Close")).toBeInTheDocument();
   });
 
-  it("renders annotation in div when specified", () => {
+  it("renders annotation in div when specified", async () => {
     mockedFunctions.onFetchTerm = vi.fn().mockResolvedValue(term);
     const { container } = renderWithIntl(
       <Annotation {...mockedFunctions} {...assignedOccProps} tag="div" />
     );
+    await act(async () => {
+      await flushPromises();
+    });
     expect(container.firstElementChild!.tagName).toEqual("DIV");
   });
 
   describe("onCreateTerm", () => {
-    it("passes content to term creation handler when it is available", () => {
+    it("passes content to term creation handler when it is available", async () => {
       const props: any = Object.assign({}, assignedOccProps);
       props.content = "test content";
       const ref = React.createRef<Annotation>();
       renderWithIntl(<Annotation ref={ref} {...mockedFunctions} {...props} />);
+      await act(async () => {
+        await flushPromises();
+      });
       act(() => {
         ref.current!.onCreateTerm();
       });
@@ -277,11 +292,14 @@ describe("Annotation", () => {
       );
     });
 
-    it("passes the text of the annotation to term creation handler when content is not available", () => {
+    it("passes the text of the annotation to term creation handler when content is not available", async () => {
       const ref = React.createRef<Annotation>();
       renderWithIntl(
         <Annotation ref={ref} {...mockedFunctions} {...assignedOccProps} />
       );
+      await act(async () => {
+        await flushPromises();
+      });
       act(() => {
         ref.current!.onCreateTerm();
       });
@@ -291,11 +309,14 @@ describe("Annotation", () => {
       );
     });
 
-    it("passes current annotation as the second argument to term creation handler", () => {
+    it("passes current annotation as the second argument to term creation handler", async () => {
       const props: any = Object.assign({}, assignedOccProps);
       props.content = "test content";
       const ref = React.createRef<Annotation>();
       renderWithIntl(<Annotation ref={ref} {...mockedFunctions} {...props} />);
+      await act(async () => {
+        await flushPromises();
+      });
       act(() => {
         ref.current!.onCreateTerm();
       });
@@ -309,11 +330,14 @@ describe("Annotation", () => {
       });
     });
 
-    it("closes the detail popup", () => {
+    it("closes the detail popup", async () => {
       const ref = React.createRef<Annotation>();
       renderWithIntl(
         <Annotation ref={ref} {...mockedFunctions} {...assignedOccProps} />
       );
+      await act(async () => {
+        await flushPromises();
+      });
       act(() => {
         ref.current!.setState({ detailOpened: true });
       });
@@ -326,7 +350,7 @@ describe("Annotation", () => {
   });
 
   describe("onCloseDetail", () => {
-    it("resets sticky status if annotation was sticky", () => {
+    it("resets sticky status if annotation was sticky", async () => {
       const ref = React.createRef<Annotation>();
       renderWithIntl(
         <Annotation
@@ -336,6 +360,9 @@ describe("Annotation", () => {
           {...assignedOccProps}
         />
       );
+      await act(async () => {
+        await flushPromises();
+      });
       act(() => {
         ref.current!.onCloseDetail();
       });

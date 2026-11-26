@@ -14,7 +14,10 @@ import Constants from "../../../util/Constants";
 import TermOccurrence from "../../../model/TermOccurrence";
 import { StompClient } from "../../hoc/withStompClient";
 import { describe, expect, it, vi } from "vitest";
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
 import { act } from "react";
 import {
   SubTermRemovalStrategy,
@@ -219,13 +222,19 @@ describe("TermDetail", () => {
     expect(container.querySelector(".term-metadata-edit")).toBeInTheDocument();
   });
 
-  it("invokes termUpdate action on save", () => {
+  it("invokes termUpdate action on save", async () => {
     const ref = React.createRef<TermDetail>();
     renderTermDetail(
       { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
       ref
     );
-    ref.current!.onSave(term, { pendingApproval: [], pendingRemoval: [] });
+    await act(async () => {
+      await ref.current!.onSave(term, {
+        pendingApproval: [],
+        pendingRemoval: [],
+      });
+      await flushPromises();
+    });
     expect(onUpdate).toHaveBeenCalledWith(term);
   });
 
@@ -241,27 +250,31 @@ describe("TermDetail", () => {
         pendingApproval: [],
         pendingRemoval: [],
       });
+      await flushPromises();
     });
     expect(ref.current!.state.edit).toBeFalsy();
   });
 
-  it("reloads term on successful save", () => {
+  it("reloads term on successful save", async () => {
     const ref = React.createRef<TermDetail>();
     renderTermDetail(
       { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
       ref
     );
-    return ref
-      .current!.onSave(term, { pendingApproval: [], pendingRemoval: [] })
-      .then(() => {
-        expect(onLoad).toHaveBeenCalledWith(
-          normalizedTermName,
-          {
-            fragment: normalizedVocabName,
-          },
-          undefined
-        );
+    await act(async () => {
+      await ref.current!.onSave(term, {
+        pendingApproval: [],
+        pendingRemoval: [],
       });
+      await flushPromises();
+    });
+    expect(onLoad).toHaveBeenCalledWith(
+      normalizedTermName,
+      {
+        fragment: normalizedVocabName,
+      },
+      undefined
+    );
   });
 
   it("closes edit when different term is selected", () => {
@@ -306,7 +319,7 @@ describe("TermDetail", () => {
     expect(buttons.every((b) => b.key !== "term-detail-edit"));
   });
 
-  it("publishes term update notification when parent term changes", () => {
+  it("publishes term update notification when parent term changes", async () => {
     const ref = React.createRef<TermDetail>();
     renderTermDetail(
       { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
@@ -320,16 +333,19 @@ describe("TermDetail", () => {
         label: langString("New parent"),
       }),
     ];
-    return ref
-      .current!.onSave(update, { pendingApproval: [], pendingRemoval: [] })
-      .then(() => {
-        expect(onPublishNotification).toHaveBeenCalledWith({
-          source: { type: NotificationType.TERM_HIERARCHY_UPDATED },
-        });
+    await act(async () => {
+      await ref.current!.onSave(update, {
+        pendingApproval: [],
+        pendingRemoval: [],
       });
+      await flushPromises();
+    });
+    expect(onPublishNotification).toHaveBeenCalledWith({
+      source: { type: NotificationType.TERM_HIERARCHY_UPDATED },
+    });
   });
 
-  it("invokes remove action and closes remove confirmation dialog on remove", () => {
+  it("invokes remove action and closes remove confirmation dialog on remove", async () => {
     const ref = React.createRef<TermDetail>();
     renderTermDetail(
       { term, configuredLanguage: Constants.DEFAULT_LANGUAGE },
@@ -340,7 +356,10 @@ describe("TermDetail", () => {
       removeRelationships: false,
       subTermsStrategy: SubTermRemovalStrategy.FAIL,
     };
-    ref.current!.onRemove(removalOptions);
+    await act(async () => {
+      await ref.current!.onRemove(removalOptions);
+      await flushPromises();
+    });
     expect(removeTerm).toHaveBeenCalledWith(term, removalOptions);
     expect(ref.current!.state.showRemoveDialog).toBeFalsy();
   });
@@ -390,42 +409,43 @@ describe("TermDetail", () => {
     expect(loadVocabulary).toHaveBeenCalled();
   });
 
-  it("approves pending definitional occurrences on save", () => {
+  it("approves pending definitional occurrences on save", async () => {
     const ref = React.createRef<TermDetail>();
     renderTermDetail({ term, configuredLanguage: "cs" }, ref);
     const occurrences = [
       Generator.generateOccurrenceOf(term),
       Generator.generateOccurrenceOf(term),
     ];
-    ref.current!.onSave(term, {
-      pendingApproval: occurrences,
-      pendingRemoval: [],
+    await act(async () => {
+      await ref.current!.onSave(term, {
+        pendingApproval: occurrences,
+        pendingRemoval: [],
+      });
+      await flushPromises();
     });
-    return Promise.resolve().then(() => {
-      occurrences.forEach((o) =>
-        expect(approveOccurrence).toHaveBeenCalledWith(o)
-      );
-      expect(onUpdate).toHaveBeenCalledWith(term);
-    });
+    occurrences.forEach((o) =>
+      expect(approveOccurrence).toHaveBeenCalledWith(o)
+    );
+    expect(onUpdate).toHaveBeenCalledWith(term);
   });
 
-  it("removes pending definitional occurrences on save", () => {
+  it("removes pending definitional occurrences on save", async () => {
     const ref = React.createRef<TermDetail>();
     renderTermDetail({ term, configuredLanguage: "cs" }, ref);
     const occurrences = [
       Generator.generateOccurrenceOf(term),
       Generator.generateOccurrenceOf(term),
     ];
-    return ref
-      .current!.onSave(term, {
+    await act(async () => {
+      await ref.current!.onSave(term, {
         pendingApproval: [],
         pendingRemoval: occurrences,
-      })
-      .then(() => {
-        occurrences.forEach((o) =>
-          expect(removeOccurrence).toHaveBeenCalledWith(o)
-        );
-        expect(onUpdate).toHaveBeenCalledWith(term);
       });
+      await flushPromises();
+    });
+    occurrences.forEach((o) =>
+      expect(removeOccurrence).toHaveBeenCalledWith(o)
+    );
+    expect(onUpdate).toHaveBeenCalledWith(term);
   });
 });

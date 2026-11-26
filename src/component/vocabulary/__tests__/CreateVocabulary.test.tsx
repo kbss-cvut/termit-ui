@@ -210,19 +210,21 @@ describe("Create vocabulary view", () => {
       );
     });
 
-    it("does not request IRI generation when IRI value had been changed manually before", () => {
+    it("does not request IRI generation when IRI value had been changed manually before", async () => {
       const { container } = renderWithIntl(<CreateVocabulary />);
-      act(() => {
+      await act(async () => {
         fireEvent.change(
           container.querySelector('input[name="create-vocabulary-iri"]')!,
           { target: { value: "http://test" } }
         );
+        await flushPromises();
       });
-      act(() => {
+      await act(async () => {
         fireEvent.change(
           container.querySelector('input[name="create-vocabulary-label"]')!,
           { target: { value: "Metropolitan Plan" } }
         );
+        await flushPromises();
       });
       expect(Ajax.post).not.toHaveBeenCalledWith(
         Constants.API_PREFIX + "/identifiers",

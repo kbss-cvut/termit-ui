@@ -12,6 +12,7 @@ import {
 } from "../../../__tests__/environment/Environment";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { act } from "react";
 import type { Mock } from "vitest";
 
 vi.mock("react-redux", async (importOriginal) => {
@@ -80,7 +81,9 @@ describe("TextAnalysisInvocationButton", () => {
     await user.click(screen.getByTitle("Start text analysis"));
     expect(lastResourceSelectVocabularyProps.show).toBeTruthy();
 
-    lastResourceSelectVocabularyProps.onSubmit(vocabulary);
+    act(() => {
+      lastResourceSelectVocabularyProps.onSubmit(vocabulary);
+    });
 
     expect(AsyncActions.executeFileTextAnalysis).toHaveBeenLastCalledWith(
       fileIri,

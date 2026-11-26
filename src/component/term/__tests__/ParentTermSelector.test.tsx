@@ -12,7 +12,10 @@ import { langString } from "../../../model/MultilingualString";
 import { TermFetchParams } from "../../../util/Types";
 import noop from "lodash/noop";
 import { MemoryRouter } from "react-router";
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
 import { act } from "react";
 import type { Mock } from "vitest";
 
@@ -120,32 +123,41 @@ describe("ParentTermSelector", () => {
     expect(treeSelectValue(container)).toEqual(parentTerms.map((p) => p.iri));
   });
 
-  it("invokes onChange with correct parent object on selection", () => {
+  it("invokes onChange with correct parent object on selection", async () => {
     const terms = [Generator.generateTerm()];
     const ref = React.createRef<ParentTermSelector>();
     renderSelector({ termIri: Generator.generateUri(), vocabularyIri }, ref);
-    ref.current!.onChange([terms[0]]);
+    await act(async () => {
+      await flushPromises();
+    });
+    act(() => ref.current!.onChange([terms[0]]));
     expect(onChange).toHaveBeenCalledWith([terms[0]]);
   });
 
-  it("supports selection of multiple parents", () => {
+  it("supports selection of multiple parents", async () => {
     const terms = [Generator.generateTerm(), Generator.generateTerm()];
     const ref = React.createRef<ParentTermSelector>();
     renderSelector({ termIri: Generator.generateUri(), vocabularyIri }, ref);
-    ref.current!.onChange(terms);
+    await act(async () => {
+      await flushPromises();
+    });
+    act(() => ref.current!.onChange(terms));
     expect(onChange).toHaveBeenCalledWith(terms);
   });
 
-  it("filters out selected parent if it is the same as the term itself", () => {
+  it("filters out selected parent if it is the same as the term itself", async () => {
     const term = Generator.generateTerm(vocabularyIri);
     const ref = React.createRef<ParentTermSelector>();
     renderSelector({ termIri: term.iri, vocabularyIri }, ref);
-    ref.current!.onChange([term]);
+    await act(async () => {
+      await flushPromises();
+    });
+    act(() => ref.current!.onChange([term]));
     expect(onChange).toHaveBeenCalledWith([]);
   });
 
   describe("fetchOptions", () => {
-    it("fetches terms including imported when configured to", () => {
+    it("fetches terms including imported when configured to", async () => {
       const ref = React.createRef<ParentTermSelector>();
       renderSelector(
         {
@@ -155,11 +167,13 @@ describe("ParentTermSelector", () => {
         ref
       );
       act(() => ref.current!.setState({ includeImported: true }));
-      ref.current!.fetchOptions({});
+      await act(async () => {
+        await ref.current!.fetchOptions({});
+      });
       expect((loadTerms as Mock).mock.calls[0][0].includeImported).toBeTruthy();
     });
 
-    it("uses vocabulary of term being toggled when loading it subterms", () => {
+    it("uses vocabulary of term being toggled when loading it subterms", async () => {
       const parent = new Term({
         iri: Generator.generateUri(),
         label: langString("parent"),
@@ -174,13 +188,18 @@ describe("ParentTermSelector", () => {
         ref
       );
       act(() => ref.current!.setState({ includeImported: true }));
-      ref.current!.fetchOptions({ optionID: parent.iri, option: parent });
+      await act(async () => {
+        await ref.current!.fetchOptions({
+          optionID: parent.iri,
+          option: parent,
+        });
+      });
       expect((loadTerms as Mock).mock.calls[0][1]).toEqual(
         VocabularyUtils.create(parent.vocabulary!.iri!)
       );
     });
 
-    it("filters out option with the term IRI", () => {
+    it("filters out option with the term IRI", async () => {
       const options: Term[] = [];
       for (let i = 0; i < Generator.randomInt(5, 10); i++) {
         const t = Generator.generateTerm(vocabularyIri);
@@ -190,12 +209,14 @@ describe("ParentTermSelector", () => {
       loadTerms = vi.fn().mockResolvedValue(options);
       const ref = React.createRef<ParentTermSelector>();
       renderSelector({ termIri: currentTerm.iri, vocabularyIri }, ref);
-      return ref.current!.fetchOptions({}).then((terms) => {
-        expect(terms.indexOf(currentTerm)).toEqual(-1);
+      let terms: Term[] = [];
+      await act(async () => {
+        terms = await ref.current!.fetchOptions({});
       });
+      expect(terms.indexOf(currentTerm)).toEqual(-1);
     });
 
-    it("filters out options outside vocabulary import chain", () => {
+    it("filters out options outside vocabulary import chain", async () => {
       const vocabularyImports = [Generator.generateUri()];
       loadImports = vi
         .fn()
@@ -218,14 +239,16 @@ describe("ParentTermSelector", () => {
         },
         ref
       );
-      return ref.current!.fetchOptions({}).then((terms) => {
-        terms.forEach((t) => {
-          expect(t.vocabulary!.iri).toEqual(vocabularyImports[0]);
-        });
+      let terms: Term[] = [];
+      await act(async () => {
+        terms = await ref.current!.fetchOptions({});
+      });
+      terms.forEach((t) => {
+        expect(t.vocabulary!.iri).toEqual(vocabularyImports[0]);
       });
     });
 
-    it("removes term IRI from options subterms as well", () => {
+    it("removes term IRI from options subterms as well", async () => {
       const options: Term[] = [
         Generator.generateTerm(vocabularyIri),
         Generator.generateTerm(vocabularyIri),
@@ -235,13 +258,15 @@ describe("ParentTermSelector", () => {
       loadTerms = vi.fn().mockResolvedValue(options);
       const ref = React.createRef<ParentTermSelector>();
       renderSelector({ termIri: currentTerm.iri, vocabularyIri }, ref);
-      return ref.current!.fetchOptions({}).then((terms) => {
-        expect(terms.indexOf(currentTerm)).toEqual(-1);
-        expect(terms[0].plainSubTerms!.indexOf(currentTerm.iri)).toEqual(-1);
+      let terms: Term[] = [];
+      await act(async () => {
+        terms = await ref.current!.fetchOptions({});
       });
+      expect(terms.indexOf(currentTerm)).toEqual(-1);
+      expect(terms[0].plainSubTerms!.indexOf(currentTerm.iri)).toEqual(-1);
     });
 
-    it("excludes imported vocabularies when processing loaded terms when includeImported is set to false", () => {
+    it("excludes imported vocabularies when processing loaded terms when includeImported is set to false", async () => {
       const terms = [
         Generator.generateTerm(vocabularyIri),
         Generator.generateTerm(Generator.generateUri()),
@@ -263,15 +288,15 @@ describe("ParentTermSelector", () => {
         },
         ref
       );
-      return ref
-        .current!.fetchOptions({ searchString: "test" })
-        .then((options) => {
-          expect(options.length).toEqual(1);
-          expect(options).toEqual([terms[0]]);
-        });
+      let options: Term[] = [];
+      await act(async () => {
+        options = await ref.current!.fetchOptions({ searchString: "test" });
+      });
+      expect(options.length).toEqual(1);
+      expect(options).toEqual([terms[0]]);
     });
 
-    it("passes existing parent terms for inclusion to term loading", () => {
+    it("passes existing parent terms for inclusion to term loading", async () => {
       const existingParents = [
         Generator.generateTerm(vocabularyIri),
         Generator.generateTerm(vocabularyIri),
@@ -285,7 +310,9 @@ describe("ParentTermSelector", () => {
         },
         ref
       );
-      ref.current!.fetchOptions({});
+      await act(async () => {
+        await ref.current!.fetchOptions({});
+      });
       expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toBeDefined();
       expect((loadTerms as Mock).mock.calls[0][0].includeTerms).toEqual(
         existingParents.map((p) => p.iri)
@@ -293,17 +320,23 @@ describe("ParentTermSelector", () => {
     });
   });
 
-  it("sets includeImported to true when parent terms are from different vocabulary", () => {
+  it("sets includeImported to true when parent terms are from different vocabulary", async () => {
     const termIri = Generator.generateUri();
     const parentTerms = [Generator.generateTerm(Generator.generateUri())];
     const ref = React.createRef<ParentTermSelector>();
     renderSelector({ termIri, vocabularyIri, parentTerms }, ref);
+    await act(async () => {
+      await flushPromises();
+    });
     expect(ref.current!.state.includeImported).toBeTruthy();
   });
 
-  it("loads imported vocabularies on mount", () => {
+  it("loads imported vocabularies on mount", async () => {
     const termIri = Generator.generateUri();
     renderSelector({ termIri, vocabularyIri, parentTerms: [] });
+    await act(async () => {
+      await flushPromises();
+    });
     expect(loadImports).toHaveBeenCalledWith(
       VocabularyUtils.create(vocabularyIri)
     );
@@ -325,8 +358,9 @@ describe("ParentTermSelector", () => {
     expect(loadImports).not.toHaveBeenCalled();
   });
 
-  it("does not render selector until imported vocabularies are available", () => {
+  it("does not render selector until imported vocabularies are available", async () => {
     const termIri = Generator.generateUri();
+    loadImports = vi.fn().mockImplementation(() => new Promise(() => {}));
     const ref = React.createRef<ParentTermSelector>();
     const { container } = renderSelector(
       { termIri, vocabularyIri, parentTerms: [] },
@@ -367,6 +401,7 @@ describe("ParentTermSelector", () => {
     expect(ref.current!.state.disableIncludeImportedToggle).toBeTruthy();
     await act(async () => {
       await promise;
+      await flushPromises();
     });
     expect(ref.current!.state.disableIncludeImportedToggle).toBeFalsy();
   });

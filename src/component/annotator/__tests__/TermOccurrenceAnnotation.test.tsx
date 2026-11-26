@@ -2,7 +2,11 @@ import Term from "../../../model/Term";
 import { mockUseI18n } from "../../../__tests__/environment/IntlUtil";
 import { TermOccurrenceAnnotation } from "../TermOccurrenceAnnotation";
 import { screen } from "@testing-library/react";
-import { renderWithIntl } from "../../../__tests__/environment/Environment";
+import {
+  flushPromises,
+  renderWithIntl,
+} from "../../../__tests__/environment/Environment";
+import { act } from "react";
 import {
   AnnotationClass,
   AnnotationOrigin,
@@ -47,7 +51,7 @@ describe("TermOccurrenceAnnotation", () => {
     document.getElementById("test")?.remove();
   });
 
-  it("does not render confirm button for suggested occurrence of an unknown term", () => {
+  it("does not render confirm button for suggested occurrence of an unknown term", async () => {
     renderWithIntl(
       <MemoryRouter>
         <TermOccurrenceAnnotation
@@ -60,12 +64,15 @@ describe("TermOccurrenceAnnotation", () => {
         />
       </MemoryRouter>
     );
+    await act(async () => {
+      await flushPromises();
+    });
     expect(
       screen.queryByTitle("Confirm suggestion of term occurrence")
     ).not.toBeInTheDocument();
   });
 
-  it("switches from editing to view mode when a term is provided", () => {
+  it("switches from editing to view mode when a term is provided", async () => {
     const { rerender } = renderWithIntl(
       <MemoryRouter>
         <TermOccurrenceAnnotation
@@ -92,6 +99,9 @@ describe("TermOccurrenceAnnotation", () => {
         />
       </MemoryRouter>
     );
+    await act(async () => {
+      await flushPromises();
+    });
     expect(screen.getByTitle("Edit term occurrence")).toBeInTheDocument();
   });
 });
